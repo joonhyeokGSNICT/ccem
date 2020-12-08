@@ -532,7 +532,7 @@ $(function(){
 		el: document.getElementById('counselMain_studyList_grid'),
         header: GRID_PRPRT.header,
         minBodyHeight: GRID_PRPRT.minBodyHeight,
-        bodyHeight: 118,
+        bodyHeight: 111,
         minRowHeight: GRID_PRPRT.rowHeight,
         rowHeight: GRID_PRPRT.rowHeight,
         width: 'auto',
