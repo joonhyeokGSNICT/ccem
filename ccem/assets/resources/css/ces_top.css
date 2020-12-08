@@ -1,4 +1,4 @@
-body *{font-size:12px!important;}
+body *{font-size:13px!important;}
 
 
 /* Button */
@@ -46,7 +46,7 @@ body *{font-size:12px!important;}
 }
 .nav-tabs .nav-link:not(.active) {
     background-color: #ececec!important;
-    color: rgba(0, 0, 0, 0.8)!important;
+    color: rgb(163, 163, 163)!important;
     font-size: 13px!important;
     font-weight: bold;
 }
@@ -187,4 +187,40 @@ select {
 }
 .table-xs th{
 	padding: .1rem;
+}
+
+.counselMainBtn {
+	background-color: #73b753;
+	color:white;
+	font-weight:bold;
+}
+.counselMainBtn:hover {
+	background-color: #72da40;
+	color:white;
+	font-weight:bold;
+}
+
+.customerBtn {
+	background-color: #123f8a;
+	color:white;
+	font-weight:bold;
+	width: 3.95rem;
+}
+.customerBtn:hover {
+	background-color: #3f7ee6;
+	color:white;
+	font-weight:bold;
+}
+
+.rightSideScroll {
+	 overflow:scroll; 
+	 height:640px; 
+	 overflow-x:hidden; 
+}
+
+.btn-group-xs > .btn, .btn-xs {
+  padding: .25rem .4rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
 }
