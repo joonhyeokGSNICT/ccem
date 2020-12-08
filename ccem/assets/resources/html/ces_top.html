@@ -33,54 +33,23 @@
       					<a class="nav-link" href="#">::&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</a>
     				</li>
 				    <!-- 초기화면 dropdown -->
-				    <li class="nav-item dropdown">
-				    	<a class="nav-link topbarNav dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-				        초기화면
-				    	</a>
-				    	<div class="dropdown-menu">
-				    		<a class="dropdown-item" href="#">Link 1</a>
-				        	<a class="dropdown-item" href="#">Link 2</a>
-				        	<a class="dropdown-item" href="#">Link 3</a>
-				    	</div>
-				    </li>
-				    <!-- 상담화면 dropdown -->
-				    <li class="nav-item dropdown">
-				    	<a class="nav-link topbarNav dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-				        상담화면
-				    	</a>
-				    	<div class="dropdown-menu">
-				    		<a class="dropdown-item" href="#">Link 1</a>
-				        	<a class="dropdown-item" href="#">Link 2</a>
-				        	<a class="dropdown-item" href="#">Link 3</a>
-				    	</div>
-				    </li>
-				    <!-- 응대 dropdown -->
-				    <li class="nav-item dropdown">
-				    	<a class="nav-link topbarNav dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
-				        응대
-				    	</a>
-				    	<div class="dropdown-menu">
-				    		<a class="dropdown-item" href="#">Link 1</a>
-				        	<a class="dropdown-item" href="#">Link 2</a>
-				        	<a class="dropdown-item" href="#">Link 3</a>
-				    	</div>
-				    </li>
 				  </ul>
+				  <ul class="nav nav-tabs">
+					<li class="nav-item"><a style="border:0px; background-color:#00000000 !important;" class="nav-link notBorder active" id="customerInfo" data-toggle="tab" href="#customerInfoTab">고객정보<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+					<li class="nav-item"><a style="border:0px; background-color:#00000000 !important;" class="nav-link" id="customerSearch" data-toggle="tab" href="#customerSearchTab">고객찾기<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+					<li class="nav-item"><a style="border:0px; background-color:#00000000 !important;" class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">조회<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+				</ul>
 				</nav>
 			</div>
 		</div>
 		<!-- top navs -->
 		<div class="row mt-3">
 			<div class="col-9">
-				<ul class="nav nav-tabs">
-					<li class="nav-item"><a class="nav-link active" id="customerInfo" data-toggle="tab" href="#customerInfoTab">고객정보<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-					<li class="nav-item"><a class="nav-link" id="erms" data-toggle="tab" href="#ermsTab">고객찾기<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-					<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">PV<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-				</ul>
+				
 			</div>
 			<div class="col-3">
-				<input type="button" class="btn btn-sm popup-btn" value="상담등록" id="counselInsert_btn">
-				<input type="button" class="btn btn-sm popup-btn" value="상담조회" id="counselHistSearch_btn">
+				<input type="button" class="btn btn-sm popup-btn" value="" id="">
+				<input type="button" class="btn btn-sm popup-btn" value="" id="">
 				
 				
 			</div>
@@ -109,11 +78,19 @@
 				<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
 					<div class="mainDivision">
 						<div class="row mt-2">
-							<div class="col-12">
-								<ul class="nav nav-tabs">
+							<div class="col-8">
+								<ul class="nav nav-tabs" style="margin-left: 0px; margin-top: -34px;">
 									<li class="nav-item"><a class="nav-link active" id="customerTab" data-toggle="tab" href="#counselMain_customerTab">고객<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 									<li class="nav-item"><a class="nav-link" id="teacherTab" data-toggle="tab" href="#counselMain_teacherTab">선생님<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 								</ul>
+							</div>
+							<div class="col-4" style="margin-top: -44px;">
+								<div style="float:right;">
+									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="상담등록" id="counselInsert_btn">
+									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="입회등록" id="counselHistSearch_btn">
+									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="선생님소개" id="counselHistSearch_btn">
+									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="상담조회" id="counselHistSearch_btn">
+								</div>
 							</div>
 						</div>
 						<div class="tab-content">
@@ -160,7 +137,7 @@
 										</tr>
 										<tr>
 											<th>생년월일</th>
-											<td><input type="text" class="form-control form-control-sm w-75" style="float:left;">&nbsp;<span style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px;">양력</span></td>
+											<td><input type="text" class="form-control form-control-sm" style="float:left; width:72%;">&nbsp;<span style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px;">양력</span></td>
 											<th>고객구분</th>
 											<td><select class="form-control form-control-sm">
 												<option value="">잠재회원(CTI)</option>
@@ -291,34 +268,44 @@
 											<td><span></span></td>
 										</tr>
 									</table>
+									<div class="row">
+										<div class="col-12">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="counselInsert_btn">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="신규" id="counselInsert_btn">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" id="counselInsert_btn">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="정성회원" id="counselInsert_btn">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="저장" id="counselInsert_btn">
+										</div>
+									</div>
 								</div>
 								
 								
 								<!-- 상담메인 오른쪽 -->
 								
 								
-								<div id="counselMain_right" style="width:63%; float:right; overflow:scroll; height:640px; overflow-x:hidden; margin-top: -33px; transition-duration: 3s; transition-timing-function: ease-in; transition-delay: 3s;";>
+								<div id="counselMain_right" style="width:63%; float:right; margin-top: 0px; transition-duration: 3s; transition-timing-function: ease-in; transition-delay: 3s;";>
 									<div class="sticky-bot">
 										<button id="goToTop" type="button" class="btn btn-dark btn-sm">TOP ^</button>
 									</div>
-									<div class="row mt-2">
+									<div class="row">
 										<div class="col-12">
 											<ul class="nav nav-tabs">
 												<li class="nav-item"><a class="nav-link active" id="customerCounselHist" data-toggle="tab" href="#customerCounselHistTab">상담이력<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 												<li class="nav-item"><a class="nav-link" id="customerStudyHist" data-toggle="tab" href="#customerStudyHistTab">학습이력<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">회비<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="membershipDue" data-toggle="tab" href="#membershipDueTab">회비<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 												<li class="nav-item"><a class="nav-link" id="payCheck" data-toggle="tab" href="#payCheckTab">직접결제<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">변경이력<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">정보동의<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">자동퇴회<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">고객조사<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">SMS<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="changeHist" data-toggle="tab" href="#changeHistTab">변경이력<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="infoAgree" data-toggle="tab" href="#infoAgreeTab">정보동의<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="autoQuit" data-toggle="tab" href="#autoQuitTab">자동퇴회<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="custInv" data-toggle="tab" href="#custInvTab">고객조사<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="smsList" data-toggle="tab" href="#smsListTab">SMS<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 											</ul>
 										</div>
 									</div>
 									<div class="tab-content">
 										<!-- 상담메인(고객) 상담이력 탭 -->
-										<div role="tabpanel" class="tab-pane fade active show" id="customerCounselHistTab">
+										<div role="tabpanel" class="rightSideScroll tab-pane fade active show" id="customerCounselHistTab" style="overflow:scroll; height:640px; overflow-x:hidden; ">
 											<div class="row mt-2">
 												<div class="col">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 학습진행정보</span>
@@ -521,7 +508,7 @@
 											</table>
 										</div>
 										<!-- 학습이력 탭 -->
-										<div role="tabpanel" class="tab-pane fade show" id="customerStudyHistTab">
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="customerStudyHistTab">
 											<div class="row mt-2">
 												<div class="col">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 주간 학습현황</span>
@@ -541,13 +528,126 @@
 												</div>
 											</div>
 										</div>
+										
+										<!-- 회비 탭 -->
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="membershipDueTab">
+											<div class="sticky-top">
+												<div class="row mt-2">
+													<div class="col-sm-4">
+													</div>
+													<div class="col-sm-8">
+														<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="현금영수증" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" value="카드자동이체" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" value="카드결제" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" value="환불이력" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" value="이체정보" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+													</div>
+												</div>
+											</div>
+											<div class="mt-2" id="counselMain_membershipDueTab_dueList"></div>
+											
+											<div id="counselMainTeacher_left" class="" style="width:49%; float:left;">
+												<div class="row mt-2">
+													<div class="col">
+														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 과목별 입금내역</span>
+													</div>
+												</div>
+												<div id="counselMain_membershipDueTab_subChargeList"></div>
+												<div class="row mt-2">
+													<div class="col">
+														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 계좌정보</span>
+													</div>
+												</div>
+												
+												<table class="table table-sm table-bordered">
+													<colgroup>
+														<col span="1" style="width:15%;">
+														<col span="1" style="width:25%;">
+														<col span="1" style="width:10%;">
+														<col span="1" style="width:27%;">
+														<col span="1" style="width:23%;">
+													</colgroup>
+													<tr>
+														<th>계좌</th>
+														<td colspan="2"><span></span></td>
+														<th>이체일자</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>은행</th>
+														<td colspan="2"><span></span></td>
+														<th>이체신청일자</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>예금주</th>
+														<td colspan="2"><span></span></td>
+														<th>이체해지일자</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th colspan="2">현금영수증증빙번호</th>
+														<td colspan="3"><span></span></td>
+													</tr>
+												</table>
+											</div>
+								
+											<!-- 회비 오른쪽 -->
+											
+											<div id="counselMainTeacher_right" style="width:49%; float:right; overflow-x:hidden;";>
+												<div class="row mt-2">
+													<div class="col">
+														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 입금내역</span>
+													</div>
+												</div>
+												<div id="counselMain_membershipDueTab_chargeList"></div>
+												<div class="row mt-2">
+													<div class="col">
+														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 과목별 회비현황</span>
+													</div>
+												</div>
+												
+												<table class="table table-sm table-bordered">
+													<colgroup>
+														<col span="1" style="width:34%;">
+														<col span="1" style="width:24%;">
+														<col span="1" style="width:32%;">
+														<col span="1" style="width:10%;">
+													</colgroup>
+													<tr>
+														<th>최종회비완납년월</th>
+														<td colspan="1"><span></span></td>
+														<th>입회비납입여부</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>최종회비입금일</th>
+														<td colspan="1"><span></span></td>
+														<th>입회비면제여부</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>최종회비이월금</th>
+														<td colspan="1"><span></span></td>
+														<th>입회불출</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<td colspan="2"></td>
+														<th>퇴회불출</th>
+														<td colspan=""><span></span></td>
+													</tr>
+												</table>
+											</div>
+										</div>
+										
 										<!-- 직접결제 탭 -->
-										<div role="tabpanel" class="tab-pane fade show" id="payCheckTab">
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="payCheckTab">
 											<div class="row mt-2">
-												<div class="col-2">
+												<div class="col-3">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 회비관리 현황</span>
 												</div>
-												<div class="col-10">
+												<div class="col-9">
 													<input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;">
 												</div>
 											</div>
@@ -583,9 +683,154 @@
 											</div>
 											<div id="counselMain_directCharge_cancelCharge_grid"></div>
 										</div>
+										
+										<!-- 변경이력 탭 -->
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="changeHistTab">
+											<div class="row mt-2">
+												<div class="col-3">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 신상변경이력</span>
+												</div>
+												<div class="col-9">
+													<input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;">
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-8">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 현재 학습장소</span>
+												</div>
+												<div class="col-4">
+													<input type="button" class="btn btn-xs popup-btn customerBtn" value="신규" id="counselInsert_btn" style="margin: 5px 0;">
+													<input type="button" class="btn btn-xs popup-btn customerBtn" value="저장" id="counselInsert_btn" disabled>
+													<input type="button" class="btn btn-xs popup-btn customerBtn" value="이력" id="counselInsert_btn">
+												</div>
+											</div>
+											<table class="table table-sm table-bordered">
+												<colgroup>
+													<col span="1" style="width:12%;">
+													<col span="1" style="width:21%;">
+													<col span="1" style="width:12%;">
+													<col span="1" style="width:21%;">
+													<col span="1" style="width:12%;">
+													<col span="1" style="width:21%;">
+												</colgroup>
+												<tr>
+													<th rowspan="2">학습장소</th>
+													<td colspan="5"><input type="text" class="form-control form-control-sm w-25" style="float:left;"><input type="text" class="form-control form-control-sm w-75"></td>
+												</tr>
+												<tr>
+													<td colspan="5"><input type="text" class="form-control form-control-sm"></td>
+												</tr>
+												<tr>
+													<th>전화번호</th>
+													<td colspan="1"><span></span></td>
+													<th>FAX번호</th>
+													<td><span></span></td>
+													<th>휴대폰</th>
+													<td><span></span></td>
+												</tr>
+											</table>
+										</div>
+										
+										<!-- 정보동의 탭 -->
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="infoAgreeTab">
+											<div class="row mt-2">
+												<div class="col-2">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 개인정보 동의</span>
+												</div>
+												<div class="col-10">
+													<input type="button" class="btn-info btn-xs popup-btn" value="SMS재전송" id="counselInsert_btn" style="margin: 5px 0;">
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 개인정보 녹취 통화이력</span>
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 약관 버전</span>
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 약관 녹취 통화이력</span>
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+										</div>
+										
+										<!-- 자동퇴회 탭 -->
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="autoQuitTab">
+											<div class="row mt-2">
+												<div class="col-3">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 자동퇴회 세부</span>
+												</div>
+												<div class="col-9">
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 퇴회안내 발송이력</span>
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 알림톡 메세지</span>
+												</div>
+											</div>
+										</div>
+										
+										<!-- 고객조사 탭 -->
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="custInvTab">
+											<div class="row mt-2">
+												<div class="col-2">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 고객조사</span>
+												</div>
+												<div class="col-10">
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 통화이력</span>
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 설문조사</span>
+												</div>
+											</div>
+										</div>
+										
+										<!-- SMS 탭 -->
+										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="smsListTab">
+											<div class="row mt-2">
+												<div class="col-3">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> SMS/LMS 이력</span>
+												</div>
+												<div class="col-9">
+												</div>
+											</div>
+											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div class="row mt-2">
+												<div class="col-12">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 발신 내용</span>
+												</div>
+											</div>
+											<textarea class="form-control" style="height: 200px;"></textarea>
+										</div>
 									</div>
 								</div>
 							</div>
+							
+							<!-- 선생님 정보탭 -->
 							<div role="tabpanel" class="tab-pane fade show" id="counselMain_teacherTab">
 								<div id="counselMainTeacher_left" class="" style="width:35%; float:left;">
 									<table class="table table-sm table-bordered">
@@ -699,8 +944,8 @@
 								<!-- 상담메인 오른쪽 -->
 								
 								
-								<div id="counselMainTeacher_right" style="width:63%; float:right; overflow:scroll; height:640px; overflow-x:hidden; margin-top: -33px;";>
-									<div class="row mt-2">
+								<div id="counselMainTeacher_right" style="width:63%; float:right; overflow:scroll; height:640px; overflow-x:hidden;";>
+									<div class="row">
 										<div class="col-12">
 											<ul class="nav nav-tabs">
 												<li class="nav-item"><a class="nav-link active" id="ipcc" data-toggle="tab" href="#ipccTab">상담이력<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
@@ -836,6 +1081,195 @@
 					</div>
 				</div>
 			</div>
+			<!-- 고객정보 탭 끝 -->
+			<!-- 고객찾기 탭 -->
+			<div role="tabpanel" class="tab-pane fade show" id="customerSearchTab">
+				<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
+					<div class="mainDivision">
+						<div class="row mt-2">
+							<div class="col-12">
+								<ul class="nav nav-tabs" style="margin-left: 0px; margin-top: -34px;">
+									<li class="nav-item"><a class="nav-link active" id="customerTab" data-toggle="tab" href="#counselMain_customerSearchTab">고객<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+									<li class="nav-item"><a class="nav-link" id="teacherTab" data-toggle="tab" href="#counselMain_teacherSearchTab">선생님<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane fade active show" id="counselMain_customerSearchTab">
+							
+								<div id="custSearchDiv" style="height:90px;">
+									<table class="table table-xs table-bordered mt-2" style="width:90%; float:left;">
+										<colgroup>
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+										</colgroup>
+										<tr>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">고객명
+												</label>
+											</th>
+											<td>
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">전화번호
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">E-MAIL 주소
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">학년
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+										</tr>
+										<tr>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">회원번호
+												</label>
+											</th>
+											<td>
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">생년월일
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">주소
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">과목
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+										</tr>
+										<tr>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">지점
+												</label>
+											</th>
+											<td>
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">본부
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+										</tr>
+									</table>
+									<input type="button" class="btn btn-sm popup-btn customerBtn" value="조회" id="counselInsert_btn" style="float:right; margin:1.5rem;">
+								</div>
+								<div class="row mt-2">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 고객 목록</span>
+									</div>
+								</div>
+								<div id="customerSearchList"></div>
+							</div>
+							<div role="tabpanel" class="tab-pane fade show" id="counselMain_teacherSearchTab">
+							
+								<div id="teacherSearchDiv" style="height:75px;">
+									<table class="table table-xs table-bordered mt-2" style="width:90%; float:left;">
+										<colgroup>
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+											<col span="1" style="width: 10%;">
+											<col span="1" style="width: 15%;">
+										</colgroup>
+										<tr>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">선생님명
+												</label>
+											</th>
+											<td>
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">사원번호
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">재직구분
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+										</tr>
+										<tr>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">센터
+												</label>
+											</th>
+											<td>
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">사업국
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+											<th class="tdCheck thCheck" colspan="">
+												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">본부
+												</label>
+											</th>
+											<td colspan="">
+												<select class="form-control form-control-sm"></select>
+											</td>
+										</tr>
+									</table>
+									<input type="button" class="btn btn-sm popup-btn customerBtn" value="조회" id="counselInsert_btn" style="float:right; margin:1.5rem;">
+								</div>
+								<div class="row mt-1">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 선생님 정보</span>
+									</div>
+								</div>
+								<div id="customerSearchList"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 고객 찾기 탭 끝 -->
 		</div>
 	</div>
 	
@@ -851,6 +1285,7 @@
   <script src="../js/grid/counselMain_counselHist_grid.js"></script>				<!-- 상담이력 grid -->
   <script src="../js/grid/counselMainTeacher_counselHist_grid.js"></script>			<!-- 선생 상담이력 grid -->
   <script src="../js/grid/counselMain_studyTab_grid.js"></script>					<!-- 학습이력 grid -->
+  <script src="../js/grid/counselMain_membershipDue_grid.js"></script>				<!-- 회비 grid -->
   <script src="../js/grid/counselMain_directCharge_grid.js"></script>				<!-- 직접결제 grid -->
   
 </body>

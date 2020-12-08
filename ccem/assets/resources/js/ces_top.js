@@ -17,7 +17,7 @@ $(function(){
 	
 	//// EVENT ////
 	$("#goToTop").click(function(){
-		$('#counselMain_right').scrollTop(0);
+		$('.rightSideScroll').scrollTop(0);
 	});
 	
 	$(".popup-btn").click(function() {
