@@ -84,10 +84,10 @@ const GridSettings = {
         header: { 
             height: 23,
         },
-        minRowHeight: 30,
-        rowHeight: 30,
-        minBodyHeight: 48,
-        bodyHeight: 500,
+        minRowHeight: 28,
+        rowHeight: 28,
+        minBodyHeight: 50,
+        bodyHeight: 100,
         width: "auto",
         heightResizable: false,
         usageStatistics: false,
@@ -175,7 +175,6 @@ Grid.applyTheme(GridSettings.theme.presetName, GridSettings.theme.extOptions);
  */
 Grid.setLanguage(GridSettings.language.localeCode, GridSettings.language.data);
 
-
 const FormatUtil = {
     /**
      * 전화번호 포맷 : XXX-XXXX-XXXX | 02-XXXX-XXXX
@@ -235,6 +234,104 @@ const FormatUtil = {
         }
         return result;
     },
+}
+
+const calendarUtil = {
+        imasks: [],
+        defaultOption: {
+            autoUpdateInput: false,
+            autoApply: true,
+            showDropdowns: true,
+            minYear: 1900,
+            maxYear: 2100,
+            singleDatePicker: true,
+            opens: "right", // left, center, right
+            drops: "down",  // down, up
+            locale: {
+                format: "YYYY-MM-DD",
+                daysOfWeek: ["일", "월", "화", "수", "목", "금", "토"],
+                monthNames: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+            }
+        },
+        /**
+         * @param {string} id element id
+         * @param {object} newOption option
+         */
+        init(id, newOption) {
+            let option = { ...calendarUtil.defaultOption, ...newOption };
+            $("#" + id).daterangepicker(option);
+            let imask = calendarUtil.imask(id);
+
+            $("#" + id).on("apply.daterangepicker", (ev, picker) => {
+                $("#" + id).val(picker.startDate.format("YYYY-MM-DD"));
+                imask.updateValue();
+            });
+
+            $("#" + id).on("cancel.daterangepicker", (ev, picker) => {
+                $("#" + id).val('');
+                imask.updateValue();
+            });
+        },
+        /**
+         * @param {string} id element id
+         */
+        imask(id) {
+            let imask = IMask(document.getElementById(id), {
+                mask: Date,  // enable date mask
+
+                // other options are optional
+                pattern: 'Y-`m-`d',  // Pattern mask with defined blocks, default is 'd{.}`m{.}`Y'
+                // you can provide your own blocks definitions, default blocks for date mask are:
+                blocks: {
+                    d: {
+                        mask: IMask.MaskedRange,
+                        from: 1,
+                        to: 31,
+                        maxLength: 2,
+                    },
+                    m: {
+                        mask: IMask.MaskedRange,
+                        from: 1,
+                        to: 12,
+                        maxLength: 2,
+                    },
+                    Y: {
+                        mask: IMask.MaskedRange,
+                        from: 1900,
+                        to: 2100,
+                    }
+                },
+                // define date -> str convertion
+                format(date) {
+                    let day = date.getDate();
+                    let month = date.getMonth() + 1;
+                    let year = date.getFullYear();
+
+                    if (day < 10) day = "0" + day;
+                    if (month < 10) month = "0" + month;
+
+                    return [year, month, day].join('-');
+                },
+                // define str -> date convertion
+                parse(str) {
+                    let yearMonthDay = str.split('-');
+                    return new Date(yearMonthDay[0], yearMonthDay[1] - 1, yearMonthDay[2]);
+                },
+
+                // optional interval options
+                min: new Date(100, 01, 01),  // defaults to `1900-01-01`
+                max: new Date(2100, 12, 31),  // defaults to `9999-01-01`
+
+                autofix: true,  // defaults to `false`
+
+                // also Pattern options can be set(____-__-__)
+                lazy: false,
+
+                // and other common options
+                overwrite: true  // defaults to `false`
+            });
+            return imask;
+        },
 }
 
 /**
