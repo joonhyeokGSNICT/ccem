@@ -302,6 +302,7 @@ const calendarUtil = {
         });
     },
     /**
+     * date mask : YYYY-MM-DD
      * @param {string} id element id
      */
     dateMask(id) {
@@ -362,6 +363,60 @@ const calendarUtil = {
         return imask;
     },
     /**
+     * month mask : YYYY-MM
+     * @param {string} id element id
+     */
+    monthMask(id) {
+        let imask = IMask(document.getElementById(id), {
+            mask: Date,  // enable date mask
+
+            // other options are optional
+            pattern: 'Y-`m',  // Pattern mask with defined blocks, default is 'd{.}`m{.}`Y'
+            // you can provide your own blocks definitions, default blocks for date mask are:
+            blocks: {
+                m: {
+                    mask: IMask.MaskedRange,
+                    from: 1,
+                    to: 12,
+                    maxLength: 2,
+                },
+                Y: {
+                    mask: IMask.MaskedRange,
+                    from: 1900,
+                    to: 2100,
+                }
+            },
+            // define date -> str convertion
+            format(date) {
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+
+                if (month < 10) month = "0" + month;
+
+                return [year, month].join('-');
+            },
+            // define str -> date convertion
+            parse(str) {
+                let yearMonthDay = str.split('-');
+                return new Date(yearMonthDay[0], yearMonthDay[1] - 1, 1);
+            },
+
+            // optional interval options
+            min: new Date(100, 01, 01),  // defaults to `1900-01-01`
+            max: new Date(2100, 12, 31),  // defaults to `9999-01-01`
+
+            autofix: true,  // defaults to `false`
+
+            // also Pattern options can be set(____-__-__)
+            lazy: false,
+
+            // and other common options
+            overwrite: true  // defaults to `false`
+        });
+        return imask;
+    },
+    /**
+     * time mask : hh:mm:ss
      * @param {string} id element id
      * @param {string} format 
      * @param {object} newOption 
