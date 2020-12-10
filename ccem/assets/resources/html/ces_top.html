@@ -37,7 +37,16 @@
 				  <ul class="nav nav-tabs">
 					<li class="nav-item"><a style="border:0px; background-color:#00000000 !important;" class="nav-link notBorder active" id="customerInfo" data-toggle="tab" href="#customerInfoTab">고객정보<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 					<li class="nav-item"><a style="border:0px; background-color:#00000000 !important;" class="nav-link" id="customerSearch" data-toggle="tab" href="#customerSearchTab">고객찾기<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-					<li class="nav-item"><a style="border:0px; background-color:#00000000 !important;" class="nav-link" id="sendEmail" data-toggle="tab" href="#sendEmailTab">조회<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+					<li class="nav-item dropdown">
+				      <a class="nav-link dropdown-toggle" style="border:0px; background-color:#00000000 !important;" href="#" id="navbardrop" data-toggle="dropdown">
+				        조회
+				      </a>
+				      <div class="dropdown-menu">
+				        <a class="dropdown-item" href="#">Link 1</a>
+				        <a class="dropdown-item" href="#">Link 2</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO044.html','testPop','width=900, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">사업국/센터/구성원찾기</a>
+				      </div>
+				    </li>
 				</ul>
 				</nav>
 			</div>
@@ -270,12 +279,12 @@
 									</table>
 									<div class="row">
 										<div class="col-12">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="counselInsert_btn">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="신규" id="counselInsert_btn">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" id="counselInsert_btn">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="정성회원" id="counselInsert_btn">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="저장" id="counselInsert_btn">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="신규" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="정성회원" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="저장" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
 										</div>
 									</div>
 								</div>
@@ -1193,7 +1202,7 @@
 										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 고객 목록</span>
 									</div>
 								</div>
-								<div id="customerSearchList"></div>
+								<div id="customerSearchList_grid"></div>
 							</div>
 							<div role="tabpanel" class="tab-pane fade show" id="counselMain_teacherSearchTab">
 							
@@ -1263,7 +1272,7 @@
 										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 선생님 정보</span>
 									</div>
 								</div>
-								<div id="customerSearchList"></div>
+								<div id="teacherSearchList_grid"></div>
 							</div>
 						</div>
 					</div>
@@ -1281,12 +1290,14 @@
   <script src="../js/client.js"></script>
   <script src="../js/config.js"></script>
   <script src="../js/ces_common.js"></script>
+  <script src="../js/ces_util.js"></script>
   <script src="../js/ces_top.js"></script>
   <script src="../js/grid/counselMain_counselHist_grid.js"></script>				<!-- 상담이력 grid -->
   <script src="../js/grid/counselMainTeacher_counselHist_grid.js"></script>			<!-- 선생 상담이력 grid -->
   <script src="../js/grid/counselMain_studyTab_grid.js"></script>					<!-- 학습이력 grid -->
   <script src="../js/grid/counselMain_membershipDue_grid.js"></script>				<!-- 회비 grid -->
   <script src="../js/grid/counselMain_directCharge_grid.js"></script>				<!-- 직접결제 grid -->
+  <script src="../js/grid/custSearchList_grid.js"></script>							<!-- 고객찾기 grid -->
   
 </body>
 </html>
