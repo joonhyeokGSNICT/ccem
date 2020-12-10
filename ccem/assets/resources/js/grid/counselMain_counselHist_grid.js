@@ -1,3 +1,4 @@
+
 $(function(){
 	// 상담메인 > 학습진행정보 grid
 	counselMain_studyProgressList_grid = new Grid({
@@ -30,6 +31,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '방문요일',
@@ -38,6 +40,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '최종변경일',
@@ -46,6 +49,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '선생님',
@@ -54,6 +58,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '선생님구분',
@@ -62,6 +67,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '사업국',
@@ -70,6 +76,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '센터',
@@ -78,6 +85,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '대분류',
@@ -86,6 +94,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '중분류',
@@ -94,6 +103,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '소분류',
@@ -102,6 +112,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '세분류',
@@ -110,6 +121,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '연락처',
@@ -118,6 +130,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '접수채널',
@@ -126,6 +139,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '발신번호',
@@ -134,6 +148,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             /*{
                 header: '상세이력',
@@ -150,6 +165,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             },
             {
                 header: '처리일시',
@@ -158,6 +174,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                renderer: { type: CustomRenderer },
             }
         ],
     });

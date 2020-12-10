@@ -102,6 +102,30 @@ const GridSettings = {
         },
     },
 }
+/**
+ * customRenderer
+ * @param {object}
+ */
+class CustomRenderer {
+  constructor(props) {
+    const el = document.createElement('div');
+    el.style.fontSize = '11px';
+    el.style.padding = '0';
+
+    this.el = el;
+    console.log(el);
+    this.render(props);
+  }
+
+  getElement() {
+    return this.el;
+  }
+
+  render(props) {
+    this.el.innerHTML = String(props.value);
+  }
+}
+
 
 /**
  * Customizing TOAST UI Grid

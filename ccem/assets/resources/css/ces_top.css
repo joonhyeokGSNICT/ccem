@@ -36,6 +36,10 @@ body *{font-size:13px!important;}
     border-left-width: 1px;
 }
 
+.tui-grid-cell-has-input .tui-grid-cell-content {
+	padding: 0px;
+}
+
 /* navs */
 
 .nav-tabs .active{
@@ -72,44 +76,7 @@ body *{font-size:13px!important;}
 .subjectArrow {
 	color: #d20000;
 }
- 
-/* navs */
-/* 
-.nav-tabs .active{
-    background-color: #cc1d1d !important;
-    color: rgb(255, 255, 255)!important;
-    font-size: 13px!important;
-    font-weight: bold;
-}
-.nav-tabs .nav-link:not(.active) {
-    background-color: #ececec!important;
-    color: rgba(0, 0, 0, 0.8)!important;
-    font-size: 13px!important;
-    font-weight: bold;
-}
-.nav-tabs .nav-link {
-	text-align:center;
-    border-top-left-radius: 0.4rem;
-    border-top-right-radius: 0.4rem;
-    padding: 3px 15px !important;
-}
-.nav-tabs .nav-link:not(.active):hover {
-    background-color: #cc1d1d !important;
-    color: rgb(255, 255, 255)!important;
-    font-size: 13px!important;
-    font-weight: bold;
-}
-.table th {
-	text-align: left;
-	vertical-align: middle;
-	background: #f1f5ff;
-	color: #333333;
-	font-weigth: 200;
-}
-.subjectArrow {
-	color: #0006d2;
-}
- */
+
 .nav-tabs {
     border-bottom: 0px;
 }
@@ -125,9 +92,9 @@ body *{font-size:13px!important;}
 	margin-bottom:0;
 }
 
-.tui-grid-pagination {
+/* .tui-grid-pagination {
 	margin-top: 5px !important;
-}
+} */
 
 .topbarNav {
 	color: white !important; font-weight:bold !important;
