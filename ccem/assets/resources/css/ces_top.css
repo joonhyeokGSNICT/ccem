@@ -191,3 +191,18 @@ select {
   line-height: .5;
   border-radius: .2rem;
 }
+
+.specialCharacter {
+	width:2.26rem;
+}
+.noneRadius > button{
+	border-radius: 0px !important;
+}
+.firstRadius > button{
+	border-bottom-right-radius: 0px !important;
+	border-bottom-left-radius: 0px !important;
+}
+.lastRadius > button{
+	border-top-right-radius: 0px !important;
+	border-top-left-radius: 0px !important;
+}

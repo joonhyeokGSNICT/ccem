@@ -2,7 +2,7 @@ $(function(){
 	// 상담메인선생님 > 상담이력 grid
 		counselMainTeacher_counselHist_grid = new Grid({
 			el: document.getElementById('counselMainTeacher_counselHist_grid'),
-			bodyHeight: 200,
+			bodyHeight: 400,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
@@ -151,5 +151,70 @@ $(function(){
 	    });
 		
 		// 선생님 상담이력 끝
-	
+		
+		// 선생님 수업목록 LIST
+		counselMainTeacher_asignClassGrid = new Grid({
+			el: document.getElementById('counselMainTeacher_asignClassGrid'),
+			bodyHeight: 300,
+			scrollX: false,
+			rowHeaders: [{
+	            type: 'rowNum',
+	            header: "NO",
+	        }],
+			columns: [
+				{
+					header: '분류코드',
+					name: 'name1',
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+					width: 80
+	            },
+	            {
+					header: '제목',
+					name: 'name2',
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+	            }
+			],
+		});
+		counselMainTeacher_asignClassGrid.on('click', (ev) => {
+			counselMainTeacher_asignClassGrid.addSelection(ev);
+			counselMainTeacher_asignClassGrid.clickSort(ev);
+			counselMainTeacher_asignClassGrid.clickCheck(ev);
+	    });
+		
+		// 교실별 회원정보 LIST
+		counselMainTeacher_classMemberGrid = new Grid({
+			el: document.getElementById('counselMainTeacher_classMemberGrid'),
+			bodyHeight: 300,
+			scrollX: false,
+			rowHeaders: [{
+	            type: 'rowNum',
+	            header: "NO",
+	        }],
+			columns: [
+				{
+					header: '분류코드',
+					name: 'name1',
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+					width: 80
+	            },
+	            {
+					header: '제목',
+					name: 'name2',
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+	            }
+			],
+		});
+		counselMainTeacher_classMemberGrid.on('click', (ev) => {
+			counselMainTeacher_classMemberGrid.addSelection(ev);
+			counselMainTeacher_classMemberGrid.clickSort(ev);
+			counselMainTeacher_classMemberGrid.clickCheck(ev);
+	    });
 });

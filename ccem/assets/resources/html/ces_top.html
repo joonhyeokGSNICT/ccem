@@ -45,6 +45,8 @@
 				        <a class="dropdown-item" href="#">Link 1</a>
 				        <a class="dropdown-item" href="#">Link 2</a>
 				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO044.html','testPop','width=900, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">사업국/센터/구성원찾기</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO042.html','testPop','width=900, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">상담등록/분류</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO046.html','testPop','width=1000, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">SMS 발신</a>
 				      </div>
 				    </li>
 				</ul>
@@ -934,8 +936,8 @@
 											<td><input type="text" class="form-control form-control-sm"></td>
 										</tr>
 										<tr>
-											<th>교재수급</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<th></th>
+											<td></td>
 											<th>주기</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 										</tr>
@@ -957,133 +959,105 @@
 									<div class="row">
 										<div class="col-12">
 											<ul class="nav nav-tabs">
-												<li class="nav-item"><a class="nav-link active" id="ipcc" data-toggle="tab" href="#ipccTab">상담이력<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-												<li class="nav-item"><a class="nav-link" id="erms" data-toggle="tab" href="#ermsTab">교실정보<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link active" id="teacher_counselHist" data-toggle="tab" href="#teacher_counselHistTab">상담이력<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+												<li class="nav-item"><a class="nav-link" id="teacher_class" data-toggle="tab" href="#teacher_classTab">교실정보<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 											</ul>
 										</div>
 									</div>
-									<div class="row mt-2">
-										<div class="col">
-											<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 상담이력</span>
+									<div class="tab-content">
+										<div role="tabpanel" class="tab-pane fade active show" id="teacher_counselHistTab">
+											<div class="row mt-2">
+												<div class="col">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 상담이력</span>
+												</div>
+											</div>
+											<div id="counselMainTeacher_counselHist_grid"></div>
+											<div class="mainDivision">
+												<div id="counselMain_counselList_left" class="" style="width:50%; float:left;">
+												<table class="table table-sm table-bordered mt-2" style="">
+													<colgroup>
+														<col span="1" style="width:22%;">
+														<col span="1" style="width:28%;">
+														<col span="1" style="width:20%;">
+														<col span="1" style="width:30%;">
+													</colgroup>
+													<tr>
+														<th>처리완료일</th>
+														<td><span></span></td>
+														<th>연계일자</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>상담채널</th>
+														<td><span></span></td>
+														<th>연계방법</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>상담결과</th>
+														<td><span></span></td>
+														<th>접수자</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>본부</th>
+														<td colspan="3"><span></span></td>
+													</tr>
+													<tr>
+														<th>사업국</th>
+														<td><span></span></td>
+														<th>사업국장</th>
+														<td><span></span></td>
+													</tr>
+													<tr>
+														<th>센터</th>
+														<td><span></span></td>
+														<th>센터장</th>
+														<td><span></span></td>
+													</tr>
+												</table>
+												</div>
+												<div id="counselMain_counselList_right" style="width:50%; float:right;">
+													<div id="counselMain_studyList_grid" class="mt-2"></div>
+													<table class="table table-sm table-bordered mt-0">
+														<colgroup>
+															<col span="1" style="width:20%;">
+															<col span="1" style="width:80%;">
+														</colgroup>
+														<tr>
+															<th>상담제목</th>
+															<td><span></span></td>
+														</tr>
+														<tr>
+															<th style="height:100px;">상담내용</th>
+															<td><span></span></td>
+														</tr>
+														<tr>
+															<th style="height:100px;">처리내용</th>
+															<td><span></span></td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										<!-- 상담이력 탭 종료 (선생님) -->
+										<!-- 교실정보 탭 시작 (선생님) -->
+										<div role="tabpanel" class="tab-pane fade show" id="teacher_classTab">
+											<div class="row mt-2">
+												<div class="col">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 선생님 수업목록</span>
+												</div>
+											</div>
+											<div id="counselMainTeacher_asignClassGrid"></div>
+											<div class="row mt-2">
+												<div class="col">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 교실별 회원정보</span>
+												</div>
+											</div>
+											<div id="counselMainTeacher_classMemberGrid"></div>
+											<!-- 교실정보 탭 종료 (선생님) -->
 										</div>
 									</div>
-									<div id="counselMainTeacher_counselHist_grid"></div>
-									<div class="mainDivision">
-										<div id="counselMain_counselList_left" class="" style="width:50%; float:left;">
-										<table class="table table-sm table-bordered mt-2" style="">
-											<colgroup>
-												<col span="1" style="width:22%;">
-												<col span="1" style="width:28%;">
-												<col span="1" style="width:20%;">
-												<col span="1" style="width:30%;">
-											</colgroup>
-											<tr>
-												<th>처리완료일</th>
-												<td><span></span></td>
-												<th>연계일자</th>
-												<td><span></span></td>
-											</tr>
-											<tr>
-												<th>상담채널</th>
-												<td><span></span></td>
-												<th>연계방법</th>
-												<td><span></span></td>
-											</tr>
-											<tr>
-												<th>상담결과</th>
-												<td><span></span></td>
-												<th>접수자</th>
-												<td><span></span></td>
-											</tr>
-											<tr>
-												<th>본부</th>
-												<td colspan="3"><span></span></td>
-											</tr>
-											<tr>
-												<th>사업국</th>
-												<td><span></span></td>
-												<th>사업국장</th>
-												<td><span></span></td>
-											</tr>
-											<tr>
-												<th>센터</th>
-												<td><span></span></td>
-												<th>센터장</th>
-												<td><span></span></td>
-											</tr>
-										</table>
-										</div>
-										<div id="counselMain_counselList_right" style="width:50%; float:right;">
-											<div id="counselMain_studyList_grid" class="mt-2"></div>
-											<table class="table table-sm table-bordered mt-0">
-												<colgroup>
-													<col span="1" style="width:20%;">
-													<col span="1" style="width:80%;">
-												</colgroup>
-												<tr>
-													<th>상담제목</th>
-													<td><span></span></td>
-												</tr>
-												<tr>
-													<th style="height:67px;">상담내용</th>
-													<td><span></span></td>
-												</tr>
-												<tr>
-													<th style="height:68px;">처리내용</th>
-													<td><span></span></td>
-												</tr>
-											</table>
-										</div>
-									</div>
-									<div>
-										<table class="table table-sm table-bordered">
-											<colgroup>
-												<col span="1" style="width:11%;">
-												<col span="1" style="width:12%;">
-												<col span="1" style="width:8%;">
-												<col span="1" style="width:13%;">
-												<col span="1" style="width:10%;">
-												<col span="1" style="width:15%;">
-												<col span="1" style="width:10%;">
-												<col span="1" style="width:15%;">
-											</colgroup>
-										</table>
-									</div>
-									<div class="row mt-2">
-										<div class="col">
-											<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 해피콜</span>
-										</div>
-									</div>
-									<table class="table table-sm table-bordered">
-										<colgroup>
-											<col span="1" style="width:11%;">
-											<col span="1" style="width:14%;">
-											<col span="1" style="width:11%;">
-											<col span="1" style="width:14%;">
-											<col span="1" style="width:10%;">
-											<col span="1" style="width:40%;">
-										</colgroup>
-										<tr>
-											<th>피드백일시</th>
-											<td colspan="3"><span></span></td>
-											<th>제목</th>
-											<td><span></span></td>
-										</tr>
-										<tr>
-											<th>해피콜일시</th>
-											<td colspan="3"><span></span></td>
-											<th rowspan="5">내용</th>
-											<td rowspan="5"><span></span></td>
-										</tr>
-										<tr>
-											<th>해피콜경로</th>
-											<td colspan="3"><span></span></td>
-										</tr>
-										<tr>
-											<th>고객만족도</th>
-											<td colspan="3"><span></span></td>
-										</tr>
-									</table>
 								</div>
 							</div>
 						</div>
