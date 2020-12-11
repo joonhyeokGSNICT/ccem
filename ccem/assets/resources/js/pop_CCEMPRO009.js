@@ -75,5 +75,4 @@ $(function(){
 		grid.addSelection(ev);
 		grid.clickSort(ev);
     });
-    grid.resetDummyData(100)
 });

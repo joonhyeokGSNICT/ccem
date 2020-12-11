@@ -3,6 +3,11 @@ var grid2;
 var grid3;
 
 $(function(){
+
+	// input mask
+	$(".imask-month").each((i, el) => calendarUtil.monthMask(el.id));
+	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 300,
@@ -96,7 +101,8 @@ $(function(){
     });
     grid3 = new Grid({
 		el: document.getElementById('grid3'),
-		bodyHeight: 100,
+		bodyHeight: 150,
+		scrollX: false,
 		columns: [
 			{
 				header: '신청일',

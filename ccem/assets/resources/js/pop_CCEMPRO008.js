@@ -2,6 +2,10 @@ var grid1;
 var grid2;
 
 $(function(){
+
+	// input mask
+	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 300,

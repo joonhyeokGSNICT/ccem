@@ -1,11 +1,14 @@
 var recordGrid;
 
 $(function(){
+
+	// input mask
+	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+
 	// 녹취LIST
 	recordGrid = new Grid({
 		el: document.getElementById('recordGrid'),
 		bodyHeight: 322,
-		scrollX: false,
 		rowHeaders: [
 			{
 				type: 'rowNum',
@@ -16,6 +19,7 @@ $(function(){
 			{
 				header: '녹취ID',
 				name: 'name1',
+				width: 150,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -23,6 +27,7 @@ $(function(){
             {
 				header: '녹취일자',
 				name: 'name2',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -30,6 +35,7 @@ $(function(){
             {
 				header: '시작시간',
 				name: 'name3',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -37,6 +43,7 @@ $(function(){
             {
 				header: '종료시간',
 				name: 'name4',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -44,6 +51,7 @@ $(function(){
             {
 				header: '전화번호',
 				name: 'name5',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -51,6 +59,7 @@ $(function(){
             {
 				header: '상담일자',
 				name: 'name6',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -58,6 +67,7 @@ $(function(){
             {
 				header: '번호',
 				name: 'name7',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -65,6 +75,7 @@ $(function(){
             {
 				header: '고객번호',
 				name: 'name8',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -72,6 +83,7 @@ $(function(){
             {
 				header: '',
 				name: 'name9',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -79,6 +91,7 @@ $(function(){
             {
 				header: '',
 				name: 'name10',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,

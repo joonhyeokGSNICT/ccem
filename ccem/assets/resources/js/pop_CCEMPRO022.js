@@ -1,47 +1,57 @@
-var counselInsert_subject_grid;
-var counselInsert_subjectSelected_grid;
+var subjectGrid;
+var counselSubjectGrid;
+var currentSubjectGrid;
 
 $(function(){
+
+	// input mask
+	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
+
 	// 상담등록 > 상담등록 > 과목 grid
-	counselInsert_subject_grid = new Grid({
-		el: document.getElementById('counselInsert_subject_grid'),
-		bodyHeight: 322,
+	subjectGrid = new Grid({
+		el: document.getElementById('subjectGrid'),
+		bodyHeight: 283,
 		scrollX: false,
 		rowHeaders: [
 			{
 				type: 'rowNum',
 				header: "NO",
+				minWidth: 30,
 			},
 			{
 				type: 'checkbox',
+				header: " ",
+				minWidth: 30,
 			},
 		],
 		columns: [
 			{
 				header: '과목',
 				name: 'name1',
-				align: "center",
+				// align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
 		],
 	});
-	counselInsert_subject_grid.on('click', (ev) => {
-		counselInsert_subject_grid.addSelection(ev);
-		counselInsert_subject_grid.clickSort(ev);
-		counselInsert_subject_grid.clickCheck(ev);
+	subjectGrid.on('click', (ev) => {
+		subjectGrid.addSelection(ev);
+		subjectGrid.clickSort(ev);
+		subjectGrid.clickCheck(ev);
 	});
 	// 과목 끝
 	
 	// 상담등록 > 상담등록 > 선택한과목 grid
-	counselInsert_subjectSelected_grid = new Grid({
-		el: document.getElementById('counselInsert_subjectSelected_grid'),
+	counselSubjectGrid = new Grid({
+		el: document.getElementById('counselSubjectGrid'),
 		bodyHeight: 120,
 		scrollX: false,
 		rowHeaders: [
 			{
 				type: 'rowNum',
 				header: "NO",
+				minWidth: 30,
 			}
 		],
 		columns: [
@@ -54,15 +64,15 @@ $(function(){
 			}
 		],
 	});
-	counselInsert_subjectSelected_grid.on('click', (ev) => {
-		counselInsert_subjectSelected_grid.addSelection(ev);
-		counselInsert_subjectSelected_grid.clickSort(ev);
+	counselSubjectGrid.on('click', (ev) => {
+		counselSubjectGrid.addSelection(ev);
+		counselSubjectGrid.clickSort(ev);
 	});
 	// 선택한과목 끝
 		
 	// 상담등록 > 상담등록 > 학습중인과목 grid
-	counselInsert_currentSubject_grid = new Grid({
-		el: document.getElementById('counselInsert_currentSubject_grid'),
+	currentSubjectGrid = new Grid({
+		el: document.getElementById('currentSubjectGrid'),
 		bodyHeight: 80,
 		scrollX: false,
 		rowHeaders: [
@@ -95,9 +105,9 @@ $(function(){
 			}
 		],
 	});
-	counselInsert_currentSubject_grid.on('click', (ev) => {
-		counselInsert_currentSubject_grid.addSelection(ev);
-		counselInsert_currentSubject_grid.clickSort(ev);
+	currentSubjectGrid.on('click', (ev) => {
+		currentSubjectGrid.addSelection(ev);
+		currentSubjectGrid.clickSort(ev);
 	});
 	// 학습중인과목 끝
 });

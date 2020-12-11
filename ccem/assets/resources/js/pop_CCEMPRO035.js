@@ -1,11 +1,18 @@
-var counselHist_historyList_grid;
-var counselHist_counselProduct_grid;
+var counselHistoryGrid;
+var counselProductGrid;
 
 $(function(){
+
+	// input mask
+	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+
 	// 상담조회 > 상담조회 리스트 grid
-	counselHist_historyList_grid = new Grid({
-		el: document.getElementById('counselHist_historyList_grid'),
-		bodyHeight: 150,
+	counselHistoryGrid = new Grid({
+		el: document.getElementById('counselHistoryGrid'),
+		bodyHeight: 200,
+		pageOptions: {
+		  perPage: 7,
+		},
 		rowHeaders: [
 			{
 				type: 'rowNum',
@@ -107,16 +114,16 @@ $(function(){
 		],
 	});
 
-	counselHist_historyList_grid.on("click", (ev) => {
-		counselHist_historyList_grid.addSelection(ev);
-		counselHist_historyList_grid.clickSort(ev);
+	counselHistoryGrid.on("click", (ev) => {
+		counselHistoryGrid.addSelection(ev);
+		counselHistoryGrid.clickSort(ev);
 	});
 	// 상담조회 끝
 
 	// 상담조회 > 상담제품 리스트 grid
-	counselHist_counselProduct_grid = new Grid({
-		el: document.getElementById('counselHist_counselProduct_grid'),
-		bodyHeight: 88,
+	counselProductGrid = new Grid({
+		el: document.getElementById('counselProductGrid'),
+		bodyHeight: 97,
 		scrollX: false,
 		rowHeaders: [
 			{
@@ -134,9 +141,9 @@ $(function(){
 			},
 		],
 	});
-	counselHist_counselProduct_grid.on("click", (ev) => {
-		counselHist_counselProduct_grid.addSelection(ev);
-		counselHist_counselProduct_grid.clickSort(ev);
+	counselProductGrid.on("click", (ev) => {
+		counselProductGrid.addSelection(ev);
+		counselProductGrid.clickSort(ev);
 	});
 	
 });
