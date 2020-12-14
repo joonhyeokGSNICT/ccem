@@ -76,7 +76,14 @@ const GridSettings = {
 	            },
 	            focused: {
 	                border: "#bbbbbb",
-	            },
+                },
+                summary: {
+                    background: '#f1f5ff',
+                    border: '#bbbbbb',
+                    text: 'black',
+                    showVerticalBorder: true,
+                    showHorizontalBorder: true,
+                },
 	        },
 	    },
     },
