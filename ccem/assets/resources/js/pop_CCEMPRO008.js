@@ -14,6 +14,7 @@ $(function(){
 			{
 				header: '대상년월',
 				name: 'name1',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -21,6 +22,7 @@ $(function(){
             {
 				header: '과목',
 				name: 'name2',
+				width: 200,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -28,6 +30,7 @@ $(function(){
             {
 				header: '입금일',
 				name: 'name3',
+				width: 120,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -35,6 +38,7 @@ $(function(){
             {
 				header: '금액',
 				name: 'name4',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -42,6 +46,7 @@ $(function(){
             {
 				header: '교사명',
 				name: 'name5',
+				width: 130,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -49,6 +54,7 @@ $(function(){
             {
 				header: '교사사번',
 				name: 'name6',
+				minWidth: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -67,6 +73,7 @@ $(function(){
 			{
 				header: '승인구분',
 				name: 'name1',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -74,6 +81,7 @@ $(function(){
             {
 				header: '승인일자',
 				name: 'name2',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -81,6 +89,7 @@ $(function(){
             {
 				header: '승인번호',
 				name: 'name3',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -88,6 +97,7 @@ $(function(){
             {
 				header: '카드번호',
 				name: 'name4',
+				width: 200,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -95,6 +105,7 @@ $(function(){
             {
 				header: '카드명',
 				name: 'name5',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -102,6 +113,7 @@ $(function(){
             {
 				header: '총금액',
 				name: 'name6',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -109,6 +121,7 @@ $(function(){
             {
 				header: '할부개월',
 				name: 'name7',
+				minWidth: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -118,5 +131,5 @@ $(function(){
 	grid2.on('click', (ev) => {
 		grid2.addSelection(ev);
 		grid2.clickSort(ev);
-    });
+	});
 });

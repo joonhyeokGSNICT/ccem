@@ -9,7 +9,7 @@ $(function(){
 
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
-		bodyHeight: 300,
+		bodyHeight: 350,
 		scrollX: false,
 		columns: [
 			{
@@ -44,7 +44,7 @@ $(function(){
     });
     grid2 = new Grid({
 		el: document.getElementById('grid2'),
-		bodyHeight: 300,
+		bodyHeight: 350,
 		columns: [
 			{
 				header: '실이체일자',
@@ -88,8 +88,40 @@ $(function(){
             },
             {
 				header: '결과금액',
-				name: 'name5',
-                minWidth: 100,
+				name: 'name6',
+                width: 100,
+				align: "right",
+				sortable: true,
+				ellipsis: true,
+            },
+            {
+				header: '결과금액',
+				name: 'name7',
+                width: 100,
+				align: "right",
+				sortable: true,
+				ellipsis: true,
+            },
+            {
+				header: '결과금액',
+				name: 'name7',
+                width: 100,
+				align: "right",
+				sortable: true,
+				ellipsis: true,
+            },
+            {
+				header: '결과금액',
+				name: 'name8',
+                width: 100,
+				align: "right",
+				sortable: true,
+				ellipsis: true,
+            },
+            {
+				header: '결과금액',
+				name: 'name10',
+                width: 100,
 				align: "right",
 				sortable: true,
 				ellipsis: true,
@@ -99,5 +131,5 @@ $(function(){
 	grid2.on('click', (ev) => {
 		grid2.addSelection(ev);
 		grid2.clickSort(ev);
-    });
+	});
 });

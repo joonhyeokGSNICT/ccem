@@ -3,7 +3,7 @@ var grid2;
 
 $(function(){
 	// calendar
-	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	$(".imask-date").each((i, el) => calendarUtil.init(el.id, {drops:"up"}));
 
 	// 고객정보 grid1
 	grid1 = new Grid({

@@ -4,7 +4,7 @@
 	AS-IS : [CNS4630] 개인정보동의 신청
 		상담화면 - 상담등록 - 상담결과(selectbox) - 개인정보동의 선택
 	팝업사이즈
-		width: 637px, height: 660px
+		width: 594, height: 660
  -->
 <!DOCTYPE html>
 <html>
@@ -19,109 +19,107 @@
 </head>
 
 <body>
-	<div class="container customBody" style="border: 1px solid #dee2e6;">
-		<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
-			<div class="row" style="background: #123f8a; height: 35px;">
-				<div class="col text-right">
-					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">호전환중단</button>&nbsp;
-					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
-					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
-				</div>
+	<div class="container customBody">
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">호전환중단</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 			</div>
-			<table class="table table-xs table-bordered">
-				<colgroup>
-					<col span="1" style="width: 10%;">
-					<col span="1" style="width: 20%;">
-					<col span="1" style="width: 10%;">
-					<col span="1" style="width: 20%;">
-					<col span="1" style="width: 10%;">
-					<col span="1" style="width: 20%;">
-					<col span="1" style="width: 10%;">
-				</colgroup>
-				<tr>
-					<th class="text-center">사업국</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<th class="text-center">사업국장</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<th class="text-center">핸드폰</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<th class="text-center"><button type="button" class="btn btn-primary btn-sm ccemBtn w-100">SMS</button></th>
-				</tr>
-				<tr>
-					<th class="text-center">센터</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<th class="text-center">센터장</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<th class="text-center">핸드폰</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<th class="text-center"><button type="button" class="btn btn-primary btn-sm ccemBtn w-100">SMS</button></th>
-				</tr>
-			</table>
-			<table class="table table-xs table-bordered">
-				<colgroup>
-					<col span="1" style="width: 30%;">
-					<col span="1" style="width: 40%;">
-					<col span="1" style="width: 30%;">
-				</colgroup>
-				<tr>
-					<th class="text-center">대리인명</th>
-					<td><input class="form-control form-control-sm" /></td>
-					<td><select class="form-control form-control-sm"></select></td>
-				</tr>
-			</table>
-			<table class="table table-xs table-bordered">
-				<colgroup>
-					<col span="1" style="width: 30%;">
-					<col span="1" style="width: 70%;">
-				</colgroup>
-				<tr>
-					<th class="text-center">동의결과</th>
-					<td><select class="form-control form-control-sm"></select></td>
-				</tr>
-				<tr>
-					<th class="text-center">약관안내</th>
-					<td><select class="form-control form-control-sm"></select></td>
-				</tr>
-			</table>
-			<hr>
-			<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 개인정보 동의</div>
-			<table class="table table-xs table-bordered">
-				<colgroup>
-					<col span="1" style="width: 25%;">
-					<col span="1" style="width: 25%;">
-					<col span="1" style="width: 30%;">
-					<col span="1" style="width: 20%;">
-				</colgroup>
-				<tr>
-					<th class="text-center"><a href="#">①필수</a></th>
-					<td><input class="form-control form-control-sm"/></td>
-					<td><select class="form-control form-control-sm"></select></td>
-					<td><button class="btn btn-primary btn-sm ccemBtn w-100">일괄처리</button></td>
-				</tr>
-				<tr>
-					<th class="text-center"><a href="#">②마케팅</a></th>
-					<td><input class="form-control form-control-sm"/></td>
-					<td><select class="form-control form-control-sm"></select></td>
-					<td><button class="btn btn-primary btn-sm ccemBtn w-100">②~④ 처리</button></td>
-				</tr>
-				<tr>
-					<th class="text-center"><a href="#">③보존 및 마케팅</a></th>
-					<td><input class="form-control form-control-sm"/></td>
-					<td><select class="form-control form-control-sm"></select></td>
-					<td><button class="btn btn-primary btn-sm ccemBtn w-100">③~④ 처리</button></td>
-				</tr>
-				<tr>
-					<th class="text-center"><a href="#">④제3자 제공 동의</a></th>
-					<td><input class="form-control form-control-sm"/></td>
-					<td><select class="form-control form-control-sm"></select></td>
-					<td><button class="btn btn-primary btn-sm ccemBtn w-100">④ 처리</button></td>
-				</tr>
-			</table>
-			<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 메모</div>
-			<div class="row" style="height: 250px;">
-				<div class="col">
-					<textarea name="" id="" class="form-control w-100 h-100"></textarea>
-				</div>
+		</div>
+		<table class="table table-xs table-bordered mt-2">
+			<colgroup>
+				<col span="1" style="width: 10%;">
+				<col span="1" style="width: 18%;">
+				<col span="1" style="width: 10%;">
+				<col span="1" style="width: 18%;">
+				<col span="1" style="width: 12%;">
+				<col span="1" style="width: 22%;">
+				<col span="1" style="width: 10%;">
+			</colgroup>
+			<tr>
+				<th class="text-center">사업국</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<th class="text-center">사업국장</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<th class="text-center">핸드폰</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<th class="text-center"><button type="button" class="btn btn-primary btn-sm ccemBtn w-100">SMS</button></th>
+			</tr>
+			<tr>
+				<th class="text-center">센터</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<th class="text-center">센터장</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<th class="text-center">핸드폰</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<th class="text-center"><button type="button" class="btn btn-primary btn-sm ccemBtn w-100">SMS</button></th>
+			</tr>
+		</table>
+		<table class="table table-xs table-bordered">
+			<colgroup>
+				<col span="1" style="width: 30%;">
+				<col span="1" style="width: 40%;">
+				<col span="1" style="width: 30%;">
+			</colgroup>
+			<tr>
+				<th class="text-center">대리인명</th>
+				<td><input class="form-control form-control-sm" /></td>
+				<td><select class="form-control form-control-sm"></select></td>
+			</tr>
+		</table>
+		<table class="table table-xs table-bordered">
+			<colgroup>
+				<col span="1" style="width: 30%;">
+				<col span="1" style="width: 70%;">
+			</colgroup>
+			<tr>
+				<th class="text-center">동의결과</th>
+				<td><select class="form-control form-control-sm"></select></td>
+			</tr>
+			<tr>
+				<th class="text-center">약관안내</th>
+				<td><select class="form-control form-control-sm"></select></td>
+			</tr>
+		</table>
+		<hr>
+		<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 개인정보 동의</div>
+		<table class="table table-xs table-bordered">
+			<colgroup>
+				<col span="1" style="width: 25%;">
+				<col span="1" style="width: 25%;">
+				<col span="1" style="width: 30%;">
+				<col span="1" style="width: 20%;">
+			</colgroup>
+			<tr>
+				<th class="text-center"><a href="#">①필수</a></th>
+				<td><input class="form-control form-control-sm"/></td>
+				<td><select class="form-control form-control-sm"></select></td>
+				<td><button class="btn btn-primary btn-sm ccemBtn w-100">일괄처리</button></td>
+			</tr>
+			<tr>
+				<th class="text-center"><a href="#">②마케팅</a></th>
+				<td><input class="form-control form-control-sm"/></td>
+				<td><select class="form-control form-control-sm"></select></td>
+				<td><button class="btn btn-primary btn-sm ccemBtn w-100">②~④ 처리</button></td>
+			</tr>
+			<tr>
+				<th class="text-center"><a href="#">③보존 및 마케팅</a></th>
+				<td><input class="form-control form-control-sm"/></td>
+				<td><select class="form-control form-control-sm"></select></td>
+				<td><button class="btn btn-primary btn-sm ccemBtn w-100">③~④ 처리</button></td>
+			</tr>
+			<tr>
+				<th class="text-center"><a href="#">④제3자 제공 동의</a></th>
+				<td><input class="form-control form-control-sm"/></td>
+				<td><select class="form-control form-control-sm"></select></td>
+				<td><button class="btn btn-primary btn-sm ccemBtn w-100">④ 처리</button></td>
+			</tr>
+		</table>
+		<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 메모</div>
+		<div class="row" style="height: 250px;">
+			<div class="col">
+				<textarea class="form-control w-100 h-100"></textarea>
 			</div>
 		</div>
 	</div>

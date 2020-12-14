@@ -23,6 +23,7 @@ $(function(){
 			{
 				header: '상담일자',
 				name: 'name1',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -30,6 +31,7 @@ $(function(){
 			{
 				header: '접수',
 				name: 'name2',
+				width: 60,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -37,6 +39,7 @@ $(function(){
 			{
 				header: '상담채널',
 				name: 'name3',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -44,6 +47,7 @@ $(function(){
 			{
 				header: '상담구분',
 				name: 'name4',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -51,6 +55,7 @@ $(function(){
 			{
 				header: '회원명',
 				name: 'name5',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -58,6 +63,7 @@ $(function(){
 			{
 				header: '회원번호',
 				name: 'name6',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -65,6 +71,7 @@ $(function(){
 			{
 				header: '통화시각',
 				name: 'name7',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -72,6 +79,7 @@ $(function(){
 			{
 				header: '상담시간',
 				name: 'name8',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -79,6 +87,7 @@ $(function(){
 			{
 				header: '처리시간',
 				name: 'name9',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -86,6 +95,7 @@ $(function(){
 			{
 				header: '학년',
 				name: 'name10',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -93,6 +103,7 @@ $(function(){
 			{
 				header: '본부',
 				name: 'name11',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -100,6 +111,7 @@ $(function(){
 			{
 				header: '사업국',
 				name: 'name12',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -107,6 +119,7 @@ $(function(){
 			{
 				header: '센터',
 				name: 'name13',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -145,5 +158,5 @@ $(function(){
 		counselProductGrid.addSelection(ev);
 		counselProductGrid.clickSort(ev);
 	});
-	
+
 });

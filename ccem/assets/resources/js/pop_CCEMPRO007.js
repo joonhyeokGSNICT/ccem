@@ -47,6 +47,7 @@ $(function(){
 			{
 				header: '실결제일자',
 				name: 'name1',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -54,6 +55,7 @@ $(function(){
             {
 				header: '대상년월',
 				name: 'name2',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -61,6 +63,7 @@ $(function(){
             {
 				header: '과목',
 				name: 'name3',
+				width: 150,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -68,6 +71,7 @@ $(function(){
             {
 				header: '회원명',
 				name: 'name4',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -75,6 +79,7 @@ $(function(){
             {
 				header: '회원번호',
 				name: 'name5',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -82,13 +87,15 @@ $(function(){
             {
 				header: '의뢰금액',
 				name: 'name6',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
             },
             {
-				header: '결과..',
+				header: '결과금액',
 				name: 'name7',
+				minWidth: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -158,5 +165,6 @@ $(function(){
 	grid3.on('click', (ev) => {
 		grid3.addSelection(ev);
 		grid3.clickSort(ev);
-    });
+	});
+	
 });

@@ -3,6 +3,8 @@
 		고객정보 - 고객탭 - 회비탭 - [팝업] 환불이력
 	AS-IS : [CNS1320] 환불이력
 		상담화면 - 고객정보 탭 - 회비 탭 - 환불이력 버튼
+	팝업사이즈
+		width: 1000, height: 480
  -->
  <!DOCTYPE html>
 <html>
@@ -16,14 +18,14 @@
 </head>
 <body>
 	<div class="container customBody">
-		<div role="tabpanel" class="tab-pane fade active show" id="customerInfoTab">
-			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
-				<div class="row" style="background: #123f8a; height: 35px;">
-					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
-					</div>
-				</div>
-				<div id="grid" class="mt-2"></div>
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col">
+				<div id="grid"></div>
 			</div>
 		</div>
 	</div>

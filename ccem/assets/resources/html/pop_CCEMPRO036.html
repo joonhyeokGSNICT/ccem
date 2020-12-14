@@ -4,7 +4,7 @@
 	AS-IS : [CNS6280] 녹취매핑
 		응대 - 상담조회 및 처리 - 녹취매핑
 	팝업사이즈
-		width: 815px, height: 547px
+		width: 815, height: 547
  -->
  <!DOCTYPE html>
 <html>
@@ -19,73 +19,69 @@
 </head>
 <body>
 	<div class="container customBody">
-		<div role="tabpanel" class="tab-pane fade active show" id="customerInfoTab">
-			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
-				<div class="row" style="background: #123f8a; height: 35px;">
-					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">녹취청취</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
-					</div>
-				</div>
-				<table class="table table-xs table-bordered mt-2">
-					<colgroup>
-						<col span="1" style="width: 10%;">
-						<col span="1" style="width: 30%;">
-						<col span="1" style="width: 60%;">
-					</colgroup>
-					<tr>
-						<th colspan="">녹취일자</th>
-						<td>
-							<div class="input-group">
-								<input type="text" class="form-control form-control-sm imask-date" id="calendar1"/> ~ 
-								<input type="text" class="form-control form-control-sm imask-date" id="calendar2"/>
-							</div>
-						</td>
-						<th >
-							<div class="form-check ml-5">
-								<input class="form-check-input" type="checkbox" id="checkbox1" checked>
-								<label class="form-check-label" for="checkbox1">비 매핑 녹취건 조회</label>
-							</div>
-						</th>
-					</tr>
-				</table>
-				<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 녹취LIST</div>
-				<div id="recordGrid"></div>
-				<div class="font-weight-bold mt-2"><i class="fas fa-caret-square-right subjectArrow"></i> 현 상담정보</div>
-				<table class="table table-sm table-bordered">
-					<colgroup>
-						<col span="1" style="width: 10%;">
-						<col span="1" style="width: 15%;">
-						<col span="1" style="width: 10%;">
-						<col span="1" style="width:  9%;">
-						<col span="1" style="width: 12%;">
-						<col span="1" style="width: 15%;">
-						<col span="1" style="width: 12%;">
-						<col span="1" style="width: 17%;">
-					</colgroup>
-					<tr>
-						<th>상담일자</th>
-						<td><input type="text" class="form-control form-control-sm imask-date" id="calendar3"></td>
-						<td><input type="text" class="form-control form-control-sm text-right"></td>
-						<td><input type="text" class="form-control form-control-sm text-right"></td>
-						<th>고객명</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
-						<th>고객번호</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
-					</tr>
-					<tr>
-						<th>녹취ID</th>
-						<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
-						<th>통화시작시간</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
-						<th>통화종료시간</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
-					</tr>
-				</table>
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">녹취청취</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 			</div>
 		</div>
+		<table class="table table-xs table-bordered mt-2">
+			<colgroup>
+				<col span="1" style="width: 10%;">
+				<col span="1" style="width: 30%;">
+				<col span="1" style="width: 60%;">
+			</colgroup>
+			<tr>
+				<th colspan="">녹취일자</th>
+				<td>
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm imask-date" id="calendar1"/> ~ 
+						<input type="text" class="form-control form-control-sm imask-date" id="calendar2"/>
+					</div>
+				</td>
+				<th >
+					<div class="form-check ml-5">
+						<input class="form-check-input" type="checkbox" id="checkbox1" checked>
+						<label class="form-check-label" for="checkbox1">비 매핑 녹취건 조회</label>
+					</div>
+				</th>
+			</tr>
+		</table>
+		<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 녹취LIST</div>
+		<div id="recordGrid"></div>
+		<div class="font-weight-bold mt-2"><i class="fas fa-caret-square-right subjectArrow"></i> 현 상담정보</div>
+		<table class="table table-sm table-bordered">
+			<colgroup>
+				<col span="1" style="width: 10%;">
+				<col span="1" style="width: 15%;">
+				<col span="1" style="width: 10%;">
+				<col span="1" style="width:  9%;">
+				<col span="1" style="width: 12%;">
+				<col span="1" style="width: 15%;">
+				<col span="1" style="width: 12%;">
+				<col span="1" style="width: 17%;">
+			</colgroup>
+			<tr>
+				<th>상담일자</th>
+				<td><input type="text" class="form-control form-control-sm imask-date-up" id="calendar3"></td>
+				<td><input type="text" class="form-control form-control-sm text-right"></td>
+				<td><input type="text" class="form-control form-control-sm text-right"></td>
+				<th>고객명</th>
+				<td><input type="text" class="form-control form-control-sm"></td>
+				<th>고객번호</th>
+				<td><input type="text" class="form-control form-control-sm"></td>
+			</tr>
+			<tr>
+				<th>녹취ID</th>
+				<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+				<th>통화시작시간</th>
+				<td><input type="text" class="form-control form-control-sm"></td>
+				<th>통화종료시간</th>
+				<td><input type="text" class="form-control form-control-sm"></td>
+			</tr>
+		</table>
 	</div>
 
 	<script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>

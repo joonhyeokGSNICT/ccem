@@ -4,6 +4,7 @@ $(function(){
 
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, {drops: "up"}));
 
 	// 녹취LIST
 	recordGrid = new Grid({
@@ -101,6 +102,5 @@ $(function(){
 	recordGrid.on('click', (ev) => {
 		recordGrid.addSelection(ev);
 		recordGrid.clickSort(ev);
-		recordGrid.clickCheck(ev);
     });
 });

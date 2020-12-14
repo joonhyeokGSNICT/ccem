@@ -6,6 +6,7 @@ $(function(){
 
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, {drops: "up"}));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
 	// 상담등록 > 상담등록 > 과목 grid
@@ -29,7 +30,7 @@ $(function(){
 			{
 				header: '과목',
 				name: 'name1',
-				// align: "center",
+				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},

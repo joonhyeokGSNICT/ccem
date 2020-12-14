@@ -3,6 +3,8 @@
 		고객정보 - 고객탭 - 회비탭 - [팝업] 카드결제
 	AS-IS : [CNS1330] 카드결제
 		상담화면 - 고객정보 탭 - 회비 탭 - 카드결제 버튼
+	팝업사이즈
+		width: 883, height: 598
  -->
  <!DOCTYPE html>
 <html>
@@ -17,14 +19,14 @@
 </head>
 <body>
 	<div class="container customBody">
-		<div role="tabpanel" class="tab-pane fade active show" id="customerInfoTab">
-			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
-				<div class="row" style="background: #123f8a; height: 35px;">
-					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
-					</div>
-				</div>
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
 				<table class="table table-xs table-bordered mt-2">
 					<colgroup>
 						<col span="1" style="width: 10%;">
@@ -42,8 +44,16 @@
 						<th></th>
 					</tr>
 				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
 				<div id="grid1"></div>
-				<div id="grid2" class="mt-2"></div>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="col">
+				<div id="grid2"></div>
 			</div>
 		</div>
 	</div>

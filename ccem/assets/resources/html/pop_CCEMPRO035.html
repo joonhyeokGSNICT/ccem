@@ -4,7 +4,7 @@
 	AS-IS : [CNS6200] 상담조회
 		응대 - 상담조회 및 처리
 	팝업사이즈
-		width: 1110px, height: 781px
+		width: 1110, height: 780
  -->
 <!DOCTYPE html>
 <html>
@@ -20,429 +20,425 @@
 </head>
 <body>
 	<div class="container customBody">
-		<div role="tabpanel" class="tab-pane fade active show" id="customerInfoTab">
-			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
-				<div class="row" style="background: #123f8a; height: 35px;">
-					<div class="col-2">
-						<div class="input-group mt-2">
-							<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i> 조회건수 :&nbsp;</span>
-							<input type="text" class="form-control form-control-sm">
-						</div>
-					</div>
-					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-5">엑셀저장</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">녹취매핑</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-5">녹취청취</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">결 과</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">상담/입회수정</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">삭 제</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
-					</div>
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col-2">
+				<div class="input-group mt-2">
+					<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i> 조회건수 :&nbsp;</span>
+					<input type="text" class="form-control form-control-sm">
 				</div>
-				<div class="row">
-					<div class="col">
-						<table class="table table-xs table-bordered mt-2">
-							<colgroup>
-								<col span="1" style="width:  9%;">
-								<col span="1" style="width: 19%;">
-								<col span="1" style="width:  9%;">
-								<col span="1" style="width: 15%;">
-								<col span="1" style="width:  9%;">
-								<col span="1" style="width: 15%;">
-								<col span="1" style="width:  9%;">
-								<col span="1" style="width: 15%;">
-							</colgroup>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox1">
-										<label class="form-check-label" for="checkbox1">상담일자</label>
-									</div>
-								</th>
-								<td>
-									<div class="input-group">
-										<input type="text" class="form-control form-control-sm imask-date" id="calendar1"> ~ 
-										<input type="text" class="form-control form-control-sm imask-date" id="calendar2"/>
-									</div>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox2">
-										<label class="form-check-label" for="checkbox2">연계여부</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox3">
-										<label class="form-check-label" for="checkbox3">과목군</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox4">
-										<label class="form-check-label" for="checkbox4">상담원그룹</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox5">
-										<label class="form-check-label" for="checkbox5">상담원구분</label>
-									</div>
-								</th>
-								<td>
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox6">
-										<label class="form-check-label" for="checkbox6">처리구분</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox7">
-										<label class="form-check-label" for="checkbox7">과목</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox8">
-										<label class="form-check-label" for="checkbox8">상담원</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox9">
-										<label class="form-check-label" for="checkbox9">센터</label>
-									</div>
-								</th>
-								<td>
-									<input class="form-control form-control-sm"/>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox10">
-										<label class="form-check-label" for="checkbox10">사업국</label>
-									</div>
-								</th>
-								<td colspan="">
-									<input class="form-control form-control-sm"/>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox11">
-										<label class="form-check-label" for="checkbox11">본부</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox12">
-										<label class="form-check-label" for="checkbox12">처리상태</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox13">
-										<label class="form-check-label" for="checkbox13">분류(대)</label>
-									</div>
-								</th>
-								<td>
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox14">
-										<label class="form-check-label" for="checkbox14">분류(중)</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox15">
-										<label class="form-check-label" for="checkbox15">분류(소)</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox16">
-										<label class="form-check-label" for="checkbox16">상담결과</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox17">
-										<label class="form-check-label" for="checkbox17">상담경로</label>
-									</div>
-								</th>
-								<td>
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox18">
-										<label class="form-check-label" for="checkbox18">상담등급</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox19">
-										<label class="form-check-label" for="checkbox19">상담채널</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox20">
-										<label class="form-check-label" for="checkbox20">내담자</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-							</tr>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox21">
-										<label class="form-check-label" for="checkbox21">학습개월</label>
-									</div>
-								</th>
-								<td>
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox22">
-										<label class="form-check-label" for="checkbox22">복습가능성</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox23">
-										<label class="form-check-label" for="checkbox23">VOC</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox24">
-										<label class="form-check-label" for="checkbox24">재확인</label>
-									</div>
-								</th>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox25">
-										<label class="form-check-label" for="checkbox25">업무정직도</label>
-									</div>
-								</th>
-							</tr>
-							<tr>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox26">
-										<label class="form-check-label" for="checkbox26">연계부서</label>
-									</div>
-								</th>
-								<td>
-									<input class="form-control form-control-sm"/>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox27">
-										<label class="form-check-label" for="checkbox27">문자발송</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox28">
-										<label class="form-check-label" for="checkbox28">LC/YC/HL</label>
-									</div>
-								</th>
-								<td colspan="">
-									<select class="form-control form-control-sm"></select>
-								</td>
-								<th>
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox29">
-										<label class="form-check-label" for="checkbox29">시간약속</label>
-									</div>
-								</th>
-								<th></th>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class="row"><div class="col"><div id="counselHistoryGrid"></div></div></div>
-				<div class="row mt-2">
-					<div class="col-3"><div id="counselProductGrid"></div></div>
-					<div class="col-6">
-						<table class="table table-sm table-bordered">
-							<colgroup>
-								<col span="1" style="width: 12%;">
-								<col span="1" style="width: 88%;">
-							</colgroup>
-							<tr>
-								<th>제목</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>상담내용</th>
-								<td style="height: 90px;"><textarea class="form-control w-100 h-100"></textarea></td>
-							</tr>
-						</table>
-					</div>
-					<div class="col-3">
-						<table class="table table-sm table-bordered">
-							<colgroup>
-								<col span="1" style="width: 30%;">
-								<col span="1" style="width: 70%;">
-							</colgroup>
-							<tr>
-								<th>상담구분</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>분류(대)</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>분류(중)</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>분류(소)</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col">
-						<table class="table table-sm table-bordered">
-							<colgroup>
-								<col span="1" style="width:  6%;">
-								<col span="1" style="width: 12%;">
-								<col span="1" style="width:  8%;">
-								<col span="1" style="width: 12%;">
-								<col span="1" style="width:  6%;">
-								<col span="1" style="width: 12%;">
-								<col span="1" style="width:  5%;">
-								<col span="1" style="width:  6%;">
-								<col span="1" style="width: 10%;">
-								<col span="1" style="width:  7%;">
-								<col span="1" style="width: 8%;">
-								<col span="1" style="width: 8%;">
-							</colgroup>
-							<tr>
-								<th>상담경로</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>처리구분</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>상담결과</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>지역</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>처리상태</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<td><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>매체구분</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>처리시한</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>고객반응</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>본부</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>정보</th>
-								<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>입회사유</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>처리희망일</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>O/B결과</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>사업국</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>상담등급</th>
-								<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
-							</tr>
-							<tr>
-								<th>내담자</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>처리완료일</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>상담채널</th>
-								<td><input type="text" class="form-control form-control-sm"></td>
-								<th>센터</th>
-								<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
-								<th>VOC</th>
-								<td colspan="2"><input type="checkbox" id="checkbox30"></td>
-							</tr>
-						</table>
-					</div>
-				</div>
+			</div>
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4">엑셀저장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">녹취매핑</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4">녹취청취</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">결 과</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">상담/입회수정</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">삭 제</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-xs table-bordered mt-2">
+					<colgroup>
+						<col span="1" style="width:  9%;">
+						<col span="1" style="width: 19%;">
+						<col span="1" style="width:  9%;">
+						<col span="1" style="width: 15%;">
+						<col span="1" style="width:  9%;">
+						<col span="1" style="width: 15%;">
+						<col span="1" style="width:  9%;">
+						<col span="1" style="width: 15%;">
+					</colgroup>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox1">
+								<label class="form-check-label" for="checkbox1">상담일자</label>
+							</div>
+						</th>
+						<td>
+							<div class="input-group">
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar1"> ~ 
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar2"/>
+							</div>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox2">
+								<label class="form-check-label" for="checkbox2">연계여부</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox3">
+								<label class="form-check-label" for="checkbox3">과목군</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox4">
+								<label class="form-check-label" for="checkbox4">상담원그룹</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox5">
+								<label class="form-check-label" for="checkbox5">상담원구분</label>
+							</div>
+						</th>
+						<td>
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox6">
+								<label class="form-check-label" for="checkbox6">처리구분</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox7">
+								<label class="form-check-label" for="checkbox7">과목</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox8">
+								<label class="form-check-label" for="checkbox8">상담원</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox9">
+								<label class="form-check-label" for="checkbox9">센터</label>
+							</div>
+						</th>
+						<td>
+							<input class="form-control form-control-sm"/>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox10">
+								<label class="form-check-label" for="checkbox10">사업국</label>
+							</div>
+						</th>
+						<td colspan="">
+							<input class="form-control form-control-sm"/>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox11">
+								<label class="form-check-label" for="checkbox11">본부</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox12">
+								<label class="form-check-label" for="checkbox12">처리상태</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox13">
+								<label class="form-check-label" for="checkbox13">분류(대)</label>
+							</div>
+						</th>
+						<td>
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox14">
+								<label class="form-check-label" for="checkbox14">분류(중)</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox15">
+								<label class="form-check-label" for="checkbox15">분류(소)</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox16">
+								<label class="form-check-label" for="checkbox16">상담결과</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox17">
+								<label class="form-check-label" for="checkbox17">상담경로</label>
+							</div>
+						</th>
+						<td>
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox18">
+								<label class="form-check-label" for="checkbox18">상담등급</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox19">
+								<label class="form-check-label" for="checkbox19">상담채널</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox20">
+								<label class="form-check-label" for="checkbox20">내담자</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox21">
+								<label class="form-check-label" for="checkbox21">학습개월</label>
+							</div>
+						</th>
+						<td>
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox22">
+								<label class="form-check-label" for="checkbox22">복습가능성</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox23">
+								<label class="form-check-label" for="checkbox23">VOC</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox24">
+								<label class="form-check-label" for="checkbox24">재확인</label>
+							</div>
+						</th>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox25">
+								<label class="form-check-label" for="checkbox25">업무정직도</label>
+							</div>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox26">
+								<label class="form-check-label" for="checkbox26">연계부서</label>
+							</div>
+						</th>
+						<td>
+							<input class="form-control form-control-sm"/>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox27">
+								<label class="form-check-label" for="checkbox27">문자발송</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox28">
+								<label class="form-check-label" for="checkbox28">LC/YC/HL</label>
+							</div>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm"></select>
+						</td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox29">
+								<label class="form-check-label" for="checkbox29">시간약속</label>
+							</div>
+						</th>
+						<th></th>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row"><div class="col"><div id="counselHistoryGrid"></div></div></div>
+		<div class="row mt-2">
+			<div class="col-3"><div id="counselProductGrid"></div></div>
+			<div class="col-6">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width: 12%;">
+						<col span="1" style="width: 88%;">
+					</colgroup>
+					<tr>
+						<th>제목</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>상담내용</th>
+						<td style="height: 90px;"><textarea class="form-control w-100 h-100"></textarea></td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-3">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width: 30%;">
+						<col span="1" style="width: 70%;">
+					</colgroup>
+					<tr>
+						<th>상담구분</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>분류(대)</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>분류(중)</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>분류(소)</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width:  6%;">
+						<col span="1" style="width: 12%;">
+						<col span="1" style="width:  8%;">
+						<col span="1" style="width: 12%;">
+						<col span="1" style="width:  6%;">
+						<col span="1" style="width: 12%;">
+						<col span="1" style="width:  5%;">
+						<col span="1" style="width:  6%;">
+						<col span="1" style="width: 10%;">
+						<col span="1" style="width:  7%;">
+						<col span="1" style="width: 8%;">
+						<col span="1" style="width: 8%;">
+					</colgroup>
+					<tr>
+						<th>상담경로</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>처리구분</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>상담결과</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>지역</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>처리상태</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>매체구분</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>처리시한</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>고객반응</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>본부</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>정보</th>
+						<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>입회사유</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>처리희망일</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>O/B결과</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>사업국</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>상담등급</th>
+						<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>내담자</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>처리완료일</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>상담채널</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>센터</th>
+						<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
+						<th>VOC</th>
+						<td colspan="2"><input type="checkbox" id="checkbox30"></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>
