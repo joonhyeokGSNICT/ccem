@@ -24,8 +24,8 @@ $(function(){
 		var popDepth = $(this).attr('id').split('_').length;
 		if(popDepth == '2'){
 			var popName = $(this).attr('id').split('_')[0];
-			w = 1050;
-			h = 660;
+			w = 1154;
+			h = 680;
 			if(currentPop.name != "" && currentPop.name != null){
 				currentPop.focus();
 				//currentPop.exitAlert(popName,w,h);

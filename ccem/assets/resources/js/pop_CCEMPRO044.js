@@ -14,6 +14,8 @@ $(function(){
 		}
 	});
 	
+	
+	
 	// 녹취LIST
 	recordGrid = new Grid({
 		el: document.getElementById('recordGrid'),
