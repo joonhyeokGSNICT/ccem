@@ -426,6 +426,17 @@ const calendarUtil = {
     },
 }
 
+const PopupUtil = {
+    pops: {},
+    open(name, width, height) {
+        if(this.pops[name] && this.pops[name].name) {
+            this.pops[name].focus();
+        }else {
+            this.pops[name] = window.open(`pop_${name}.html`, name, `width=${width}, height=${height}`);
+        }
+    },
+}
+
 /**
  * grid 데이터 상세 INSERT
  * @param {object} ev 이벤트정보
