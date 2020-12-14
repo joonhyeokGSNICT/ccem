@@ -206,3 +206,9 @@ select {
 	border-top-right-radius: 0px !important;
 	border-top-left-radius: 0px !important;
 }
+
+ul.fancytree-container {
+    height: 360px;
+    overflow: auto;
+    position: relative;
+    }
