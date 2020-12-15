@@ -1,17 +1,32 @@
-var subjectGrid;
-var counselSubjectGrid;
-var currentSubjectGrid;
+let grid1, grid2, grid3, grid4, grid5;
 
-$(function(){
+$(function () {
+
+	// select tab
+	let hash = window.location.hash;
+	if(hash === "#counselRgtrTab") $("#counselRgtrNav").click();
+	else if (hash === "#entrRgtrTab") $("#entrRgtrNav").click();
+	else if (hash === "#tchrIntrdTab") $("#tchrIntrdNav").click();
+
+	createGrids();
+
+	// nav shown event - 탭이 완전히 표시되면 발생(CSS 전환이 완료된 후).
+	$('.nav-link').on('shown.bs.tab', (ev) => {
+		window.location.hash = ev.target.hash;
+		refreshGrid(ev.target.id);
+	});
 
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
-	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, {drops: "up"}));
+	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, { drops: "up" }));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
-	// 상담등록 > 상담등록 > 과목 grid
-	subjectGrid = new Grid({
-		el: document.getElementById('subjectGrid'),
+});
+
+const createGrids = () => {
+	// 상담등록 > 과목 grid
+	grid1 = new Grid({
+		el: document.getElementById('grid1'),
 		bodyHeight: 283,
 		scrollX: false,
 		rowHeaders: [
@@ -36,16 +51,15 @@ $(function(){
 			},
 		],
 	});
-	subjectGrid.on('click', (ev) => {
-		subjectGrid.addSelection(ev);
-		subjectGrid.clickSort(ev);
-		subjectGrid.clickCheck(ev);
+	grid1.on('click', (ev) => {
+		grid1.addSelection(ev);
+		grid1.clickSort(ev);
+		grid1.clickCheck(ev);
 	});
-	// 과목 끝
 	
-	// 상담등록 > 상담등록 > 선택한과목 grid
-	counselSubjectGrid = new Grid({
-		el: document.getElementById('counselSubjectGrid'),
+	// 상담등록 > 상담과목 grid
+	grid2 = new Grid({
+		el: document.getElementById('grid2'),
 		bodyHeight: 120,
 		scrollX: false,
 		rowHeaders: [
@@ -65,15 +79,14 @@ $(function(){
 			}
 		],
 	});
-	counselSubjectGrid.on('click', (ev) => {
-		counselSubjectGrid.addSelection(ev);
-		counselSubjectGrid.clickSort(ev);
+	grid2.on('click', (ev) => {
+		grid2.addSelection(ev);
+		grid2.clickSort(ev);
 	});
-	// 선택한과목 끝
 		
-	// 상담등록 > 상담등록 > 학습중인과목 grid
-	currentSubjectGrid = new Grid({
-		el: document.getElementById('currentSubjectGrid'),
+	// 상담등록 > 학습중인과목 grid
+	grid3 = new Grid({
+		el: document.getElementById('grid3'),
 		bodyHeight: 80,
 		scrollX: false,
 		rowHeaders: [
@@ -106,9 +119,95 @@ $(function(){
 			}
 		],
 	});
-	currentSubjectGrid.on('click', (ev) => {
-		currentSubjectGrid.addSelection(ev);
-		currentSubjectGrid.clickSort(ev);
+	grid3.on('click', (ev) => {
+		grid3.addSelection(ev);
+		grid3.clickSort(ev);
 	});
-	// 학습중인과목 끝
-});
+
+	// 입회등록 > 과목 grid
+	grid4 = new Grid({
+		el: document.getElementById('grid4'),
+		bodyHeight: 283,
+		scrollX: false,
+		rowHeaders: [
+			{
+				type: 'rowNum',
+				header: "NO",
+				minWidth: 30,
+			},
+			{
+				type: 'checkbox',
+				header: " ",
+				minWidth: 30,
+			},
+		],
+		columns: [
+			{
+				header: '과목',
+				name: 'name1',
+				align: "center",
+				sortable: true,
+				ellipsis: true,
+			},
+		],
+	});
+	grid4.on('click', (ev) => {
+		grid4.addSelection(ev);
+		grid4.clickSort(ev);
+		grid4.clickCheck(ev);
+	});
+
+	// 입회등록 > 입회과목 grid
+	grid5 = new Grid({
+		el: document.getElementById('grid5'),
+		bodyHeight: 120,
+		scrollX: false,
+		rowHeaders: [
+			{
+				type: 'rowNum',
+				header: "NO",
+				minWidth: 30,
+			}
+		],
+		columns: [
+			{
+				header: '입회과목',
+				name: 'name1',
+				align: "center",
+				sortable: true,
+				ellipsis: true,
+			}
+		],
+	});
+	grid5.on('click', (ev) => {
+		grid5.addSelection(ev);
+		grid5.clickSort(ev);
+	});
+}
+
+/**
+ * 그리드 레이아웃을 새로 고칩니다. 숨겨진 상태에서 그리드를 렌더링 한 경우이 방법을 사용합니다.
+ * @param {string} key - nav id
+ */
+const refreshGrid = (key) => {
+	switch (key) {
+		case "counselRgtrNav":	// 상담등록
+			grid1.refreshLayout();
+			grid2.refreshLayout();
+			grid3.refreshLayout();
+			break;
+		case "entrRgtrNav":      // 입회등록
+			grid4.refreshLayout();
+			grid5.refreshLayout();
+			break;
+		case "tchrIntrdNav":	 // 선생님소개
+			break;
+		default:
+			grid1.refreshLayout();
+			grid2.refreshLayout();
+			grid3.refreshLayout();
+			grid4.refreshLayout();
+			grid5.refreshLayout();
+			break;
+	}
+}

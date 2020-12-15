@@ -1,10 +1,10 @@
 <!-- 
-	화면ID : CCEM-PRO-022
-		상담등록 - 상담등록
+	화면ID : CCEM-PRO-022, CCEM-PRO-031
+		상담등록 - 상담등록, 입회등록
 	AS-IS : [CNS5800] 상담등록
 		상담화면 - 상담등록
 	팝업사이즈
-		width: 1154, height: 650
+		width: 1154, height: 630
  -->
 <!DOCTYPE html>
 <html>
@@ -30,7 +30,7 @@
 			</div>
 		</div>
 		<!-- tabs -->
-		<div class="container customBody rounded-lg pb-1" style="border: 1px solid #dee2e6;">
+		<div class="container customBody rounded-lg border">
 			<div class="tab-content">
 				<!-- 상담등록 -->
 				<div role="tabpanel" class="tab-pane fade active show" id="counselRgtrTab">
@@ -47,219 +47,747 @@
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 						</div>
 					</div>
-					<div class="mainDivision">
-						<!-- 상담메인 왼쪽 -->
-						<div id="counselMain_left" class="mt-2" style="width:20%; float:left;">
-							<table class="table table-sm table-bordered">
-								<colgroup>
-									<col span="1" style="width:35%;">
-									<col span="1" style="width:65%;">
-								</colgroup>
-								<tr>
-									<th>과목검색</th>
-									<td><input type="text" class="form-control form-control-sm"></td>
-								</tr>
-								<tr>
-									<th>과목군</th>
-									<td><select class="form-control form-control-sm"> </select></td>
-								</tr>
-							</table>
-							<div id="subjectGrid"></div>
-							<div class="mt-2" id="counselSubjectGrid"></div>
-						</div>
-						<!-- 상담메인 오른쪽 -->
-						<div id="counselMain_right" style="width:79.5%; float:right; overflow-x:hidden; transition-duration: 3s; transition-timing-function: ease-in; transition-delay: 3s;";>
-							<div id="counselInsert_rLeft" class="mt-2" style="width:52%; float:left;">
+					<div class="row mt-2">
+						<div class="col">
+							<!-- 상담메인 왼쪽 -->
+							<div style="width:20%; float:left;">
 								<table class="table table-sm table-bordered">
 									<colgroup>
-										<col span="1" style="width:13%;">
-										<col span="1" style="width:19%;">
-										<col span="1" style="width:14%;">
-										<col span="1" style="width:20%;">
-										<col span="1" style="width:14%;">
-										<col span="1" style="width:20%;">
+										<col span="1" style="width:35%;">
+										<col span="1" style="width:65%;">
 									</colgroup>
 									<tr>
-										<th>회원명</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<th>회원번호</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<th>전화번호</th>
+										<th>과목검색</th>
 										<td><input type="text" class="form-control form-control-sm"></td>
 									</tr>
 									<tr>
-										<th>학년</th>
-										<td><select class="form-control form-control-sm"></select></td>
-										<th>주소</th>
-										<td>
-											<input type="text" class="form-control form-control-sm">
-										</td>
-										<td colspan="2">
-											<input type="text" class="form-control form-control-sm">
-										</td>
+										<th>과목군</th>
+										<td><select class="form-control form-control-sm"> </select></td>
 									</tr>
 								</table>
-								<table class="table table-sm table-bordered mt-2">
-									<colgroup>
-										<col span="1" style="width: 13%;">
-										<col span="1" style="width: 12%;">
-										<col span="1" style="width: 25%;">
-										<col span="1" style="width:  7%;">
-										<col span="1" style="width:  7%;">
-										<col span="1" style="width:  7%;">
-										<col span="1" style="width:  3.5%;">
-										<col span="1" style="width:  3.5%;">
-										<col span="1" style="width:  7%;">
-										<col span="1" style="width:  7%;">
-									</colgroup>
-									<tr>
-										<th>본부</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<th colspan="2">지역</th>
-										<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
-										<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
-									</tr>
-									<tr>
-										<th>사업국</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<th colspan="2">전화번호</th>
-										<td colspan="5"><input type="text" class="form-control form-control-sm"></td>
-									</tr>
-									<tr>
-										<th>센터</th>
-										<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
-										<th colspan="2">전화번호</th>
-										<td colspan="5"><input type="text" class="form-control form-control-sm"></td>
-									</tr>
-									<tr>
-										<th>연계부서</th>
-										<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
-										<th>LC</th>
-										<td class="tdCheck"><input type="checkbox" class="" value=""></td>
-										<th>YC</th>
-										<td colspan="2" class="tdCheck"><input type="checkbox" class="" value=""></td>
-										<th>HL</th>
-										<td class="tdCheck"><input type="checkbox" class="" value=""></td>
-									</tr>
-								</table>
+								<div id="grid1"></div>
+								<div class="mt-2" id="grid2"></div>
 							</div>
-							<div id="counselInsert_rRight" class="mt-2" style="width:47.5%; float:right; overflow-x:hidden; transition-duration: 3s; transition-timing-function: ease-in; transition-delay: 3s;";>
-								<table class="table table-sm table-bordered">
-									<colgroup>
-										<col span="1" style="width:16%;">
-										<col span="1" style="width:25%;">
-										<col span="1" style="width:16%;">
-										<col span="1" style="width:22%;">
-										<col span="1" style="width:10%;">
-										<col span="1" style="width:11%;">
-									</colgroup>
-									<tr>
-										<th>상담일자</th>
-										<td><input type="text" class="form-control form-control-sm imask-date" id="calendar1"></td>
-										<th>접수번호</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
-										<th>순번</th>
-										<td><select class="form-control form-control-sm"></select></td>
-									</tr>
-									<tr>
-										<th>상담시간</th>
-										<td><input class="form-control form-control-sm imask-time" id="time1"></td>
-										<th>상담채널</th>
-										<td colspan="3"><select class="form-control form-control-sm"></select></td>
-									</tr>
-								</table>
-								<div class="row mt-2">
-									<div class="col">
-										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 학습중인 과목</span>
+							<!-- 상담메인 오른쪽 -->
+							<div style="width:79.5%; float:right;">
+								<div style="width:52%; float:left;">
+									<table class="table table-sm table-bordered">
+										<colgroup>
+											<col span="1" style="width:13%;">
+											<col span="1" style="width:19%;">
+											<col span="1" style="width:14%;">
+											<col span="1" style="width:20%;">
+											<col span="1" style="width:14%;">
+											<col span="1" style="width:20%;">
+										</colgroup>
+										<tr>
+											<th>회원명</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>회원번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>전화번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+										</tr>
+										<tr>
+											<th>학년</th>
+											<td><select class="form-control form-control-sm"></select></td>
+											<th>주소</th>
+											<td colspan="3">
+												<div class="input-group">
+													<input type="text" class="form-control form-control-sm" style="width: 30%;">
+													<input type="text" class="form-control form-control-sm" style="width: 70%;">
+												</div>
+											</td>
+										</tr>
+									</table>
+									<table class="table table-sm table-bordered mt-2">
+										<colgroup>
+											<col span="1" style="width: 14%;">
+											<col span="1" style="width: 35%;">
+											<col span="1" style="width:8.5%;">
+											<col span="1" style="width:8.5%;">
+											<col span="1" style="width:8.5%;">
+											<col span="1" style="width:8.5%;">
+											<col span="1" style="width:8.5%;">
+											<col span="1" style="width:8.5%;">
+										</colgroup>
+										<tr>
+											<th>본부</th>
+											<td>
+												<div class="input-group">
+													<input type="text" class="form-control form-control-sm" style="width: 30%;">
+													<input type="text" class="form-control form-control-sm" style="width: 70%;">
+												</div>
+											</td>
+											<th colspan="2">지역</th>
+											<td colspan="4">
+												<div class="input-group">
+													<input type="text" class="form-control form-control-sm" style="width: 30%;">
+													<input type="text" class="form-control form-control-sm" style="width: 70%;">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<th>사업국</th>
+											<td>
+												<div class="input-group">
+													<input type="text" class="form-control form-control-sm" style="width: 30%;">
+													<input type="text" class="form-control form-control-sm" style="width: 70%;">
+												</div>
+											</td>
+											<th colspan="2">전화번호</th>
+											<td colspan="4"><input type="text" class="form-control form-control-sm"></td>
+										</tr>
+										<tr>
+											<th>센터</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th colspan="2">전화번호</th>
+											<td colspan="4"><input type="text" class="form-control form-control-sm"></td>
+										</tr>
+										<tr>
+											<th>연계부서</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>LC</th>
+											<td class="tdCheck"><input type="checkbox" class="" value=""></td>
+											<th>YC</th>
+											<td class="tdCheck"><input type="checkbox" class="" value=""></td>
+											<th>HL</th>
+											<td class="tdCheck"><input type="checkbox" class="" value=""></td>
+										</tr>
+									</table>
+								</div>
+								<div style="width:47.5%; float:right;">
+									<table class="table table-sm table-bordered">
+										<colgroup>
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:25%;">
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:22%;">
+											<col span="1" style="width:10%;">
+											<col span="1" style="width:11%;">
+										</colgroup>
+										<tr>
+											<th>상담일자</th>
+											<td><input type="text" class="form-control form-control-sm imask-date" id="calendar1"></td>
+											<th>접수번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>순번</th>
+											<td><select class="form-control form-control-sm"></select></td>
+										</tr>
+										<tr>
+											<th>상담시간</th>
+											<td><input class="form-control form-control-sm imask-time" id="time1"></td>
+											<th>상담채널</th>
+											<td colspan="3"><select class="form-control form-control-sm"></select></td>
+										</tr>
+									</table>
+									<div class="row mt-2">
+										<div class="col">
+											<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 학습중인 과목</span>
+											<div id="grid3"></div>
+										</div>
 									</div>
 								</div>
-								<div id="currentSubjectGrid"></div>
-							</div>
-							<div class="row w-100 mt-2">
-								<div class="col">
-									<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 상담 내용</span>
+								<div class="row w-100 mt-2">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 상담 내용</span>
+									</div>
 								</div>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:12%;">
+										<col span="1" style="width:15%;">
+										<col span="1" style="width:12%;">
+										<col span="1" style="width:15%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:21%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:5%;">
+									</colgroup>
+									<tr>
+										<th>제목</th>
+										<td colspan="7"><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>상담내용</th>
+										<td colspan="7" style="height:130px;"><textarea class="form-control w-100 h-100"></textarea></td>
+									</tr>
+									<tr>
+										<th>개인정보</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>내담자</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(대)</th>
+										<td colspan="3">
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>상담구분</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>처리구분</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(중)</th>
+										<td colspan="3">
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>처리시한</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>고객반응</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(소)</th>
+										<td colspan="3">
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>처리희망일</th>
+										<td><input type="text" class="form-control form-control-sm imask-date-up" id="calendar2"/></td>
+										<th>O/B결과</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>상담결과</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>재확인</th>
+										<td><input type="checkbox" class=""></td>
+									</tr>
+									<tr>
+										<th>상담경로</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>처리상태</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>상담등급</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>VOC</th>
+										<td><input type="checkbox" class=""></td>
+									</tr>
+								</table>
 							</div>
-							<table class="table table-sm table-bordered">
-								<colgroup>
-									<col span="1" style="width:12%;">
-									<col span="1" style="width:15%;">
-									<col span="1" style="width:12%;">
-									<col span="1" style="width:15%;">
-									<col span="1" style="width:10%;">
-									<col span="1" style="width:10%;">
-									<col span="1" style="width:11%;">
-									<col span="1" style="width:10%;">
-									<col span="1" style="width:5%;">
-								</colgroup>
-								<tr>
-									<th>제목</th>
-									<td colspan="8"><input type="text" class="form-control form-control-sm"></td>
-								</tr>
-								<tr>
-									<th>상담내용</th>
-									<td colspan="8" style="height:130px;"><textarea class="form-control w-100 h-100"></textarea></td>
-								</tr>
-								<tr>
-									<th>개인정보</th>
-									<td><select class="form-control form-control-sm"></select></td>
-									<th>내담자</th>
-									<td colspan="1"><select class="form-control form-control-sm"></select></td>
-									<th>분류(대)</th>
-									<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
-									<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
-								</tr>
-								<tr>
-									<th>상담구분</th>
-									<td><select class="form-control form-control-sm"></select></td>
-									<th>처리구분</th>
-									<td colspan="1"><select class="form-control form-control-sm"></select></td>
-									<th>분류(중)</th>
-									<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
-									<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
-								</tr>
-								<tr>
-									<th>처리시한</th>
-									<td><select class="form-control form-control-sm"></select></td>
-									<th>고객반응</th>
-									<td colspan="1"><select class="form-control form-control-sm"></select></td>
-									<th>분류(소)</th>
-									<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
-									<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
-								</tr>
-								<tr>
-									<th>처리희망일</th>
-									<td><input type="text" class="form-control form-control-sm imask-date-up" id="calendar2"/></td>
-									<th>O/B결과</th>
-									<td colspan="1"><select class="form-control form-control-sm"></select></td>
-									<th>상담결과</th>
-									<td colspan="2"><select class="form-control form-control-sm"></select></td>
-									<th>재확인</th>
-									<td class="tdCheck" colspan="1"><input type="checkbox" class="" value=""></td>
-								</tr>
-								<tr>
-									<th>상담경로</th>
-									<td colspan="1"><select class="form-control form-control-sm"></select></td>
-									<th>처리상태</th>
-									<td colspan="1"><select class="form-control form-control-sm"></select></td>
-									<th>상담등급</th>
-									<td colspan="2"><select class="form-control form-control-sm"></select></td>
-									<th>VOC</th>
-									<td class="tdCheck" colspan="1"><input type="checkbox" class="" value=""></td>
-								</tr>
-							</table>
 						</div>
 					</div>
 				</div>
 				<!-- 입회등록 -->
 				<div role="tabpanel" class="tab-pane fade" id="entrRgtrTab">
-					입회등록 탭
+					<div class="row" style="background: #123f8a; height: 35px;">
+						<div class="col text-right">
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">입회연계</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">관계회원</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+						</div>
+					</div>
+					<div class="row mt-2">
+						<div class="col">
+							<!-- 입회등록 왼쪽 -->
+							<div style="width:20%; float:left;">
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:35%;">
+										<col span="1" style="width:65%;">
+									</colgroup>
+									<tr>
+										<th>과목검색</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>과목군</th>
+										<td><select class="form-control form-control-sm"> </select></td>
+									</tr>
+								</table>
+								<div id="grid4"></div>
+								<div class="mt-2" id="grid5"></div>
+							</div>
+							<!-- 입회등록 오른쪽 -->
+							<div style="width:79.5%; float:right;">
+								<div style="width:52%; float:left;">
+									<table class="table table-sm table-bordered">
+										<colgroup>
+											<col span="1" style="width:13%;">
+											<col span="1" style="width:19%;">
+											<col span="1" style="width:14%;">
+											<col span="1" style="width:20%;">
+											<col span="1" style="width:14%;">
+											<col span="1" style="width:20%;">
+										</colgroup>
+										<tr>
+											<th>회원명</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>회원번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>전화번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+										</tr>
+										<tr>
+											<th>학년</th>
+											<td><select class="form-control form-control-sm"></select></td>
+											<th>주소</th>
+											<td colspan="3">
+												<div class="input-group">
+													<input type="text" class="form-control form-control-sm" style="width: 30%;">
+													<input type="text" class="form-control form-control-sm" style="width: 70%;">
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div style="width:47.5%; float:right;">
+									<table class="table table-sm table-bordered">
+										<colgroup>
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:25%;">
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:22%;">
+											<col span="1" style="width:10%;">
+											<col span="1" style="width:11%;">
+										</colgroup>
+										<tr>
+											<th>상담일자</th>
+											<td><input type="text" class="form-control form-control-sm imask-date" id="calendar3"></td>
+											<th>접수번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>순번</th>
+											<td><select class="form-control form-control-sm"></select></td>
+										</tr>
+										<tr>
+											<th>상담시간</th>
+											<td><input class="form-control form-control-sm imask-time" id="time2"></td>
+											<th>상담채널</th>
+											<td colspan="3"><select class="form-control form-control-sm"></select></td>
+										</tr>
+									</table>
+								</div>
+								<table class="table table-sm table-bordered mt-2">
+									<colgroup>
+										<col span="1" style="width: 10%;">
+										<col span="1" style="width: 23%;">
+										<col span="1" style="width: 10%;">
+										<col span="1" style="width: 23%;">
+										<col span="1" style="width: 11%;">
+										<col span="1" style="width: 23%;">
+									</colgroup>
+									<tr>
+										<th>연계본부</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 40%;">
+												<input type="text" class="form-control form-control-sm" style="width: 60%;">
+											</div>
+										</td>
+										<th>전화번호</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>연계대상자</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>연계사업국</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 40%;">
+												<input type="text" class="form-control form-control-sm" style="width: 60%;">
+											</div>
+										</td>
+										<th>연계방법</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>접수자</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>연계센터</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>연계일시</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm imask-date" id="calendar4">
+												<input type="text" class="form-control form-control-sm imask-time" id="time3">
+											</div>
+										</td>
+										<th>접수일시</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm imask-date" id="calendar5">
+												<input type="text" class="form-control form-control-sm imask-time" id="time4">
+											</div>
+										</td>
+									</tr>
+								</table>
+								<div class="row w-100 mt-2">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 상담 내용</span>
+									</div>
+								</div>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:30%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:20%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:20%;">
+									</colgroup>
+									<tr>
+										<th>안내문구</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>학부모명</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>연락처</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+								</table>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:90%;">
+									</colgroup>
+									<tr>
+										<th>기타<br>요구사항</th>
+										<td style="height: 202px;"><textarea class="form-control w-100 h-100"></textarea></td>
+									</tr>
+								</table>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:40%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:40%;">
+									</colgroup>
+									<tr>
+										<th>입회사유</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(대)</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>입회경로</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(중)</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>내담자</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(소)</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
 				</div>
 				<!-- 선생님소개 -->
 				<div role="tabpanel" class="tab-pane fade" id="tchrIntrdTab">
-					선생님소개 탭
+					<div class="row" style="background: #123f8a; height: 35px;">
+						<div class="col text-right">
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">소계연계</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+						</div>
+					</div>
+					<div class="row mt-2">
+						<div class="col">
+							<!-- 선생님소개 왼쪽 -->
+							<div style="width:15%; float:left;">
+								<div class="row mt-1">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 관심부분</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<div class="rounded-lg border bg-light text-dark p-2">
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio1">
+												<label class="form-check-label" for="radio1">수리교사</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio2">
+												<label class="form-check-label" for="radio2">어문교사</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio3">
+												<label class="form-check-label" for="radio3">종합교사</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio4">
+												<label class="form-check-label" for="radio4">솔루니교사</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio5">
+												<label class="form-check-label" for="radio5">소빅스튜터</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio6">
+												<label class="form-check-label" for="radio6">YC수리</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio7">
+												<label class="form-check-label" for="radio7">YC어문</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio8" checked>
+												<label class="form-check-label" for="radio8">YC종합</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="interest" id="radio9">
+												<label class="form-check-label" for="radio9">러닝센터교사</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="interest" id="radio10">
+												<label class="form-check-label" for="radio10">차이홍교사</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row mt-2">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 재사업 시기</span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										<div class="rounded-lg border bg-light text-dark p-2">
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio11" checked>
+												<label class="form-check-label" for="radio11">즉시</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio12">
+												<label class="form-check-label" for="radio12">1 ~ 3개월 후</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio13">
+												<label class="form-check-label" for="radio13">4 ~ 6개월 후</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio14">
+												<label class="form-check-label" for="radio14">7 ~ 9개월 후</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio15">
+												<label class="form-check-label" for="radio15">10 ~ 12개월 후</label>
+											</div>
+											<div class="form-check mb-2">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio16">
+												<label class="form-check-label" for="radio16">1년 이후</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="reBusiness" id="radio17">
+												<label class="form-check-label" for="radio17">출산 이후</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- 선생님소개 오른쪽 -->
+							<div style="width:84.5%; float:right;">
+								<div style="width:52%; float:left;">
+									<table class="table table-sm table-bordered">
+										<colgroup>
+											<col span="1" style="width:13%;">
+											<col span="1" style="width:19%;">
+											<col span="1" style="width:14%;">
+											<col span="1" style="width:20%;">
+											<col span="1" style="width:14%;">
+											<col span="1" style="width:20%;">
+										</colgroup>
+										<tr>
+											<th>선생님명</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>사원번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>전화번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+										</tr>
+										<tr>
+											<th>생년월일</th>
+											<td><select class="form-control form-control-sm"></select></td>
+											<th>주소</th>
+											<td colspan="3">
+												<div class="input-group">
+													<input type="text" class="form-control form-control-sm" style="width: 30%;">
+													<input type="text" class="form-control form-control-sm" style="width: 70%;">
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+								<div style="width:47.5%; float:right;">
+									<table class="table table-sm table-bordered">
+										<colgroup>
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:25%;">
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:22%;">
+											<col span="1" style="width:10%;">
+											<col span="1" style="width:11%;">
+										</colgroup>
+										<tr>
+											<th>상담일자</th>
+											<td><input type="text" class="form-control form-control-sm imask-date" id="calendar6"></td>
+											<th>접수번호</th>
+											<td><input type="text" class="form-control form-control-sm"></td>
+											<th>순번</th>
+											<td><select class="form-control form-control-sm"></select></td>
+										</tr>
+										<tr>
+											<th>상담시간</th>
+											<td><input class="form-control form-control-sm imask-time" id="time5"></td>
+											<th>상담채널</th>
+											<td colspan="3"><select class="form-control form-control-sm"></select></td>
+										</tr>
+									</table>
+								</div>
+								<div class="row w-100 mt-2">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 연계정보</span>
+									</div>
+								</div>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:    7%;">
+										<col span="1" style="width: 18.3%;">
+										<col span="1" style="width:  8.3%;">
+										<col span="1" style="width: 16.6%;">
+										<col span="1" style="width:  8.3%;">
+										<col span="1" style="width: 16.6%;">
+										<col span="1" style="width:  8.3%;">
+										<col span="1" style="width: 16.6%;">
+									</colgroup>
+									<tr>
+										<th>연계일시</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm imask-date" id="calendar7" style="width: 55%;">
+												<input type="text" class="form-control form-control-sm imask-time" id="time6" style="width: 45%;">
+											</div>
+										</td>
+										<th>본부전화</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>본부FAX</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm">
+											</div>
+										</td>
+										<th>연계방법</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>연계본부</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>본부접수자</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>상담원</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+										<th>연계대상자</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>FAX양식</th>
+										<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+										<th>연계구분</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+								</table>
+								<div class="row w-100 mt-2">
+									<div class="col">
+										<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 통화정보결과</span>
+									</div>
+								</div>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:90%;">
+									</colgroup>
+									<tr>
+										<th>제목</th>
+										<td><input type="text" class="form-control form-control-sm"></td>
+									</tr>
+									<tr>
+										<th>기타<br>요구사항</th>
+										<td style="height: 192px;"><textarea class="form-control w-100 h-100"></textarea></td>
+									</tr>
+								</table>
+								<table class="table table-sm table-bordered">
+									<colgroup>
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:20%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:20%;">
+										<col span="1" style="width:10%;">
+										<col span="1" style="width:30%;">
+									</colgroup>
+									<tr>
+										<th>해지사유</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>재사업경로</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(대)</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>사업구분</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>처리상태</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(중)</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<th>상담구분</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>처리구분</th>
+										<td><select class="form-control form-control-sm"></select></td>
+										<th>분류(소)</th>
+										<td>
+											<div class="input-group">
+												<input type="text" class="form-control form-control-sm" style="width: 30%;">
+												<input type="text" class="form-control form-control-sm" style="width: 70%;">
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

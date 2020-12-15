@@ -1,0 +1,180 @@
+<!-- 
+	화면ID : CCEM-PRO-037
+		공통 - 조회 - [팝업] 입회조회
+	AS-IS : [CNS4800] 입회조회
+
+	팝업사이즈
+		width: 1110, height: 610 
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[팝업] 입회조회</title>
+	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
+	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link rel="stylesheet" href="../css/ces_top.css">
+</head>
+<body>
+	<div class="container customBody">
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col-2">
+				<div class="input-group mt-2">
+					<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i> 총 신청과목수 :&nbsp;</span>
+					<input type="text" class="form-control form-control-sm">
+				</div>
+			</div>
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">삭 제</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">입회수정</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">엑셀저장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">팩 스</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-xs table-bordered mt-2">
+					<colgroup>
+						<col span="1" style="width: 7.6%;">
+						<col span="1" style="width:12.2%;">
+						<col span="1" style="width: 7.6%;">
+						<col span="1" style="width:12.2%;">
+						<col span="1" style="width: 9.6%;">
+						<col span="1" style="width:11.2%;">
+						<col span="1" style="width: 7.6%;">
+						<col span="1" style="width:12.2%;">
+						<col span="1" style="width: 7.6%;">
+						<col span="1" style="width:12.2%;">
+					</colgroup>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox1">
+								<label class="form-check-label" for="checkbox1">입회일자</label>
+							</div>
+						</th>
+						<td colspan="2">
+							<div class="input-group">
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar1"> ~ 
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar2"/>
+							</div>
+						</td>
+						<th></th>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox2">
+								<label class="form-check-label" for="checkbox2">상담원그룹</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox3">
+								<label class="form-check-label" for="checkbox3">상담원</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th colspan="2"></th>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox4">
+								<label class="form-check-label" for="checkbox4">센터</label>
+							</div>
+						</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox5">
+								<label class="form-check-label" for="checkbox5">사업국</label>
+							</div>
+						</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox6">
+								<label class="form-check-label" for="checkbox6">본부</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox7">
+								<label class="form-check-label" for="checkbox7">결과</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox8">
+								<label class="form-check-label" for="checkbox8">입회경로</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+					</tr>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox9">
+								<label class="form-check-label" for="checkbox9">대분류</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox10">
+								<label class="form-check-label" for="checkbox10">중분류</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox11">
+								<label class="form-check-label" for="checkbox11">접수채널</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox12">
+								<label class="form-check-label" for="checkbox12">과목군</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox13">
+								<label class="form-check-label" for="checkbox13">과목</label>
+							</div>
+						</th>
+						<td><select class="form-control form-control-sm"></select></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row"><div class="col"><div id="grid"></div></div></div>
+	</div>
+
+	<script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
+	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
+	<script src="../lib/toast-grid/js/tui-pagination.js"></script>
+	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/imask.js"></script>
+    <script src="../lib/moment.min.js"></script>
+	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../js/config.js"></script>
+	<script src="../js/client.js"></script>
+	<script src="../js/ces_util.js"></script>
+	<script src="../js/pop_CCEMPRO037.js"></script>
+
+</body>
+</html>
