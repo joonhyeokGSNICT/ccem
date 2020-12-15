@@ -435,11 +435,11 @@ const calendarUtil = {
 
 const PopupUtil = {
     pops: {},
-    open(name, width, height) {
+    open(name, width, height, hash) {
         if(this.pops[name] && this.pops[name].name) {
             this.pops[name].focus();
         }else {
-            this.pops[name] = window.open(`pop_${name}.html`, name, `width=${width}, height=${height}`);
+            this.pops[name] = window.open(`pop_${name}.html${hash||""}`, name, `width=${width}, height=${height}`);
         }
     },
 }
