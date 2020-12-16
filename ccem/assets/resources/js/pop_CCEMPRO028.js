@@ -1,11 +1,11 @@
-var grid1;
-var grid2;
+let grid1, grid2;
 
 $(function(){
-	// calendar
+	
+	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id, {drops:"up"}));
 
-	// 고객정보 grid1
+	// create grid
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 100,
@@ -50,13 +50,11 @@ $(function(){
 			},
 		],
 	});
-
 	grid1.on("click", (ev) => {
 		grid1.addSelection(ev);
 		grid1.clickSort(ev);
 	});
 
-	// 고객정보 grid2
 	grid2 = new Grid({
 		el: document.getElementById('grid2'),
 		bodyHeight: 100,

@@ -8,18 +8,26 @@ $(function () {
 	else if (hash === "#entrRgtrTab") $("#entrRgtrNav").click();
 	else if (hash === "#tchrIntrdTab") $("#tchrIntrdNav").click();
 
-	createGrids();
+	// insert hash
+	$('.nav-link').on('click', ev => window.location.hash = ev.target.hash);
 
-	// nav shown event - 탭이 완전히 표시되면 발생(CSS 전환이 완료된 후).
-	$('.nav-link').on('shown.bs.tab', (ev) => {
-		window.location.hash = ev.target.hash;
-		refreshGrid(ev.target.id);
-	});
+	// grid refreshLayout
+	$('.nav-link').on('shown.bs.tab', ev => refreshGrid(ev.target.id));
 
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
 	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, { drops: "up" }));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
+
+	// 상담결과 selectbox
+	$("#selectbox1").on("change", (ev) => {
+		let value = ev.target.value;
+		if(value === "CCEMPRO023") PopupUtil.open(value, 594, 670);
+		else if(value === "CCEMPRO024") PopupUtil.open(value, 663, 705);
+		else if(value === "CCEMPRO025") PopupUtil.open(value, 536, 330);
+	});
+	
+	createGrids();
 
 });
 

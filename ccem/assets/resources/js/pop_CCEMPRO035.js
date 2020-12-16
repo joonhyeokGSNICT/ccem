@@ -1,5 +1,4 @@
-var counselHistoryGrid;
-var counselProductGrid;
+let grid1, grid2;
 
 $(function(){
 
@@ -7,8 +6,8 @@ $(function(){
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
 
 	// 상담조회 > 상담조회 리스트 grid
-	counselHistoryGrid = new Grid({
-		el: document.getElementById('counselHistoryGrid'),
+	grid1 = new Grid({
+		el: document.getElementById('grid1'),
 		bodyHeight: 200,
 		pageOptions: {
 		  perPage: 7,
@@ -126,16 +125,14 @@ $(function(){
 			}
 		],
 	});
-
-	counselHistoryGrid.on("click", (ev) => {
-		counselHistoryGrid.addSelection(ev);
-		counselHistoryGrid.clickSort(ev);
+	grid1.on("click", (ev) => {
+		grid1.addSelection(ev);
+		grid1.clickSort(ev);
 	});
-	// 상담조회 끝
 
 	// 상담조회 > 상담제품 리스트 grid
-	counselProductGrid = new Grid({
-		el: document.getElementById('counselProductGrid'),
+	grid2 = new Grid({
+		el: document.getElementById('grid2'),
 		bodyHeight: 97,
 		scrollX: false,
 		rowHeaders: [
@@ -154,9 +151,9 @@ $(function(){
 			},
 		],
 	});
-	counselProductGrid.on("click", (ev) => {
-		counselProductGrid.addSelection(ev);
-		counselProductGrid.clickSort(ev);
+	grid2.on("click", (ev) => {
+		grid2.addSelection(ev);
+		grid2.clickSort(ev);
 	});
 
 });

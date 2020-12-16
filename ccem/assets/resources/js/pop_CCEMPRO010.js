@@ -1,5 +1,4 @@
-var grid1;
-var grid2;
+let grid1, grid2;
 
 $(function(){
 
@@ -7,6 +6,7 @@ $(function(){
 	$(".imask-month").each((i, el) => calendarUtil.monthMask(el.id));
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
 
+	// create grid
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 350,
@@ -41,7 +41,8 @@ $(function(){
 	grid1.on('click', (ev) => {
 		grid1.addSelection(ev);
 		grid1.clickSort(ev);
-    });
+	});
+	
     grid2 = new Grid({
 		el: document.getElementById('grid2'),
 		bodyHeight: 350,

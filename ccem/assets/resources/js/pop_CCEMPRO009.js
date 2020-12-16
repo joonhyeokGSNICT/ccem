@@ -1,4 +1,4 @@
-var grid;
+let grid;
 
 $(function(){
 	grid = new Grid({

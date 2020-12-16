@@ -1,6 +1,6 @@
 <!-- 
-	화면ID : CCEM-PRO-022, CCEM-PRO-031
-		상담등록 - 상담등록, 입회등록
+	화면ID : CCEM-PRO-022, CCEM-PRO-031, CCEM-PRO-032
+		상담등록 - 상담등록, 입회등록, 선생님소개
 	AS-IS : [CNS5800] 상담등록
 		상담화면 - 상담등록
 	팝업사이즈
@@ -41,7 +41,7 @@
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">선생님조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="PopupUtil.open('CCEMPRO028', 922, 575);">상담연계</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">관계회원</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="PopupUtil.open('CCEMPRO029', 728, 410);">관계회원</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">결과등록</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
@@ -257,7 +257,14 @@
 										<th>O/B결과</th>
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>상담결과</th>
-										<td><select class="form-control form-control-sm"></select></td>
+										<td>
+											<select class="form-control form-control-sm" id="selectbox1">
+												<option value=""></option>
+												<option value="CCEMPRO023">개인정보동의신청</option>
+												<option value="CCEMPRO024">고객직접퇴회</option>
+												<option value="CCEMPRO025">재통화예약</option>
+											</select>
+										</td>
 										<th>재확인</th>
 										<td><input type="checkbox" class=""></td>
 									</tr>
@@ -793,7 +800,6 @@
 		</div>
 	</div>
 	
-	<script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
@@ -802,7 +808,6 @@
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
 	<script src="../lib/jquery.inputmask.bundle.js"></script>
 	<script src="../js/config.js"></script>
-	<script src="../js/client.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO022.js"></script>
   

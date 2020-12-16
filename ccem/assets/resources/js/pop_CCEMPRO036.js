@@ -1,4 +1,4 @@
-var recordGrid;
+let grid;
 
 $(function(){
 
@@ -6,9 +6,9 @@ $(function(){
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
 	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, {drops: "up"}));
 
-	// 녹취LIST
-	recordGrid = new Grid({
-		el: document.getElementById('recordGrid'),
+	// 녹취LIST grid
+	grid = new Grid({
+		el: document.getElementById('grid'),
 		bodyHeight: 322,
 		rowHeaders: [
 			{
@@ -99,8 +99,9 @@ $(function(){
 			},
 		],
 	});
-	recordGrid.on('click', (ev) => {
-		recordGrid.addSelection(ev);
-		recordGrid.clickSort(ev);
-    });
+	grid.on('click', (ev) => {
+		grid.addSelection(ev);
+		grid.clickSort(ev);
+	});
+	
 });

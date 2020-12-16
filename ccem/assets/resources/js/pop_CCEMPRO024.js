@@ -1,6 +1,8 @@
 let grid1, grid2;
 
 $(function() {
+
+	// create grid
     grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 100,
@@ -35,7 +37,6 @@ $(function() {
 			},
 		],
 	});
-
 	grid1.on("click", (ev) => {
 		grid1.addSelection(ev);
 		grid1.clickSort(ev);
@@ -68,7 +69,6 @@ $(function() {
 			},
 		],
 	});
-
 	grid2.on("click", (ev) => {
 		grid2.addSelection(ev);
 		grid2.clickSort(ev);
