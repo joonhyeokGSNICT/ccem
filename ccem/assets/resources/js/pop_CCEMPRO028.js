@@ -4,12 +4,12 @@ $(function(){
 	
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id, {drops:"up"}));
+	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
 	// create grid
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 100,
-		scrollX: false,
 		rowHeaders: [
             {
 				type: 'checkbox',
@@ -23,6 +23,7 @@ $(function(){
 			{
 				header: '고객명',
 				name: 'name1',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -30,6 +31,7 @@ $(function(){
 			{
 				header: '학년',
 				name: 'name2',
+				width: 60,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -37,6 +39,7 @@ $(function(){
 			{
 				header: '회원번호',
 				name: 'name3',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -44,7 +47,8 @@ $(function(){
 			{
 				header: '과목',
 				name: 'name4',
-				align: "center",
+				minWidth: 150,
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 			},
@@ -58,7 +62,6 @@ $(function(){
 	grid2 = new Grid({
 		el: document.getElementById('grid2'),
 		bodyHeight: 100,
-		scrollX: false,
 		rowHeaders: [
 			{
 				type: 'rowNum',
@@ -92,6 +95,6 @@ $(function(){
 	grid2.on("click", (ev) => {
 		grid2.addSelection(ev);
 		grid2.clickSort(ev);
-    });
-    
+	});
+	
 });

@@ -39,10 +39,10 @@
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">신 규</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">선생님조회</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="PopupUtil.open('CCEMPRO028', 922, 575);">상담연계</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO028')">상담연계</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="PopupUtil.open('CCEMPRO029', 728, 410);">관계회원</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">결과등록</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO029');">관계회원</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO030')">결과등록</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 						</div>
@@ -219,7 +219,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(대)</th>
 										<td colspan="3">
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -229,10 +229,18 @@
 										<th>상담구분</th>
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>처리구분</th>
-										<td><select class="form-control form-control-sm"></select></td>
+										<td>
+											<select class="form-control form-control-sm" id="selectbox1">
+												<option value="0"></option>
+												<option value="1">단순상담</option>
+												<option value="2">상담원처리</option>
+												<option value="3">상담연계</option>
+												<option value="4">시정처리</option>
+											</select>
+										</td>
 										<th>분류(중)</th>
 										<td colspan="3">
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -245,7 +253,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(소)</th>
 										<td colspan="3">
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -258,7 +266,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>상담결과</th>
 										<td>
-											<select class="form-control form-control-sm" id="selectbox1">
+											<select class="form-control form-control-sm" onchange="openPopup(this.value)">
 												<option value=""></option>
 												<option value="CCEMPRO023">개인정보동의신청</option>
 												<option value="CCEMPRO024">고객직접퇴회</option>
@@ -291,7 +299,7 @@
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">입회연계</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">관계회원</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO029')">관계회원</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 						</div>
 					</div>
@@ -423,7 +431,7 @@
 										<th>접수일시</th>
 										<td>
 											<div class="input-group">
-												<input type="text" class="form-control form-control-sm imask-date" id="calendar5">
+												<input type="text" class="form-control form-control-sm" id="calendar5">
 												<input type="text" class="form-control form-control-sm imask-time" id="time4">
 											</div>
 										</td>
@@ -474,7 +482,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(대)</th>
 										<td>
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -485,7 +493,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(중)</th>
 										<td>
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -496,7 +504,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(소)</th>
 										<td>
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -759,7 +767,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(대)</th>
 										<td>
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -772,7 +780,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(중)</th>
 										<td>
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>
@@ -785,7 +793,7 @@
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>분류(소)</th>
 										<td>
-											<div class="input-group">
+											<div class="input-group" onclick="openPopup('CCEMPRO042')">
 												<input type="text" class="form-control form-control-sm" style="width: 30%;">
 												<input type="text" class="form-control form-control-sm" style="width: 70%;">
 											</div>

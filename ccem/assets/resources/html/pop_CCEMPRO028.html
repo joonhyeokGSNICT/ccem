@@ -4,7 +4,7 @@
 	AS-IS : [CNS2500] 상담/입회 연계, [CNS2600] 상담연계대상선택
 		
 	팝업사이즈
-		width: 922, height: 560
+		width: 830, height: 555
  -->
  <!DOCTYPE html>
 <html>
@@ -38,8 +38,7 @@
 				<col span="1" style="width: 10%;">
 				<col span="1" style="width: 20%;">
 				<col span="1" style="width: 10%;">
-				<col span="1" style="width: 15%;">
-				<col span="1" style="width: 15%;">
+				<col span="1" style="width: 30%;">
 				<col span="1" style="width: 10%;">
 				<col span="1" style="width: 20%;">
 			</colgroup>
@@ -47,7 +46,7 @@
 				<th>전화번호</th>
 				<td><input type="text" class="form-control form-control-sm"></td>
 				<th>핸드폰</th>
-				<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm"></td>
 				<th>직장전화</th>
 				<td><input type="text" class="form-control form-control-sm"></td>
 			</tr>
@@ -55,8 +54,12 @@
 				<th>학부모명</th>
 				<td><input type="text" class="form-control form-control-sm"></td>
 				<th>주소</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
-				<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+				<td colspan="3">
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm" style="width: 20%;">
+						<input type="text" class="form-control form-control-sm" style="width: 80%;">
+					</div>
+				</td>
 			</tr>
 		</table>
 		<table class="table table-sm table-bordered">
@@ -77,19 +80,22 @@
 		<table class="table table-sm table-bordered">
 			<colgroup>
 				<col span="1" style="width: 10%;">
-				<col span="1" style="width: 12%;">
-				<col span="1" style="width: 12%;">
+				<col span="1" style="width: 22%;">
 				<col span="1" style="width: 10%;">
 				<col span="1" style="width: 12%;">
-				<col span="1" style="width: 10%;">
+				<col span="1" style="width:  9%;">
 				<col span="1" style="width: 12%;">
-				<col span="1" style="width: 10%;">
-				<col span="1" style="width: 12%;">
+				<col span="1" style="width:  5%;">
+				<col span="1" style="width: 20%;">
 			</colgroup>
 			<tr>
 				<th>일시</th>
-				<td><input type="text" class="form-control form-control-sm imask-date" id="calendar1"></td>
-				<td><input type="text" class="form-control form-control-sm imask-date" id="calendar2"></td>
+				<td>
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm imask-date" id="calendar1" style="width: 60%;">
+						<input type="text" class="form-control form-control-sm imask-time" id="time1" style="width: 40%;">
+					</div>
+				</td>
 				<th>처리희망일</th>
 				<td><input type="text" class="form-control form-control-sm imask-date" id="calendar3"></td>
 				<th>회신여부</th>
@@ -99,17 +105,23 @@
 			</tr>
 			<tr>
 				<th>연계</th>
-				<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm"></td>
 				<th>연계구분</th>
 				<td><input type="text" class="form-control form-control-sm"></td>
 				<th>연계방법</th>
 				<td><select class="form-control form-control-sm"></select></td>
 				<th>FAX</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td>
+					<div class="input-group">
+						<input type="text" class="form-control form-control-sm">
+						<input type="text" class="form-control form-control-sm">
+						<input type="text" class="form-control form-control-sm">
+					</div>
+				</td>
 			</tr>
 			<tr>
 				<th>상담원</th>
-				<td colspan="2"><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm"></td>
 				<th>처리상태</th>
 				<td><select class="form-control form-control-sm"></select></td>
 				<th>FAX양식</th>
@@ -117,7 +129,7 @@
 			</tr>
 			<tr>
 				<th>연계대상자</th>
-				<td colspan="4"><input type="text" class="form-control form-control-sm"></td>
+				<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
 				<td colspan="4"></td>
 			</tr>
 		</table>
@@ -129,6 +141,7 @@
 	<script src="../lib/imask.js"></script>
     <script src="../lib/moment.min.js"></script>
     <script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/jquery.inputmask.bundle.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO028.js"></script>

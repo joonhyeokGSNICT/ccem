@@ -4,7 +4,7 @@ $(function () {
 
 	// select tab
 	let hash = window.location.hash;
-	if(hash === "#counselRgtrTab") $("#counselRgtrNav").click();
+	if (hash === "#counselRgtrTab") $("#counselRgtrNav").click();
 	else if (hash === "#entrRgtrTab") $("#entrRgtrNav").click();
 	else if (hash === "#tchrIntrdTab") $("#tchrIntrdNav").click();
 
@@ -18,19 +18,16 @@ $(function () {
 	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
 	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, { drops: "up" }));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
+	calendarUtil.init("calendar5", { opens: "center" });
 
-	// 상담결과 selectbox
-	$("#selectbox1").on("change", (ev) => {
-		let value = ev.target.value;
-		if(value === "CCEMPRO023") PopupUtil.open(value, 594, 670);
-		else if(value === "CCEMPRO024") PopupUtil.open(value, 663, 705);
-		else if(value === "CCEMPRO025") PopupUtil.open(value, 536, 330);
-	});
-	
 	createGrids();
 
 });
 
+/**
+ * createGrids
+ * - 상담등록에서 사용하는 모든 Grid를 생성합니다.
+ */
 const createGrids = () => {
 	// 상담등록 > 과목 grid
 	grid1 = new Grid({
@@ -64,7 +61,7 @@ const createGrids = () => {
 		grid1.clickSort(ev);
 		grid1.clickCheck(ev);
 	});
-	
+
 	// 상담등록 > 상담과목 grid
 	grid2 = new Grid({
 		el: document.getElementById('grid2'),
@@ -91,7 +88,7 @@ const createGrids = () => {
 		grid2.addSelection(ev);
 		grid2.clickSort(ev);
 	});
-		
+
 	// 상담등록 > 학습중인과목 grid
 	grid3 = new Grid({
 		el: document.getElementById('grid3'),
@@ -194,7 +191,8 @@ const createGrids = () => {
 }
 
 /**
- * 그리드 레이아웃을 새로 고칩니다. 숨겨진 상태에서 그리드를 렌더링 한 경우이 방법을 사용합니다.
+ * refreshGrid
+ * - 그리드 레이아웃을 새로 고칩니다. 숨겨진 상태에서 그리드를 렌더링 한 경우이 방법을 사용합니다.
  * @param {string} key - nav id
  */
 const refreshGrid = (key) => {
@@ -216,6 +214,42 @@ const refreshGrid = (key) => {
 			grid3.refreshLayout();
 			grid4.refreshLayout();
 			grid5.refreshLayout();
+			break;
+	}
+}
+
+/**
+ * openPopup
+ * - key 값에 따라 해당 팝업을 오픈합니다.
+ * @param {string} key
+ */
+const openPopup = (key) => {
+	switch (key) {
+		case "CCEMPRO023":	// 개인정보동의신청
+			PopupUtil.open(key, 594, 670);
+			break;
+		case "CCEMPRO024":	// 고객직접퇴회
+			PopupUtil.open(key, 663, 705);
+			break;
+		case "CCEMPRO025":	// 재통화예약
+			PopupUtil.open(key, 536, 330);
+			break;
+		case "CCEMPRO028":	// 상담연계
+			PopupUtil.open(key, 830, 555);
+			break;
+		case "CCEMPRO029":	// 관계회원
+			PopupUtil.open(key, 728, 410);
+			break;
+		case "CCEMPRO030":	// 결과등록
+			if ($("#selectbox1").val() === "2")
+				PopupUtil.open("CCEMPRO095", 1110, 603);
+			else
+				PopupUtil.open(key, 1098, 810);
+			break;
+		case "CCEMPRO042": // 분류
+			PopupUtil.open(key, 870, 610);
+			break;
+		default:
 			break;
 	}
 }

@@ -3,8 +3,9 @@ let grid1, grid2, grid3;
 $(function(){
 
 	// input mask
-	$(".imask-month").each((i, el) => calendarUtil.monthMask(el.id));
-	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	calendarUtil.init("calendar1");
+	calendarUtil.init("calendar2", {opens: "left"});
+	calendarUtil.monthMask("calendar3");
 
 	// create grid
 	grid1 = new Grid({
