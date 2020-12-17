@@ -11,9 +11,31 @@ var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상�
 var currentPop = { name : null };
 var currentUnPop = { name : null };
 
+var topBarClient = null;
+var sideBarClient = null;
+// TRIGGER
+//sideBar client 받기
+client.on("getSidebarClient", function(sideBarClient_d) {
+	sideBarClient = sideBarClient_d;
+});
+
 $(function(){
 	
 	//=== === === === === === === === === === === === === === === 초기 grid 초기화 === === === === === === === === === === === === === === ===
+	
+	topBarClient = client;
+	console.log(client);
+	
+	client.get('instances').then(function(instancesData) {
+		var instances = instancesData.instances;
+		console.log('client instances : ', instances);
+		for ( var instanceGuid in instances) {
+			if (instances[instanceGuid].location === 'ticket_sidebar') {
+				//console.log('topbar instanceGuid : ', instanceGuid);
+				sideBarClient =  client.instance(instanceGuid);
+			}
+		}
+	});
 	
 	//// EVENT ////
 	$("#goToTop").click(function(){

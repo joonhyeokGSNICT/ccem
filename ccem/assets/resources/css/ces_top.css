@@ -37,7 +37,8 @@ body *{font-size:13px!important;}
 }
 
 .tui-grid-cell-has-input .tui-grid-cell-content {
-	padding: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
 }
 
 /* navs */
@@ -212,3 +213,9 @@ ul.fancytree-container {
     overflow: auto;
     position: relative;
     }
+
+.topUp:hover {
+	color:#343a406b;
+	background:00000000;
+	border:none;
+}

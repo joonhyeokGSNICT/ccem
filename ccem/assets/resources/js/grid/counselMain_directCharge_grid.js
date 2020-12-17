@@ -99,7 +99,7 @@ $(function(){
 		// 상담메인 > 직접결제 > 알림톡발송이력 grid
 		counselMain_directCharge_alimSendList_grid = new Grid({
 			el: document.getElementById('counselMain_directCharge_alimSendList_grid'),
-			bodyHeight: 200,
+			bodyHeight: 300,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
@@ -172,7 +172,7 @@ $(function(){
 		// 상담메인 > 직접결제 > 청구서 grid
 		counselMain_directCharge_bill_grid = new Grid({
 			el: document.getElementById('counselMain_directCharge_bill_grid'),
-			bodyHeight: 200,
+			bodyHeight: 153,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
@@ -220,7 +220,7 @@ $(function(){
 		// 상담메인 > 직접결제 > 수신대상자 grid
 		counselMain_directCharge_reciverInfo_grid = new Grid({
 			el: document.getElementById('counselMain_directCharge_reciverInfo_grid'),
-			bodyHeight: 200,
+			bodyHeight: 100,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',

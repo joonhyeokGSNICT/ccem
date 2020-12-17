@@ -15,7 +15,10 @@
       },
       "nav_bar": {
     	"url" : "assets/resources/html/nav_bar.html"
-    	}
+		},
+		"ticket_sidebar":{
+			"url" : "assets/resources/html/ticket_sideBar.html"
+		}
     }
   },
   "version": "1.0",

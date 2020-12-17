@@ -18,7 +18,9 @@
 </head>
 <body>
 	<div class="container customBody">
-		<img src="../img/logo.png" style="z-index:1; position:absolute; top:20px;">
+		<div style="height: 60px;width: 160px;background: white;position:absolute;z-index: 1;">
+			<img src="../img/logo.png" style="z-index:1; position:absolute; top:10px;">
+		</div>
 		<div class="row">
 			<div class="col-12">
 				<nav class="navbar navbar-sm navbar-expand-sm bg-dark navbar-dark topbarNav" style="margin-top:10px; height:34px;">
@@ -30,7 +32,7 @@
       					<a class="nav-link" href="#">Link 2</a>
     				</li>
     				<li class="nav-item">
-      					<a class="nav-link" href="#">::&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</a>
+      					<a class="nav-link" href="#">::&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
     				</li>
 				    <!-- 초기화면 dropdown -->
 				  </ul>
@@ -42,11 +44,12 @@
 				        조회
 				      </a>
 				      <div class="dropdown-menu">
-				        <a class="dropdown-item" href="#">Link 1</a>
-				        <a class="dropdown-item" href="#">Link 2</a>
-				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO044.html','testPop','width=900, height=450, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">사업국/센터/구성원찾기</a>
-				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO042.html','testPop','width=900, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">상담등록/분류</a>
-				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="currentUnPop = window.open('pop_CCEMPRO046.html','testPop','width=1000, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no')" href="#">SMS 발신</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO035', 1110, 780);" href="#">상담조회 및 처리</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO037', 1100, 610);" href="#">입회조회</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO038', 1100, 710);" href="#">입회조회(성과)</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO044', 1000, 600);" href="#">사업국/센터/구성원찾기</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO042', 1000, 600);" href="#">상담등록/분류(TEST)</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO094', 600, 700);" href="#">MOS(커뮤니티)(TEST)</a>
 				      </div>
 				    </li>
 				</ul>
@@ -100,7 +103,6 @@
 									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="상담등록" id="CCEMPRO022_btn">
 									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="입회등록" id="counselHistSearch_btn">
 									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="선생님소개" id="counselHistSearch_btn">
-									<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="상담조회" id="counselHistSearch_btn">
 								</div>
 							</div>
 						</div>
@@ -139,10 +141,10 @@
 										</tr>
 										<tr>
 											<th>형제서열</th>
-											<td><select class="form-control form-control-sm" style="width:70%; float:left;">
+											<td><select class="form-control form-control-sm" style="width:55%; float:left;">
 												<option value="a">첫째</option>
 											</select>
-											<select class="form-control form-control-sm" style="width:30%;"><option value="b">형</select></td>
+											<select class="form-control form-control-sm" style="width:45%;"><option value="b">형</select></td>
 											<th>회원번호</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 										</tr>
@@ -194,8 +196,8 @@
 										<tr>
 											<th>대리인명</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm" style="width:70%; float:left;">
-												<select class="form-control form-control-sm" style="width:30%;">
+												<input type="text" class="form-control form-control-sm" style="width:55%; float:left;">
+												<select class="form-control form-control-sm" style="width:45%;">
 													<option>모</option>
 												</select>
 											</td>
@@ -281,7 +283,7 @@
 									</table>
 									<div class="row">
 										<div class="col-12">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="" onclick="PopupUtil.open('CCEMPRO046', 1000, 600);" style="padding: 0.25rem .0rem !important;">
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="신규" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
@@ -297,7 +299,7 @@
 								
 								<div id="counselMain_right" style="width:63%; float:right; margin-top: 0px; transition-duration: 3s; transition-timing-function: ease-in; transition-delay: 3s;";>
 									<div class="sticky-bot">
-										<button id="goToTop" type="button" class="btn btn-dark btn-sm">TOP ^</button>
+										<button id="goToTop" type="button" class="btn btn-dark btn-sm topUp">TOP ^</button>
 									</div>
 									<div class="row">
 										<div class="col-12">
@@ -548,10 +550,10 @@
 													</div>
 													<div class="col-sm-8">
 														<input type="button" class="btn btn-sm popup-btn counselMainBtn" value="현금영수증" id="counselInsert_btn" style="width:auto; line-height:1.0;">
-														<input type="button" class="btn btn-sm popup-btn customerBtn" value="카드자동이체" id="counselInsert_btn" style="width:auto; line-height:1.0;">
-														<input type="button" class="btn btn-sm popup-btn customerBtn" value="카드결제" id="counselInsert_btn" style="width:auto; line-height:1.0;">
-														<input type="button" class="btn btn-sm popup-btn customerBtn" value="환불이력" id="counselInsert_btn" style="width:auto; line-height:1.0;">
-														<input type="button" class="btn btn-sm popup-btn customerBtn" value="이체정보" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" onclick="PopupUtil.open('CCEMPRO007', 919, 695);" value="카드자동이체" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" onclick="PopupUtil.open('CCEMPRO008', 883, 598);" value="카드결제" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" onclick="PopupUtil.open('CCEMPRO009', 1000, 480);" value="환불이력" id="counselInsert_btn" style="width:auto; line-height:1.0;">
+														<input type="button" class="btn btn-sm popup-btn customerBtn" onclick="PopupUtil.open('CCEMPRO010', 960, 540);" value="이체정보" id="counselInsert_btn" style="width:auto; line-height:1.0;">
 													</div>
 												</div>
 											</div>
@@ -655,16 +657,18 @@
 										<!-- 직접결제 탭 -->
 										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="payCheckTab">
 											<div class="row mt-2">
-												<div class="col-3">
+												<div class="col-6">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 회비관리 현황</span>
+													<div style="float:right; width:70%;" class="mb-2">
+														<input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;">
+													</div>
 												</div>
-												<div class="col-9">
-													<input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;">
+												<div class="col-6">
 												</div>
 											</div>
 											<div id="counselMain_directCharge_duesInfo_grid"></div>
 											<div>
-												<div id="counselMain_directCharge_left" class="" style="width:49%; float:left;">
+												<div id="counselMain_directCharge_left" class="" style="width:58%; float:left;">
 													<div class="row mt-2">
 														<div class="col-12">
 															<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 알림톡 발송이력</span>
@@ -672,7 +676,7 @@
 													</div>
 													<div id="counselMain_directCharge_alimSendList_grid"></div>
 												</div>
-												<div id="counselMain_directCharge_right" class="" style="width:49%; float:left;">
+												<div id="counselMain_directCharge_right" class="" style="width:41%; float:right;">
 													<div class="row mt-2">
 														<div class="col-12">
 															<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 청구서</span>
@@ -688,7 +692,7 @@
 												</div>
 											</div>
 											<div class="row mt-2">
-												<div class="col-12">
+												<div class="col-12 mt-2">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 결제/취소 이력</span>
 												</div>
 											</div>
@@ -698,80 +702,53 @@
 										<!-- 변경이력 탭 -->
 										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="changeHistTab">
 											<div class="row mt-2">
-												<div class="col-3">
-													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 신상변경이력</span>
-												</div>
-												<div class="col-9">
-													<input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:10%; float:left;">
-												</div>
-											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
-											<div class="row mt-2">
 												<div class="col-8">
-													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 현재 학습장소</span>
-												</div>
-												<div class="col-4">
-													<input type="button" class="btn btn-xs popup-btn customerBtn" value="신규" id="counselInsert_btn" style="margin: 5px 0;">
-													<input type="button" class="btn btn-xs popup-btn customerBtn" value="저장" id="counselInsert_btn" disabled>
-													<input type="button" class="btn btn-xs popup-btn customerBtn" value="이력" id="counselInsert_btn">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 현재 학습장소이력</span>
 												</div>
 											</div>
-											<table class="table table-sm table-bordered">
-												<colgroup>
-													<col span="1" style="width:12%;">
-													<col span="1" style="width:21%;">
-													<col span="1" style="width:12%;">
-													<col span="1" style="width:21%;">
-													<col span="1" style="width:12%;">
-													<col span="1" style="width:21%;">
-												</colgroup>
-												<tr>
-													<th rowspan="2">학습장소</th>
-													<td colspan="5"><input type="text" class="form-control form-control-sm w-25" style="float:left;"><input type="text" class="form-control form-control-sm w-75"></td>
-												</tr>
-												<tr>
-													<td colspan="5"><input type="text" class="form-control form-control-sm"></td>
-												</tr>
-												<tr>
-													<th>전화번호</th>
-													<td colspan="1"><span></span></td>
-													<th>FAX번호</th>
-													<td><span></span></td>
-													<th>휴대폰</th>
-													<td><span></span></td>
-												</tr>
-											</table>
+											<div id="counselMain_changeHist_studySpot_grid"></div>
+											<div class="row mt-2">
+												<div class="col-6">
+													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 신상변경 이력</span>
+													<div style="float:right; width:70%;" class="mb-2">
+														<input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;">
+													</div>
+												</div>
+												<div class="col-6">
+												</div>
+											</div>
+											<div id="counselMain_changeHist_changeDetail_grid"></div>
 										</div>
 										
 										<!-- 정보동의 탭 -->
 										<div role="tabpanel" class="rightSideScroll tab-pane fade show" id="infoAgreeTab">
 											<div class="row mt-2">
-												<div class="col-2">
+												<div class="col-3">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 개인정보 동의</span>
 												</div>
-												<div class="col-10">
-													<input type="button" class="btn-info btn-xs popup-btn" value="SMS재전송" id="counselInsert_btn" style="margin: 5px 0;">
+												<div class="col-9">
+													<input type="button" class="btn-info btn-xs popup-btn mb-2" value="SMS재전송" id="counselInsert_btn" style="margin: 5px 0;">
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_infoAgree_infoAgreeList_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 개인정보 녹취 통화이력</span>
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_infoAgree_iaRecordList_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 약관 버전</span>
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_infoAgree_termsVersion_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 약관 녹취 통화이력</span>
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_infoAgree_termsRecordList_grid"></div>
 										</div>
 										
 										<!-- 자동퇴회 탭 -->
@@ -783,18 +760,19 @@
 												<div class="col-9">
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_autoResign_resignDetail_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 퇴회안내 발송이력</span>
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_autoResign_resignSendList_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 알림톡 메세지</span>
 												</div>
 											</div>
+											<textarea class="form-control" disabled rows="10" cols=""></textarea>
 										</div>
 										
 										<!-- 고객조사 탭 -->
@@ -806,18 +784,19 @@
 												<div class="col-10">
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_researchCust_rsrchCust_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 통화이력</span>
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_researchCust_rschCallHist_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 설문조사</span>
 												</div>
 											</div>
+											<div id="counselMain_researchCust_surveyList_grid"></div>
 										</div>
 										
 										<!-- SMS 탭 -->
@@ -829,13 +808,13 @@
 												<div class="col-9">
 												</div>
 											</div>
-											<div id="counselMain_directCharge_duesInfo_grid"></div>
+											<div id="counselMain_researchCust_smsLmsHist_grid"></div>
 											<div class="row mt-2">
 												<div class="col-12">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 발신 내용</span>
 												</div>
 											</div>
-											<textarea class="form-control" style="height: 200px;"></textarea>
+											<textarea class="form-control" style="height: 300px;" disabled></textarea>
 										</div>
 									</div>
 								</div>
@@ -1270,6 +1249,10 @@
   <script src="../js/grid/counselMain_studyTab_grid.js"></script>					<!-- 학습이력 grid -->
   <script src="../js/grid/counselMain_membershipDue_grid.js"></script>				<!-- 회비 grid -->
   <script src="../js/grid/counselMain_directCharge_grid.js"></script>				<!-- 직접결제 grid -->
+  <script src="../js/grid/counselMain_changeHist_grid.js"></script>					<!-- 변경이력 grid -->
+  <script src="../js/grid/counselMain_infoAgree_grid.js"></script>					<!-- 정보동의 grid -->
+  <script src="../js/grid/counselMain_autoResign_grid.js"></script>					<!-- 자동퇴회 grid -->
+  <script src="../js/grid/counselMain_researchCust_grid.js"></script>				<!-- 고객조사 grid -->
   <script src="../js/grid/custSearchList_grid.js"></script>							<!-- 고객찾기 grid -->
   
 </body>
