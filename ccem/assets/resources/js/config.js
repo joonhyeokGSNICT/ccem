@@ -1,13 +1,62 @@
-const GLOBAL_VARIABLE = {
+/*****************************************************
+ * API서버구분
+ * - ops : 운영서버
+ * - dev : 개발서버
+*************************************************** */
+const _ACTIVE = "dev";
+
+/*****************************************************
+ * 젠데스크구분
+ * - ops : 운영젠데스크
+ * - sandbox : 샌드박스
+*************************************************** */
+const _SPACE = "ops";
+/*************************************************** */
+
+/**
+ * API 접속 정보
+ */
+const API_INFO = {
     ops: {
-        api: "",
+        url: "",
     },
     dev: {
-        api: "https://devccem.daekyo.co.kr",
+        url: "https://devccem.daekyo.co.kr",
     },
-    local: {
-        api: "",
-    }
 }
-const ACTIVE = "dev";
-const API_SERVER = GLOBAL_VARIABLE[ACTIVE]["api"];
+
+/**
+ * 젠데스크 요소 정보
+ */
+const ZDK_INFO = {
+    ops: {
+        ticketForm: {
+
+        },
+        ticketField: {
+            
+        },
+        userField: {
+
+        },
+        brand: {
+
+        },
+    },
+    sandbax: {
+        ticketForm: {
+
+        },
+        ticketField: {
+
+        },
+        userField: {
+
+        },
+        brand: {
+
+        },
+    },
+}
+
+const API_SERVER = API_INFO[_ACTIVE]["url"];
