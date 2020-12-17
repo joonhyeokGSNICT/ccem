@@ -42,6 +42,13 @@ $(function(){
 		$('.rightSideScroll').scrollTop(0);
 	});
 	
+	// 조회버튼 부
+	$(".searchBtn").click(function(){
+		var currentDiv = $(this).parent().attr("id");
+		console.log(currentDiv);
+		customerSearch(currentDiv);
+	});
+	
 	$(".popup-btn").click(function() {
 		var popDepth = $(this).attr('id').split('_').length;
 		if(popDepth == '2'){
@@ -70,6 +77,37 @@ $(function(){
 	});
 	
 });
+
+/**
+ * 고객,선생님 조회 func
+ * @param String
+ * @returns
+ * 20-12-17 최준혁
+ */
+function customerSearch(currentDiv){
+	switch(currentDiv){
+	case 'custSearchDiv' : 
+		var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{"CHK_NAME":"Y","CHK_TELNO":"Y", "NAME": "김소라" , "TELPNO2":"2557"}]
+		};
+		$.ajax({
+		    url: API_SERVER + '/test.getCustList.do',
+		    type: 'POST',
+		    contentType: "application/json",
+		    data: JSON.stringify(param),
+		    success: function (response) {
+		        console.log(JSON.parse(response));
+		        customerSearchList_grid.resetData(JSON.parse(response).recv1);
+		        
+		    }, error: function (response) {
+		        console.error('getToken error response ::: ', response);
+		    }
+		});
+		break;
+	}
+}
 
 function openPop(popName,w,h){
 	console.log(popName);

@@ -3,7 +3,7 @@ const GLOBAL_VARIABLE = {
         api: "",
     },
     dev: {
-        api: "",
+        api: "https://devccem.daekyo.co.kr",
     },
     local: {
         api: "",
