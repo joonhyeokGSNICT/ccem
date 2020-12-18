@@ -1,0 +1,36 @@
+/* body */
+body {
+    min-width: 400px;
+}
+
+/* Tab */
+.tab_width {
+    width:85px;
+}
+.tab_Content {
+    border:2px solid #123f8a;
+    padding:0px;
+    background-color: #eeeeee;
+}
+
+/* Table */
+.top_Table_Title {
+    background-color: #97c2fd8f; 
+    width:15%; 
+    font-weight:bold; 
+    text-align:center;
+}
+.top_Table_Input {
+    padding: 0 5px;
+}
+.table_Title {
+    font-weight:bold; 
+    text-align:center;
+}
+.table_button{
+    background-color: #123f8a; 
+    color: white; 
+    font-weight: bold;
+    padding: 0px 9px 1px; 
+    margin-right:5px;
+}

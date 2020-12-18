@@ -3,9 +3,9 @@ $(function(){
 	customerSearchList_grid = new Grid({
 		el: document.getElementById('customerSearchList_grid'),
 		bodyHeight: 480,
-		scrollX: false,
 		pageOptions: {
 			perPage: 20,
+			useClient: true
 		},
 		rowHeaders: [{
             type: 'rowNum',
@@ -28,7 +28,7 @@ $(function(){
             },*/
             {
                 header: '상태',
-                name: 'custNm',
+                name: 'STATUS',
                 width: 200,
                 align: "center",
                 sortable: true,
@@ -36,7 +36,7 @@ $(function(){
             },
             {
                 header: '구분',
-                name: 'custSeq',
+                name: 'CUST_MK',
                 width: 100,
                 align: "center",
                 sortable: true,
@@ -44,7 +44,7 @@ $(function(){
             },
             {
                 header: '고객명',
-                name: 'reserverDtm',
+                name: 'NAME',
                 width: 150,
                 align: "center",
                 sortable: true,
@@ -52,7 +52,7 @@ $(function(){
             },
             {
                 header: '학년',
-                name: 'chprNm',
+                name: 'GRADE',
                 width: 150,
                 align: "center",
                 sortable: true,
@@ -60,7 +60,7 @@ $(function(){
             },
             {
                 header: '회원번호',
-                name: 'consStatNm',
+                name: 'MBR_ID',
                 width: 100,
                 align: "center",
                 sortable: true,
@@ -68,7 +68,7 @@ $(function(){
             },
             {
                 header: '생년월일',
-                name: 'consQustCntn',
+                name: 'RSDNO',
                 width: 200,
                 align: "center",
                 sortable: true,
@@ -76,7 +76,7 @@ $(function(){
             },
             {
                 header: '자택전화',
-                name: 'consAnsrCntn',
+                name: 'TELPNO',
                 width: 200,
                 align: "center",
                 sortable: true,
@@ -84,7 +84,7 @@ $(function(){
             },
             {
                 header: '회원모HP',
-                name: 'consTyp1Nm',
+                name: 'MOBILNO_MBR',
                 width: 150,
                 align: "center",
                 sortable: true,
@@ -92,7 +92,7 @@ $(function(){
             },
             {
                 header: '회원HP',
-                name: 'consTyp2Nm',
+                name: 'MOBILNO',
                 width: 150,
                 align: "center",
                 sortable: true,
@@ -100,7 +100,7 @@ $(function(){
             },
             {
                 header: '회원부HP',
-                name: 'consTyp3Nm',
+                name: 'MOBILNO_FAT',
                 width: 150,
                 align: "center",
                 sortable: true,
@@ -108,60 +108,44 @@ $(function(){
             },
             {
                 header: '우편',
-                name: 'consTyp4Nm',
+                name: 'ZIPCDE',
                 width: 150,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
-                header: '연락처',
-                name: 'custInfo',
+                header: '주소',
+                name: 'ADDR',
                 width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
-                header: '접수채널',
-                name: 'acpgChnlNm',
+                header: '본부',
+                name: 'UPDEPTNAME',
                 width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
-                header: '발신번호',
-                name: 'incoTlno',
-                width: 100,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            /*{
-                header: '상세이력',
-                name: 'DETAILCONT',
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-                renderer: CustomColumn,
-            },*/
-            {
-                header: '처리방법',
-                name: 'consStatNm',
+                header: '사업국',
+                name: 'DEPTNAME',
                 width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
-                header: '처리일시',
-                name: 'consDspsDttm',
-                width: 150,
+                header: '센터',
+                name: 'LC_NAME',
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
-            }
+            },
         ],
     });
 	customerSearchList_grid.on('click', (ev) => {
@@ -200,7 +184,7 @@ $(function(){
             },*/
             {
                 header: '구분',
-                name: 'custNm',
+                name: 'CUST_MK',
                 width: 200,
                 align: "center",
                 sortable: true,

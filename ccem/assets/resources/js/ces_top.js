@@ -21,8 +21,6 @@ client.on("getSidebarClient", function(sideBarClient_d) {
 
 $(function(){
 	
-	//=== === === === === === === === === === === === === === === 초기 grid 초기화 === === === === === === === === === === === === === === ===
-	
 	topBarClient = client;
 	console.log(client);
 	
@@ -37,9 +35,28 @@ $(function(){
 		}
 	});
 	
-	//// EVENT ////
+	//// EVENT //// === === === === === === === === === === === === === === === === === === === 
 	$("#goToTop").click(function(){
 		$('.rightSideScroll').scrollTop(0);
+	});
+	
+	// 탭 이동시 이벤트
+	$("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
+		switch($(this).attr('id')){
+		// 고객정보 - 고객, 선생님
+		case 'customerTab':
+			$("#assignMemberbtn").css("display","");
+			$("#transferCallbtn").css("display","none");
+			break;
+		case 'teacherTab':
+			$("#assignMemberbtn").css("display","none");
+			$("#transferCallbtn").css("display","");
+			break;
+		// 고객찾기
+		case 'customerSearch':
+			customerSearchList_grid.refreshLayout();
+			break;
+		}
 	});
 	
 	// 조회버튼 부
@@ -100,7 +117,7 @@ function customerSearch(currentDiv){
 		    data: JSON.stringify(param),
 		    success: function (response) {
 		        console.log(response);
-		        customerSearchList_grid.resetData(JSON.parse(response).recv1);
+		        customerSearchList_grid.resetData(response.recv1);
 		        
 		    }, error: function (response) {
 		    }
