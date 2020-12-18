@@ -2,8 +2,8 @@ $(function(){
 	// 고객찾기 > 고객찾기 grid
 	customerSearchList_grid = new Grid({
 		el: document.getElementById('customerSearchList_grid'),
-		bodyHeight: 480,
-		scrollX: false,
+		bodyHeight: 400,
+		//scrollX: false,
 		pageOptions: {
 			perPage: 20,
 		},
@@ -174,7 +174,7 @@ $(function(){
 	// 고객찾기 > 선생님조회 grid
 	teacherSearchList_grid = new Grid({
 		el: document.getElementById('teacherSearchList_grid'),
-		bodyHeight: 500,
+		bodyHeight: 420,
 		pageOptions: {
 			perPage: 20,
 		},

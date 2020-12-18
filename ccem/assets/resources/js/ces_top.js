@@ -93,12 +93,13 @@ function customerSearch(currentDiv){
 		    send1: [{"CHK_NAME":"Y","CHK_TELNO":"Y", "NAME": "김소라" , "TELPNO2":"2557"}]
 		};
 		$.ajax({
-		    url: API_SERVER + '/test.getCustList.do',
+		    url: API_SERVER + '/cns.getCustList.do',
 		    type: 'POST',
+		    dataType: 'json',
 		    contentType: "application/json",
 		    data: JSON.stringify(param),
 		    success: function (response) {
-		        console.log(JSON.parse(response));
+		        console.log(response);
 		        customerSearchList_grid.resetData(JSON.parse(response).recv1);
 		        
 		    }, error: function (response) {
