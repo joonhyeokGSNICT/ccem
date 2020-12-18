@@ -1,4 +1,33 @@
+let customerSearchList_grid;
+let teacherSearchList_grid;
+
 $(function(){
+    
+    // select tab
+    let hash = window.location.hash;
+    if (hash === "#counselMain_customerSearchTab") $("#customerTab").click();
+    else if (hash === "#counselMain_teacherSearchTab") $("#teacherTab").click();
+
+    // insert hash
+    $('.nav-link').on('click', ev => window.location.hash = ev.target.hash);
+
+    // grid refreshLayout
+    $('.nav-link').on('shown.bs.tab', ev => {
+        let navid = ev.target.id;
+        switch (navid) {
+            case "customerTab":
+                customerSearchList_grid.refreshLayout();
+                break;
+            case "teacherTab":
+                teacherSearchList_grid.refreshLayout();
+                break;
+            default:
+                customerSearchList_grid.refreshLayout();
+                teacherSearchList_grid.refreshLayout();
+                break;
+        }
+    });
+    
 	// 고객찾기 > 고객찾기 grid
 	customerSearchList_grid = new Grid({
 		el: document.getElementById('customerSearchList_grid'),
