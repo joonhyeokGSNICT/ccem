@@ -37,8 +37,8 @@
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">신 규</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">선생님조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO033')">고객조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO034')">선생님조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO028')">상담연계</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO029');">관계회원</button>&nbsp;
@@ -58,11 +58,15 @@
 									</colgroup>
 									<tr>
 										<th>과목검색</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
+										<td><input type="text" class="form-control form-control-sm" oninput="searchProd(grid1, 'PRDT_NAME', this.value)"></td>
 									</tr>
 									<tr>
 										<th>과목군</th>
-										<td><select class="form-control form-control-sm"> </select></td>
+										<td>
+											<select class="form-control form-control-sm" name="PRDT_GRP" onchange="searchProd(grid1, 'PRDT_GRP', this.value)">
+												<option value="">전체</option>
+											</select>
+										</td>
 									</tr>
 								</table>
 								<div id="grid1"></div>
@@ -314,11 +318,15 @@
 									</colgroup>
 									<tr>
 										<th>과목검색</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
+										<td><input type="text" class="form-control form-control-sm" oninput="searchProd(grid4, 'PRDT_NAME', this.value)"></td>
 									</tr>
 									<tr>
 										<th>과목군</th>
-										<td><select class="form-control form-control-sm"> </select></td>
+										<td>
+											<select class="form-control form-control-sm" name="PRDT_GRP" onchange="searchProd(grid4, 'PRDT_GRP', this.value)">
+												<option value="">전체</option>
+											</select>
+										</td>
 									</tr>
 								</table>
 								<div id="grid4"></div>

@@ -21,12 +21,13 @@ $(function () {
 	calendarUtil.init("calendar5", { opens: "center" });
 
 	createGrids();
+	getCodeList()
+	getProd();
 
 });
 
 /**
- * createGrids
- * - 상담등록에서 사용하는 모든 Grid를 생성합니다.
+ * 상담등록에서 사용하는 모든 Grid를 생성합니다.
  */
 const createGrids = () => {
 	// 상담등록 > 과목 grid
@@ -49,10 +50,21 @@ const createGrids = () => {
 		columns: [
 			{
 				header: '과목',
-				name: 'name1',
-				align: "center",
+				name: 'PRDT_NAME',
+				minWidth: 142,
+				align: "left",
 				sortable: true,
 				ellipsis: true,
+				filter: "text",
+			},
+			{
+				header: '과목군코드',
+				name: 'PRDT_GRP',
+				width: 50,
+				align: "left",
+				sortable: true,
+				ellipsis: true,
+				filter: "text",
 			},
 		],
 	});
@@ -149,10 +161,21 @@ const createGrids = () => {
 		columns: [
 			{
 				header: '과목',
-				name: 'name1',
-				align: "center",
+				name: 'PRDT_NAME',
+				minWidth: 142,
+				align: "left",
 				sortable: true,
 				ellipsis: true,
+				filter: "text",
+			},
+			{
+				header: '과목군코드',
+				name: 'PRDT_GRP',
+				width: 50,
+				align: "left",
+				sortable: true,
+				ellipsis: true,
+				filter: "text",
 			},
 		],
 	});
@@ -191,8 +214,7 @@ const createGrids = () => {
 }
 
 /**
- * refreshGrid
- * - 그리드 레이아웃을 새로 고칩니다. 숨겨진 상태에서 그리드를 렌더링 한 경우이 방법을 사용합니다.
+ * 그리드 레이아웃을 새로 고칩니다. 숨겨진 상태에서 그리드를 렌더링 한 경우이 방법을 사용합니다.
  * @param {string} key - nav id
  */
 const refreshGrid = (key) => {
@@ -219,8 +241,7 @@ const refreshGrid = (key) => {
 }
 
 /**
- * openPopup
- * - key 값에 따라 해당 팝업을 오픈합니다.
+ * key 값에 따라 해당 팝업을 오픈합니다.
  * @param {string} key
  */
 const openPopup = (key) => {
@@ -246,6 +267,12 @@ const openPopup = (key) => {
 			else
 				PopupUtil.open(key, 1098, 810);
 			break;
+		case "CCEMPRO033":
+			PopupUtil.open(key, 1184, 650);
+			break;
+		case "CCEMPRO034":
+			PopupUtil.open("CCEMPRO033", 1184, 650, "#counselMain_teacherSearchTab");
+			break;
 		case "CCEMPRO042": // 분류
 			PopupUtil.open(key, 870, 610);
 			break;
@@ -253,3 +280,71 @@ const openPopup = (key) => {
 			break;
 	}
 }
+
+/**
+ * 과목검색
+ * @param {object} grid grid1, grid4
+ * @param {string} column PRDT_NAME, PRDT_GRP
+ * @param {string} keyword
+ */
+const searchProd = (grid, column, keyword) => {
+	grid.unfilter();
+	grid.filter(column, [{ code: 'contain', value: keyword }]);
+}
+
+/**
+ * 공통코드 조회
+ */
+const getCodeList = () => {
+
+	let CODE_MK_LIST = ["PRDT_GRP", ];	// 과목군
+
+	CODE_MK_LIST.forEach(codeName => {
+		$.ajax({
+			url: `${API_SERVER}/sys.getCommCode.do`,
+			method: 'POST',
+			contentType: "application/json; charset=UTF-8",
+			dataType: "json",
+			data: JSON.stringify({
+				senddataids: ["dsSend"],
+				recvdataids: ["dsRecv"],
+				dsSend: [{ CODE_MK: codeName }],
+			}),
+			success: (data) => {
+				if(data.errcode == "0") {
+					let codeList = data.dsRecv;
+					codeList.forEach(code => {
+						$(`select[name='${codeName}']`).append(new Option(code.CODE_NAME, code.CODE_ID));
+					});
+				}
+			},
+		});
+	});
+	
+}
+
+/**
+ * 상담 과목 리스트 조회
+ */
+const getProd = () => {
+	$.ajax({
+		url: `${API_SERVER}/cns.getProd.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}],
+		}),
+		success: (data) => {
+			if (data.errcode != "0") {
+				alert(`[API ERROR] ${data.errcode} ${data.errmsg}`);
+				return;
+			}
+			grid1.resetData(data.dsRecv);
+			grid4.resetData(data.dsRecv);
+		},
+	});
+}
+
