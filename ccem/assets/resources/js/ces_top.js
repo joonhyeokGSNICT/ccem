@@ -93,7 +93,7 @@ function customerSearch(currentDiv){
 		    send1: [{"CHK_NAME":"Y","CHK_TELNO":"Y", "NAME": "김소라" , "TELPNO2":"2557"}]
 		};
 		$.ajax({
-		    url: API_SERVER + '/cns.getCustList.do',
+		    url: API_SERVER + '/test.getCustList.do',
 		    type: 'POST',
 		    dataType: 'json',
 		    contentType: "application/json",
@@ -103,7 +103,6 @@ function customerSearch(currentDiv){
 		        customerSearchList_grid.resetData(JSON.parse(response).recv1);
 		        
 		    }, error: function (response) {
-		        console.error('getToken error response ::: ', response);
 		    }
 		});
 		break;
