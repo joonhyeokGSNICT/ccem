@@ -152,11 +152,11 @@
 											<th>연계부서</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 											<th>LC</th>
-											<td class="tdCheck"><input type="checkbox" class="" value=""></td>
+											<td class="text-center align-bottom"><input type="checkbox"></td>
 											<th>YC</th>
-											<td class="tdCheck"><input type="checkbox" class="" value=""></td>
+											<td class="text-center align-bottom"><input type="checkbox"></td>
 											<th>HL</th>
-											<td class="tdCheck"><input type="checkbox" class="" value=""></td>
+											<td class="text-center align-bottom"><input type="checkbox"></td>
 										</tr>
 									</table>
 								</div>
@@ -172,7 +172,7 @@
 										</colgroup>
 										<tr>
 											<th>상담일자</th>
-											<td><input type="text" class="form-control form-control-sm imask-date" id="calendar1"></td>
+											<td><input type="text" class="form-control form-control-sm" id="calendar1" readonly></td>
 											<th>접수번호</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 											<th>순번</th>
@@ -180,7 +180,7 @@
 										</tr>
 										<tr>
 											<th>상담시간</th>
-											<td><input class="form-control form-control-sm imask-time" id="time1"></td>
+											<td><input class="form-control form-control-sm" id="time1" readonly></td>
 											<th>상담채널</th>
 											<td colspan="3"><select class="form-control form-control-sm"></select></td>
 										</tr>
@@ -265,7 +265,7 @@
 									</tr>
 									<tr>
 										<th>처리희망일</th>
-										<td><input type="text" class="form-control form-control-sm imask-date-up" id="calendar2"/></td>
+										<td><input type="text" class="form-control form-control-sm" id="calendar2"/></td>
 										<th>O/B결과</th>
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>상담결과</th>
@@ -278,7 +278,7 @@
 											</select>
 										</td>
 										<th>재확인</th>
-										<td><input type="checkbox" class=""></td>
+										<td class="text-center align-bottom"><input type="checkbox"></td>
 									</tr>
 									<tr>
 										<th>상담경로</th>
@@ -288,7 +288,7 @@
 										<th>상담등급</th>
 										<td><select class="form-control form-control-sm"></select></td>
 										<th>VOC</th>
-										<td><input type="checkbox" class=""></td>
+										<td class="text-center align-bottom"><input type="checkbox"></td>
 									</tr>
 								</table>
 							</div>
@@ -300,7 +300,7 @@
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">고객조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn"onclick="openPopup('CCEMPRO033')">고객조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">입회연계</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO029')">관계회원</button>&nbsp;
@@ -377,7 +377,7 @@
 										</colgroup>
 										<tr>
 											<th>상담일자</th>
-											<td><input type="text" class="form-control form-control-sm imask-date" id="calendar3"></td>
+											<td><input type="text" class="form-control form-control-sm calendar" id="calendar3"></td>
 											<th>접수번호</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 											<th>순번</th>
@@ -432,7 +432,7 @@
 										<th>연계일시</th>
 										<td>
 											<div class="input-group">
-												<input type="text" class="form-control form-control-sm imask-date" id="calendar4">
+												<input type="text" class="form-control form-control-sm calendar" id="calendar4">
 												<input type="text" class="form-control form-control-sm imask-time" id="time3">
 											</div>
 										</td>
@@ -672,7 +672,7 @@
 										</colgroup>
 										<tr>
 											<th>상담일자</th>
-											<td><input type="text" class="form-control form-control-sm imask-date" id="calendar6"></td>
+											<td><input type="text" class="form-control form-control-sm calendar" id="calendar6"></td>
 											<th>접수번호</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 											<th>순번</th>
@@ -706,7 +706,7 @@
 										<th>연계일시</th>
 										<td>
 											<div class="input-group">
-												<input type="text" class="form-control form-control-sm imask-date" id="calendar7" style="width: 55%;">
+												<input type="text" class="form-control form-control-sm calendar" id="calendar7" style="width: 55%;">
 												<input type="text" class="form-control form-control-sm imask-time" id="time6" style="width: 45%;">
 											</div>
 										</td>
