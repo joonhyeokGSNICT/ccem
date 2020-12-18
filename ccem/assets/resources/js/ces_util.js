@@ -525,3 +525,24 @@ function exitAlert(id,w,h){
 		}
 	}
 };
+
+// Global Ajax Event Handlers
+$(this).ajaxStart(function () {
+
+});
+
+ $(this).ajaxStop(function () {
+
+});
+
+$(this).ajaxError((event, jqxhr, settings, thrownError) => {
+    let statusText = jqxhr.statusText;
+    let url = settings.url;
+    let errMsg = "";
+
+    if(statusText === "timeout") errMsg = "API서버 통신이 원활하지 않습니다. 잠시 후에 다시 시도해 주세요.";
+    else errMsg = "API서버에 연결할 수 없습니다. 사용자 네트워크 연결이 불안정 하거나, 방화벽 등에 의해 API사용이 차단된 환경일 수 있습니다. 이 오류가 반복되면 네트워크 관리자에게 문의하세요.";
+    
+    if(typeof client != "undefined") client.invoke("notify", `${errMsg}<br><br>${url}`, 60000);
+    else alert(`${errMsg}\n\n${url}`);
+});
