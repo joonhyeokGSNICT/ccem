@@ -2,9 +2,11 @@ let grid;
 
 $(function(){
 
-	// input mask
-	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
-	$(".imask-date-up").each((i, el) => calendarUtil.init(el.id, {drops: "up"}));
+	// create calendar
+	$(".calendar").each((i, el) => {
+		if(el.id === "calendar3") calendarUtil.init(el.id, {drops: "up"});
+		else calendarUtil.init(el.id);
+	});
 
 	// 녹취LIST grid
 	grid = new Grid({

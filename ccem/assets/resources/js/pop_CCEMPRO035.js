@@ -2,8 +2,8 @@ let grid1, grid2;
 
 $(function(){
 
-	// input mask
-	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	// create calendar
+	$(".calendar").each((i, el) => calendarUtil.init(el.id));
 
 	// 상담조회 > 상담조회 리스트 grid
 	grid1 = new Grid({

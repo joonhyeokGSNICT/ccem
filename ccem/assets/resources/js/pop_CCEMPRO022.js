@@ -3,22 +3,24 @@ let prodList;	// 과목리스트
 
 $(function () {
 
-	// select tab
+	// grid refreshLayout
+	$('.nav-link').on('shown.bs.tab', ev => refreshGrid(ev.target.id));
+
+	// insert hash
+	$('.nav-link').on('click', ev => window.location.hash = ev.target.hash);
+
+	// select tab by hash
 	let hash = window.location.hash;
 	if (hash === "#counselRgtrTab") $("#counselRgtrNav").click();
 	else if (hash === "#entrRgtrTab") $("#entrRgtrNav").click();
 	else if (hash === "#tchrIntrdTab") $("#tchrIntrdNav").click();
 
-	// insert hash
-	$('.nav-link').on('click', ev => window.location.hash = ev.target.hash);
-
-	// grid refreshLayout
-	$('.nav-link').on('shown.bs.tab', ev => refreshGrid(ev.target.id));
-
 	// create calendar
-	$(".calendar").each((i, el) => calendarUtil.init(el.id));
-	calendarUtil.init("calendar2", { drops: "up" });
-	calendarUtil.init("calendar5", { opens: "center" });
+	$(".calendar").each((i, el) => {
+		if(el.id === "calendar2") calendarUtil.init(el.id, { drops: "up" });
+		else if(el.id === "calendar5") calendarUtil.init(el.id, { opens: "center" });
+		else calendarUtil.init(el.id);
+	});
 
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
@@ -27,7 +29,6 @@ $(function () {
 	// 날짜와 시간 초기값 세팅
 	$("#calendar1").val(getDateFormat());
 	$("#calendar2").val(getDateFormat());
-	$(".imask-date-up").val(getDateFormat());
 	$("#time1").val(getTimeFormat());
 
 	createGrids();
@@ -85,10 +86,10 @@ const createGrids = () => {
 		grid1.clickCheck(ev);
 	});
 	grid1.on("check", ev => {
-		checkProd(grid1, grid2);
+		checkProd(grid2, grid1.getRow(ev.rowKey));
 	});
 	grid1.on("uncheck", ev => {
-		checkProd(grid1, grid2);
+		uncheckProd(grid2, grid1.getRow(ev.rowKey));
 	});
 
 	// 상담등록 > 상담과목 grid
@@ -202,10 +203,10 @@ const createGrids = () => {
 		grid4.clickCheck(ev);
 	});
 	grid4.on("check", ev => {
-		checkProd(grid4, grid5);
+		checkProd(grid5, grid4.getRow(ev.rowKey));
 	});
 	grid4.on("uncheck", ev => {
-		checkProd(grid4, grid5);
+		uncheckProd(grid5, grid4.getRow(ev.rowKey));
 	});
 
 	// 입회등록 > 입회과목 grid
@@ -312,9 +313,6 @@ const openPopup = (key) => {
  */
 const searchProd = (grid, column, keyword) => {
 
-	// grid.unfilter();
-	// grid.filter(column, [{ code: 'contain', value: keyword }]);
-
 	// filter
 	keyword = keyword.toUpperCase();
 	let data = prodList.filter(el => (el[column].toUpperCase()).includes(keyword));
@@ -335,20 +333,51 @@ const searchProd = (grid, column, keyword) => {
 
 	grid.resetData(data);
 
+	// checked check
+	let checkedGrid;
+	if (grid.el.id === "grid1") {
+		checkedGrid = grid2;
+	} else if (grid.el.id === "grid4") {
+		checkedGrid = grid5;
+	}
+	if (checkedGrid) {
+		let checkedData = checkedGrid.getData();
+		checkedData.forEach(el => {
+			let gridData = grid.getData();
+			for (let row of gridData) {
+				if (row.PRDT_ID == el.PRDT_ID) {
+					grid.check(row.rowKey);
+					break;
+				}
+			}
+		});
+	}
+
 }
 
 /**
  * 과목선택
- * @param {object} fromGrid grid
- * @param {object} toGrid grid
  */
-const checkProd = (fromGrid, toGrid) => {
+const checkProd = (grid, data) => {
 
-	// get checked rows
-	let data = fromGrid.getCheckedRows();
+	// 중복체크
+	let gridData = grid.getData();
+	for(let row of gridData) {
+		if(data.PRDT_ID == row.PRDT_ID) return;
+	}
+	
+	grid.appendRow(data);
+	
+	// sort
+	let sortKey = "PRDT_SEQ";
+	gridData = grid.getData();
+	gridData.sort(function (a, b) {
+		return a[sortKey] < b[sortKey] ? -1 :
+					a[sortKey] > b[sortKey] ? 1 : 0;
+	});
 
 	// delete rowKey
-	data.map(el => {
+	gridData = gridData.map(el => {
 		return {
 			PRDT_CDE: 	el.PRDT_CDE,
 			PRDT_GRP: 	el.PRDT_GRP,
@@ -361,7 +390,23 @@ const checkProd = (fromGrid, toGrid) => {
 		};
 	});
 
-	toGrid.resetData(data);
+	grid.resetData(gridData);
+}
+
+/**
+ * 과목선택 해제
+ */
+const uncheckProd = (grid, data) => {
+
+	let id = data.PRDT_ID;
+	let gridData = grid.getData();
+
+	for (let row of gridData) {
+		if (row.PRDT_ID === id) {
+			grid.removeRow(row.rowKey);
+			break;
+		}
+	}
 
 }
 
@@ -404,7 +449,7 @@ const getDateFormat = (type, num) => {
     let y = date.getFullYear();
     let m = ("0" + (date.getMonth() + 1)).slice(-2);
     let d = ("0" + date.getDate()).slice(-2);
-    return y + "-" + m + "-" + d;
+    return `${y}-${m}-${d}`;
 }
 
 /**
@@ -412,11 +457,10 @@ const getDateFormat = (type, num) => {
  */
 const getTimeFormat = () => {
 	let today = new Date();   
-	let hours = today.getHours(); 
-	let minutes = today.getMinutes();
-	let seconds = today.getSeconds();
-	let milliseconds = today.getMilliseconds();
-	return `${hours}:${minutes}:${seconds}`;
+	let h = ("0"+today.getHours()).slice(-2); 
+	let m = ("0" + today.getMinutes()).slice(-2);
+	let s = ("0" + today.getSeconds()).slice(-2);
+	return `${h}:${m}:${s}`;
 }
 
 /**
@@ -465,7 +509,7 @@ const getProd = () => {
 			dsSend: [{}],
 		}),
 	}
-	$.ajax(settings).done((data) => {
+	$.ajax(settings).done(data => {
 		if (checkApi(data, settings)) {
 			prodList = data.dsRecv;
 			grid1.resetData(data.dsRecv);

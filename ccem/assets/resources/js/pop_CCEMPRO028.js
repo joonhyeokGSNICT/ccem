@@ -2,8 +2,10 @@ let grid1, grid2;
 
 $(function(){
 	
+	// create calendar
+	$(".calendar").each((i, el) => calendarUtil.init(el.id, {drops:"up"}));
+	
 	// input mask
-	$(".imask-date").each((i, el) => calendarUtil.init(el.id, {drops:"up"}));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
 	// create grid

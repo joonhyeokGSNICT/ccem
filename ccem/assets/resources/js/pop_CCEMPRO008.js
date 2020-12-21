@@ -3,7 +3,7 @@ let grid1, grid2;
 $(function(){
 
 	// input mask
-	$(".imask-date").each((i, el) => calendarUtil.init(el.id));
+	$(".calendar").each((i, el) => calendarUtil.init(el.id));
 
 	// create grid
 	grid1 = new Grid({
