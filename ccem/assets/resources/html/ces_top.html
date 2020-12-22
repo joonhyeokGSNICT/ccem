@@ -13,6 +13,8 @@
   <!-- toastGrid -->
   <link href="../lib/toast-grid/css/tui-grid.css" rel="stylesheet" type="text/css"/>
   <link href="../lib/toast-grid/css/tui-pagination.css" rel="stylesheet"/>
+  <link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet"/>
+  <link href="../lib/customModal/css/modal-loading.css" rel="stylesheet"/>
   <!-- main.css -->
   <link rel="stylesheet" href="../css/ces_top.css">
 </head>
@@ -1220,7 +1222,7 @@
 											</td>
 										</tr>
 									</table>
-									<input type="button" class="btn btn-sm popup-btn customerBtn" value="조회" id="counselInsert_btn" style="float:right; margin:1.5rem;">
+									<input type="button" class="btn btn-sm popup-btn customerBtn searchBtn" value="조회" style="float:right; margin:1.5rem;">
 								</div>
 								<div class="row mt-1">
 									<div class="col">
@@ -1236,6 +1238,10 @@
 			<!-- 고객 찾기 탭 끝 -->
 		</div>
 	</div>
+	<div id="modal-background"></div>
+		<div id="modal-content">
+	    <button id="modal-close">Close Modal Window</button>
+	</div>
 	
 
   <script src="../lib/jquery/jquery-3.5.1.min.js"></script>
@@ -1243,6 +1249,7 @@
   <script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
   <script src="../lib/toast-grid/js/tui-pagination.js"></script>
   <script src="../lib/toast-grid/js/tui-grid.js"></script>
+  <script src="../lib/customModal/js/modal-loading.js"></script>
   <script src="../js/client.js"></script>
   <script src="../js/config.js"></script>
   <script src="../js/ces_common.js"></script>

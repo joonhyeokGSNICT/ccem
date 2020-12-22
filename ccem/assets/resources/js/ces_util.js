@@ -1,3 +1,5 @@
+var loading;
+
 /**
  * TOAST UI Grid Settings
  */
@@ -528,11 +530,23 @@ function exitAlert(id,w,h){
 
 // Global Ajax Event Handlers
 $(this).ajaxStart(function () {
-
+	loading = new Loading({
+		title: 					'데이터를 불러오는 중입니.',
+		titleColor: 			'gray',
+		discription: 			'Loading...',
+		discriptionColor: 		'rgb(77, 150, 223)',
+		animationOriginColor: 	'#123f8a',
+		mask: 					true,
+		loadingPadding: 		'20px 20px',
+		loadingBgColor: 		'rgb(255 255 255)',
+		animationOut: false,
+		animationDuration: 20,
+    	defaultApply: 	true,
+	});
 });
 
  $(this).ajaxStop(function () {
-
+	 loading.out();
 });
 
 $(this).ajaxError((event, jqxhr, settings, thrownError) => {

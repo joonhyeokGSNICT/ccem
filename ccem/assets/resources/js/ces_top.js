@@ -110,15 +110,43 @@ function customerSearch(currentDiv){
 		    send1: [{"CHK_NAME":"Y","CHK_TELNO":"Y", "NAME": "김소라" , "TELPNO2":"2557"}]
 		};
 		$.ajax({
-		    url: API_SERVER + '/test.getCustList.do',
+		    url: API_SERVER + '/cns.getCustList.do',
 		    type: 'POST',
 		    dataType: 'json',
 		    contentType: "application/json",
 		    data: JSON.stringify(param),
 		    success: function (response) {
 		        console.log(response);
-		        customerSearchList_grid.resetData(response.recv1);
-		        
+		        if(response.errcode == "0"){
+		        	customerSearchList_grid.resetData(response.recv1);
+		        }else {
+		        	loading.out();
+		        	client.invoke("notify", response.errmsg, "error", 60000);
+		        }
+		    }, error: function (response) {
+		    }
+		});
+		break;
+	case 'teacherSearchDiv' :
+		var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{"TCHR_NAME": "김소라"}]
+		};
+		$.ajax({
+		    url: API_SERVER + '/cns.getTchrPdaInfo.do',
+		    type: 'POST',
+		    dataType: 'json',
+		    contentType: "application/json",
+		    data: JSON.stringify(param),
+		    success: function (response) {
+		        console.log(response);
+		        if(response.errcode == "0"){
+		        	teacherSearchList_grid.resetData(response.recv1);
+		        }else {
+		        	loading.out();
+		        	client.invoke("notify", response.errmsg, "error", 60000);
+		        }
 		    }, error: function (response) {
 		    }
 		});
