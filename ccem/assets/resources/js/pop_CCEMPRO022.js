@@ -1,5 +1,5 @@
 let grid1, grid2, grid3, grid4, grid5;
-let prodList;	// 과목리스트
+let prods;	// 과목리스트
 
 $(function () {
 
@@ -32,7 +32,7 @@ $(function () {
 	$("#time1").val(getTimeFormat());
 
 	createGrids();
-	getCodeList()
+	getCodeList();
 	getProd();
 
 
@@ -315,7 +315,7 @@ const searchProd = (grid, column, keyword) => {
 
 	// filter
 	keyword = keyword.toUpperCase();
-	let data = prodList.filter(el => (el[column].toUpperCase()).includes(keyword));
+	let data = prods.filter(el => (el[column].toUpperCase()).includes(keyword));
 
 	// delete rowKey
 	data = data.map(el => {
@@ -335,28 +335,23 @@ const searchProd = (grid, column, keyword) => {
 
 	// checked check
 	let checkedGrid;
-	if (grid.el.id === "grid1") {
-		checkedGrid = grid2;
-	} else if (grid.el.id === "grid4") {
-		checkedGrid = grid5;
-	}
+	if (grid.el.id === "grid1") checkedGrid = grid2;
+	else if (grid.el.id === "grid4") checkedGrid = grid5;
+
 	if (checkedGrid) {
 		let checkedData = checkedGrid.getData();
-		checkedData.forEach(el => {
-			let gridData = grid.getData();
-			for (let row of gridData) {
-				if (row.PRDT_ID == el.PRDT_ID) {
-					grid.check(row.rowKey);
-					break;
-				}
-			}
-		});
+		checkedData = checkedData.map(el => el.PRDT_ID);
+
+		let findData = grid.findRows(el => checkedData.includes(el.PRDT_ID));
+		findData.forEach(el => grid.check(el.rowKey));
 	}
 
 }
 
 /**
  * 과목선택
+ * @param {object} grid 
+ * @param {object} data 
  */
 const checkProd = (grid, data) => {
 
@@ -371,7 +366,7 @@ const checkProd = (grid, data) => {
 	// sort
 	let sortKey = "PRDT_SEQ";
 	gridData = grid.getData();
-	gridData.sort(function (a, b) {
+	gridData.sort((a, b) => {
 		return a[sortKey] < b[sortKey] ? -1 :
 					a[sortKey] > b[sortKey] ? 1 : 0;
 	});
@@ -395,6 +390,8 @@ const checkProd = (grid, data) => {
 
 /**
  * 과목선택 해제
+ * @param {object} grid 
+ * @param {object} data 
  */
 const uncheckProd = (grid, data) => {
 
@@ -402,7 +399,7 @@ const uncheckProd = (grid, data) => {
 	let gridData = grid.getData();
 
 	for (let row of gridData) {
-		if (row.PRDT_ID === id) {
+		if (row.PRDT_ID == id) {
 			grid.removeRow(row.rowKey);
 			break;
 		}
@@ -411,64 +408,11 @@ const uncheckProd = (grid, data) => {
 }
 
 /**
- * api 오류 체크
- * @param {object} response 
- * @param {object} settings 
- */
-const checkApi = (response, settings) => {
-	if (response.errcode != "0") {
-		if(typeof client != 'undefined') {
-			let errMsg = `서버에서 오류가 발생하였습니다.<br><br>오류코드 : ${response.errcode}<br>오류메시지 : ${response.errmsg}<br>호출서비스 : ${settings.url}`;
-			client.invoke("notify", errMsg, "error", 60000);
-		}
-		else {
-			let errMsg = `서버에서 오류가 발생하였습니다.\n\n오류코드 : ${response.errcode}\n오류메시지 : ${response.errmsg}\n호출서비스 : ${settings.url}`
-			alert(errMsg);
-		}
-		return false;
-	}
-	return true;
-}
-
-/**
- * 날짜계산 함수
- * @param {string} type year, month, day
- * @param {number} num 
- */
-const getDateFormat = (type, num) => {
-    let date = new Date();
-    if (typeof type == "string" && typeof num == "number") {
-        if (type == "year") {
-            date.setFullYear(date.getFullYear() + num);
-        } else if (type == "month") {
-            date.setMonth(date.getMonth() + num);
-        } else if (type == "day") {
-            date.setDate(date.getDate() + num);
-        }
-    }
-    let y = date.getFullYear();
-    let m = ("0" + (date.getMonth() + 1)).slice(-2);
-    let d = ("0" + date.getDate()).slice(-2);
-    return `${y}-${m}-${d}`;
-}
-
-/**
- * 
- */
-const getTimeFormat = () => {
-	let today = new Date();   
-	let h = ("0"+today.getHours()).slice(-2); 
-	let m = ("0" + today.getMinutes()).slice(-2);
-	let s = ("0" + today.getSeconds()).slice(-2);
-	return `${h}:${m}:${s}`;
-}
-
-/**
  * 공통코드 조회
  */
 const getCodeList = () => {
 
-	let CODE_MK_LIST = ["PRDT_GRP",];	// 과목군
+	let CODE_MK_LIST = ["PRDT_GRP"]; // 과목군
 
 	CODE_MK_LIST.forEach(codeName => {
 		let settings = {
@@ -511,7 +455,7 @@ const getProd = () => {
 	}
 	$.ajax(settings).done(data => {
 		if (checkApi(data, settings)) {
-			prodList = data.dsRecv;
+			prods = data.dsRecv;
 			grid1.resetData(data.dsRecv);
 			grid4.resetData(data.dsRecv);
 		}
