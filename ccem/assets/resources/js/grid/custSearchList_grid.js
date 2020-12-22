@@ -29,7 +29,7 @@ $(function(){
             {
                 header: '상태',
                 name: 'STATUS',
-                width: 200,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -37,7 +37,7 @@ $(function(){
             {
                 header: '구분',
                 name: 'CUST_MK',
-                width: 100,
+                width: 50,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -45,7 +45,7 @@ $(function(){
             {
                 header: '고객명',
                 name: 'NAME',
-                width: 150,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -53,7 +53,7 @@ $(function(){
             {
                 header: '학년',
                 name: 'GRADE',
-                width: 150,
+                width: 120,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -69,7 +69,7 @@ $(function(){
             {
                 header: '생년월일',
                 name: 'RSDNO',
-                width: 200,
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -77,7 +77,7 @@ $(function(){
             {
                 header: '자택전화',
                 name: 'TELPNO',
-                width: 200,
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -85,7 +85,7 @@ $(function(){
             {
                 header: '회원모HP',
                 name: 'MOBILNO_MBR',
-                width: 150,
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -93,7 +93,7 @@ $(function(){
             {
                 header: '회원HP',
                 name: 'MOBILNO',
-                width: 150,
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -101,7 +101,7 @@ $(function(){
             {
                 header: '회원부HP',
                 name: 'MOBILNO_FAT',
-                width: 150,
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -109,7 +109,7 @@ $(function(){
             {
                 header: '우편',
                 name: 'ZIPCDE',
-                width: 150,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -117,7 +117,7 @@ $(function(){
             {
                 header: '주소',
                 name: 'ADDR',
-                width: 100,
+                width: 200,
                 align: "center",
                 sortable: true,
                 ellipsis: true,

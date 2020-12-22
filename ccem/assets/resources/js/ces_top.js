@@ -36,6 +36,19 @@ $(function(){
 	});
 	
 	//// EVENT //// === === === === === === === === === === === === === === === === === === === 
+	//검색 input 이벤트
+	$("input[name='searchInputCheck']").keyup(function(e){
+		var keyCode = e.which;
+		if (keyCode === 13) { // Enter Key
+			$("#"+$(this).parent().parent().parent().parent().parent().attr("id") + "Btn").click();
+		}
+		if($(this).val().length != 0){	// 길이가 0일 경우 체크해제
+			$("#"+$(this).attr("id") + "Check").prop("checked",true);
+		}else {
+			$("#"+$(this).attr("id") + "Check").prop("checked",false);
+		}
+	});
+	
 	$("#goToTop").click(function(){
 		$('.rightSideScroll').scrollTop(0);
 	});
@@ -107,8 +120,84 @@ function customerSearch(currentDiv){
 		var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
-		    send1: [{"CHK_NAME":"Y","CHK_TELNO":"Y", "NAME": "김소라" , "TELPNO2":"2557"}]
+		    send1: [{
+		    	"CHK_NAME"		:"",				// 고객명 여부
+		    	"CHK_TELNOA"	:"",				// 전화번호 여부
+		    	"CHK_HPNO"		:"",
+		    	"CHK_GRADE"		:"",				// 학년 여부
+		    	"CHK_CUSTID"	:"",				// 회원번호 여부
+		    	"CHK_RSDNO"		:"",				// 생년월일 여부
+		    	"CHK_ADDR"		:"",				// 주소 여부
+		    	"CHK_PROD"		:"",				// 과목 여부
+		    	"CHK_DEPT"		:"",				// 지점 검색 여부 (Y면 조회)
+		    	"CHK_UP_DEPT"	:"",				// 본부 검색 여부 (Y면 조회)
+		    	"CHK_EDUPIA"	:"",
+		    	"CHK_EMAIL"		:"",				// 이메일 여부
+		    	"CHK_MACADAMIA"	:"",
+		    	"NAME"			:"",
+		    	"TELPNO2"		:"",
+		    	"MOBILNO"		:"",
+		    	"GRADE_CDE"		:"",
+		    	"MBR_ID"		:"",
+		    	"RSDNO"			:"",
+		    	"ADDR"			:"",
+		    	"PRDT_ID"		:"",
+		    	"DEPT_NAME"		:"",
+		    	"UPDEPTID"		:"",
+		    	"EDUPIA_ID"		:"",
+		    	"CHK_CID"		:"",
+		    	"DDD"			:"",
+		    	"TELPNO1"		:"",
+		    	"CHL_LCID"		:"",
+		    	"LC_NM"			:"",
+		    	"CHK_AUTO_CHG"	:"SA",
+		    	"CUST_MK"		:"",
+		    	"EMAIL"			:"",
+		    	"MACADAMIA_ID"	:"",
+		    }]
 		};
+		
+		if($("#customerNameCheck").is(":checked")){			// 고객명
+			param.send1[0].CHK_NAME = "Y";
+			param.send1[0].NAME = $("#customerName").val();
+		}
+		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
+			param.send1[0].CHK_TELNOA = "Y";
+			param.send1[0].TELPNO2 = $("#customerPhone").val();
+		}
+		if($("#customerEmailCheck").is(":checked")){			// EMAIL
+			param.send1[0].CHK_EMAIL = "Y";
+			param.send1[0].EMAIL = $("#customerEmail").val();
+		}
+		if($("#customerGradeCheck").is(":checked")){			// 학년
+			param.send1[0].CHK_GRADE = "Y";
+			param.send1[0].GRADE_CDE = $("#customerGrade").val();
+		}
+		if($("#customerMNumCheck").is(":checked")){			// 회원번호
+			param.send1[0].CHK_CUSTID = "Y";
+			param.send1[0].MBR_ID = $("#customerMNum").val();
+		}
+		if($("#customerBirthCheck").is(":checked")){			// 생년월일
+			param.send1[0].CHK_RSDNO = "Y";
+			param.send1[0].RSDNO = $("#customerBirth").val();
+		}
+		if($("#customerAddrCheck").is(":checked")){			// 주소
+			param.send1[0].CHK_ADDR = "Y";
+			param.send1[0].ADDR = $("#customerAddr").val();
+		}
+		if($("#customerSubjectCheck").is(":checked")){			// 과목
+			param.send1[0].CHK_PROD = "Y";
+			param.send1[0].PRDT_ID = $("#customerSubject").val();
+		}
+		if($("#customerSpotCheck").is(":checked")){			// 지점
+			param.send1[0].CHK_DEPT = "Y";
+			param.send1[0].DEPT_NAME = $("#customerSpot").val();
+		}
+		if($("#customerDeptCheck").is(":checked")){			// 본부
+			param.send1[0].CHK_UP_DEPT = "Y";
+			param.send1[0].UPDEPTID = $("#customerDept").val();
+		}
+		
 		$.ajax({
 		    url: API_SERVER + '/cns.getCustList.do',
 		    type: 'POST',

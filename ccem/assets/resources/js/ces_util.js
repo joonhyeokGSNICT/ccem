@@ -531,7 +531,7 @@ function exitAlert(id,w,h){
 // Global Ajax Event Handlers
 $(this).ajaxStart(function () {
 	loading = new Loading({
-		title: 					'데이터를 불러오는 중입니.',
+		title: 					'데이터를 불러오는 중입니다.',
 		titleColor: 			'gray',
 		discription: 			'Loading...',
 		discriptionColor: 		'rgb(77, 150, 223)',
