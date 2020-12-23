@@ -1,5 +1,5 @@
 {
-  "name": "ccem",
+  "name": "CCEM",
   "author": {
     "name": "dev",
     "email": "joonhyeok_c@gsnict.com",
@@ -14,7 +14,7 @@
         "size": {"width": "1200px", "height": "800px"}
       },
       "nav_bar": {
-    	"url" : "assets/resources/html/nav_bar.html"
+    	"url" : "https://devccem.daekyo.co.kr/ccem/ccem_admin/ccem_pro_072/index.jsp"
 		},
 		"ticket_sidebar":{
 			"url" : "assets/resources/html/ticket_sideBar.html"

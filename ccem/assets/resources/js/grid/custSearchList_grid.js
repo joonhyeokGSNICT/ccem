@@ -153,6 +153,37 @@ $(function(){
 		customerSearchList_grid.clickSort(ev);
     });
 	
+	customerSearchList_grid.on('dblclick', (ev) => {
+		console.log(customerSearchList_grid.getRow(ev.rowKey));
+		custInfo = customerSearchList_grid.getRow(ev.rowKey);
+		var param = {
+			    senddataids: ["send1"],
+			    recvdataids: ["recv1"],
+			    send1: [{
+			    	"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
+			    }]
+			};
+		
+		$.ajax({
+		    url: API_SERVER + '/cns.getCustInfo.do',
+		    type: 'POST',
+		    dataType: 'json',
+		    contentType: "application/json",
+		    data: JSON.stringify(param),
+		    success: function (response) {
+		        console.log(response);
+		        if(response.errcode == "0"){
+		        	$("#customerInfo").click();	// 탭 이동
+		        	$("#customerTab").click();	// 탭 이동
+		        }else {
+		        	loading.out();
+		        	client.invoke("notify", response.errmsg, "error", 60000);
+		        }
+		    }, error: function (response) {
+		    }
+		});
+    });
+	
 	// 고객찾기 고객찾기 GRID 끝
 	
 	// 고객찾기 > 선생님조회 grid

@@ -259,4 +259,8 @@ ul.fancytree-container {
 
 #modal-background.active, #modal-content.active {
     display: block;
+}
+
+.birthLunar:hover {
+	cursor:pointer;
 }​

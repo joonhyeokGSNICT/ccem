@@ -36,6 +36,19 @@ $(function(){
 	});
 	
 	//// EVENT //// === === === === === === === === === === === === === === === === === === === 
+	// 음력,양력 전환
+	$(".birthLunar").click(function(){
+		if($(this).attr('id') == "solar"){
+			$("#lunar").css('display','');
+			$("#solar").css('display','none');
+			$("#lunarSolarInput").val("2");
+		}else {
+			$("#solar").css('display','');
+			$("#lunar").css('display','none');
+			$("#lunarSolarInput").val("1");
+		}
+	});
+	
 	//검색 input 이벤트
 	$("input[name='searchInputCheck']").keyup(function(e){
 		var keyCode = e.which;
@@ -145,12 +158,12 @@ function customerSearch(currentDiv){
 		    	"DEPT_NAME"		:"",
 		    	"UPDEPTID"		:"",
 		    	"EDUPIA_ID"		:"",
-		    	"CHK_CID"		:"",
+		    	"CHK_CID"		:"Y",
 		    	"DDD"			:"",
 		    	"TELPNO1"		:"",
 		    	"CHL_LCID"		:"",
 		    	"LC_NM"			:"",
-		    	"CHK_AUTO_CHG"	:"SA",
+		    	"CHK_AUTO_CHG"	:"0",
 		    	"CUST_MK"		:"",
 		    	"EMAIL"			:"",
 		    	"MACADAMIA_ID"	:"",

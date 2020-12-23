@@ -46,7 +46,7 @@
 				        조회
 				      </a>
 				      <div class="dropdown-menu">
-				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO035', 1110, 780);" href="#">상담조회 및 처리</a>
+				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO035', 1110, 785);" href="#">상담조회 및 처리</a>
 				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO037', 1100, 610);" href="#">입회조회</a>
 				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO038', 1100, 710);" href="#">입회조회(성과)</a>
 				        <a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO044', 1000, 450);" href="#">사업국/센터/구성원찾기</a>
@@ -133,30 +133,38 @@
 										</tr> -->
 										<tr>
 											<th>성 명</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_NAME"></td>
 											<th>고객번호</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_CUST_ID" readonly></td>
 										</tr>
 										<tr>
 											<th>온라인ID</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_ONLINEID"></td>
 											<th>E-mail</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_EMAIL"></td>
 										</tr>
 										<tr>
 											<th>형제서열</th>
-											<td><select class="form-control form-control-sm" style="width:55%; float:left;">
+											<td><select class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FML_RANK">
 												<option value="a">첫째</option>
 											</select>
-											<select class="form-control form-control-sm" style="width:45%;"><option value="b">형</select></td>
+											<select class="form-control form-control-sm" style="width:45%;" id="custInfo_GND">
+												<option value="1">남</option>
+												<option value="2">여</option>
+											</select></td>
 											<th>회원번호</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_MBR_ID" readonly></td>
 										</tr>
 										<tr>
 											<th>생년월일</th>
-											<td><input type="text" class="form-control form-control-sm" style="float:left; width:72%;">&nbsp;<span style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px;">양력</span></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_BIRTH_YMD" style="float:left; width:72%;">&nbsp;<span class="birthLunar" id="solar" style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px;">양력</span><span class="birthLunar" id="lunar" style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px; display:none;">음력</span>
+												<select id="lunarSolarInput" hidden>
+													<option value="1">양력</option>
+													<option value="2">음력</option>
+												</select>
+											</td>
 											<th>고객구분</th>
-											<td><select class="form-control form-control-sm">
+											<td><select class="form-control form-control-sm" id="custInfo_CUST_MK">
 												<option value="">잠재회원(CTI)</option>
 											</select></td>
 										</tr>
@@ -166,13 +174,15 @@
 												<option value="">김동생</option>
 											</select></td>
 											<th>학년</th>
-											<td><select class="form-control form-control-sm">
+											<td><select class="form-control form-control-sm" id="custInfo_GRADE_CDE">
 												<option value="">1학년</option>
 											</select></td>
 										</tr>
 										<tr>
 											<th>자택</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" style="width:33%; float:left;">
+											<input type="text" class="form-control form-control-sm" style="width:33%; float:left;">
+											<input type="text" class="form-control form-control-sm" style="width:33%; float:left;"></td>
 											<th>회원</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 										</tr>
