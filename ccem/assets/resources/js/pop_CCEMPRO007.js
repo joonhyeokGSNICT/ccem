@@ -1,6 +1,6 @@
 let grid1, grid2, grid3;
 
-$(function(){
+$(function(){ 
 
 	// input mask
 	calendarUtil.init("calendar1");
