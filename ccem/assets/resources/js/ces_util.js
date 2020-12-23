@@ -295,7 +295,7 @@ const calendarUtil = {
      * @param {string} id element id
      * @param {object} newOption
      */
-    init(id, newOption) {
+    init(id, newOption, applyCallBack, cancelCallBack) {
         let option = { ...calendarUtil.calendarOption, ...newOption };
         $("#" + id).daterangepicker(option);
         let imask = calendarUtil.dateMask(id);
@@ -303,11 +303,13 @@ const calendarUtil = {
         $("#" + id).on("apply.daterangepicker", (ev, picker) => {
             $("#" + id).val(picker.startDate.format("YYYY-MM-DD"));
             imask.updateValue();
+            if (applyCallBack) applyCallBack();
         });
 
         $("#" + id).on("cancel.daterangepicker", (ev, picker) => {
-            $("#" + id).val('');
+            $("#" + id).val("____-__-__");
             imask.updateValue();
+            if (cancelCallBack) cancelCallBack();
         });
     },
     /**
