@@ -5,131 +5,156 @@ let cselType = {};	// 분류코드
 $(function(){
 
 	// create calendar
-	$(".calendar").each((i, el) => calendarUtil.init(el.id));
+	$(".calendar").each((i, el) => calendarUtil.init(el.id, null, () => $("#checkbox1").prop("checked", checkDate())));
 
+	// init date
+	$(".calendar").val(getDateFormat());
+
+	// input mask
+	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
+
+	createGrids();
+	getCodeList();	
+	getProd();
+	// getUser(); // TODO 조회데이터 없음
+	getCselType();
+
+	grid1.resetDummyData(10)
+
+});
+
+const createGrids = () => {
 	// 상담조회 > 상담조회 리스트 grid
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
-		bodyHeight: 200,
+		bodyHeight: 213,
+		scrollY: false,
 		pageOptions: {
-		  perPage: 7,
+			useClient: true,
+		  	perPage: 7,
 		},
+		columnOptions: {
+            minWidth: 50,
+            resizable: true,
+            frozenCount: 5,
+            frozenBorderWidth: 1
+        },
 		rowHeaders: [
-			{
-				type: 'rowNum',
-				header: "NO",
-			},
+			{ type: 'rowNum', header: "NO", },
 		],
 		columns: [
-			{
-				header: '상담일자',
-				name: 'name1',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '접수',
-				name: 'name2',
-				width: 60,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '상담채널',
-				name: 'name3',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '상담구분',
-				name: 'name4',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '회원명',
-				name: 'name5',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '회원번호',
-				name: 'name6',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '통화시각',
-				name: 'name7',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '상담시간',
-				name: 'name8',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '처리시간',
-				name: 'name9',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '학년',
-				name: 'name10',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '본부',
-				name: 'name11',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '사업국',
-				name: 'name12',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '센터',
-				name: 'name13',
-				width: 100,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			}
+			{ header: '상담일자',                       name: "CSEL_DATE",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '접수',                           name: "CSEL_NO",               width: 60,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '상담순번',                       name: "CSEL_SEQ",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담채널',                       name: "CSEL_CHNL_MK_NM",       width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '상담구분',                       name: "CSEL_MK_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '회원명',                         name: "NAME",                  width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '회원번호',                       name: "MBR_ID",                width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '통화시각',                       name: "CALL_STTIME",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '상담시간',                       name: "CSEL_TIME_NM",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '처리시간',                       name: "PROC_TIME_NM",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '학년',                           name: "GRADE_NM",              width: 60,     align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '본부',                           name: "UP_DEPT_NAME_NM",       width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '사업국',                         name: "DEPT_NAME_NM",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '센터',                           name: "LC_NAME_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '분류(대)',                       name: "CSEL_LTYPE_CDE_NM",     width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '분류(중)',                       name: "CSEL_MTYPE_CDE_NM",     width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '분류(소)',                       name: "CSEL_STYPE_CDE_NM",     width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '상담제목',                       name: "CSEL_TITLE",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '상담실처리',                     name: "PROC_CNTS",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '사업국처리',                     name: "VOC_CNTS",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '해피콜',                         name: "HPCALL_CNTS",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '상담원',                         name: "CSEL_USER_NM",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '내담자',                         name: "CSEL_MAN_MK_NM",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '상담등급',                       name: "CSEL_GRD",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담등급',                       name: "CSEL_GRD_NM",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '고객반응',                       name: "CUST_RESP_MK_NM",       width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '전화번호',                       name: "MOBILNO",       		   width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '핸드폰번호',                     name: "MOBILNO",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: 'ERMS구분',                       name: "ERMS_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '팩스발송일시',                   name: "FAX_DATETIME",          width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '녹취ID',                         name: "RECORD_ID",             width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '상담입력시각',                   name: "CSEL_STTIME",           width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: 'TICKET ID',                      name: "TICKET_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '상담경로',                       name: "FST_CRS_CDE_NM",        width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '상담제품',                       name: "PRDT_NAME",             width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '업무정직도',                     name: "CNT_NGPROC",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '학습개월',                       name: "STD_MON_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '복회가능성',                     name: "RENEW_POTN_NM",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '러닝센터',                       name: "LC_MK",                 width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: 'YC',                             name: "YC_MK",                 width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '연계부서',                       name: "PROC_DEPT_NAME_NM",     width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: 'VOC',                            name: "VOC_MK",                width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '발송시간',                      name: "SMS_DATE_TIME",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '발송결과',                      name: "SMS_PROC_NM",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '선생님명',                       name: "PRDT_EMP_NM",           width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,    },
+			{ header: '고객구분코드',                   name: "CUST_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담원ID',                       name: "CSEL_USER_ID",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담구분코드',                   name: "CSEL_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리구분코드',                   name: "PROC_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리상태코드',                   name: "PROC_STS_MK",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '지점코드',                       name: "DEPT_ID",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '부서코드',                       name: "DIV_CDE",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '지역코드',                       name: "AREA_CDE",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담분류(대)',                   name: "CSEL_LTYPE_CDE",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담분류(중)',                   name: "CSEL_MTYPE_CDE",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담분류(소)',                   name: "CSEL_STYPE_CDE",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리희망일자',                   name: "PROC_HOPE_DATE",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담채널구분',                   name: "CSEL_CHNL_MK",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '근무형태구분',                   name: "WORK_STYL_MK",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '고객번호',                       name: "CUST_ID",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담결과',                       name: "CSEL_RST_MK1",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '첫상담경로',                     name: "FST_CRS_CDE",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담종료시각',                   name: "CSEL_EDTIME",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '통화종료시각',                   name: "CALL_EDTIME",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담내용',                       name: "CSEL_CNTS",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,   },
+			{ header: '공개여부',                       name: "OPEN_GBN",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리시한',                       name: "LIMIT_MK",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: 'O/B결과코드',                    name: "CALL_RST_MK",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '고객반응코드',                   name: "CUST_RESP_MK",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '내담자구분코드',                 name: "CSEL_MAN_MK",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '입회사유코드',                   name: "MOTIVE_CDE",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '매체구분코드',                   name: "MEDIA_CDE",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '연계번호',                       name: "TRANS_NO",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '연계일자',                       name: "TRANS_DATE",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '학년코드',                       name: "GRADE_CDE",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '재확인여부',                     name: "RE_PROC",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '연계구분',                       name: "TRANS_MK",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '환불상태코드',                   name: "REFUND_FLAG",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '이벤트년월',                     name: "CAMP_TG_YM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '이벤트명',                       name: "CAMP_MK_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리구분',                       name: "PROC_MK_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리구분',                       name: "PROC_STS_MK_NM",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '매체구분',                       name: "MEDIA_CDE_NM",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '입회사유',                       name: "MOTIVE_CDE_NM",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '상담결과명',                     name: "CSEL_RST_MK1_NM",       width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: 'o/b결과명',                      name: "CALL_RST_MK_NM",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리시한명',                     name: "LIMIT_MK_NM",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '근무형태구분',                   name: "WORK_STYL_MK_NM",       width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '정보',                           name: "OPEN_GBN_NM",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,   },
+			{ header: '환불접수상태명',                 name: "REFUND_FLAG_NM",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '지역코드명',                     name: "AREA_CDE_NM",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '처리일자',                       name: "PROC_DATE",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '삭제FLAG',                       name: "DELETE_FLAG",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '재조회 키',                      name: "REFRESHKEY",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '우편번호',                       name: "ZIPCDE",                width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '우편번호주소',                   name: "ZIP_ADDR",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '주소',                           name: "ADDR",                  width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '지점연계시간 PROC_DATE_TIME',    name: "PROC_DATE_TIME",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: 'VOC처리시간 VOC_DATE_TIME',      name: "VOC_DATE_TIME",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '지점처리시간 dept_proc_time',    name: "DEPT_PROC_TIME",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '시간약속',                       name: "TIME_APPO",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
+			{ header: '문자발송건수(SMS)',              name: "SMS_CNT",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
 		],
 	});
-	grid1.on("click", (ev) => {
+	grid1.on("onGridUpdated", () => $("#txtCnt").val(grid1.getPaginationTotalCount()));
+	grid1.on("click", ev => {
 		grid1.addSelection(ev);
 		grid1.clickSort(ev);
+		setCselDetail(ev);
+	});
+	grid1.on("dblclick", ev => {
+		// TODO 해당 고객정보로 탑바 전체 재조회
 	});
 
 	// 상담조회 > 상담제품 리스트 grid
@@ -138,35 +163,20 @@ $(function(){
 		bodyHeight: 97,
 		scrollX: false,
 		rowHeaders: [
-			{
-				type: 'rowNum',
-				header: "NO",
-			},
+			{ type: 'rowNum', header: "NO", },
 		],
 		columns: [
-			{
-				header: '상담제품',
-				name: 'name1',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
+			{ header: '상담제품', name: "PRDT_NAME", align: "center", sortable: true, ellipsis: true, hidden: false, },
 		],
 	});
-	grid2.on("click", (ev) => {
+	grid2.on("click", ev => {
 		grid2.addSelection(ev);
 		grid2.clickSort(ev);
 	});
-
-	getCodeList();	
-	getProd();
-	// getUser(); // TODO 조회데이터 없음
-	getCselType();
-
-});
+}
 
 /**
- * 과목검색
+ * 과목 필터링
  * @param {string} keyword
  */
 const filterProd = keyword => {
@@ -179,6 +189,11 @@ const filterProd = keyword => {
 
 }
 
+/**
+ * 분류 필터링
+ * @param {string} flag L, M, S
+ * @param {string} value 
+ */
 const filterCselType = (flag, value) => {
 	let typeList, filterList, selectbox;
 
@@ -212,6 +227,12 @@ const filterCselType = (flag, value) => {
 		filterList = typeList.filter(el => el.CODE_ID.startsWith(value));
 		filterList.forEach(el => selectbox.append(new Option(`[${el.CODE_ID}] ${el.CODE_NAME}`, el.CODE_ID)));
 	}
+}
+
+const checkDate = () => {
+	if($("#calendar1").val().replace(/[^0-9]/gi, '').length < 8) return false;
+	if($("#calendar2").val().replace(/[^0-9]/gi, '').length < 8) return false;
+	return true;
 }
 
 /**
@@ -347,6 +368,9 @@ const getCselType = () => {
  * 상담조회
  */
 const getCsel = () => {
+	let condition = getCselCondition();
+	if(!condition) return;
+
 	let settings = {
 		url: `${API_SERVER}/cns.getCsel.do`,
 		method: 'POST',
@@ -355,76 +379,147 @@ const getCsel = () => {
 		data: JSON.stringify({
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
-			dsSend: [{
-				CHK_DATE			:	"",	// 상담일자  - 체크여부				
-				CHK_FILLER_1		:	"",	// 필러1 - 체크여부					
-				CHK_TRANS_MK		:	"",	// 연계여부 - 체크여부					
-				CHK_TB_PROD			:	"",	// 과목코드 - 체크여부				
-				CHK_USER_GRP_CDE	:	"",	// 상담원그룹 - 체크여부						
-				CHK_CSEL_MK			:	"",	// 상담구분 - 체크여부				
-				CHK_PROC_MK			:	"",	// 처리구분 - 체크여부				
-				CHK_PROC_STS_MK		:	"",	// 처리상태구분 - 체크여부					
-				CHK_TB_USER			:	"",	// 상담원 - 체크여부				
-				CHK_DEPT_NM			:	"",	// 지점명 - 체크여부				
-				CHK_DIV_CDE			:	"",	// 본부코드 - 체크여부				
-				CHK_CSEL_CHNL_MK	:	"",	// 상담채널 - 체크여부						
-				CHK_CSEL_RST_MK		:	"",	// 상담결과 - 체크여부					
-				CHK_CSEL_LTYPE		:	"",	// 대분류 콤보 - 체크여부					
-				CHK_CSEL_MTYPE		:	"",	// 중분류 콤보 - 체크여부					
-				CHK_CSEL_STYPE		:	"",	// 소분류 콤보 - 체크여부					
-				CHK_REFUND_FLAG		:	"",	// 환불승인상태 - 체크여부					
-				CHK_STD_CRS_CDE		:	"",	// 상담경로 - 체크여부					
-				CHK_CSEL_GRD		:	"",	// 상담등급 - 체크여부					
-				CHK_VOC				:	"",	// VOC - 체크여부			
-				CHK_RE_PROC			:	"",	// 재확인 - 체크여부				
-				CHK_NGPROC			:	"",	// 업무정직도 - 체크여부				
-				CHK_STD_MON_CDE		:	"",	// 학습개월 - 체크여부					
-				CHK_RENEW_POTN		:	"",	// 복회가능성 - 체크여부					
-				CHK_TB_VENDER		:	"",	// LC/YC - 체크여부					
-				CHK_LC_MK			:	"",	// 러닝센터 - 체크여부				
-				CHK_PROC_DEPT_NM	:	"",	// 처리지점명 - 체크여부						
-				CHK_TIME_APPO		:	"",	// 시간약속 - 체크여부					
-				CHK_SMS				:	"",	// 문자발송(SMS) - 체크여부			
-				CHK_PRDT_GRP		:	"",	// 과목군 - 체크여부					
-				VAL_STDATE			:	"",	// 상담일자FROM - 조회조건				
-				VAL_EDDATE			:	"",	// 상담일자TO - 조회조건				
-				VAL_TRANS_MK		:	"",	// 연계여부 - 조회조건					
-				VAL_TB_PROD			:	"",	// 과목코드 - 조회조건				
-				VAL_USER_GRP_CDE	:	"",	// 상담원그룹 - 조회조건													
-				VAL_CSEL_MK			:	"",	// 상담구분 - 조회조건			
-				VAL_PROC_MK			:	"",	// 처리구분 - 조회조건			
-				VAL_PROC_STS_MK		:	"",	// 처리상태구분 - 조회조건				
-				VAL_TB_USER			:	"",	// 상담원 - 조회조건			
-				VAL_DEPT_NM			:	"",	// 지점명 - 조회조건			
-				VAL_DIV_CDE			:	"",	// 본부코드 - 조회조건			
-				VAL_CSEL_CHNL_MK	:	"",	// 상담채널 - 조회조건						
-				VAL_CSEL_RST_MK		:	"",	// 상담결과 - 조회조건					
-				VAL_CSEL_LTYPE		:	"",	// 대분류 콤보 - 조회조건					
-				VAL_CSEL_MTYPE		:	"",	// 중분류 콤보 - 조회조건					
-				VAL_CSEL_STYPE		:	"",	// 소분류 콤보 - 조회조건					
-				VAL_REFUND_FLAG		:	"",	// 환불승인상태 - 조회조건					
-				VAL_STD_CRS_CDE		:	"",	// 상담경로 - 조회조건					
-				VAL_CSEL_GRD		:	"",	// 상담등급 - 조회조건					
-				VAL_VOC				:	"",	// VOC - 조회조건			
-				VAL_RE_PROC			:	"",	// 재확인 - 조회조건				
-				VAL_NGPROC			:	"",	// 업무정직도 - 조회조건				
-				VAL_STD_MON_CDE		:	"",	// 학습개월 - 조회조건					
-				VAL_RENEW_POTN		:	"",	// 복회가능성 - 조회조건					
-				VAL_TB_VENDER		:	"",	// LC_YC - 조회조건					
-				VAL_LC_MK			:	"",	// 러닝센터 - 조회조건				
-				VAL_PROC_DEPT_NM	:	"",	// 처리지점명 - 조회조건						
-				VAL_TIME_APPO		:	"",	// 시간약속 - 조회조건					
-				VAL_SMS				:	"",	// 문자발송(SMS) - 조회조건			
-				VAL_PRDT_GRP		:	"",	// 과목군 - 조회조건					
-				CHK_LC_NM			:	"",	// 센터명 - 체크여부				
-				VAL_LC_NM			:	"",	// 센터명 - 조회조건					
-			 }],
+			dsSend: [condition],
 		}),
 	}
+
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
 
-		
+		grid1.resetData(data.dsRecv);
 
 	});	
+}
+
+/**
+ * 상담 조회조건
+ */
+const getCselCondition = () => {
+	let data = {
+		CHK_DATE			:	$("#checkbox1").is(":checked") 	? "1" : "0",		// 상담일자  - 체크여부				
+		CHK_FILLER_1		:	$("#checkbox").is(":checked") 	? "1" : "0",	// 필러1 - 체크여부					
+		CHK_TRANS_MK		:	$("#checkbox26").is(":checked") ? "1" : "0",		// 연계여부 - 체크여부					
+		CHK_TB_PROD			:	$("#checkbox7").is(":checked") 	? "1" : "0",		// 과목코드 - 체크여부				
+		CHK_USER_GRP_CDE	:	$("#checkbox4").is(":checked") 	? "1" : "0",		// 상담원그룹 - 체크여부						
+		CHK_CSEL_MK			:	$("#checkbox5").is(":checked") 	? "1" : "0",		// 상담구분 - 체크여부				
+		CHK_PROC_MK			:	$("#checkbox6").is(":checked") 	? "1" : "0",		// 처리구분 - 체크여부				
+		CHK_PROC_STS_MK		:	$("#checkbox12").is(":checked") ? "1" : "0",		// 처리상태구분 - 체크여부					
+		CHK_TB_USER			:	$("#checkbox8").is(":checked") 	? "1" : "0",		// 상담원 - 체크여부				
+		CHK_DEPT_NM			:	$("#checkbox").is(":checked") 	? "1" : "0",	// 지점명 - 체크여부				
+		CHK_DIV_CDE			:	$("#checkbox11").is(":checked") ? "1" : "0",		// 본부코드 - 체크여부				
+		CHK_CSEL_CHNL_MK	:	$("#checkbox19").is(":checked") ? "1" : "0",		// 상담채널 - 체크여부						
+		CHK_CSEL_RST_MK		:	$("#checkbox16").is(":checked") ? "1" : "0",		// 상담결과 - 체크여부					
+		CHK_CSEL_LTYPE		:	$("#checkbox13").is(":checked") ? "1" : "0",		// 대분류 콤보 - 체크여부					
+		CHK_CSEL_MTYPE		:	$("#checkbox14").is(":checked") ? "1" : "0",		// 중분류 콤보 - 체크여부					
+		CHK_CSEL_STYPE		:	$("#checkbox15").is(":checked") ? "1" : "0",		// 소분류 콤보 - 체크여부					
+		CHK_REFUND_FLAG		:	$("#checkbox20").is(":checked") ? "1" : "0",		// 환불승인상태 - 체크여부					
+		CHK_STD_CRS_CDE		:	$("#checkbox17").is(":checked") ? "1" : "0",		// 상담경로 - 체크여부					
+		CHK_CSEL_GRD		:	$("#checkbox18").is(":checked") ? "1" : "0",		// 상담등급 - 체크여부					
+		CHK_VOC				:	$("#checkbox23").is(":checked") ? "1" : "0",		// VOC - 체크여부			
+		CHK_RE_PROC			:	$("#checkbox24").is(":checked") ? "1" : "0",		// 재확인 - 체크여부				
+		CHK_NGPROC			:	$("#checkbox25").is(":checked") ? "1" : "0",		// 업무정직도 - 체크여부				
+		CHK_STD_MON_CDE		:	$("#checkbox21").is(":checked") ? "1" : "0",		// 학습개월 - 체크여부					
+		CHK_RENEW_POTN		:	$("#checkbox22").is(":checked") ? "1" : "0",		// 복회가능성 - 체크여부					
+		CHK_TB_VENDER		:	$("#checkbox").is(":checked") 	? "1" : "0",	// LC/YC - 체크여부					
+		CHK_LC_MK			:	$("#checkbox9").is(":checked") 	? "1" : "0",		// 러닝센터 - 체크여부				
+		CHK_PROC_DEPT_NM	:	$("#checkbox").is(":checked") 	? "1" : "0",	// 처리지점명 - 체크여부						
+		CHK_TIME_APPO		:	$("#checkbox31").is(":checked") ? "1" : "0",		// 시간약속 - 체크여부					
+		CHK_SMS				:	$("#checkbox27").is(":checked") ? "1" : "0",		// 문자발송(SMS) - 체크여부			
+		CHK_PRDT_GRP		:	$("#checkbox3").is(":checked") 	? "1" : "0",		// 과목군 - 체크여부	
+		CHK_LC_NM			:	$("#checkbox9").is(":checked") 	? "1" : "0",		// 센터명 - 체크여부				
+		VAL_STDATE			:	"",					// 상담일자FROM - 조회조건				
+		VAL_EDDATE			:	"",					// 상담일자TO - 조회조건				
+		VAL_TRANS_MK		:	"",					// 연계여부 - 조회조건					
+		VAL_TB_PROD			:	"",					// 과목코드 - 조회조건				
+		VAL_USER_GRP_CDE	:	"",					// 상담원그룹 - 조회조건													
+		VAL_CSEL_MK			:	"",					// 상담구분 - 조회조건			
+		VAL_PROC_MK			:	"",					// 처리구분 - 조회조건			
+		VAL_PROC_STS_MK		:	"",					// 처리상태구분 - 조회조건				
+		VAL_TB_USER			:	"",					// 상담원 - 조회조건			
+		VAL_DEPT_NM			:	"",					// 지점명 - 조회조건			
+		VAL_DIV_CDE			:	"",					// 본부코드 - 조회조건			
+		VAL_CSEL_CHNL_MK	:	"",					// 상담채널 - 조회조건						
+		VAL_CSEL_RST_MK		:	"",					// 상담결과 - 조회조건					
+		VAL_CSEL_LTYPE		:	"",					// 대분류 콤보 - 조회조건					
+		VAL_CSEL_MTYPE		:	"",					// 중분류 콤보 - 조회조건					
+		VAL_CSEL_STYPE		:	"",					// 소분류 콤보 - 조회조건					
+		VAL_REFUND_FLAG		:	"",					// 환불승인상태 - 조회조건					
+		VAL_STD_CRS_CDE		:	"",					// 상담경로 - 조회조건					
+		VAL_CSEL_GRD		:	"",					// 상담등급 - 조회조건					
+		VAL_VOC				:	"",					// VOC - 조회조건			
+		VAL_RE_PROC			:	"",					// 재확인 - 조회조건				
+		VAL_NGPROC			:	"",					// 업무정직도 - 조회조건				
+		VAL_STD_MON_CDE		:	"",					// 학습개월 - 조회조건					
+		VAL_RENEW_POTN		:	"",					// 복회가능성 - 조회조건					
+		VAL_TB_VENDER		:	"",					// LC_YC - 조회조건					
+		VAL_LC_MK			:	"",					// 러닝센터 - 조회조건				
+		VAL_PROC_DEPT_NM	:	"",					// 처리지점명 - 조회조건						
+		VAL_TIME_APPO		:	"",					// 시간약속 - 조회조건					
+		VAL_SMS				:	"",					// 문자발송(SMS) - 조회조건			
+		VAL_PRDT_GRP		:	"",					// 과목군 - 조회조건					
+		VAL_LC_NM			:	"",					// 센터명 - 조회조건					
+	}
+
+	data.VAL_STDATE = $("#calendar1").val().replace(/[^0-9]/gi, '');
+	data.VAL_STDATE = data.VAL_STDATE.length === 8 ? data.VAL_STDATE : "";
+	data.VAL_EDDATE = $("#calendar2").val().replace(/[^0-9]/gi, '');
+	data.VAL_EDDATE = data.VAL_EDDATE.length === 8 ? data.VAL_EDDATE : "";
+
+	if(!data.VAL_STDATE || !data.VAL_EDDATE) data.CHK_DATE = "0";
+
+	return data;
+}
+
+/**
+ * 상담제품 조회
+ * @param {object} condition 조회조건
+ */
+const getCselSubj = condition => {
+	if(!condition) return;
+
+	let settings = {
+		url: `${API_SERVER}/cns.getCselSubj.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [condition],
+		}),
+	}
+
+	$.ajax(settings).done(data => {
+		if (!checkApi(data, settings)) return;
+
+		grid2.resetData(data.dsRecv);
+
+	});	
+}
+
+/**
+ * 상담 상세정보 세팅
+ * @param {object} ev 
+ */
+const setCselDetail = ev => {
+	if(ev.targetType != "cell") return;
+
+	let row = grid1.getRow(ev.rowKey);
+
+	// TODO 조회데이터 없음
+	// 상담제품 grid 세팅
+	// getCselSubj({
+	// 	CSEL_DATE	:	row.CSEL_DATE,	// 상담일자
+	// 	CSEL_NO		:	row.CSEL_NO,	// 상담번호
+	// 	CSEL_SEQ	:	row.CSEL_SEQ,	// 상담순번
+	// });
+
+	// 상세정보 영역 세팅
+	row.PROC_HOPE_DATE = FormatUtil.date(row.PROC_HOPE_DATE || "");
+	row.PROC_DATE = FormatUtil.date(row.PROC_DATE || "");
+	grid1.getColumns().forEach(el => $(`#txt${el.name}`).val(row[el.name]));
+
+	row.VOC_MK = row.VOC_MK == "1" ? true : false;
+	$("#checkbox32").prop("checked", row.VOC_MK);
+
 }
