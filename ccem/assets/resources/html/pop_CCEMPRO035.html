@@ -77,7 +77,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="TRANS_MK" onchange="document.querySelector('#checkbox2').checked = true">
+								<select class="form-control form-control-sm" name="TRANS_MK" id="selectbox6" onchange="document.querySelector('#checkbox2').checked = true">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -88,7 +88,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="PRDT_GRP" onchange="
+								<select class="form-control form-control-sm" name="PRDT_GRP" id="selectbox7" onchange="
 									filterProd(this.value);
 									document.querySelector('#checkbox3').checked = true;
 									document.querySelector('#checkbox7').checked = true;
@@ -103,7 +103,10 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="USER_GRP_CDE" onchange="document.querySelector('#checkbox4').checked = true;">
+								<select class="form-control form-control-sm" name="USER_GRP_CDE" id="selectbox8" onchange="
+									filterUser(this.value);
+									document.querySelector('#checkbox4').checked = true;
+								">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -116,7 +119,7 @@
 								</div>
 							</th>
 							<td>
-								<select class="form-control form-control-sm" name="CSEL_MK" onchange="
+								<select class="form-control form-control-sm" name="CSEL_MK" id="selectbox9" onchange="
 									filterCselType('L', this.value);
 									document.querySelector('#checkbox5').checked = true;
 								">
@@ -130,7 +133,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="PROC_MK" onchange="document.querySelector('#checkbox6').checked = true;">
+								<select class="form-control form-control-sm" name="PROC_MK" id="selectbox10" onchange="document.querySelector('#checkbox6').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -165,7 +168,7 @@
 								</div>
 							</th>
 							<td>
-								<input class="form-control form-control-sm" oninput="document.querySelector('#checkbox9').checked = this.value ? true:false" />
+								<input class="form-control form-control-sm" id="textbox1" oninput="document.querySelector('#checkbox9').checked = this.value ? true:false" />
 							</td>
 							<th>
 								<div class="form-check ml-1">
@@ -174,7 +177,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<input class="form-control form-control-sm" oninput="document.querySelector('#checkbox10').checked = this.value ? true:false"/>
+								<input class="form-control form-control-sm" id="textbox2" oninput="document.querySelector('#checkbox10').checked = this.value ? true:false"/>
 							</td>
 							<th>
 								<div class="form-check ml-1">
@@ -183,7 +186,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="DIV_CDE" onchange="document.querySelector('#checkbox11').checked = true;">
+								<select class="form-control form-control-sm" name="DIV_CDE" id="selectbox11" onchange="document.querySelector('#checkbox11').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -194,7 +197,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="PROC_STS_MK" onchange="document.querySelector('#checkbox12').checked = true;">
+								<select class="form-control form-control-sm" name="PROC_STS_MK" id="selectbox12" onchange="document.querySelector('#checkbox12').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -246,7 +249,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_RST_MK" onchange="document.querySelector('#checkbox16').checked = true;">
+								<select class="form-control form-control-sm" name="CSEL_RST_MK" id="selectbox13" onchange="document.querySelector('#checkbox16').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -259,7 +262,7 @@
 								</div>
 							</th>
 							<td>
-								<select class="form-control form-control-sm" name="STD_CRS_CDE" onchange="document.querySelector('#checkbox17').checked = true;">
+								<select class="form-control form-control-sm" name="STD_CRS_CDE" id="selectbox14" onchange="document.querySelector('#checkbox17').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -270,7 +273,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_GRD" onchange="document.querySelector('#checkbox18').checked = true;">
+								<select class="form-control form-control-sm" name="CSEL_GRD" id="selectbox15" onchange="document.querySelector('#checkbox18').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -281,7 +284,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_CHNL_MK" onchange="document.querySelector('#checkbox19').checked = true;">
+								<select class="form-control form-control-sm" name="CSEL_CHNL_MK" id="selectbox16" onchange="document.querySelector('#checkbox19').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -292,7 +295,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_MAN_GRP_CDE" onchange="document.querySelector('#checkbox20').checked = true;">
+								<select class="form-control form-control-sm" name="CSEL_MAN_GRP_CDE" id="selectbox17" onchange="document.querySelector('#checkbox20').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -305,18 +308,18 @@
 								</div>
 							</th>
 							<td>
-								<select class="form-control form-control-sm" name="STD_MON_CDE" onchange="document.querySelector('#checkbox21').checked = true;">
+								<select class="form-control form-control-sm" name="STD_MON_CDE" id="selectbox18" onchange="document.querySelector('#checkbox21').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
 							<th>
 								<div class="form-check ml-1">
 									<input class="form-check-input" type="checkbox" id="checkbox22">
-									<label class="form-check-label" for="checkbox22">복습가능성</label>
+									<label class="form-check-label" for="checkbox22">복회가능성</label>
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" name="RENEW_POTN" onchange="document.querySelector('#checkbox22').checked = true;">
+								<select class="form-control form-control-sm" name="RENEW_POTN" id="selectbox19" onchange="document.querySelector('#checkbox22').checked = true;">
 									<option value="" hidden></option>
 								</select>
 							</td>
@@ -327,7 +330,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" onchange="document.querySelector('#checkbox23').checked = true;">
+								<select class="form-control form-control-sm" id="selectbox20" onchange="document.querySelector('#checkbox23').checked = true;">
 									<option value="" hidden></option>
 									<option value="Y">Y</option>
 									<option value="N">N</option>
@@ -354,7 +357,7 @@
 								</div>
 							</th>
 							<td>
-								<input class="form-control form-control-sm" oninput="document.querySelector('#checkbox26').checked = this.value ? true:false"/>
+								<input class="form-control form-control-sm" id="textbox3" oninput="document.querySelector('#checkbox26').checked = this.value ? true:false"/>
 							</td>
 							<th>
 								<div class="form-check ml-1">
@@ -363,7 +366,7 @@
 								</div>
 							</th>
 							<td colspan="">
-								<select class="form-control form-control-sm" onchange="document.querySelector('#checkbox27').checked = true;">
+								<select class="form-control form-control-sm" id="selectbox21" onchange="document.querySelector('#checkbox27').checked = true;">
 									<option value="" hidden></option>
 									<option value="1">회원모 지점장 문자발송</option>
 									<option value="2">회원모 문자발송</option>
