@@ -36,7 +36,7 @@ const createGrids = () => {
             minWidth: 50,
             resizable: true,
             frozenCount: 5,
-            frozenBorderWidth: 1
+            frozenBorderWidth: 0
         },
 		rowHeaders: [
 			{ type: 'rowNum', header: "NO", },
@@ -146,7 +146,7 @@ const createGrids = () => {
 			{ header: '문자발송건수(SMS)',              name: "SMS_CNT",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
 		],
 	});
-	grid1.on("onGridUpdated", () => $("#txtCnt").val(grid1.getPaginationTotalCount()));
+	grid1.on("onGridUpdated", () => $("#textbox4").val(grid1.getPaginationTotalCount()));
 	grid1.on("click", ev => {
 		grid1.addSelection(ev);
 		grid1.clickSort(ev);
