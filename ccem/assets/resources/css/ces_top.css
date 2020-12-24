@@ -263,4 +263,9 @@ ul.fancytree-container {
 
 .birthLunar:hover {
 	cursor:pointer;
+}
+
+.form-control[readonly]{
+	background-color:white;
+	opacity:1;
 }​

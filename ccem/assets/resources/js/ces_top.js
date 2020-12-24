@@ -256,6 +256,58 @@ function customerSearch(currentDiv){
 	}
 }
 
+/**
+ * 학습사업국정보조회/센터콤보정보조회 func
+ * @param custId
+ * @returns 
+ * 20-12-24 최준혁
+ */
+function studyingDEPTLC(custId){
+	var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{
+		    	"MBR_ID"		: custId,				// 회원번호
+		    }]
+		};
+	
+	$.ajax({
+	    url: API_SERVER + '/cns.getStudyDataDept.do',
+	    type: 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data: JSON.stringify(param),
+	    success: function (response) {
+	        console.log(response);
+	        if(response.errcode == "0"){
+	        	console.log("DEPT DATA ===> :" , response);
+	        	$.ajax({
+	        	    url: API_SERVER + '/cns.getStudyDataLc.do',
+	        	    type: 'POST',
+	        	    dataType: 'json',
+	        	    contentType: "application/json",
+	        	    data: JSON.stringify(param),
+	        	    success: function (response) {
+	        	        console.log(response);
+	        	        if(response.errcode == "0"){
+	        	        	console.log("LC DATA ===> :" , response);
+	        	        }else {
+	        	        	loading.out();
+	        	        	client.invoke("notify", response.errmsg, "error", 60000);
+	        	        }
+	        	    }, error: function (response) {
+	        	    }
+	        	});
+	        }else {
+	        	loading.out();
+	        	client.invoke("notify", response.errmsg, "error", 60000);
+	        }
+	    }, error: function (response) {
+	    }
+	});
+}
+
+
 function openPop(popName,w,h){
 	console.log(popName);
 	currentPop = window.open('pop_'+popName+'.html',popName,'width='+w+', height='+h+', toolbar=no, menubar=no, scrollbars=no, resizable=no');

@@ -180,18 +180,27 @@
 										</tr>
 										<tr>
 											<th>자택</th>
-											<td><input type="text" class="form-control form-control-sm" style="width:33%; float:left;">
-											<input type="text" class="form-control form-control-sm" style="width:33%; float:left;">
-											<input type="text" class="form-control form-control-sm" style="width:33%; float:left;"></td>
+											<td>
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_DDD">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO1">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO2">
+											</td>
 											<th>회원</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td>
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO1">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO2">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO3">
+											</td>
 										</tr>
 										<tr>
 											<th rowspan="2">주소</th>
-											<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+											<td colspan="3">
+												<input type="text" style="width:33%; float:left;" class="form-control form-control-sm" id="custInfo_ZIPCDE" readonly>
+												<input type="text" style="width:61%; float:left;" class="form-control form-control-sm" id="custInfo_ZIP_ADDR" readonly><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i>
+											</td>
 										</tr>
 										<tr>
-											<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+											<td colspan="3"><input type="text" class="form-control form-control-sm" id="custInfo_ADDR" readonly></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered">
@@ -203,20 +212,28 @@
 										</colgroup>
 										<tr>
 											<th>대리인</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td>
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW1">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW2">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW3">
+											</td>
 											<th>학부모</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td>
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR1">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR2">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR3">
+											</td>
 										</tr>
 										<tr>
 											<th>대리인명</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm" style="width:55%; float:left;">
-												<select class="form-control form-control-sm" style="width:45%;">
+												<input type="text" class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FAT_NAME">
+												<select class="form-control form-control-sm" style="width:45%;" id="custId_FAT_REL">
 													<option>모</option>
 												</select>
 											</td>
 											<th>관계번호</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_FAT_RSDNO"></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered mt-1">
@@ -228,7 +245,7 @@
 										</colgroup>
 										<tr>
 											<th>본부</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_UPDEPTNAME" readonly></td>
 											<th>복수학습</th>
 											<td><select class="form-control form-control-sm" style="width:50%; float:left;">
 												<option value="a">테스트</option>
@@ -237,10 +254,10 @@
 										</tr>
 										<tr>
 											<th>사업국</th>
-											<td><input type="text" class="form-control form-control-sm" style="width:30%; float:left;">
-											<input type="text" class="form-control form-control-sm" style="width:70%;"></td>
+											<td><input type="text" class="form-control form-control-sm" style="width:30%; float:left;" id="custInfo_DEPT_ID" readonly>
+											<input type="text" class="form-control form-control-sm" style="width:53%; float:left;" id="custInfo_DEPT_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
 											<th>전화</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_DEPT" readonly></td>
 										</tr>
 										<tr>
 											<th>센터</th>
