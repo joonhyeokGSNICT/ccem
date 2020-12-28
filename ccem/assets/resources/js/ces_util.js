@@ -307,6 +307,7 @@ const FormatUtil = {
 }
 
 const calendarUtil = {
+    imasks: {},
     calendarOption: {
         autoUpdateInput: false,
         autoApply: true,
@@ -408,6 +409,7 @@ const calendarUtil = {
             // and other common options
             overwrite: true  // defaults to `false`
         });
+        calendarUtil.imasks[id] = imask;
         return imask;
     },
     /**
@@ -461,6 +463,7 @@ const calendarUtil = {
             // and other common options
             overwrite: true  // defaults to `false`
         });
+        calendarUtil.imasks[id] = imask;
         return imask;
     },
     /**
@@ -472,6 +475,26 @@ const calendarUtil = {
     timeMask(id, format, newOption) {
         $("#" + id).inputmask(format || "hh:mm:ss", {...calendarUtil.timeOption, newOption});
     },
+    /**
+     * 외부에서 imask 변경시 updateValue() 호출.
+     * @param {string} id 
+     */
+    updateImask(id) {
+        if (id) {
+            calendarUtil.imasks[id].updateValue();
+        } else {
+            for (let id in calendarUtil.imasks) {
+                calendarUtil.imasks[id].updateValue();
+            }
+        }
+    },
+    /**
+     * @param {string} id 
+     * @param {string} value 
+     */
+    setImaskValue(id, value) {
+        calendarUtil.imasks[id].value = value;
+    }
 }
 
 const PopupUtil = {
