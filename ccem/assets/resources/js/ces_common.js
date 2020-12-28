@@ -50,3 +50,36 @@ const getTimeFormat = () => {
 	let s = ("0" + today.getSeconds()).slice(-2);
 	return `${h}:${m}:${s}`;
 }
+
+/**
+ * @param {object} tableEl 
+ * @param {string} fileName 
+ */
+const tableToExcel = (tableEl, fileName) => {
+	let tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+	tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+	tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+	tab_text = tab_text + '<x:Name>Sheet1</x:Name>';
+	tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes>';
+	tab_text = tab_text + '/x:WorksheetOptions></x:ExcelWorksheet>';
+	tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head>';
+	tab_text = tab_text + "<body><table border='1px'>";
+	tab_text = tab_text + tableEl.html();
+	tab_text = tab_text + '</table></body></html>';
+	// let data_type = 'data:application/vnd.ms-excel';
+	let data_type = 'application/csv;charset=utf-8;';
+	let ua = window.navigator.userAgent;
+	let msie = ua.indexOf("MSIE ");
+	let blob = new Blob([tab_text], { type: data_type });
+	//Explorer 환경에서 다운로드
+	if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+		if (window.navigator.msSaveBlob) navigator.msSaveBlob(blob, fileName);
+	} else {
+		let elem = window.document.createElement('a');
+		elem.href = window.URL.createObjectURL(blob);
+		elem.download = fileName;
+		document.body.appendChild(elem);
+		elem.click();
+		document.body.removeChild(elem);
+	}
+}
