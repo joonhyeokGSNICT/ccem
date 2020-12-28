@@ -152,7 +152,7 @@ class Grid extends tui.Grid {
     * @param {object} ev 
     */
     addSelection(ev = {}) {
-        if (ev.targetType != "cell" && ev.targetType != "rowHeader") return;
+        if (typeof ev.rowKey != "number") return;
         this.removeRowClassName(this.#selectedRowKey, "cell-selection");
         this.addRowClassName(ev.rowKey, "cell-selection");
         this.#selectedRowKey = ev.rowKey;
@@ -163,6 +163,7 @@ class Grid extends tui.Grid {
      */
     clickSort(ev = {}) {
         if (ev.targetType != "columnHeader") return;
+        this.removeRowClassName(this.#selectedRowKey, "cell-selection");
         if (!ev.nativeEvent.target.className.includes("tui-grid-cell-header")) return;
         let sortingBtn = ev.nativeEvent.target.children[0];
         if (!sortingBtn || !sortingBtn.className.includes("tui-grid-btn-sorting")) return;
@@ -174,7 +175,7 @@ class Grid extends tui.Grid {
      * @param {boolean} onlyOne 
      */
     clickCheck(ev = {}, onlyOne = false) {
-        if (ev.targetType != "cell" && ev.targetType != "rowHeader") return;
+        if (typeof ev.rowKey != "number") return;
         let rowData = this.getRow(ev.rowKey);
         let checked = rowData._attributes.checked;
         if (onlyOne) this.uncheckAll();
