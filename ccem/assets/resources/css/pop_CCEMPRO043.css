@@ -1,0 +1,53 @@
+html, body {
+    height:100%; 
+    overflow:hidden;
+}
+
+.leftSide, .rightSide {
+    height:100%;
+    float:left;
+}
+.searchBox{
+	background-color: #f1f5ff; 
+	margin: 5px 0 10px;
+	padding:0.5%;  
+	border:1px solid #bbbbbb; 
+	align-items: center;
+    border-radius: 0.23rem;
+    padding:8px;
+}
+
+/* 버튼 */
+.navBtn {
+	background-color: #123f8a;
+	color:white;
+	font-weight:bold;
+	width: 80px;
+}
+.navBtn:hover {
+	background-color: #3f7ee6;
+	color:white;
+	font-weight:bold;
+}
+.btn-group-sm>.btn, .btn-sm{
+	font-size: 13px;
+}
+
+/* 텍스트 관련 */
+.font16{font-size:16px;}
+.font15{font-size:15px;}
+.font14{font-size:14px;}
+.font13{font-size:13px;}
+.font12{font-size:12px;}
+.textBold{
+	font-weight:bold;	
+}
+.form-control[readonly] {
+	background-color: #ffffff;	
+	border: 0px;
+}
+
+.input-group > .input-group-prepend > .rightRadius {
+    border-top-right-radius: 0.2rem;
+    border-bottom-right-radius: 0;
+}
