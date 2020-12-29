@@ -516,7 +516,7 @@ const calendarUtil = {
     }
 }
 
-const PopupUtil = {
+var PopupUtil = {
     pops: {},
     open(name, width, height, hash) {
         if(this.pops[name] && this.pops[name].name) {
