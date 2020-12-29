@@ -46,6 +46,14 @@ $(function(){
 	getCodeList();
 	// === === === === === === === === === === === === === === === === === === === //// EVENT //// === === === === === === === === === === === === === === === === === === === 
 	
+	// 주소창 팝업 EVENT INPUT ENTER KEY BIND
+	$(".addressPop").keyup(function(e){
+		var keyCode = e.which;
+		if(keyCode === 13){
+			PopupUtil.open('CCEMPRO043', 1100, 700);
+		}
+	});
+	
 	// 음력,양력 전환
 	$(".birthLunar").click(function(){
 		if($(this).attr('id') == "solar"){
