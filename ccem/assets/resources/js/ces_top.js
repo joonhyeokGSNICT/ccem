@@ -20,6 +20,35 @@ client.on("getSidebarClient", function(sideBarClient_d) {
 });
 
 $(function(){
+	
+	// TEST
+	var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{
+		    	"CUST_ID"		: "MB0054826233",				// 고객번호
+		    }]
+		};
+	
+	$.ajax({
+	    url: API_SERVER + '/cns.getCounselHist.do',
+	    type: 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data: JSON.stringify(param),
+	    success: function (response) {
+	        console.log(response);
+	        if(response.errcode == "0"){
+	        	console.log("DEPT DATA ===> :" , response);
+	        	counselMain_studyProgressList_grid.resetData(response.recv1);
+	        }else {
+	        	loading.out();
+	        	client.invoke("notify", response.errmsg, "error", 60000);
+	        }
+	    }, error: function (response) {
+	    }
+	});
+	
 	// === === === === === === === === === === === === === === === === === === === //// INITIALIZING //// === === === === === === === === === === === === === === === === === === === 
 	
 	// 탑바 클라이언트 저장
@@ -44,6 +73,10 @@ $(function(){
 	
 	// selectBox 공통 코드 불러오기
 	getCodeList();
+	
+	setTimeout(function(){
+		$('.multiSelect').multipleSelect();
+	}, 5000);
 	// === === === === === === === === === === === === === === === === === === === //// EVENT //// === === === === === === === === === === === === === === === === === === === 
 	
 	// 주소창 팝업 EVENT INPUT ENTER KEY BIND
