@@ -157,9 +157,8 @@ const createGrids = () => {
 		// TODO 해당 고객정보로 탑바 전체 재조회
 	});
 	grid1.on("onGridUpdated", () => {
-		const gridCnt = grid1.getPaginationTotalCount();
-		$("#textbox4").val(gridCnt);
-		if(gridCnt > 0) setCselDetail(grid1.getRowAt(0));
+		$("#textbox4").val(grid1.getPaginationTotalCount());
+		grid1.focus(0);
 	});
 
 	// 상담제품 grid
@@ -640,4 +639,14 @@ const saveExcelCsel = async () => {
 	const cselData = await getCselExcel();
 	const tableEl = createCselTable(cselData);
 	tableToExcel(tableEl, fileName);
+}
+
+/**
+ * 녹취청취
+ */
+const onRecordPlay = () => {
+	// const TestRecordId  = "202009101330577815";
+	const rowKey = grid1.getFocusedCell().rowKey;
+	const recordId = grid1.getFormattedValue(rowKey, "RECORD_ID");
+	recordPlay(recordId);
 }
