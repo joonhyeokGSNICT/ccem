@@ -290,15 +290,19 @@ const FormatUtil = {
     date(str) {
 
         /** Date */
-        if (typeof str == "object" && !isNaN(str.getTime())) {
-            y = str.getFullYear();
-            m = ("0" + (str.getMonth() + 1)).slice(-2);
-            d = ("0" + str.getDate()).slice(-2);
-            return `${y}-${m}-${d}`;
+        if (str && typeof str == "object") {
+            try {
+                const y = str.getFullYear();
+                const m = ("0" + (str.getMonth() + 1)).slice(-2);
+                const d = ("0" + str.getDate()).slice(-2);    
+                return `${y}-${m}-${d}`;
+            } catch {
+                return str;
+            }
         }
 
         /** string */
-        if (typeof str == "string") {                    
+        if (str && typeof str == "string") {                    
             if (str.length == 8) {
                 return `${str.substr(0, 4)}-${str.substr(4, 2)}-${str.substr(6, 2)}`;
             }
