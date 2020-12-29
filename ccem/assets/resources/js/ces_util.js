@@ -518,8 +518,12 @@ const calendarUtil = {
 
 var PopupUtil = {
     pops: {},
+    contains(name) {
+        if(this.pops[name] && this.pops[name].name) return true;
+        else return false;
+    },
     open(name, width, height, hash) {
-        if(this.pops[name] && this.pops[name].name) {
+        if(this.contains(name)) {
             this.pops[name].focus();
         }else {
             this.pops[name] = window.open(`pop_${name}.html${hash||""}`, name, `width=${width}, height=${height}`);
