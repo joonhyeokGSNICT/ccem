@@ -20,10 +20,13 @@ client.on("getSidebarClient", function(sideBarClient_d) {
 });
 
 $(function(){
+	// === === === === === === === === === === === === === === === === === === === //// INITIALIZING //// === === === === === === === === === === === === === === === === === === === 
 	
+	// 탑바 클라이언트 저장
 	topBarClient = client;
 	console.log(client);
 	
+	// 사이드바 클라이언트 저장
 	client.get('instances').then(function(instancesData) {
 		var instances = instancesData.instances;
 		console.log('client instances : ', instances);
@@ -35,7 +38,22 @@ $(function(){
 		}
 	});
 	
-	//// EVENT //// === === === === === === === === === === === === === === === === === === === 
+	// input mask
+	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
+	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
+	
+	// selectBox 공통 코드 불러오기
+	getCodeList();
+	// === === === === === === === === === === === === === === === === === === === //// EVENT //// === === === === === === === === === === === === === === === === === === === 
+	
+	// 주소창 팝업 EVENT INPUT ENTER KEY BIND
+	$(".addressPop").keyup(function(e){
+		var keyCode = e.which;
+		if(keyCode === 13){
+			PopupUtil.open('CCEMPRO043', 1100, 700);
+		}
+	});
+	
 	// 음력,양력 전환
 	$(".birthLunar").click(function(){
 		if($(this).attr('id') == "solar"){
@@ -50,11 +68,20 @@ $(function(){
 	});
 	
 	//검색 input 이벤트
-	$("input[name='searchInputCheck']").keyup(function(e){
+	$(".searchInputCheck").keyup(function(e){
 		var keyCode = e.which;
 		if (keyCode === 13) { // Enter Key
 			$("#"+$(this).parent().parent().parent().parent().parent().attr("id") + "Btn").click();
 		}
+		if($(this).val().length != 0){	// 길이가 0일 경우 체크해제
+			$("#"+$(this).attr("id") + "Check").prop("checked",true);
+		}else {
+			$("#"+$(this).attr("id") + "Check").prop("checked",false);
+		}
+	});
+	
+	$(".searchInputCheck").change(function(e){
+		//$("#"+$(this).attr("id") + "Check").prop("checked",true);
 		if($(this).val().length != 0){	// 길이가 0일 경우 체크해제
 			$("#"+$(this).attr("id") + "Check").prop("checked",true);
 		}else {
@@ -307,6 +334,39 @@ function studyingDEPTLC(custId){
 	});
 }
 
+//============================================================================
+// 인증&동의방법 설정 함수
+//============================================================================
+function setCertData(){
+    // 인증방법
+    if(DS_CUST.nameValue(1,"CERT_GB") == "S") {
+    	txtCERT_NAME.value = "SMS";    	    	    	
+    }else if(DS_CUST.nameValue(1,"CERT_GB") == "R") {	
+    	txtCERT_NAME.value = "녹취";    	
+    }else{
+    	txtCERT_NAME.value = "";    	
+    }    
+    
+    //인증상태
+    // 4, 8 동의실패
+    // 2, 6, 7 동의완료
+    // 9 요청취소
+    // 1 나머지는 빈값
+    var sApprv_gb = DS_CUST.nameValue(1,"APPRV_GB");
+    if(sApprv_gb == "4" || sApprv_gb == "8") {
+    	txtAPPRV_GB.value = "동의실패";    	    	    	
+    }else if(sApprv_gb == "2" || sApprv_gb == "6" || sApprv_gb == "7") {	
+    	txtAPPRV_GB.value = "동의완료";    	    	    	
+	}else if(sApprv_gb == "9") {	
+    	txtAPPRV_GB.value = "요청취소";    	    	    	
+    }else{
+    	txtAPPRV_GB.value = "";    	    	    	
+    } 
+        
+    // 정보동의 
+    txtCERT_SEND_DT.value = gf_formatToTime(DS_CUST.nameValue(1,"SMS_SEND_DT"), 'KRDT-TM:');        
+    txtCERT_REV_DT.value = gf_formatToTime(DS_CUST.nameValue(1,"SMS_REV_DT"), 'KRDT-TM:');	
+}
 
 function openPop(popName,w,h){
 	console.log(popName);
@@ -316,3 +376,43 @@ function openUnPop(popName,w,h){
 	console.log(popName);
 	currentUnPop = window.open('pop_'+popName+'.html',popName,'width='+w+', height='+h+', toolbar=no, menubar=no, scrollbars=no, resizable=no');
 };
+
+/** 
+ * 공통코드 조회
+ */
+const getCodeList = () => {
+	
+	var jb = $( 'select' ).get();
+	var CODE_MK_LIST = [];
+	for(dataObj of jb){
+		if(dataObj["name"] != "" && dataObj["name"] != null){
+			CODE_MK_LIST.push(dataObj["name"]);
+		}
+	}
+	console.log(CODE_MK_LIST);
+	CODE_MK_LIST.forEach(codeName => {
+		let settings = {
+			url: `${API_SERVER}/sys.getCommCode.do`,
+			method: 'POST',
+			contentType: "application/json; charset=UTF-8",
+			dataType: "json",
+			data: JSON.stringify({
+				senddataids: ["dsSend"],
+				recvdataids: ["dsRecv"],
+				dsSend: [{ CODE_MK: codeName }],
+			}),
+		}
+		$.ajax(settings).done(data => {
+			if (checkApi(data, settings)) {
+				let codeList = data.dsRecv;
+				codeList.forEach(code => {
+					let text = (codeName == "STD_MON_CDE" || codeName == "RENEW_POTN") ? 
+									`[${code.CODE_ID}] ${code.CODE_NAME}` : code.CODE_NAME;
+					let value = code.CODE_ID;
+					$(`select[name='${codeName}']`).append(new Option(text, value));
+				});
+			}
+		});
+	});
+
+}

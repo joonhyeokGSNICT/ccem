@@ -157,7 +157,7 @@
 										</tr>
 										<tr>
 											<th>생년월일</th>
-											<td><input type="text" class="form-control form-control-sm" id="custInfo_BIRTH_YMD" style="float:left; width:72%;">&nbsp;<span class="birthLunar" id="solar" style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px;">양력</span><span class="birthLunar" id="lunar" style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px; display:none;">음력</span>
+											<td><input type="text" class="form-control form-control-sm imask-date" id="custInfo_BIRTH_YMD" style="float:left; width:72%;">&nbsp;<span class="birthLunar" id="solar" style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px;">양력</span><span class="birthLunar" id="lunar" style="background: skyblue; vertical-align:middle; color:white; border-radius: 3px; display:none;">음력</span>
 												<select id="lunarSolarInput" hidden>
 													<option value="1">양력</option>
 													<option value="2">음력</option>
@@ -195,12 +195,12 @@
 										<tr>
 											<th rowspan="2">주소</th>
 											<td colspan="3">
-												<input type="text" style="width:33%; float:left;" class="form-control form-control-sm" id="custInfo_ZIPCDE" readonly>
-												<input type="text" style="width:61%; float:left;" class="form-control form-control-sm" id="custInfo_ZIP_ADDR" readonly><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i>
+												<input type="text" style="width:33%; float:left;" class="form-control form-control-sm addressPop" id="custInfo_ZIPCDE" readonly>
+												<input type="text" style="width:61%; float:left;" class="form-control form-control-sm addressPop" id="custInfo_ZIP_ADDR" readonly><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i>
 											</td>
 										</tr>
 										<tr>
-											<td colspan="3"><input type="text" class="form-control form-control-sm" id="custInfo_ADDR" readonly></td>
+											<td colspan="3"><input type="text" class="form-control form-control-sm addressPop" id="custInfo_ADDR" readonly></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered">
@@ -261,9 +261,9 @@
 										</tr>
 										<tr>
 											<th>센터</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" style="width:83%; float:left;" id="custInfo_LC_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
 											<th>전화</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_LC"></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered mt-1">
@@ -275,31 +275,31 @@
 										</colgroup>
 										<tr>
 											<th>인증&동의방법</th>
-											<td><span></span></td>
-											<td colspan="2"><span></span></td>
+											<td><span id="custInfo_CERT_GB"></span></td>
+											<td colspan="2"><span id="custInfo_SMS_SEND_DT"></span></td>
 										</tr>
 										<tr>
 											<th>인증&동의결과</th>
-											<td><span></span></td>
-											<td colspan="2"><span></span></td>
+											<td><span id="custInfo_APPRV_GB"></span></td>
+											<td colspan="2"><span id="custInfo_SMS_REV_DT"></span></td>
 										</tr>
 										<tr>
 											<th>필수동의</th>
-											<td><span></span></td>
+											<td><span id="custInfo_INFO_YN_NAME"></span></td>
 											<th>마케팅</th>
-											<td><span></span></td>
+											<td><span id="custInfo_SMS_YN_NAME"></span></td>
 										</tr>
 										<tr>
 											<th>보존 및 마케팅</th>
-											<td><span></span></td>
+											<td><span id="custInfo_SMS_SAVE_YN_NAME"></span></td>
 											<th>제 3자 동의</th>
-											<td><span></span></td>
+											<td><span id="custInfo_THIRD_YN_NAME"></span></td>
 										</tr>
 										<tr>
 											<th>두낫콜</th>
-											<td><span></span></td>
+											<td><span id="custInfo_DNC_YN_NAME"></span></td>
 											<th>선정일</th>
-											<td><span></span></td>
+											<td><span id="custInfo_DNC_DT"></span></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered mt-1 w-50">
@@ -309,7 +309,7 @@
 										</colgroup>
 										<tr>
 											<th>직원자녀</th>
-											<td><span></span></td>
+											<td><span id="custInfo_EMPCHILD_FLAG"></span></td>
 										</tr>
 									</table>
 									<div class="row">
@@ -1108,28 +1108,30 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" id="customerName" name="searchInputCheck">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerName" name="searchInputCheck">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerPhoneCheck">전화번호
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text"  class="form-control form-control-sm" id="customerPhone" name="searchInputCheck">
+												<input type="text"  class="form-control form-control-sm searchInputCheck" id="customerPhone" name="searchInputCheck" maxlength="4">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerEmailCheck">E-MAIL 주소
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm" id="customerEmail" name="searchInputCheck">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerEmail" name="searchInputCheck">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerGradeCheck">학년
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm" id="customerGrade"></select>
+												<select class="form-control form-control-sm searchInputCheck" id="customerGrade" name="GRADE_CDE">
+													<option></option>
+												</select>
 											</td>
 										</tr>
 										<tr>
@@ -1138,28 +1140,30 @@
 												</label>
 											</th>
 											<td>
-												<input type="text"  class="form-control form-control-sm" id="customerMNum" name="searchInputCheck">
+												<input type="text"  class="form-control form-control-sm searchInputCheck" id="customerMNum" name="searchInputCheck">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerBirthCheck">생년월일
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm" id="customerBirth" name="searchInputCheck">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerBirth" name="searchInputCheck">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerAddrCheck">주소
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm" id="customerAddr" name="searchInputCheck">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerAddr" name="searchInputCheck">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSubjectCheck">과목
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm" id="customerSubject"></select>
+												<select class="form-control form-control-sm searchInputCheck" id="customerSubject" name="PRDT_ID">
+													<option></option>
+												</select>
 											</td>
 										</tr>
 										<tr>
@@ -1168,14 +1172,16 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" id="customerSpot" name="searchInputCheck">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSpot" name="searchInputCheck">
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerDeptCheck">본부
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm" id="customerDept"></select>
+												<select class="form-control form-control-sm searchInputCheck" id="customerDept" name="DIV_CDE">
+													<option></option>
+												</select>
 											</td>
 										</tr>
 									</table>
@@ -1245,7 +1251,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm"></select>
+												<select class="form-control form-control-sm searchInputCheck" name="DIV_CDE"></select>
 											</td>
 										</tr>
 									</table>
@@ -1271,6 +1277,7 @@
   <script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
   <script src="../lib/toast-grid/js/tui-pagination.js"></script>
   <script src="../lib/toast-grid/js/tui-grid.js"></script>
+  <script src="../lib/imask.js"></script>
   <script src="../lib/customModal/js/modal-loading.js"></script>
   <script src="../js/client.js"></script>
   <script src="../js/config.js"></script>
