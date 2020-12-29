@@ -83,20 +83,20 @@ $(function(){
                 ellipsis: true,
             },
             {
-                header: '회원모HP',
-                name: 'MOBILNO_MBR',
-                width: 100,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            {
                 header: '회원HP',
                 name: 'MOBILNO',
                 width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+            },
+            {
+            	header: '회원모HP',
+            	name: 'MOBILNO_MBR',
+            	width: 100,
+            	align: "center",
+            	sortable: true,
+            	ellipsis: true,
             },
             {
                 header: '회원부HP',
@@ -132,7 +132,7 @@ $(function(){
             },
             {
                 header: '사업국',
-                name: 'DEPTNAME',
+                name: 'DEPT_NAME',
                 width: 100,
                 align: "center",
                 sortable: true,
