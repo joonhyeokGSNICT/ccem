@@ -1,29 +1,29 @@
-let grid1, grid2;
+var grid1, grid2;	// TOAST UI Grid
 let prods = [];		// 과목 리스트
 let users = [];		// 상담원 리스트
 let cselType = {};	// 분류코드
 
-$(function(){
-
+$(function () {
 	// init date
 	$(".calendar").val(getDateFormat());
 
 	// create calendar
-	$(".calendar").each((i, el) => calendarUtil.init(el.id, null, () => $("#checkbox1").prop("checked", checkDate())));
+	$(".calendar").each((i, el) => {
+		calendarUtil.init(el.id, null, () => $("#checkbox1").prop("checked", checkDate()));
+	});
 
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
 	createGrids();
-	getCodeList();	
+	getCodeList();
 	getProd();
-	// getUser(); // TODO 조회데이터 없음
+	getUser();
 	getCselType();
-
 });
 
 const createGrids = () => {
-	// 상담조회 > 상담조회 리스트 grid
+	// 상담조회 grid
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
 		bodyHeight: 213,
@@ -42,7 +42,7 @@ const createGrids = () => {
 			{ type: 'rowNum', header: "NO", },
 		],
 		columns: [
-			{ header: '상담일자',                       name: "CSEL_DATE",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
+			{ header: '상담일자',                       name: "CSEL_DATE",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   formatter: columnInfo => FormatUtil.date(columnInfo.value)},
 			{ header: '접수',                           name: "CSEL_NO",               width: 60,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
 			{ header: '상담순번',                       name: "CSEL_SEQ",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
 			{ header: '상담채널',                       name: "CSEL_CHNL_MK_NM",       width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,   },
@@ -146,17 +146,23 @@ const createGrids = () => {
 			{ header: '문자발송건수(SMS)',              name: "SMS_CNT",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,    },
 		],
 	});
-	grid1.on("onGridUpdated", () => $("#textbox4").val(grid1.getPaginationTotalCount()));
-	grid1.on("click", ev => {
+	grid1.on("focusChange", ev => {
 		grid1.addSelection(ev);
+		setCselDetail(grid1.getRow(ev.rowKey));
+	});
+	grid1.on("click", ev => {
 		grid1.clickSort(ev);
-		setCselDetail(ev);
 	});
 	grid1.on("dblclick", ev => {
 		// TODO 해당 고객정보로 탑바 전체 재조회
 	});
+	grid1.on("onGridUpdated", () => {
+		const gridCnt = grid1.getPaginationTotalCount();
+		$("#textbox4").val(gridCnt);
+		if(gridCnt > 0) setCselDetail(grid1.getRowAt(0));
+	});
 
-	// 상담조회 > 상담제품 리스트 grid
+	// 상담제품 grid
 	grid2 = new Grid({
 		el: document.getElementById('grid2'),
 		bodyHeight: 97,
@@ -168,8 +174,10 @@ const createGrids = () => {
 			{ header: '상담제품', name: "PRDT_NAME", align: "center", sortable: true, ellipsis: true, hidden: false, },
 		],
 	});
-	grid2.on("click", ev => {
+	grid2.on("focusChange", ev => {
 		grid2.addSelection(ev);
+	});
+	grid2.on("click", ev => {
 		grid2.clickSort(ev);
 	});
 }
@@ -179,21 +187,23 @@ const createGrids = () => {
  * @param {string} keyword
  */
 const filterProd = keyword => {
+	let selectbox = $("#selectbox1").empty();
 
 	keyword = keyword.toUpperCase();
 	let data = prods.filter(el => (el.PRDT_GRP.toUpperCase()).includes(keyword));
 
-	$("#selectbox1").empty();
-	data.forEach(el => $("#selectbox1").append(new Option(`[${el.PRDT_ID}] ${el.PRDT_NAME}`, el.PRDT_ID)));
+	data.forEach(el => selectbox.append(new Option(`[${el.PRDT_ID}] ${el.PRDT_NAME}`, el.PRDT_ID)));
 
 }
 
 /**
- * TODO 상담원 필터링
+ * 상담원 필터링
  * @param {string} key 
  */
 const filterUser = key => {
-
+	let selectbox = $("#selectbox2").empty();
+	let data = users.filter(el => el.USER_GRP_CDE == key);
+	data.forEach(el => selectbox.append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 }
 
 /**
@@ -280,7 +290,7 @@ const getCodeList = () => {
 			if (checkApi(data, settings)) {
 				let codeList = data.dsRecv;
 				codeList.forEach(code => {
-					let text = (codeName == "STD_MON_CDE" || codeName == "RENEW_POTN") ? 
+					let text = (codeName == "STD_MON_CDE" || codeName == "RENEW_POTN" || codeName == "USER_GRP_CDE") ? 
 									`[${code.CODE_ID}] ${code.CODE_NAME}` : code.CODE_NAME;
 					let value = code.CODE_ID;
 					$(`select[name='${codeName}']`).append(new Option(text, value));
@@ -308,10 +318,8 @@ const getProd = () => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-
 		prods = data.dsRecv;
 		prods.forEach(el => $("#selectbox1").append(new Option(`[${el.PRDT_ID}] ${el.PRDT_NAME}`, el.PRDT_ID)));
-		
 	});
 }
 
@@ -332,10 +340,8 @@ const getUser = () => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-
 		users = data.dsRecv;
-		users.forEach(el => $("#selectbox2").append(new Option(el.USER_NAME, el.USER_ID)));
-		
+		users.forEach(el => $("#selectbox2").append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 	});
 }
 
@@ -369,33 +375,6 @@ const getCselType = () => {
 		});
 	});
 
-}
-
-/**
- * 상담조회
- */
-const getCsel = () => {
-	let condition = getCselCondition();
-	if(!condition) return;
-
-	let settings = {
-		url: `${API_SERVER}/cns.getCsel.do`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-			dsSend: [condition],
-		}),
-	}
-
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-
-		grid1.resetData(data.dsRecv);
-
-	});	
 }
 
 /**
@@ -500,6 +479,66 @@ const getCselCondition = () => {
 }
 
 /**
+ * 상담조회
+ */
+const getCsel = () => {
+
+	// 조회데이터 초기화
+	grid1.resetData([]);
+	grid2.resetData([]);
+	$("#form1")[0].reset();
+	calendarUtil.setImaskValue("txtPROC_HOPE_DATE", "____-__-__");
+	calendarUtil.setImaskValue("txtPROC_DATE", "____-__-__");
+
+	// 조회조건 체크
+	let condition = getCselCondition();
+	if(!condition) return;
+
+	// 상담조회 api call
+	let settings = {
+		url: `${API_SERVER}/cns.getCsel.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [condition],
+		}),
+	}
+	$.ajax(settings).done(data => {
+		if (!checkApi(data, settings)) return;
+		grid1.resetData(data.dsRecv);
+	});	
+}
+
+/**
+ * 상담조회 엑셀저장용
+ */
+const getCselExcel = () => new Promise((resolve, reject) => {
+	// 조회조건 체크
+	let condition = getCselCondition();
+	if(!condition) return reject("");
+
+	// 상담조회 api call
+	let settings = {
+		url: `${API_SERVER}/cns.getCselExcel.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [condition],
+		}),
+	}
+	$.ajax(settings).done(data => {
+		if (!checkApi(data, settings)) return reject("");
+		return resolve(data.dsRecv);
+	});	
+});
+
+/**
  * 상담제품 조회
  * @param {object} condition 조회조건
  */
@@ -528,12 +567,9 @@ const getCselSubj = condition => {
 
 /**
  * 상담 상세정보 세팅
- * @param {object} ev 
+ * @param {object} row
  */
-const setCselDetail = ev => {
-	if(ev.targetType != "cell") return;
-
-	let row = grid1.getRow(ev.rowKey);
+const setCselDetail = row => {
 
 	// 상담제품 grid 조회
 	getCselSubj({
@@ -543,11 +579,65 @@ const setCselDetail = ev => {
 	});
 
 	// 상세정보 영역 세팅
-	row.PROC_HOPE_DATE = FormatUtil.date(row.PROC_HOPE_DATE || "");
-	row.PROC_DATE = FormatUtil.date(row.PROC_DATE || "");
+	row.PROC_HOPE_DATE = FormatUtil.date(row.PROC_HOPE_DATE || "____-__-__");
+	row.PROC_DATE = FormatUtil.date(row.PROC_DATE || "____-__-__");
 	grid1.getColumns().forEach(el => $(`#txt${el.name}`).val(row[el.name]));
+	calendarUtil.updateImask();
 
 	row.VOC_MK = row.VOC_MK == "1" ? true : false;
 	$("#checkbox32").prop("checked", row.VOC_MK);
 
+}
+
+/**
+ * 상담조회 엑셀저장용 table 생성
+ * @param {object} data 
+ * @return table element
+ */
+const createCselTable = data => {
+	const tableEl = $("#cselExcelTable");
+	let tableStr = "";
+
+	data.forEach(el => {
+		tableStr += `<tr>`;
+		tableStr += `<td>${el.CSEL_DATE}</td>`;
+		tableStr += `<td>${el.CSEL_NO}</td>`;
+		tableStr += `<td>${el.CSEL_SEQ}</td>`;
+		tableStr += `<td>${el.CSEL_MK_NM}</td>`;
+		tableStr += `<td>${el.NAME}</td>`;
+		tableStr += `<td>${el.MBR_ID}</td>`;
+		tableStr += `<td>${el.GRADE_NM}</td>`;
+		tableStr += `<td>${el.UP_DEPT_NAME_NM}</td>`;
+		tableStr += `<td>${el.DEPT_NAME_NM}</td>`;
+		tableStr += `<td>${el.CSEL_LTYPE_CDE_NM}</td>`;
+		tableStr += `<td>${el.CSEL_MTYPE_CDE_NM}</td>`;
+		tableStr += `<td>${el.CSEL_STYPE_CDE_NM}</td>`;
+		tableStr += `<td>${el.CSEL_CHNL_MK_NM}</td>`;
+		tableStr += `<td>${el.CSEL_TITLE}</td>`;
+		tableStr += `<td>${el.CSEL_CNTS}</td>`;
+		tableStr += `<td>${el.CSEL_USER_NM}</td>`;
+		tableStr += `<td>${el.CSEL_MAN_MK_NM}</td>`;
+		tableStr += `<td>${el.FST_CRS_CDE_NM}</td>`;
+		tableStr += `<td>${el.LC_MK}</td>`;
+		tableStr += `<td>${el.VOC_MK}</td>`;
+		tableStr += `<td>${el.PRDT_NAME}</td>`;
+		tableStr += `<td>${el.PRDT_EMP_NM}</td>`;
+		tableStr += `<td>${el.LC_NAME_NM}</td>`;
+		tableStr += `<td>${el.YC_MK}</td>`;
+		tableStr += `</tr>`;
+	});
+
+	tableEl.find("tbody").empty().append(tableStr);
+	tableEl.find('input').each((i, el) => $(el).remove());
+	return tableEl;
+}
+
+/**
+ * 상담조회 엑셀저장
+ */
+const saveExcelCsel = async () => {
+	const fileName = `상담조회(${getDateFormat()}).xls`;
+	const cselData = await getCselExcel();
+	const tableEl = createCselTable(cselData);
+	tableToExcel(tableEl, fileName);
 }
