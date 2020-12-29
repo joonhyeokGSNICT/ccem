@@ -19,9 +19,11 @@ const _SPACE = "ops";
 const API_INFO = {
     ops: {
         url: "",
+        recPlayer: "http://20.100.2.81/player/player.jsp",
     },
     dev: {
         url: "https://devccem.daekyo.co.kr",
+        recPlayer: "http://localhost/player/player.jsp",
     },
 }
 
@@ -60,3 +62,4 @@ const ZDK_INFO = {
 }
 
 const API_SERVER = API_INFO[_ACTIVE]["url"];
+const REC_SERVER = API_INFO[_ACTIVE]["recPlayer"];
