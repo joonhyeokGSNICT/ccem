@@ -285,24 +285,39 @@ const FormatUtil = {
     },
     /**
      * 날짜 포맷 : yyyy-dd-mm
+     * @param {Date | string} str 
+     */
+    date(str) {
+
+        /** Date */
+        if (typeof str == "object" && !isNaN(str.getTime())) {
+            y = str.getFullYear();
+            m = ("0" + (str.getMonth() + 1)).slice(-2);
+            d = ("0" + str.getDate()).slice(-2);
+            return `${y}-${m}-${d}`;
+        }
+
+        /** string */
+        if (typeof str == "string") {                    
+            if (str.length == 8) {
+                return `${str.substr(0, 4)}-${str.substr(4, 2)}-${str.substr(6, 2)}`;
+            }
+            if (str.length == 6) {
+                return `${str.substr(0, 2)}-${str.substr(2, 2)}-${str.substr(4, 2)}`;
+            }
+        }
+        
+        return str;
+    },
+    /**
+     * 시간 포맷 : yyyy-dd-mm
      * @param {string} str 
      */
-    date: function(str) {
-        let result = "";
-        if(typeof str == "object") {        /** [Obejct Date] */
-            result = str.getFullYear() + "-" + ("0"+(str.getMonth()+1)).slice(-2) + "-" + ("0"+str.getDate()).slice(-2);
-        }else if(typeof str == "string") {
-            if(str.length == 8) {
-                result = str.substr(0,4) + "-" + str.substr(4,2) + "-" + str.substr(6,2);
-            }else if(str.length == 6){
-                result = str.substr(0,2) + "-" + str.substr(2,2) + "-" + str.substr(4,2);
-            }else {
-                result = str;
-            }
-        }else {
-            result = str;
+    time(str) {
+        if(typeof str == "string" && str.length == 6) {
+            return `${str.substr(0, 2)}:${str.substr(2, 2)}:${str.substr(4, 2)}`;
         }
-        return result;
+        return str
     },
 }
 
