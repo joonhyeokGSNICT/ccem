@@ -148,6 +148,14 @@ const createGrids = () => {
 	});
 	grid1.on("focusChange", ev => {
 		grid1.addSelection(ev);
+
+		// 녹취청취 버튼 disabled 여부
+		if (grid1.getValue(ev.rowKey, "RECORD_ID")) {
+			$("#button2").prop("disabled", false);
+		} else {
+			$("#button2").prop("disabled", true);
+		}
+
 		setCselDetail(grid1.getRow(ev.rowKey));
 	});
 	grid1.on("click", ev => {
@@ -157,8 +165,19 @@ const createGrids = () => {
 		// TODO 해당 고객정보로 탑바 전체 재조회
 	});
 	grid1.on("onGridUpdated", () => {
-		$("#textbox4").val(grid1.getPaginationTotalCount());
 		grid1.focus(0);
+
+		const gridCnt = grid1.getPaginationTotalCount();
+		$("#textbox4").val(gridCnt);
+
+		// 녹취매핑, 녹취청취 버튼 disabled 여부
+		if(gridCnt > 0) {
+			$("#button1").prop("disabled", false);
+		}else {
+			$("#button1").prop("disabled", true);
+			$("#button2").prop("disabled", true);
+		}
+
 	});
 
 	// 상담제품 grid
