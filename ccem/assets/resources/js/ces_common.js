@@ -83,3 +83,19 @@ const tableToExcel = (tableEl, fileName) => {
 		document.body.removeChild(elem);
 	}
 }
+
+/**
+ * 녹취청취
+ */
+const recordPlay = recordId => {
+
+	if (!recordId || recordId.length != 18) {
+		if(typeof client != "undefined") client.invoke("notify", `녹취코드가 정상적이지 않습니다.<br><br>녹취 청취 할 수 없습니다.`, "error", 60000);
+    	else alert("녹취코드가 정상적이지 않습니다.\n\n녹취 청취 할 수 없습니다.");
+		return;
+	}
+
+	const url = `${REC_SERVER}?date=${recordId.substr(0, 8)}&keycode=${recordId}&local=${recordId.substr(14, 4)}`;
+	window.open(url, "VoiceRecPlayA", "width=570, height=240, top=0, left=0, ");
+
+}
