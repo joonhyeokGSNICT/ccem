@@ -384,7 +384,7 @@ const getUser = () => {
 		}),
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
+		if (!checkApi(data, settings, "상담원 조회중 오류가 발생하였습니다.")) return;
 		users = data.dsRecv;
 		users.forEach(el => $("#selectbox2").append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 	});
@@ -553,7 +553,7 @@ const getCsel = () => {
 		}),
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
+		if (!checkApi(data, settings, "상담조회중 오류가 발생하였습니다.")) return;
 		grid1.resetData(data.dsRecv);
 	});	
 }
@@ -579,7 +579,7 @@ const getCselExcel = () => new Promise((resolve, reject) => {
 		}),
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return reject("");
+		if (!checkApi(data, settings, "상담조회중 오류가 발생하였습니다.")) return reject("");
 		return resolve(data.dsRecv);
 	});	
 });
@@ -604,10 +604,8 @@ const getCselSubj = condition => {
 	}
 
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-
+		if (!checkApi(data, settings, "상담조회중 오류가 발생하였습니다.")) return;
 		grid2.resetData(data.dsRecv);
-
 	});	
 }
 
@@ -864,7 +862,7 @@ const delCounsel = () => {
 	}
 
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
+		if (!checkApi(data, settings, "상담정보 삭제중 오류가 발생하였습니다.")) return;
 		alert("정상적으로 삭제 되었습니다.");
 		getCsel();
 	});

@@ -2,20 +2,22 @@
  * api 오류 체크
  * @param {object} response 
  * @param {object} settings 
+ * @param {string} customMsg
  */
-const checkApi = (response, settings) => {
-	if (response.errcode != "0") {
-		if(typeof client != 'undefined') {
-			let errMsg = `서버에서 오류가 발생하였습니다.<br><br>오류코드 : ${response.errcode}<br>오류메시지 : ${response.errmsg}<br>호출서비스 : ${settings.url}`;
-			client.invoke("notify", errMsg, "error", 60000);
-		}
-		else {
-			let errMsg = `서버에서 오류가 발생하였습니다.\n\n오류코드 : ${response.errcode}\n오류메시지 : ${response.errmsg}\n호출서비스 : ${settings.url}`
-			alert(errMsg);
-		}
-		return false;
+const checkApi = (response, settings, customMsg) => {
+	if (response.errcode == "0") return true;
+
+	let errMsg = customMsg || "서버에서 오류가 발생하였습니다.";
+	errMsg += `<br><br>오류코드 : ${response.errcode}<br>오류메시지 : ${response.errmsg}<br>호출서비스 : ${settings.url}`;
+
+	if(typeof client != 'undefined') {
+		client.invoke("notify", errMsg, "error", 60000);
+	}else {
+		errMsg = errMsg.replaceAll("<br>", "\n");
+		alert(errMsg);
 	}
-	return true;
+
+	return false;
 }
 
 /**
