@@ -233,6 +233,18 @@ class Grid extends tui.Grid {
 
         tableToExcel(tableEl, fileName);
     }
+    /**
+     * Get number of rows per page
+     * @return {number} perPage
+     */
+    getPaginationPerPage() {
+        const pagenation = this.getPagination();
+        if (pagenation && pagenation._options) {
+            return pagenation._options.itemsPerPage;
+        } else {
+            return null;
+        }
+    }
 }
 
 /**
