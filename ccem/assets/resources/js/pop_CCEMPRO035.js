@@ -425,7 +425,7 @@ const getCselType = () => {
  */
 const getCselCondition = () => {
 
-	const checkVal = "1", uncheckVal = "0";
+	const checkVal = "Y", uncheckVal = "N";
 
 	let data = {
 		CHK_DATE			:	$("#checkbox1").is(":checked") 		? checkVal : uncheckVal,		// 상담일자  - 체크여부				
