@@ -148,8 +148,29 @@
 										</tr>
 										<tr>
 											<th>형제서열</th>
-											<td><select class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FML_RANK">
-												<option value="a">첫째</option>
+											<td><select class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FML_RANK" name="FML_RANK">
+												<option value=""></option>
+												<option value="0">외동</option>
+												<option value="1">1</option>
+												<option value="2">2</option>
+												<option value="3">3</option>
+												<option value="4">4</option>
+												<option value="5">5</option>
+												<option value="6">6</option>
+												<option value="7">7</option>
+												<option value="8">8</option>
+												<option value="9">9</option>
+												<option value="10">10</option>
+												<option value="11">11</option>
+												<option value="12">12</option>
+												<option value="13">13</option>
+												<option value="14">14</option>
+												<option value="15">15</option>
+												<option value="16">16</option>
+												<option value="17">17</option>
+												<option value="18">18</option>
+												<option value="19">19</option>
+												<option value="20">20</option>
 											</select>
 											<select class="form-control form-control-sm" style="width:45%;" id="custInfo_GND">
 												<option value="1">남</option>
@@ -167,18 +188,16 @@
 												</select>
 											</td>
 											<th>고객구분</th>
-											<td><select class="form-control form-control-sm" id="custInfo_CUST_MK">
+											<td><select class="form-control form-control-sm" id="custInfo_CUST_MK" name="CUST_MK">
 												<option value="">잠재회원(CTI)</option>
 											</select></td>
 										</tr>
 										<tr>
 											<th>관계회원</th>
-											<td><select class="form-control form-control-sm">
-												<option value="">김동생</option>
+											<td><select class="form-control form-control-sm" id="custInfo_FAMILY_CMB" disabled>
 											</select></td>
 											<th>학년</th>
-											<td><select class="form-control form-control-sm" id="custInfo_GRADE_CDE">
-												<option value="">1학년</option>
+											<td><select class="form-control form-control-sm" id="custInfo_GRADE_CDE" name="GRADE_CDE">
 											</select></td>
 										</tr>
 										<tr>
@@ -231,8 +250,7 @@
 											<th>대리인명</th>
 											<td colspan="">
 												<input type="text" class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FAT_NAME">
-												<select class="form-control form-control-sm" style="width:45%;" id="custId_FAT_REL">
-													<option>모</option>
+												<select class="form-control form-control-sm" style="width:45%;" id="custInfo_FAT_REL" name="FAT_REL">
 												</select>
 											</td>
 											<th>관계번호</th>
@@ -241,8 +259,8 @@
 									</table>
 									<table class="table table-sm table-bordered mt-1">
 										<colgroup>
-											<col span="1" style="width:18%;">
-											<col span="1" style="width:32%;">
+											<col span="1" style="width:13%;">
+											<col span="1" style="width:37%;">
 											<col span="1" style="width:18%;">
 											<col span="1" style="width:32%;">
 										</colgroup>
@@ -258,13 +276,13 @@
 										<tr>
 											<th>사업국</th>
 											<td><input type="text" class="form-control form-control-sm" style="width:30%; float:left;" id="custInfo_DEPT_ID" readonly>
-											<input type="text" class="form-control form-control-sm" style="width:53%; float:left;" id="custInfo_DEPT_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
+											<input type="text" class="form-control form-control-sm" style="width:56%; float:left;" id="custInfo_DEPT_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
 											<th>전화</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_DEPT" readonly></td>
 										</tr>
 										<tr>
 											<th>센터</th>
-											<td><input type="text" class="form-control form-control-sm" style="width:83%; float:left;" id="custInfo_LC_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
+											<td><input type="text" class="form-control form-control-sm" style="width:86%; float:left;" id="custInfo_LC_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
 											<th>전화</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_LC"></td>
 										</tr>
