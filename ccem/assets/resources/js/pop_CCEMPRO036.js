@@ -6,7 +6,7 @@ $(function () {
 	// 초기값 세팅
 	if (window.opener) {
 		cselGrid = opener.grid1;
-		rowKey = cselGrid.getFocusedCell().rowKey;
+		rowKey = cselGrid.getSelectedRowKey();
 		$("#calendar1").val(cselGrid.getFormattedValue(rowKey, "CSEL_DATE"));	// 상담일자
 		$("#calendar2").val(cselGrid.getFormattedValue(rowKey, "CSEL_DATE"));	// 상담일자
 		$("#textbox8").val(cselGrid.getFormattedValue(rowKey, "CSEL_DATE"));	// 상담일자
@@ -124,7 +124,7 @@ const getBadRecord = () => {
  */
 const onRecordPlay = () => {
 	// const TestRecordId  = "202009101330577815";
-	const rowKey = grid.getFocusedCell().rowKey;
+	const rowKey = grid.getSelectedRowKey();
 	const recordId = grid.getFormattedValue(rowKey, "RECORD_ID");
 	recordPlay(recordId);
 }

@@ -147,6 +147,9 @@ class Grid extends tui.Grid {
         super(options);
         this.#selectedRowKey = 0;
     }
+    getSelectedRowKey() {
+        return this.#selectedRowKey;
+    }
     /**
     * Add style when selecting row
     * @param {object} ev 

@@ -727,7 +727,7 @@ const saveExcelCsel = async () => {
  */
 const onRecordPlay = () => {
 	// const TestRecordId  = "202009101330577815";
-	const rowKey = grid1.getFocusedCell().rowKey;
+	const rowKey = grid1.getSelectedRowKey();
 	const recordId = grid1.getValue(rowKey, "RECORD_ID");
 	recordPlay(recordId);
 }
@@ -736,7 +736,7 @@ const onRecordPlay = () => {
  * 결과
  */
 const onResult = () => {
-	const rowKey = grid1.getFocusedCell().rowKey;
+	const rowKey = grid1.getSelectedRowKey();
 	const proc = grid1.getValue(rowKey, "PROC_MK");
 
 	switch(proc){
@@ -763,7 +763,7 @@ const onModify = () => {
 		return;
 	}
 
-	const rowKey = grid1.getFocusedCell().rowKey;
+	const rowKey = grid1.getSelectedRowKey();
 	const proc = grid1.getValue(rowKey, "PROC_MK");
 
 	switch (proc) {
@@ -786,7 +786,7 @@ const onModify = () => {
  */
 const delCounselCondition = () => {
 
-	const rowKey = grid1.getFocusedCell().rowKey;
+	const rowKey = grid1.getSelectedRowKey();
 	const cselDate = grid1.getValue(rowKey,"CSEL_DATE");	// 상담일자
 	const cselNo = grid1.getValue(rowKey, "CSEL_NO");		// 접수
 	const cselSeq = grid1.getValue(rowKey, "CSEL_SEQ");		// 상담순번
