@@ -162,7 +162,7 @@ const createGrids = () => {
 		}
 
 		// 결과 버튼 disabled 여부
-		const proc = grid1.getFormattedValue(ev.rowKey, "PROC_MK");
+		const proc = grid1.getValue(ev.rowKey, "PROC_MK");
 		if(proc == "2" || proc == "3" || proc == "4") {	// 2: 상담원처리, 3: 상담연계, 4: 시정처리
 			$("#button6").prop("disabled", false);
 		}else {
@@ -212,7 +212,9 @@ const createGrids = () => {
 			{ type: 'rowNum', header: "NO", },
 		],
 		columns: [
-			{ header: '상담제품', name: "PRDT_NAME", align: "center", sortable: true, ellipsis: true, hidden: false, },
+			{ header: '제품코드', 			 name: "PRDT_ID", 		 align: "center", sortable: true, ellipsis: true, hidden: true,  },
+			{ header: '제품명', 			 name: "PRDT_NAME", 	 align: "center", sortable: true, ellipsis: true, hidden: false, },
+			{ header: '입회결과여부(1:입회)', name: "ENTER_RST_FLAG", align: "center", sortable: true, ellipsis: true, hidden: true,  },
 		],
 	});
 
@@ -421,7 +423,8 @@ const getCselType = () => {
 }
 
 /**
- * 상담 조회조건
+ * 상담조회 value check
+ * @return 조회조건
  */
 const getCselCondition = () => {
 
@@ -691,7 +694,7 @@ const saveExcelCsel = async () => {
 const onRecordPlay = () => {
 	// const TestRecordId  = "202009101330577815";
 	const rowKey = grid1.getFocusedCell().rowKey;
-	const recordId = grid1.getFormattedValue(rowKey, "RECORD_ID");
+	const recordId = grid1.getValue(rowKey, "RECORD_ID");
 	recordPlay(recordId);
 }
 
@@ -700,7 +703,7 @@ const onRecordPlay = () => {
  */
 const onResult = () => {
 	const rowKey = grid1.getFocusedCell().rowKey;
-	const proc = grid1.getFormattedValue(rowKey, "PROC_MK");
+	const proc = grid1.getValue(rowKey, "PROC_MK");
 
 	switch(proc){
         case "2":       //상담원처리 = 고객의견
@@ -727,7 +730,7 @@ const onModify = () => {
 	}
 
 	const rowKey = grid1.getFocusedCell().rowKey;
-	const proc = grid1.getFormattedValue(rowKey, "PROC_MK");
+	const proc = grid1.getValue(rowKey, "PROC_MK");
 
 	switch (proc) {
 		case "6":
@@ -741,4 +744,92 @@ const onModify = () => {
 			break;
 	}
 
+}
+
+/**
+ * 상담이력 삭제 value check
+ * @return condition
+ */
+const delCounselCondition = () => {
+
+	const rowKey = grid1.getFocusedCell().rowKey;
+	const cselDate = grid1.getValue(rowKey,"CSEL_DATE");	// 상담일자
+	const cselNo = grid1.getValue(rowKey, "CSEL_NO");		// 접수
+	const cselSeq = grid1.getValue(rowKey, "CSEL_SEQ");		// 상담순번
+	const proc = grid1.getValue(rowKey, "PROC_MK");			// 처리구분코드
+	const procSts = grid1.getValue(rowKey, "PROC_STS_MK");  // 처리상태코드
+	const refund = grid1.getValue(rowKey, "REFUND_FLAG");	// 환불상태코드
+	const enterRst = grid2.getValue(0, "ENTER_RST_FLAG");	// 입회결과여부(1:입회)
+	
+	// 1. CSEL_SEQ가 1만 있으면 삭제 가능, SEQ가 1이 아닌 건 삭제 가능.
+	let isDelete = false;
+	const gridData = grid1.getData();
+	for (const row of gridData) {
+		if (row.CSEL_NO == cselNo && row.CSEL_SEQ != "1") {
+			isDelete = true;
+			break;
+		}
+	}
+	if (isDelete && cselSeq == "1") {
+		alert("동일한 접수번호에 접수순번이 2가지 이상 존재합니다.\n\n먼저 접수순번이 1이 아닌건을 삭제해 주십시오.");
+		return false;
+	}
+
+	// 2. 결과등록한 상담이력은 삭제할 수 없음.
+	if (proc == "3" && (procSts == "04" || procSts == "15" || procSts == "99")) {
+		alert("결과등록한 상담이력은 삭제할 수 없습니다.");
+		return false;
+	}
+
+	// 3. 환불에 대해 승인이 된 상담이력은 삭제할 수 없음.
+	if (refund && refund != "0") {
+		alert("환불에 대해 승인이 된 상담이력은 삭제할 수 없습니다.");
+		return false;
+	}
+
+	// 4. 입회완료된 상담이력은 삭제 불가능.
+	if (enterRst > 0) {
+		alert("입회완료된 상담이력은 삭제할 수 없습니다.");
+		return false;
+	}
+
+	let sMsg = "";
+	sMsg += "\n * 상담일자 : " + cselDate;
+	sMsg += "\n * 상담번호 : " + cselNo;
+	sMsg += "\n * 상담순번 : " + cselSeq;
+	sMsg += "\n\n 위 항목에 해당하는 상담이력/상담과목을 정말로 삭제하시겠습니까?";
+	if (confirm(sMsg) == false) return false;
+
+	return {
+		CSEL_DATE	:	cselDate,	// 상담일자
+		CSEL_NO		:	cselNo,		// 상담번호
+		CSEL_SEQ	:	cselSeq,	// 상담순번
+	}
+
+}
+
+/**
+ * 상담이력 삭제
+ */
+const delCounsel = () => {
+	let condition = delCounselCondition();
+	if(!condition) return;
+
+	let settings = {
+		url: `${API_SERVER}/cns.delCounsel.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [condition],
+		}),
+	}
+
+	$.ajax(settings).done(data => {
+		if (!checkApi(data, settings)) return;
+		alert("정상적으로 삭제 되었습니다.");
+		getCsel();
+	});	
 }
