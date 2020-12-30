@@ -187,5 +187,6 @@ const upBadRecord = () => {
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings, "녹취매핑정보 저장중 오류가 발생하였습니다.")) return;
 		alert("정상적으로 저장 되었습니다.");
+		getBadRecord();
 	});
 }
