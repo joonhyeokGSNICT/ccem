@@ -642,39 +642,75 @@ const setCselDetail = row => {
  */
 const createCselTable = data => {
 	const tableEl = $("#cselExcelTable");
-	let tableStr = "";
 
-	data.forEach(el => {
-		tableStr += `<tr>`;
-		tableStr += `<td>${el.CSEL_DATE}</td>`;
-		tableStr += `<td>${el.CSEL_NO}</td>`;
-		tableStr += `<td>${el.CSEL_SEQ}</td>`;
-		tableStr += `<td>${el.CSEL_MK_NM}</td>`;
-		tableStr += `<td>${el.NAME}</td>`;
-		tableStr += `<td>${el.MBR_ID}</td>`;
-		tableStr += `<td>${el.GRADE_NM}</td>`;
-		tableStr += `<td>${el.UP_DEPT_NAME_NM}</td>`;
-		tableStr += `<td>${el.DEPT_NAME_NM}</td>`;
-		tableStr += `<td>${el.CSEL_LTYPE_CDE_NM}</td>`;
-		tableStr += `<td>${el.CSEL_MTYPE_CDE_NM}</td>`;
-		tableStr += `<td>${el.CSEL_STYPE_CDE_NM}</td>`;
-		tableStr += `<td>${el.CSEL_CHNL_MK_NM}</td>`;
-		tableStr += `<td>${el.CSEL_TITLE}</td>`;
-		tableStr += `<td>${el.CSEL_CNTS}</td>`;
-		tableStr += `<td>${el.CSEL_USER_NM}</td>`;
-		tableStr += `<td>${el.CSEL_MAN_MK_NM}</td>`;
-		tableStr += `<td>${el.FST_CRS_CDE_NM}</td>`;
-		tableStr += `<td>${el.LC_MK}</td>`;
-		tableStr += `<td>${el.VOC_MK}</td>`;
-		tableStr += `<td>${el.PRDT_NAME}</td>`;
-		tableStr += `<td>${el.PRDT_EMP_NM}</td>`;
-		tableStr += `<td>${el.LC_NAME_NM}</td>`;
-		tableStr += `<td>${el.YC_MK}</td>`;
-		tableStr += `</tr>`;
+	// create thead
+	const theadStr = `
+		<tr>
+			<th>NO</th>
+			<th>상담일자</th>
+			<th>상담번호</th>
+			<th>상담순번</th>
+			<th>상담구분</th>
+			<th>성명</th>
+			<th>회원번호</th>
+			<th>학년</th>
+			<th>본부명</th>
+			<th>지점명</th>
+			<th>상담분류(대)</th>
+			<th>상담분류(중)</th>
+			<th>상담분류(소)</th>
+			<th>상담채널명</th>
+			<th>상담제목</th>
+			<th>상담내용</th>
+			<th>상담원명</th>
+			<th>내담자</th>
+			<th>상담경로</th>
+			<th>러닝센터</th>
+			<th>VOC여부</th>
+			<th>상담제품</th>
+			<th>상담제품 교사명</th>
+			<th>센터명</th>
+			<th>YC</th>
+		</tr>`;
+	tableEl.find("thead").empty().append(theadStr);
+
+	// create tbody
+	tableEl.find("tbody").empty();
+	data.forEach((el, i) => {
+		const tbodyStr = `
+			<tr>
+				<td>${(i + 1)}</td>
+				<td>${FormatUtil.date(el.CSEL_DATE || "")}</td>
+				<td>${el.CSEL_NO || ""}</td>
+				<td>${el.CSEL_SEQ || ""}</td>
+				<td>${el.CSEL_MK_NM || ""}</td>
+				<td>${el.NAME || ""}</td>
+				<td>${el.MBR_ID || ""}</td>
+				<td>${el.GRADE_NM || ""}</td>
+				<td>${el.UP_DEPT_NAME_NM || ""}</td>
+				<td>${el.DEPT_NAME_NM || ""}</td>
+				<td>${el.CSEL_LTYPE_CDE_NM || ""}</td>
+				<td>${el.CSEL_MTYPE_CDE_NM || ""}</td>
+				<td>${el.CSEL_STYPE_CDE_NM || ""}</td>
+				<td>${el.CSEL_CHNL_MK_NM || ""}</td>
+				<td>${el.CSEL_TITLE || ""}</td>
+				<td>${el.CSEL_CNTS || ""}</td>
+				<td>${el.CSEL_USER_NM || ""}</td>
+				<td>${el.CSEL_MAN_MK_NM || ""}</td>
+				<td>${el.FST_CRS_CDE_NM || ""}</td>
+				<td>${el.LC_MK || ""}</td>
+				<td>${el.VOC_MK || ""}</td>
+				<td>${el.PRDT_NAME || ""}</td>
+				<td>${el.PRDT_EMP_NM || ""}</td>
+				<td>${el.LC_NAME_NM || ""}</td>
+				<td>${el.YC_MK || ""}</td>
+			</tr>`;
+		tableEl.find("tbody").append(tbodyStr);
 	});
 
-	tableEl.find("tbody").empty().append(tableStr);
+	// delete input 
 	tableEl.find('input').each((i, el) => $(el).remove());
+
 	return tableEl;
 }
 
@@ -813,7 +849,7 @@ const delCounselCondition = () => {
  */
 const delCounsel = () => {
 	let condition = delCounselCondition();
-	if(!condition) return;
+	if (!condition) return;
 
 	let settings = {
 		url: `${API_SERVER}/cns.delCounsel.do`,
@@ -831,5 +867,5 @@ const delCounsel = () => {
 		if (!checkApi(data, settings)) return;
 		alert("정상적으로 삭제 되었습니다.");
 		getCsel();
-	});	
+	});
 }
