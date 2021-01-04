@@ -23,7 +23,7 @@ const API_INFO = {
     },
     dev: {
         url: "https://devccem.daekyo.co.kr",
-        recPlayer: "http://localhost/player/player.jsp",
+        recPlayer: 'http://20.100.2.81/player/player.jsp'
     },
 }
 
