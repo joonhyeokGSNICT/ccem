@@ -73,6 +73,7 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                formatter: columnInfo => FormatUtil.birth(columnInfo.value)
             },
             {
                 header: '자택전화',
@@ -154,6 +155,7 @@ $(function(){
     });
 	
 	customerSearchList_grid.on('dblclick', (ev) => {
+		initAll(); 													// 기존 정보 초기화
 		console.log(customerSearchList_grid.getRow(ev.rowKey));
 		custInfo = customerSearchList_grid.getRow(ev.rowKey);
 		var param = {

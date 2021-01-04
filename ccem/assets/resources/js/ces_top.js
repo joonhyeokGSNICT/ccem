@@ -5,13 +5,15 @@ var counselMain_counselHist_grid = null;   		// 상담메인 > 상담이력 grid
 var counselMain_studyTab_weeklyStat = null; 	// 상담메인 > 학습이력 > 주간학습현황 grid
 var counselMain_studyTab_changeHist = null; 	// 상담메인 > 학습이력 > 변동이력 grid
 var counselMain_studyTab_asignStuff = null; 	// 상담메인 > 학습이력 > 불출교재 grid
-var counselMain_studyList_grid = null;  		// 상담메인	> 학습정보 grid
+var counselMain_studyList_grid = null;  		// 상담메인	> 학습과목정보 grid
 var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상담이력 grid
 
 var currentPop = { name : null };
 var currentUnPop = { name : null };
 
 var currentCustInfo;							// 현재 선택된 고객의 정보
+var currentCounselInfo; 						// 현재 선택된 상담의 정보
+var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
 
 var topBarClient = null;
 var sideBarClient = null;
@@ -20,6 +22,33 @@ var sideBarClient = null;
 client.on("getSidebarClient", function(sideBarClient_d) {
 	sideBarClient = sideBarClient_d;
 });
+
+/**
+ * 페이지의 모든 요소 초기화
+ * @returns
+ */
+function initAll() {
+	currentCustInfo = null;						// 현재 선택된 고객의 정보 초기화
+	currentCounselInfo = null; 					// 현재 선택된 상담의 정보 초기화
+	currentStudyInfo = null; 					// 현재 선택된 주간학습의 정보 초기화  
+	
+	// 양력 음력 초기화
+	$("#solar").css('display','');
+	$("#lunar").css('display','none');
+	$("#lunarSolarInput").val("1");
+	
+	// input 내용 삭제
+	$("#customerInfoTab").find("input:text").each( function () {
+        $(this).val('');
+    });
+	// select 첫번째 옵션 선택
+	$("#customerInfoTab").find('select').each(function(){
+		$(this).find('option:first').prop('selected','true');
+	});
+	
+	// 상담이력 탭 이동
+	$("#customerCounselHist").click();
+};
 
 $(function(){
 	
@@ -74,7 +103,8 @@ $(function(){
 		}
 	});
 	
-	//검색 input 이벤트
+	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
+	//검색 input 이벤트 1
 	$(".searchInputCheck").keyup(function(e){
 		var keyCode = e.which;
 		if (keyCode === 13) { // Enter Key
@@ -87,6 +117,7 @@ $(function(){
 		}
 	});
 	
+	// 고객, 선생님찾기 input 이벤트 2
 	$(".searchInputCheck").change(function(e){
 		//$("#"+$(this).attr("id") + "Check").prop("checked",true);
 		if($(this).val().length != 0){	// 길이가 0일 경우 체크해제
@@ -96,6 +127,14 @@ $(function(){
 		}
 	});
 	
+	// 조회버튼 부
+	$(".searchBtn").click(function(){
+		var currentDiv = $(this).parent().attr("id");
+		customerSearch(currentDiv);
+	});
+	// === === === === === === === === === === === === === === === === === === === === === === === === === === /검색
+	
+	// 오른쪽 DIV 컨테이터 스크롤 상단 이동
 	$("#goToTop").click(function(){
 		$('.rightSideScroll').scrollTop(0);
 	});
@@ -103,6 +142,11 @@ $(function(){
 	// 탭 이동시 이벤트
 	$("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
 		switch($(this).attr('id')){
+		// 고객정보
+		case 'customerInfo':
+			counselMain_counselHist_grid.refreshLayout();
+			counselMain_studyProgressList_grid.refreshLayout();
+			break;
 		// 고객정보 - 고객, 선생님
 		case 'customerTab':
 			$("#assignMemberbtn").css("display","");
@@ -116,16 +160,44 @@ $(function(){
 		case 'customerSearch':
 			customerSearchList_grid.refreshLayout();
 			break;
+			
+		// 상담이력
+		case 'customerCounselHist':
+			counselMain_counselHist_grid.refreshLayout();
+			counselMain_studyProgressList_grid.refreshLayout();
+			break;
+			
+		// 학습이력
+		case 'customerStudyHist':
+			loadList('ifsStudyClass', counselMain_studyTab_weeklyStat);
+			counselMain_studyTab_weeklyStat.refreshLayout();
+			break;
+		// 변동이력
+		case 'studyTab_changeHist':
+			counselMain_studyTab_changeHist.refreshLayout();
+			break;
+		// 불출교재
+		case 'studyTab_asignStuff':
+			counselMain_studyTab_asignStuff.refreshLayout();
+			break;
+			
+			
+			
+			
+			
 		}
+		
+		
+		
+		
+		
+		
+		
 	});
 	
-	// 조회버튼 부
-	$(".searchBtn").click(function(){
-		var currentDiv = $(this).parent().attr("id");
-		console.log(currentDiv);
-		customerSearch(currentDiv);
-	});
 	
+	
+	// 팝업 버튼
 	$(".popup-btn").click(function() {
 		var popDepth = $(this).attr('id').split('_').length;
 		if(popDepth == '2'){
@@ -430,7 +502,6 @@ const getCodeList = () => {
 function loadCustInfoMain() {
 	
 	for(key in currentCustInfo){												// input 자동 기입
-		console.log($("#custInfo_" + key));
 		if($("#custInfo_" + key).length != 0){
 			switch($("#custInfo_" + key)[0].localName){
 			case "select" :
@@ -478,10 +549,11 @@ function loadCustInfoMain() {
 		$("#lunarSolarInput").val("2");
 	}
 	
+	familyInfoLoad();												// 관계회원정보 불러오기
 	
-	familyInfoLoad();	// 관계회원정보 불러오기
-	counselHistLoad();	// 상담이력 목록 불러오기
-	currentStudyLoad();
+	loadList('counselHist', counselMain_counselHist_grid);			// 상담이력 목록 불러오기				//OLD >> counselHistLoad();		// 상담이력 목록 불러오기
+	loadList('currentStudy', counselMain_studyProgressList_grid);	// 학습진행정보 목록 불러오기			//OLD >> currentStudyLoad();	// 학습진행정보 목록 불러오기
+
 }
 
 /**
@@ -530,8 +602,12 @@ function familyInfoLoad() {
 	});
 }
 
-
-function counselHistLoad() {
+/**
+ * 상담이력 리스트 조회
+ * @returns
+ * 20-12-30 최준혁
+ */
+/*function counselHistLoad() {
 	var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
@@ -559,8 +635,13 @@ function counselHistLoad() {
 	    }
 	});
 }
-
-function currentStudyLoad() {
+*/
+/**
+ * 학습진행정보 정보 조회
+ * @returns
+ * 20-12-30 최준혁
+ */
+/*function currentStudyLoad() {
 	var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
@@ -587,4 +668,109 @@ function currentStudyLoad() {
 	    }, error: function (response) {
 	    }
 	});
+}*/
+
+
+/**
+ * 주간 학습현황 조회
+ * @returns
+ * 21-01-04 최준혁
+ */
+function weeklyStudyList() {
+	var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{
+		    	"MBR_ID"		: currentCustInfo.MBR_ID,				// 고객번호
+		    }]
+		};
+	
+	$.ajax({
+	    url: API_SERVER + '/cns.ifsStudyClass.do',
+	    type: 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data: JSON.stringify(param),
+	    success: function (response) {
+	        console.log(response);
+	        if(response.errcode == "0"){
+	        	console.log("weekly DATA ===> :" , response);
+	        	counselMain_studyTab_weeklyStat.resetData(response.recv1);
+	        }else {
+	        	loading.out();
+	        	client.invoke("notify", response.errmsg, "error", 60000);
+	        }
+	    }, error: function (response) {
+	    }
+	});
+}
+
+/**
+ * 그리드 리스트 조회
+ * @param id	해당 그리드 id
+ * @param grid	리스트를 표시 해 줄 그리드 객체
+ * @returns
+ * 21-01-04 최준혁
+ */
+function loadList(id, grid) {
+	if(currentCustInfo) {
+		var param = {
+				senddataids: ["send1"],
+				recvdataids: ["recv1"],
+				send1: [{}]
+		};
+		var sendUrl = '';
+		
+		switch(id){
+		case 'counselHist':		// 상담이력 
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID;				// 고객번호
+			sendUrl = '/cns.getCounselHist.do';
+			break;
+		case 'currentStudy':	// 학습진행정보
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getStudyData.do';
+			break;
+		case 'ifsStudyClass':	// 주간학습현황
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.ifsStudyClass.do';
+			break;
+		case 'ifsStudyChgInfo':	// 변동이력
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
+			sendUrl = '/cns.ifsStudyChgInfo.do';
+			break;
+		case 'getShipSTS':		// 불출교재
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
+			sendUrl = '/cns.getShipSTS.do';
+			break;
+		case 'getCounselSubj':	// 상담과목
+			param.send1[0].CSEL_DATE = currentCounselInfo.CSEL_DATE			// 상담일자
+			param.send1[0].CSEL_NO = currentCounselInfo.CSEL_NO				// 상담번호
+			param.send1[0].CSEL_SEQ = currentCounselInfo.CSEL_SEQ			// 상담순번
+			sendUrl = '/cns.getCounselSubj.do';
+		}
+		
+		$.ajax({
+			url: API_SERVER + sendUrl,
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log(response);
+				if(response.errcode == "0"){
+					console.log("DATA ===> :" , response);
+					grid.resetData(response.recv1);
+					grid.refreshLayout()
+				}else {
+					loading.out();
+					client.invoke("notify", response.errmsg, "error", 60000);
+				}
+			}, error: function (response) {
+			}
+		});
+	}else {
+		console.log('고객정보 없음!');
+	}
 }

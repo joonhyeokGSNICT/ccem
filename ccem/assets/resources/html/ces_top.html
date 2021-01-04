@@ -394,39 +394,39 @@
 													</colgroup>
 													<tr>
 														<th>처리완료일</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_PROC_DATE" class="dateForm"></span></td>
 														<th>고객반응</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_CUST_RESP"></span></td>
 													</tr>
 													<tr>
 														<th>내담자</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_CSEL_MAN"></span></td>
 														<th>O/B결과</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_CALL_RST"></span></td>
 													</tr>
 													<tr>
 														<th>상담채널</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_CSEL_CHNL"></span></td>
 														<th>연계일자</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_TRANS_DATE" class="dateForm"></span></td>
 													</tr>
 													<tr>
 														<th>상담결과</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_CSEL_RST1"></span></td>
 														<th>연계방법</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_CHNL_MK_NM"></span></td>
 													</tr>
 													<tr>
 														<th>상담경로</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_FST_CRS"></span></td>
 														<th>입회사유</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_MOTIVE_CDE_NAME"></span></td>
 													</tr>
 													<tr>
 														<th>매체구분</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_MEDIA_CDE_NAME"></span></td>
 														<th>개인정보</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_OPEN_GBN_NAME"></span></td>
 													</tr>
 												</table>
 												</div>
@@ -441,9 +441,9 @@
 														</colgroup>
 														<tr>
 															<th>대상년월</th>
-															<td><span></span></td>
+															<td><span id="counselInfo_CAMP_TG_YM"></span></td>
 															<th>캠페인</th>
-															<td><span></span></td>
+															<td><span id="counselInfo_CAMP_MK_NM"></span></td>
 														</tr>
 													</table>
 												</div>
@@ -462,17 +462,21 @@
 													</colgroup>
 													<tr>
 														<th>사업국</th>
-														<td colspan="3"><span></span></td>
+														<td colspan="3">
+															<input type="text" class="form-control-sm form-control w-25" readonly id="counselInfo_DEPT_ID" style="float:left;">
+															<input type="text" class="form-control-sm form-control" readonly id="counselInfo_DEPT_NAME" style="float:left; width:37%">
+															<input type="text" class="form-control-sm form-control" readonly id="counselInfo_DIV_NAME" style="float:left; width:37%">
+														</td>
 														<th>사업국장</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_DEPT_EMP_NAME"></span></td>
 														<th>접수자</th>
-														<td><span></span></td>
+														<td><span id="counselInfo_TRANS_DEPT_ACP_NAME"></span></td>
 													</tr>
 													<tr>
 														<th>센터</th>
-														<td colspan="3"><span></span></td>
+														<td colspan="3"><span id="counselInfo_LC_NAME"></span></td>
 														<th>센터장</th>
-														<td colspan="3"><span></span></td>
+														<td colspan="3"><span id="counselInfo_LC_EMP_NAME"></span></td>
 													</tr>
 												</table>
 												<table class="table table-sm table-bordered">
@@ -484,41 +488,45 @@
 													</colgroup>
 													<tr>
 														<th rowspan="1">상담제목</th>
-														<td colspan="3"><span></span></td>
+														<td colspan="3"><span id="counselInfo_CSEL_TITLE"></span></td>
 													</tr>
 													<tr>
 														<th rowspan="8">상담내용</th>
-														<td rowspan="8"><textarea class="form-control" style="height:295px;"></textarea></td>
+														<td rowspan="8">
+															<textarea class="form-control" style="height:489px;" id="counselInfo_CSEL_CNTS" readonly></textarea>
+														</td>
 														<th>상담실<br>처리내용</th>
-														<td colspan=""><span></span></td>
+														<td colspan="">
+																<textarea class="form-control p-0" rows="5" id="counselInfo_PROC_CNTS" readonly></textarea>
+														</td>
 													</tr>
 													<tr>
 														<th>사업국<br>처리내용</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><textarea class="form-control p-0" rows="5"  id="counselInfo_VOC_CNTS" readonly></textarea></td>
 													</tr>
 													<tr>
 														<th>회원문자<br>발송내용</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><textarea class="form-control p-0" rows="4" id="counselInfo_SMS_CNTS" readonly></textarea></td>
 													</tr>
 													<tr>
 														<th>발송시간</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><span id="counselInfo_SMS_DATETIME"></span></td>
 													</tr>
 													<tr>
 														<th>결과</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><span id="counselInfo_SMS_PROC_NM"></span></td>
 													</tr>
 													<tr>
 														<th>사업국장<br>문자<br>발송내용</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><textarea class="form-control p-0" rows="4" id="counselInfo_SMS_E_CNTS" readonly></textarea></td>
 													</tr>
 													<tr>
 														<th>발송시간</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><span id="counselInfo_SMS_E_DATE_TIME"></span></td>
 													</tr>
 													<tr>
 														<th>결과</th>
-														<td colspan=""><span></span></td>
+														<td colspan=""><span id="counselInfo_SMS_E_PROC_NM"></span></td>
 													</tr>
 												</table>
 											</div>
@@ -538,37 +546,37 @@
 												</colgroup>
 												<tr>
 													<th>피드백일시</th>
-													<td colspan="3"><span></span></td>
+													<td colspan="3"><span id="counselInfo_TRANS_RTN_DATETIME"></span></td>
 													<th>제목</th>
-													<td><span></span></td>
+													<td><span id="counselInfo_HPCALL_TITLE"></span></td>
 												</tr>
 												<tr>
 													<th>해피콜일시</th>
-													<td colspan="3"><span></span></td>
+													<td colspan="3"><span id="counselInfo_HPCALL_DATETIME"></span></td>
 													<th rowspan="5">내용</th>
-													<td rowspan="5"><span></span></td>
+													<td rowspan="5"><textarea rows="5" class="form-control" id="counselInfo_HPCALL_CNTS" style="height:130px;" readonly></textarea></td>
 												</tr>
 												<tr>
 													<th>해피콜경로</th>
-													<td colspan=""><span></span></td>
+													<td colspan=""><span id="counselInfo_HPCALL_CHNL"></span></td>
 													<th>고객만족도</th>
-													<td><span></span></td>
+													<td><span id="counselInfo_SATIS_CDE_NAME"></span></td>
 												</tr>
 												<tr>
 													<th>기념품분류</th>
-													<td colspan=""><span></span></td>
+													<td colspan=""><span id="counselInfo_GIFT_TYPE"></span></td>
 													<th>기념품</th>
-													<td><span></span></td>
+													<td><span id="counselInfo_GIFT_NAME"></span></td>
 												</tr>
 												<tr>
 													<th>발송경로</th>
-													<td colspan=""><span></span></td>
+													<td colspan=""><span id="counselInfo_GIFT_CHNL"></span></td>
 													<th>발송일자</th>
-													<td><span></span></td>
+													<td><span id="counselInfo_SEND_DATE"></span></td>
 												</tr>
 												<tr style="width:50%;">
 													<th>전달자</th>
-													<td><span></span></td>
+													<td><span id="counselInfo_PASS_USER"></span></td>
 												</tr>
 											</table>
 										</div>

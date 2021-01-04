@@ -298,6 +298,17 @@ const FormatUtil = {
      
         return formatNum;
     },
+    birth: function(str) {
+    	var result = '';
+    	if (str && str.length == 13) {
+    		try {
+    			result = str.substring(0,6) + "-" + str.substring(6,7) + "******";
+    		}catch (e){
+    			result = str;
+    		}
+    	}
+    	return result;
+    },
     /**
      * 날짜 포맷 : yyyy-dd-mm
      * @param {Date | string} str 
