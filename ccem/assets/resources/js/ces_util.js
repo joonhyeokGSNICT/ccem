@@ -507,7 +507,7 @@ const calendarUtil = {
      * @param {object} newOption 
      */
     timeMask(id, format = "hh:mm:ss", newOption) {
-        const option = {...CalendarUtil.timeOption, ...newOption};
+        const option = {...calendarUtil.timeOption, ...newOption};
         $("#" + id).inputmask(format, option);
     },
     /**
