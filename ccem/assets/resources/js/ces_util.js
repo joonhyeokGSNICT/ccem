@@ -506,8 +506,9 @@ const calendarUtil = {
      * @param {string} format 
      * @param {object} newOption 
      */
-    timeMask(id, format, newOption) {
-        $("#" + id).inputmask(format || "hh:mm:ss", {...calendarUtil.timeOption, newOption});
+    timeMask(id, format = "hh:mm:ss", newOption) {
+        const option = {...CalendarUtil.timeOption, ...newOption};
+        $("#" + id).inputmask(format, option);
     },
     /**
      * 외부에서 imask 변경시 updateValue() 호출.
