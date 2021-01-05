@@ -11,16 +11,25 @@ var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상�
 var currentPop = { name : null };
 var currentUnPop = { name : null };
 
+var codeData;
+
 var currentCustInfo;							// 현재 선택된 고객의 정보
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
 
-var topBarClient = null;
-var sideBarClient = null;
+var topBarClient = null;						// 탑바 클라이언트 (ZAF CLIENT // TopBar)
+var sideBarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // SideBar)
+var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT // Background)
+
+
 // TRIGGER
 //sideBar client 받기
 client.on("getSidebarClient", function(sideBarClient_d) {
 	sideBarClient = sideBarClient_d;
+});
+client.on("getCodeData", function(d){
+	codeData = d;
+	console.log(codeData);
 });
 
 /**
@@ -56,16 +65,17 @@ $(function(){
 	
 	// 탑바 클라이언트 저장
 	topBarClient = client;
-	console.log(client);
 	
 	// 사이드바 클라이언트 저장
 	client.get('instances').then(function(instancesData) {
 		var instances = instancesData.instances;
-		console.log('client instances : ', instances);
+		//console.log('client instances : ', instances);
 		for ( var instanceGuid in instances) {
 			if (instances[instanceGuid].location === 'ticket_sidebar') {
-				//console.log('topbar instanceGuid : ', instanceGuid);
-				sideBarClient =  client.instance(instanceGuid);
+				sideBarClient = client.instance(instanceGuid);
+			}else if(instances[instanceGuid].location === 'background'){
+				backgroundClient = client.instance(instanceGuid);
+				backgroundClient.trigger('getCodeList', client._instanceGuid);			// background에서 공통 코드를 가져온다.
 			}
 		}
 	});
@@ -254,7 +264,7 @@ function customerSearch(currentDiv){
 		    	"CHK_EMAIL"		:"",				// 이메일 여부
 		    	"CHK_MACADAMIA"	:"",
 		    	"NAME"			:"",
-		    	"TELPNO2"		:"",
+		    	"TELPNO"		:"",
 		    	"MOBILNO"		:"",
 		    	"GRADE_CDE"		:"",
 		    	"MBR_ID"		:"",
@@ -282,7 +292,7 @@ function customerSearch(currentDiv){
 		}
 		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
 			param.send1[0].CHK_TELNO = "Y";
-			param.send1[0].TELPNO2 = $("#customerPhone").val();
+			param.send1[0].TELPNO = $("#customerPhone").val();
 		}
 		if($("#customerEmailCheck").is(":checked")){			// EMAIL
 			param.send1[0].CHK_EMAIL = "Y";
@@ -763,6 +773,18 @@ function loadList(id, grid) {
 					console.log("DATA ===> :" , response);
 					grid.resetData(response.recv1);
 					grid.refreshLayout()
+					
+					// 후처리
+					switch(id){
+					case 'ifsStudyClass':
+						counselMain_studyTab_weeklyStat.addSelection({rowKey:0});
+						counselMain_studyTab_weeklyStat.clickSort({rowKey:0});
+						currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(0);		// 변동이력, 불출교재 자동조회
+						loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				
+						loadList('getShipSTS', counselMain_studyTab_asignStuff);	
+						break;
+					}
+					
 				}else {
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);

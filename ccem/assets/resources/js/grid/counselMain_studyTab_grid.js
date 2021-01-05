@@ -115,16 +115,19 @@ $(function(){
 				],
 		});
 		counselMain_studyTab_weeklyStat.on('click', (ev) => {
-			counselMain_studyTab_weeklyStat.addSelection(ev);
-			counselMain_studyTab_weeklyStat.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_studyTab_weeklyStat.addSelection(ev);
+				counselMain_studyTab_weeklyStat.clickSort(ev);
+			}
 	    });
 		
 		counselMain_studyTab_weeklyStat.on('dblclick', (ev) => {
-			currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(ev.rowKey);
-			loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				// 변동이력, 불출교재 조회
-			loadList('getShipSTS', counselMain_studyTab_asignStuff);			
+			if(ev.targetType == 'cell'){
+				currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(ev.rowKey);
+				loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				// 변동이력, 불출교재 조회
+				loadList('getShipSTS', counselMain_studyTab_asignStuff);			
+			}
 	    });
-		
 		
 		// 주간 학습현황 끝
 	
@@ -261,8 +264,10 @@ $(function(){
 				],
 		});
 		counselMain_studyTab_changeHist.on('click', (ev) => {
-			counselMain_studyTab_changeHist.addSelection(ev);
-			counselMain_studyTab_changeHist.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_studyTab_changeHist.addSelection(ev);
+				counselMain_studyTab_changeHist.clickSort(ev);
+			}
 	    });
 		
 		// 변동이력 끝
@@ -283,155 +288,118 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
-					header: '상담일자',
-					name: 'custNm',
-					width: 200,
+					header: '년월',
+					name: 'CLSVST_YM',
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
-					header: '접수',
-					name: 'custSeq',
+					header: '학습영역',
+					name: 'STDAREA_ID',
+					width: 90,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '1주',
+					name: 'TXTCRS_1WK',
+					width: 80,
+					align: "center",
+					ellipsis: true,
+				},
+				{
+					header: '2주',
+					name: 'TXTCRS_2WK',
+					width: 80,
+					align: "center",
+					ellipsis: true,
+				},
+				{
+					header: '3주',
+					name: 'TXTCRS_3WK',
+					width: 80,
+					align: "center",
+					ellipsis: true,
+				},
+				{
+					header: '4주',
+					name: 'TXTCRS_4WK',
+					width: 80,
+					align: "center",
+					ellipsis: true,
+				},
+				{
+					header: '5주',
+					name: 'TXTCRS_5WK',
+					width: 80,
+					align: "center",
+					ellipsis: true,
+				},
+				{
+					header: '6주',
+					name: 'TXTCRS_6WK',
+					width: 80,
+					align: "center",
+					ellipsis: true,
+				},
+				{
+					header: '년월',
+					name: 'APPYM',
+					width: 60,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '구분',
+					name: 'SHIP_NAME',
+					width: 70,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '과정',
+					name: 'COUR',
+					width: 120,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '출고일',
+					name: 'REGDT',
+					width: 80,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '송장번호',
+					name: 'TRANS_DOCNO',
 					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
-					header: '정보',
-					name: 'reserverDtm',
-					width: 150,
+					header: '배송주소',
+					name: 'FULL_ADDR',
+					width: 400,
 					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '통화시각',
-					name: 'chprNm',
-					width: 150,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '상담시각',
-					name: 'consStatNm',
-					width: 100,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '상담시간',
-					name: 'consQustCntn',
-					width: 200,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '상담구분',
-					name: 'consAnsrCntn',
-					width: 200,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '처리구분',
-					name: 'consTyp1Nm',
-					width: 150,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '상담교사',
-					name: 'consTyp2Nm',
-					width: 150,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '소분류',
-					name: 'consTyp3Nm',
-					width: 150,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '세분류',
-					name: 'consTyp4Nm',
-					width: 150,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '연락처',
-					name: 'custInfo',
-					width: 100,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '접수채널',
-					name: 'acpgChnlNm',
-					width: 100,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '발신번호',
-					name: 'incoTlno',
-					width: 100,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				/*{
-	                header: '상세이력',
-	                name: 'DETAILCONT',
-	                align: "center",
-	                sortable: true,
-	                ellipsis: true,
-	                renderer: CustomColumn,
-	            },*/
-				{
-					header: '처리방법',
-					name: 'consStatNm',
-					width: 100,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-				},
-				{
-					header: '처리일시',
-					name: 'consDspsDttm',
-					width: 150,
-					align: "center",
-					sortable: true,
 					ellipsis: true,
 				}
 				],
 		});
 		counselMain_studyTab_asignStuff.on('click', (ev) => {
-			counselMain_studyTab_asignStuff.addSelection(ev);
-			counselMain_studyTab_asignStuff.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_studyTab_asignStuff.addSelection(ev);
+				counselMain_studyTab_asignStuff.clickSort(ev);
+			}
 	    });
 		
 		// 불출교재 끝

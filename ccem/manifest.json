@@ -18,6 +18,9 @@
 		},
 		"ticket_sidebar":{
 			"url" : "assets/resources/html/ticket_sideBar.html"
+		},
+		"background":{
+			"url" : "assets/resources/html/background.html"
 		}
     }
   },

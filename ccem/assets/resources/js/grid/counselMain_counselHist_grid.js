@@ -76,8 +76,10 @@ $(function(){
         ],
     });
 	counselMain_studyProgressList_grid.on('click', (ev) => {
-		counselMain_studyProgressList_grid.addSelection(ev);
-		counselMain_studyProgressList_grid.clickSort(ev);
+		if(ev.targetType == 'cell'){
+			counselMain_studyProgressList_grid.addSelection(ev);
+			counselMain_studyProgressList_grid.clickSort(ev);
+		}
     });
 	
 	// 상담이력 학습진행정보 GRID 끝
@@ -233,33 +235,34 @@ $(function(){
         ],
     });
 	counselMain_counselHist_grid.on('click', (ev) => {
-		counselMain_counselHist_grid.addSelection(ev);
-		counselMain_counselHist_grid.clickSort(ev);
-		currentCounselInfo = counselMain_counselHist_grid.getRow(ev.rowKey);
-		console.log(currentCounselInfo);
-		for(key in currentCounselInfo){												// input 자동 기입
-			if($("#counselInfo_" + key).length != 0){
-				if($("#counselInfo_" + key).hasClass('dateForm')){
-					currentCounselInfo[key] = FormatUtil.date(currentCounselInfo[key]);
-				}
-				switch($("#counselInfo_" + key)[0].localName){
-				case "select" :
-					$("#counselInfo_" + key).val(currentCounselInfo[key]);
-					break;
-				case "input" :
-					$("#counselInfo_" + key).val(currentCounselInfo[key]);
-					break;
-				case "span" :
-					$("#counselInfo_" + key).text(currentCounselInfo[key]);
-					break;
-				case "textarea" :
-					$("#counselInfo_" + key).val(currentCounselInfo[key]);
-					break;
+		if(ev.targetType == 'cell'){
+			counselMain_counselHist_grid.addSelection(ev);
+			counselMain_counselHist_grid.clickSort(ev);
+			currentCounselInfo = counselMain_counselHist_grid.getRow(ev.rowKey);
+			for(key in currentCounselInfo){												// input 자동 기입
+				if($("#counselInfo_" + key).length != 0){
+					if($("#counselInfo_" + key).hasClass('dateForm')){
+						currentCounselInfo[key] = FormatUtil.date(currentCounselInfo[key]);
+					}
+					switch($("#counselInfo_" + key)[0].localName){
+					case "select" :
+						$("#counselInfo_" + key).val(currentCounselInfo[key]);
+						break;
+					case "input" :
+						$("#counselInfo_" + key).val(currentCounselInfo[key]);
+						break;
+					case "span" :
+						$("#counselInfo_" + key).text(currentCounselInfo[key]);
+						break;
+					case "textarea" :
+						$("#counselInfo_" + key).val(currentCounselInfo[key]);
+						break;
+					}
 				}
 			}
+			loadList('getCounselSubj', counselMain_studyList_grid);				// 과목정보리스트 조회
+			counselMain_studyList_grid.refreshLayout();
 		}
-		loadList('getCounselSubj', counselMain_studyList_grid);				// 과목정보리스트 조회
-		counselMain_studyList_grid.refreshLayout();
     });
 	// 상담이력 끝
 	
@@ -306,8 +309,10 @@ $(function(){
         ],
     });
 	counselMain_studyList_grid.on('click', (ev) => {
-		counselMain_studyList_grid.addSelection(ev);
-		counselMain_studyList_grid.clickSort(ev);
+		if(ev.targetType == 'cell'){
+			counselMain_studyList_grid.addSelection(ev);
+			counselMain_studyList_grid.clickSort(ev);
+		}
     });
 	
 	// 학습정보 GRID 끝
