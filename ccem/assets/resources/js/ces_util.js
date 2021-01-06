@@ -340,12 +340,22 @@ const FormatUtil = {
         return str;
     },
     /**
-     * 시간 포맷 : yyyy-dd-mm
+     * 시간 포맷 : HH:mm:ss
      * @param {string} str 
      */
     time(str) {
         if(typeof str == "string" && str.length == 6) {
             return `${str.substr(0, 2)}:${str.substr(2, 2)}:${str.substr(4, 2)}`;
+        }
+        return str
+    },
+    /**
+     * 날짜 + 시간 포맷 : yyyy-dd-mm HH:mm:ss
+     * @param {string} str 
+     */
+    dateTime(str) {
+        if(typeof str == "string" && str.length == 14) {
+            return `${str.substr(0, 4)}-${str.substr(4, 2)}-${str.substr(6, 2)} ${str.substr(8, 2)}:${str.substr(10, 2)}:${str.substr(12, 2)}`;
         }
         return str
     },
