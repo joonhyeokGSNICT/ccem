@@ -23,32 +23,30 @@ function init(){
 			bodyHeight: 300,
 			bodyWidht: "100%",
 			scrollX: false,
+			rowHeaders: [
+				{
+					type: 'rowNum',
+					header: "NO",
+				},
+			],
 			columns: [
 				{
-					header: 'No',
-					name: 'name1',
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-					width: 60
-				},
-				{
 					header: '그룹',
-					name: 'name2',
+					name: 'GRP_NAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '상담원',
-					name: 'name3',
+					name: 'USER_NAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '전화번호',
-					name: 'name4',
+					name: 'USER_IN_TEL',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -67,46 +65,44 @@ function init(){
 			bodyHeight: 300,
 			bodyWidht: "100%",
 			scrollX: false,
+			rowHeaders: [
+				{
+					type: 'rowNum',
+					header: "NO",
+				},
+			],
 			columns: [
 				{
-					header: 'No',
-					name: 'name1',
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-					width: 60
-				},
-				{
 					header: '회사명',
-					name: 'name2',
+					name: 'CO_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '팀명',
-					name: 'name3',
+					name: 'DEPT_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '직책',
-					name: 'name4',
+					name: 'JIC_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '사원',
-					name: 'name5',
+					name: 'EMP_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '전화번호',
-					name: 'name6',
+					name: 'TELPNO',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -166,6 +162,12 @@ function init(){
 	// #01_002 그리드 사이즈 초기화
 	_styleChanger.resizeWidth();
 	_styleChanger.resizeHeight();
+
+	_getTelList.centerTelList();
+	_getTelList.inDeptTelList();
+	_getTelList.deptTelList();
+
+	_getComboList.codeBook('USER_GRP_CDE');
 };
 
 // #02 document ready function모음
@@ -203,5 +205,128 @@ var _styleChanger = {
 		_branchInterPhone_grid.setHeight(heightSize);
 	}
 }
+
+/**
+ * 센터/대교/지점 전화조회
+ */
+const _getTelList = {
+	centerTelList(){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/sys.getCenterTelList.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log(response);
+				_centerInterPhone_grid.resetData(response.dsRecv);
+			}, error: function (response) {
+			}
+		});
+	},
+
+	inDeptTelList(){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/sys.getInDeptTelList.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log(response);
+				_daekyoInterPhone_grid.resetData(response.dsRecv);
+			}, error: function (response) {
+			}
+		});
+	},
+
+	deptTelList(){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/sys.getDeptTelList.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log(response);
+			}, error: function (response) {
+			}
+		});
+	}
+}
+
+
+/**
+ * 콤보박스 조회
+ */
+const _getComboList = {
+	codeBook(codeName){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{CODE_MK: codeName}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/sys.getCommCode.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log(response);
+				var codeList = response.dsRecv;
+				if (codeName = 'USER_GRP_CDE'){
+					codeList.forEach(code => {
+						$('#centerSelectBox').append(new Option(code.CODE_NAME, code.CODE_ID));
+					});
+				} else if ( codeName = '123'){
+
+				}
+			}, error: function (response) {
+			}
+		});
+	}
+}
+
+// const getCodeList = () => {
+// 	let settings = {
+// 		url: `${API_SERVER}/sys.getCenterTelList.do`,
+// 		method: 'POST',
+// 		contentType: "application/json; charset=UTF-8",
+// 		dataType: "json",
+// 		data: JSON.stringify({
+// 			senddataids: ["dsSend"],
+// 			recvdataids: ["dsRecv"],
+// 			dsSend: [{}],
+// 		}),
+// 	}
+// 	$.ajax(settings).done(data => {
+// 		if (checkApi(data, settings)) {
+// 			let codeList = data.dsRecv;
+// 			console.log(codeList);
+// 			console.log("1");
+// 		}
+// 	});
+// }
+
 
 init();
