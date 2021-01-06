@@ -11,12 +11,15 @@ var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상�
 var currentPop = { name : null };
 var currentUnPop = { name : null };
 
-var codeData;
+var codeData;									// 전체 공통코드 정보
 
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo;							// 현재 선택된 고객의 정보
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
+
+var deptData;									// 현재 고객의 사업국 리스트
+var lcData;										// 현재 고객의 센터 리스트
 
 var topBarClient = null;						// 탑바 클라이언트 (ZAF CLIENT // TopBar)
 var sideBarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // SideBar)
@@ -87,6 +90,11 @@ $(function(){
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
+	
+	var maskOptions = {
+	  mask: '000000-0000000'
+	};
+	var mask = IMask(document.getElementById('custInfo_FAT_RSDNO'), maskOptions);
 	
 	// selectBox 공통 코드 불러오기
 	getCodeList();
@@ -173,6 +181,7 @@ $(function(){
 		// 고객찾기
 		case 'customerSearch':
 			customerSearchList_grid.refreshLayout();
+			$("#customerName").focus();
 			break;
 			
 		// 상담이력
@@ -200,7 +209,32 @@ $(function(){
 		
 	});
 	
-	
+	// 복수학습 select 변경이벤트
+	$(".studyCombo").change(function() {
+		var currentSelect = $(this).attr('id').split("_")[1];
+		if(currentSelect == 'DEPT'){
+			$("#custInfo_DEPT_ID").val($(this).val());
+			$("#custInfo_DEPT_NAME").val($(this).find('option:selected').text());
+			$("#custInfo_TELPNO_DEPT").val($(this).find('option:selected').attr('tel'));
+			//$("#custInfo_LC_NM_study").find('option:selected').text();
+			$("#custInfo_LC_NM_study").empty();
+			lcData.forEach(d => {
+				if($("#custInfo_DEPT_NAME_study").find('option:selected').val() == d.DEPT_ID){
+					$("#custInfo_LC_NM_study").append(`<option value=${d.LC_ID} tel=${d.TELPNO}>${d.LC_NM}</option>`);
+				}
+			});
+			
+			$("#custInfo_LC_NAME").val($("#custInfo_LC_NM_study").find('option:selected').text());
+			$("#custInfo_TELPNO_LC").val($("#custInfo_LC_NM_study").find('option:selected').attr('tel'));
+			/*$("#custInfo_LC_NAME").val("");
+			$("#custInfo_TELPNO_LC").val("");*/
+			
+			
+		}else {
+			$("#custInfo_LC_NAME").val($(this).find('option:selected').text());
+			$("#custInfo_TELPNO_LC").val($(this).find('option:selected').attr('tel'));
+		}
+	});
 	
 	// 팝업 버튼
 	$(".popup-btn").click(function() {
@@ -232,6 +266,8 @@ $(function(){
 	
 });
 
+// ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === EVENT  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === 
+
 /**
  * 현재 사용자 정보 불러오기
  * @returns
@@ -250,7 +286,7 @@ function getCurrentUserInfo(){
  */
 function customerSearch(currentDiv){
 	switch(currentDiv){
-	case 'custSearchDiv' : 
+	case 'custSearchDiv' : 															// 고객 조회
 		var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
@@ -342,6 +378,39 @@ function customerSearch(currentDiv){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	customerSearchList_grid.resetData(response.recv1);
+		        	
+		        	// 조회된 수가 1명 일 경우 자동 조회
+		        	if(response.recv1.length == "1"){
+		        		initAll(); 													// 기존 정보 초기화
+		        		custInfo = customerSearchList_grid.getRow(0);
+		        		var param = {
+		        			    senddataids: ["send1"],
+		        			    recvdataids: ["recv1"],
+		        			    send1: [{
+		        			    	"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
+		        			    }]
+		        			};
+		        		$.ajax({
+		        		    url: API_SERVER + '/cns.getCustInfo.do',
+		        		    type: 'POST',
+		        		    dataType: 'json',
+		        		    contentType: "application/json",
+		        		    data: JSON.stringify(param),
+		        		    success: function (response) {
+		        		        if(response.errcode == "0"){
+		        		        currentCustInfo = response.recv1[0];				// 고객정보 상주
+		        		        loadCustInfoMain();									// 고객정보 로드 함수
+		        		        	$("#customerInfo").click();	// 탭 이동
+		        		        	$("#customerTab").click();	// 탭 이동
+		        		        }else {
+		        		        	loading.out();
+		        		        	client.invoke("notify", response.errmsg, "error", 60000);
+		        		        }
+		        		    }, error: function (response) {
+		        		    }
+		        		});
+		        	}
+		        	
 		        }else {
 		        	loading.out();
 		        	client.invoke("notify", response.errmsg, "error", 60000);
@@ -350,7 +419,9 @@ function customerSearch(currentDiv){
 		    }
 		});
 		break;
-	case 'teacherSearchDiv' :
+		
+		
+	case 'teacherSearchDiv' :														// 선생님 조회					
 		var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
@@ -375,91 +446,6 @@ function customerSearch(currentDiv){
 		});
 		break;
 	}
-}
-
-/**
- * 학습사업국정보조회/센터콤보정보조회 func
- * @param custId
- * @returns 
- * 20-12-24 최준혁
- */
-function studyingDEPTLC(custId){
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"MBR_ID"		: custId,				// 회원번호
-		    }]
-		};
-	
-	$.ajax({
-	    url: API_SERVER + '/cns.getStudyDataDept.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        console.log(response);
-	        if(response.errcode == "0"){
-	        	console.log("DEPT DATA ===> :" , response);
-	        	$.ajax({
-	        	    url: API_SERVER + '/cns.getStudyDataLc.do',
-	        	    type: 'POST',
-	        	    dataType: 'json',
-	        	    contentType: "application/json",
-	        	    data: JSON.stringify(param),
-	        	    success: function (response) {
-	        	        console.log(response);
-	        	        if(response.errcode == "0"){
-	        	        	console.log("LC DATA ===> :" , response);
-	        	        }else {
-	        	        	loading.out();
-	        	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        	        }
-	        	    }, error: function (response) {
-	        	    }
-	        	});
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
-}
-
-//============================================================================
-// 인증&동의방법 설정 함수
-//============================================================================
-function setCertData(){
-    // 인증방법
-    if(DS_CUST.nameValue(1,"CERT_GB") == "S") {
-    	txtCERT_NAME.value = "SMS";    	    	    	
-    }else if(DS_CUST.nameValue(1,"CERT_GB") == "R") {	
-    	txtCERT_NAME.value = "녹취";    	
-    }else{
-    	txtCERT_NAME.value = "";    	
-    }    
-    
-    //인증상태
-    // 4, 8 동의실패
-    // 2, 6, 7 동의완료
-    // 9 요청취소
-    // 1 나머지는 빈값
-    var sApprv_gb = DS_CUST.nameValue(1,"APPRV_GB");
-    if(sApprv_gb == "4" || sApprv_gb == "8") {
-    	txtAPPRV_GB.value = "동의실패";    	    	    	
-    }else if(sApprv_gb == "2" || sApprv_gb == "6" || sApprv_gb == "7") {	
-    	txtAPPRV_GB.value = "동의완료";    	    	    	
-	}else if(sApprv_gb == "9") {	
-    	txtAPPRV_GB.value = "요청취소";    	    	    	
-    }else{
-    	txtAPPRV_GB.value = "";    	    	    	
-    } 
-        
-    // 정보동의 
-    txtCERT_SEND_DT.value = gf_formatToTime(DS_CUST.nameValue(1,"SMS_SEND_DT"), 'KRDT-TM:');        
-    txtCERT_REV_DT.value = gf_formatToTime(DS_CUST.nameValue(1,"SMS_REV_DT"), 'KRDT-TM:');	
 }
 
 function openPop(popName,w,h){
@@ -509,6 +495,46 @@ const getCodeList = () => {
 		});
 	});
 }
+
+/**
+ * 인증&동의방법 설정 함수
+ * @returns
+ * 21-01-06 최준혁
+ */
+function setCertData(){
+	
+    // 인증방법
+    if(currentCustInfo.CERT_GB == "S") {
+    	$("#custInfo_CERT_GB").text("SMS");    	    	    	
+    }else if(currentCustInfo.CERT_GB == "R") {	
+    	$("#custInfo_CERT_GB").text("녹취");
+    }else{
+    	$("#custInfo_CERT_GB").text("");    	
+    }    
+    
+    //인증상태
+    // 4, 8 동의실패
+    // 2, 6, 7 동의완료
+    // 9 요청취소
+    // 1 나머지는 빈값
+    var sApprv_gb = currentCustInfo.APPRV_GB;
+    if(sApprv_gb == "4" || sApprv_gb == "8") {
+    	$("#custInfo_APPRV_GB").text("동의실패");
+    }else if(sApprv_gb == "2" || sApprv_gb == "6" || sApprv_gb == "7") {	
+    	$("#custInfo_APPRV_GB").text("동의완료");    	    	    	
+	}else if(sApprv_gb == "9") {	
+		$("#custInfo_APPRV_GB").text("요청취소");    	    	    	
+    }else{
+    	$("#custInfo_APPRV_GB").text("");    	    	    	
+    } 
+        
+    // 정보동의 
+    $("#custInfo_SMS_SEND_DT").text(FormatUtil.dateTime(currentCustInfo.SMS_SEND_DT));
+    $("#custInfo_SMS_REV_DT").text(FormatUtil.dateTime(currentCustInfo.SMS_REV_DT));
+    //txtCERT_SEND_DT.value = gf_formatToTime(DS_CUST.nameValue(1,"SMS_SEND_DT"), 'KRDT-TM:');        
+    //txtCERT_REV_DT.value = gf_formatToTime(DS_CUST.nameValue(1,"SMS_REV_DT"), 'KRDT-TM:');	
+}
+
 /**
  * 회원정보 조회, 화면 로드
  * @returns
@@ -566,6 +592,7 @@ function loadCustInfoMain() {
 	
 	familyInfoLoad();												// 관계회원정보 불러오기
 	studyInfoLoad();												// 복수학습정보 불러오기
+	setCertData();													// 정보동의 NAME 맵핑
 	
 	loadList('counselHist', counselMain_counselHist_grid);			// 상담이력 목록 불러오기				//OLD >> counselHistLoad();		// 상담이력 목록 불러오기
 	loadList('currentStudy', counselMain_studyProgressList_grid);	// 학습진행정보 목록 불러오기			//OLD >> currentStudyLoad();	// 학습진행정보 목록 불러오기
@@ -578,6 +605,9 @@ function loadCustInfoMain() {
  * 20-12-30 최준혁
  */
 function familyInfoLoad() {
+	
+	$("#custInfo_FAMILY_CMB").empty();
+	
 	var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
@@ -656,6 +686,18 @@ function studyInfoLoad() {
 	        			if(response_dept.errcode == "0"){
 	        				console.log("dept DATA ===> :" , response_dept);
         					
+	        				deptData = response_dept.recv1;
+	        				lcData = response_lc.recv1;
+	        				
+	        				deptData.forEach(d => {
+	        					$("#custInfo_DEPT_NAME_study").append(`<option value=${d.DEPT_ID} tel=${d.TELPNO}>${d.DEPT_NAME}</option>`);
+	        				});
+	        				lcData.forEach(d => {
+	        					if($("#custInfo_DEPT_NAME_study").find('option:selected').val() == d.DEPT_ID){
+	        						$("#custInfo_LC_NM_study").append(`<option value=${d.LC_ID} tel=${d.TELPNO}>${d.LC_NM}</option>`);
+	        					}
+	        				});
+	        				
 	        				if(response_lc.recv1.length < 2){								// 센터 2개 미만
         						if(response_dept.recv1.length < 2){								// 사업국 2개 미만
         							$("#custInfo_DEPT_NAME_study").parent().css("display","none");
@@ -691,110 +733,6 @@ function studyInfoLoad() {
 	});
 }
 
-
-/**
- * 상담이력 리스트 조회
- * @returns
- * 20-12-30 최준혁
- */
-/*function counselHistLoad() {
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"CUST_ID"		: currentCustInfo.CUST_ID,				// 고객번호
-		    }]
-		};
-	
-	$.ajax({
-	    url: API_SERVER + '/cns.getCounselHist.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        console.log(response);
-	        if(response.errcode == "0"){
-	        	console.log("DEPT DATA ===> :" , response);
-	        	counselMain_counselHist_grid.resetData(response.recv1);
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
-}
-*/
-/**
- * 학습진행정보 정보 조회
- * @returns
- * 20-12-30 최준혁
- */
-/*function currentStudyLoad() {
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"MBR_ID"		: currentCustInfo.MBR_ID,				// 고객번호
-		    }]
-		};
-	
-	$.ajax({
-	    url: API_SERVER + '/cns.getStudyData.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        console.log(response);
-	        if(response.errcode == "0"){
-	        	console.log("study DATA ===> :" , response);
-	        	counselMain_studyProgressList_grid.resetData(response.recv1);
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
-}*/
-
-
-/**
- * 주간 학습현황 조회
- * @returns
- * 21-01-04 최준혁
- */
-/*function weeklyStudyList() {
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"MBR_ID"		: currentCustInfo.MBR_ID,				// 고객번호
-		    }]
-		};
-	
-	$.ajax({
-	    url: API_SERVER + '/cns.ifsStudyClass.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        console.log(response);
-	        if(response.errcode == "0"){
-	        	console.log("weekly DATA ===> :" , response);
-	        	counselMain_studyTab_weeklyStat.resetData(response.recv1);
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
-}
-*/
 /**
  * 그리드 리스트 조회
  * @param id	해당 그리드 id
@@ -875,4 +813,91 @@ function loadList(id, grid) {
 	}else {
 		console.log('고객정보 없음!');
 	}
+}
+
+/**
+ * 관계회원 버튼 클릭 / 관계회원 신규 등록
+ * @returns
+ * 21-01-06 최준혁
+ */
+function onFamilyBtnClick(){
+	if($("#custInfo_FAT_RSDNO").length-1 != 13){
+		client.invoke('notify','관계번호를 입력하신 후에 관계회원으로 등록하시기 바랍니다.', 'alert', 5000);
+		return;
+	}
+	
+	 //변경된 정보가 존재하는지 체크
+    if(isCustDataChanged()) {
+        alert("고객정보를 변경하셨습니다. \n\n먼저 저장을 하시고 관계회원 등록을 하시기 바랍니다.");
+        return;
+    }
+}
+
+/**
+ * 고객정보 수정 유무 확인
+ * @returns
+ * 21-01-06 최준혁
+ */
+function isCustDataChanged() {
+	if($("#custInfo_NAME").val() != currentCustInfo.NAME){										// 고객명
+		return false;
+	}
+	if(currentCustInfo.FML_RANK != null){
+		if($("#custInfo_FML_RANK").val() != currentCustInfo.FML_RANK){							// 형제서열
+			return false;
+		}
+	}
+	if(currentCustInfo.GND != null){
+		if($("#custInfo_GND").val() != currentCustInfo.GND){									// 성별
+			return false;
+		}
+	}
+	if(currentCustInfo.BIRTH_YMD != null){
+		if($("#custInfo_BIRTH_YMD").val().replace(/-/gi,"") != currentCustInfo.BIRTH_YMD){		// 생년월일
+			return false;
+		}
+	}
+	if(currentCustInfo.BIRTH_MK != null){
+		if($("#lunarSolarInput").val() != currentCustInfo.BIRTH_MK){							// 양력,음력
+			return false;
+		}
+	}
+	if(currentCustInfo.GRADE_CDE != null){
+		if($("#custInfo_GRADE_CDE").val() != currentCustInfo.GRADE_CDE){						// 학년
+			return false;
+		}
+	}
+	if(currentCustInfo.DDD != null){
+		if($("#custInfo_DDD").val() != currentCustInfo.DDD){									// 자택전화
+			return false;
+		}
+		if($("#custInfo_TELPNO1").val() != currentCustInfo.TELPNO1){
+			return false;
+		}
+		if($("#custInfo_TELPNO2").val() != currentCustInfo.TELPNO2){
+			return false;
+		}
+	}
+	if(currentCustInfo.MOBILNO != null){
+		if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() != currentCustInfo.MOBILNO){						// 회원전화번호
+			return false;
+		}
+	}
+	if(currentCustInfo.ZIPCDE != null){
+		if($("#custInfo_ZIPCDE").val() != currentCustInfo.ZIPCDE){								// 우편번호
+			return false;
+		}
+	}
+	if(currentCustInfo.ZIP_ADDR != null){
+		if($("#custInfo_ZIP_ADDR").val() != currentCustInfo.ZIP_ADDR){							// 기본주소
+			return false;
+		}
+	}
+	if(currentCustInfo.ADDR != null){
+		if($("#custInfo_ADDR").val() != currentCustInfo.ADDR){									// 상세주소
+			return false;
+		}
+	}
+	
+	return true;
 }

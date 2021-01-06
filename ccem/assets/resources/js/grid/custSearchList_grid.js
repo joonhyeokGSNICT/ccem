@@ -156,7 +156,6 @@ $(function(){
 	
 	customerSearchList_grid.on('dblclick', (ev) => {
 		initAll(); 													// 기존 정보 초기화
-		console.log(customerSearchList_grid.getRow(ev.rowKey));
 		custInfo = customerSearchList_grid.getRow(ev.rowKey);
 		var param = {
 			    senddataids: ["send1"],
@@ -173,10 +172,9 @@ $(function(){
 		    contentType: "application/json",
 		    data: JSON.stringify(param),
 		    success: function (response) {
-		        console.log(response);
+		        if(response.errcode == "0"){
 		        currentCustInfo = response.recv1[0];				// 고객정보 상주
 		        loadCustInfoMain();									// 고객정보 로드 함수
-		        if(response.errcode == "0"){
 		        	$("#customerInfo").click();	// 탭 이동
 		        	$("#customerTab").click();	// 탭 이동
 		        }else {

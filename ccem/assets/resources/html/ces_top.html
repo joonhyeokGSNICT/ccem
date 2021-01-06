@@ -142,9 +142,9 @@
 										</tr>
 										<tr>
 											<th>온라인ID</th>
-											<td><input type="text" class="form-control form-control-sm" id="custInfo_ONLINEID"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_ONLINEID" readonly></td>
 											<th>E-mail</th>
-											<td><input type="text" class="form-control form-control-sm" id="custInfo_EMAIL"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_EMAIL" readonly></td>
 										</tr>
 										<tr>
 											<th>형제서열</th>
@@ -188,8 +188,8 @@
 												</select>
 											</td>
 											<th>고객구분</th>
-											<td><select class="form-control form-control-sm" id="custInfo_CUST_MK" name="CUST_MK">
-												<option value="">잠재회원(CTI)</option>
+											<td><select class="form-control form-control-sm" id="custInfo_CUST_MK" name="CUST_MK" disabled>
+												<option value=""></option>
 											</select></td>
 										</tr>
 										<tr>
@@ -261,17 +261,17 @@
 										<colgroup>
 											<col span="1" style="width:13%;">
 											<col span="1" style="width:37%;">
-											<col span="1" style="width:18%;">
-											<col span="1" style="width:32%;">
+											<col span="1" style="width:16%;">
+											<col span="1" style="width:34%;">
 										</colgroup>
 										<tr>
 											<th>본부</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_UPDEPTNAME" readonly></td>
 											<th id="custInfo_multipleStudy">복수학습</th>
 											<td>
-												<select class="form-control form-control-sm" style="width:50%; float:left;" id="custInfo_DEPT_NAME_study">
+												<select class="form-control form-control-sm studyCombo" style="width:50%; float:left;" id="custInfo_DEPT_NAME_study">
 												</select>
-												<select class="form-control form-control-sm" style="width:50%;" id="custInfo_LC_NM_study">
+												<select class="form-control form-control-sm studyCombo" style="width:50%;" id="custInfo_LC_NM_study">
 												</select>
 											</td>
 										</tr>
@@ -338,9 +338,9 @@
 									<div class="row">
 										<div class="col-12">
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="" onclick="PopupUtil.open('CCEMPRO046', 1000, 600);" style="padding: 0.25rem .0rem !important;">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;" disabled>
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="신규" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" onclick="PopupUtil.open('CCEMPRO029', 728, 410);" id="" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" onclick="onFamilyBtnClick();" id="" style="padding: 0.25rem .0rem !important;" disabled>
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="정성회원" onclick="PopupUtil.open('CCEMPRO021', 600, 500);" id="" style="padding: 0.25rem .0rem !important;">
 											<input type="button" class="btn btn-sm popup-btn customerBtn" value="저장" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
 										</div>

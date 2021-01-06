@@ -182,6 +182,12 @@ select {
 	color:white;
 	font-weight:bold;
 }
+.customerBtn:disabled {
+	background: gray;
+}
+.customerBtn:disabled:hover {
+	background: gray;
+}
 
 .rightSideScroll {
 	 overflow:scroll; 
