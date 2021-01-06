@@ -320,7 +320,7 @@ const getCodeList = () => {
 	];
 
 	CODE_MK_LIST.forEach(codeName => {
-		let settings = {
+		const settings = {
 			url: `${API_SERVER}/sys.getCommCode.do`,
 			method: 'POST',
 			contentType: "application/json; charset=UTF-8",
@@ -350,7 +350,7 @@ const getCodeList = () => {
  * 과목 콤보조회
  */
 const getProd = () => {
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.getProd.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -372,7 +372,7 @@ const getProd = () => {
  * 상담원 콤보조회
  */
 const getUser = () => {
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.getUser.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -382,9 +382,10 @@ const getUser = () => {
 			recvdataids: ["dsRecv"],
 			dsSend: [{ USER_GRP_CDE: "" }],	// 상담원그룹코드
 		}),
+		errMsg: "상담원 조회중 오류가 발생하였습니다.",
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "상담원 조회중 오류가 발생하였습니다.")) return;
+		if (!checkApi(data, settings)) return;
 		users = data.dsRecv;
 		users.forEach(el => $("#selectbox2").append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 	});
@@ -402,7 +403,7 @@ const getCselType = () => {
 	];
 
 	code_mk_list.forEach(codeName => {
-		let settings = {
+		const settings = {
 			url: `${API_SERVER}/sys.getCommCode.do`,
 			method: 'POST',
 			contentType: "application/json; charset=UTF-8",
@@ -537,11 +538,11 @@ const getCsel = () => {
 	calendarUtil.setImaskValue("txtPROC_DATE", "____-__-__");
 
 	// 조회조건 체크
-	let condition = getCselCondition();
+	const condition = getCselCondition();
 	if(!condition) return;
 
 	// 상담조회 api call
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.getCsel.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -551,9 +552,10 @@ const getCsel = () => {
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
 		}),
+		errMsg: "상담조회중 오류가 발생하였습니다.",
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "상담조회중 오류가 발생하였습니다.")) return;
+		if (!checkApi(data, settings)) return;
 		grid1.resetData(data.dsRecv);
 	});	
 }
@@ -563,11 +565,11 @@ const getCsel = () => {
  */
 const getCselExcel = () => new Promise((resolve, reject) => {
 	// 조회조건 체크
-	let condition = getCselCondition();
+	const condition = getCselCondition();
 	if(!condition) return reject("");
 
 	// 상담조회 api call
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.getCselExcel.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -577,9 +579,10 @@ const getCselExcel = () => new Promise((resolve, reject) => {
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
 		}),
+		errMsg: "상담조회중 오류가 발생하였습니다.",
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "상담조회중 오류가 발생하였습니다.")) return reject("");
+		if (!checkApi(data, settings)) return reject("");
 		return resolve(data.dsRecv);
 	});	
 });
@@ -591,7 +594,7 @@ const getCselExcel = () => new Promise((resolve, reject) => {
 const getCselSubj = condition => {
 	if(!condition) return;
 
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.getCselSubj.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -601,10 +604,11 @@ const getCselSubj = condition => {
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
 		}),
+		errMsg:  "상담조회중 오류가 발생하였습니다.",
 	}
 
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "상담조회중 오류가 발생하였습니다.")) return;
+		if (!checkApi(data, settings)) return;
 		grid2.resetData(data.dsRecv);
 	});	
 }
@@ -846,10 +850,10 @@ const delCounselCondition = () => {
  * 상담이력 삭제
  */
 const delCounsel = () => {
-	let condition = delCounselCondition();
+	const condition = delCounselCondition();
 	if (!condition) return;
 
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.delCounsel.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -859,10 +863,11 @@ const delCounsel = () => {
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
 		}),
+		errMsg: "상담정보 삭제중 오류가 발생하였습니다.",
 	}
 
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "상담정보 삭제중 오류가 발생하였습니다.")) return;
+		if (!checkApi(data, settings)) return;
 		alert("정상적으로 삭제 되었습니다.");
 		getCsel();
 	});

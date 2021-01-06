@@ -97,7 +97,7 @@ const getBadRecord = () => {
 	let userId = cselGrid ? cselGrid.getFormattedValue(rowKey, "CSEL_USER_ID") : "";
 	let dateExist = $("#checkbox1").is(":checked") ? "1" : "0";
 
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.getBadRecord.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -112,9 +112,10 @@ const getBadRecord = () => {
 				CHK_DATE_EXIST		: dateExist,	// 비 매핑 조회 여부(0:조회, 1:미조회)
 			}],
 		}),
+		errMsg: "녹취정보 조회중 오류가 발생하였습니다.",
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "녹취정보 조회중 오류가 발생하였습니다.")) return;
+		if (!checkApi(data, settings)) return;
 		grid.resetData(data.dsRecv);
 	});
 }
@@ -170,10 +171,11 @@ const upBadRecordCondition = () => {
  * 녹취매핑정보 저장
  */
 const upBadRecord = () => {
-	let condition = upBadRecordCondition();
+	
+	const condition = upBadRecordCondition();
 	if(!condition) return;
 
-	let settings = {
+	const settings = {
 		url: `${API_SERVER}/cns.upBadRecord.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -183,9 +185,10 @@ const upBadRecord = () => {
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
 		}),
+		errMsg: "녹취매핑정보 저장중 오류가 발생하였습니다.",
 	}
 	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings, "녹취매핑정보 저장중 오류가 발생하였습니다.")) return;
+		if (!checkApi(data, settings)) return;
 		alert("정상적으로 저장 되었습니다.");
 		getBadRecord();
 	});
