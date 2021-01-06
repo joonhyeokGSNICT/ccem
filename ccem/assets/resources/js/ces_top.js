@@ -13,6 +13,7 @@ var currentUnPop = { name : null };
 
 var codeData;
 
+var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo;							// 현재 선택된 고객의 정보
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
@@ -65,6 +66,9 @@ $(function(){
 	
 	// 탑바 클라이언트 저장
 	topBarClient = client;
+	
+	// 현재 사용자 정보 객체로 저장
+	getCurrentUserInfo();
 	
 	// 사이드바 클라이언트 저장
 	client.get('instances').then(function(instancesData) {
@@ -192,16 +196,7 @@ $(function(){
 			break;
 			
 			
-			
-			
-			
 		}
-		
-		
-		
-		
-		
-		
 		
 	});
 	
@@ -236,6 +231,16 @@ $(function(){
 	});
 	
 });
+
+/**
+ * 현재 사용자 정보 불러오기
+ * @returns
+ */
+function getCurrentUserInfo(){
+	client.request('/api/v2/users/me.json').then(function(d){
+		currentUserInfo = d;
+	});
+};
 
 /**
  * 고객,선생님 조회 func
@@ -560,6 +565,7 @@ function loadCustInfoMain() {
 	}
 	
 	familyInfoLoad();												// 관계회원정보 불러오기
+	studyInfoLoad();												// 복수학습정보 불러오기
 	
 	loadList('counselHist', counselMain_counselHist_grid);			// 상담이력 목록 불러오기				//OLD >> counselHistLoad();		// 상담이력 목록 불러오기
 	loadList('currentStudy', counselMain_studyProgressList_grid);	// 학습진행정보 목록 불러오기			//OLD >> currentStudyLoad();	// 학습진행정보 목록 불러오기
@@ -611,6 +617,80 @@ function familyInfoLoad() {
 	    }
 	});
 }
+
+/**
+ * 학습중인사업국/센터 조회
+ * @returns
+ * 21-01-06 최준혁
+ */
+function studyInfoLoad() {
+	
+	$("#custInfo_DEPT_NAME_study").empty();
+	$("#custInfo_LC_NM_study").empty();
+	
+	var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{
+		    	"MBR_ID"		: currentCustInfo.MBR_ID,				// 회원번호
+		    }]
+		};
+	
+	$.ajax({
+	    url: API_SERVER + '/cns.getStudyDataLc.do',
+	    type: 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data: JSON.stringify(param),
+	    success: function (response_lc) {
+	        if(response_lc.errcode == "0"){
+	        	console.log("LC DATA ===> :" , response_lc);
+	        	
+	        	$.ajax({
+	        		url: API_SERVER + '/cns.getStudyDataDept.do',
+	        		type: 'POST',
+	        		dataType: 'json',
+	        		contentType: "application/json",
+	        		data: JSON.stringify(param),
+	        		success: function (response_dept) {
+	        			if(response_dept.errcode == "0"){
+	        				console.log("dept DATA ===> :" , response_dept);
+        					
+	        				if(response_lc.recv1.length < 2){								// 센터 2개 미만
+        						if(response_dept.recv1.length < 2){								// 사업국 2개 미만
+        							$("#custInfo_DEPT_NAME_study").parent().css("display","none");
+        							$("#custInfo_LC_NM_study").parent().css("display","none");
+        							$("#custInfo_multipleStudy").css("display","none");
+        							$("#custInfo_UPDEPTNAME").parent().attr('colspan', '3');
+        						}else{															// 사업국 2개 이상
+        							$("#custInfo_DEPT_NAME_study").parent().css("display","");
+        							$("#custInfo_LC_NM_study").parent().css("display","");
+        							$("#custInfo_multipleStudy").css("display","");
+        							$("#custInfo_UPDEPTNAME").parent().attr('colspan', '1');
+        						}
+        		        	}else {															// 센터 2개 이상
+        		        		$("#custInfo_DEPT_NAME_study").parent().css("display","");
+    							$("#custInfo_LC_NM_study").parent().css("display","");
+    							$("#custInfo_multipleStudy").css("display","");
+    							$("#custInfo_UPDEPTNAME").parent().attr('colspan', '1');
+        		        	}
+	        			}else {
+	        				loading.out();
+	        				client.invoke("notify", response.errmsg, "error", 60000);
+	        			}
+	        		}, error: function (response) {
+	        		}
+	        	});
+	        	
+	        }else {
+	        	loading.out();
+	        	client.invoke("notify", response.errmsg, "error", 60000);
+	        }
+	    }, error: function (response) {
+	    }
+	});
+}
+
 
 /**
  * 상담이력 리스트 조회
@@ -686,7 +766,7 @@ function familyInfoLoad() {
  * @returns
  * 21-01-04 최준혁
  */
-function weeklyStudyList() {
+/*function weeklyStudyList() {
 	var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
@@ -714,7 +794,7 @@ function weeklyStudyList() {
 	    }
 	});
 }
-
+*/
 /**
  * 그리드 리스트 조회
  * @param id	해당 그리드 id

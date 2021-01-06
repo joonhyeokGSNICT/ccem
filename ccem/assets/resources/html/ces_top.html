@@ -267,11 +267,13 @@
 										<tr>
 											<th>본부</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_UPDEPTNAME" readonly></td>
-											<th>복수학습</th>
-											<td><select class="form-control form-control-sm" style="width:50%; float:left;">
-												<option value="a">테스트</option>
-											</select>
-											<select class="form-control form-control-sm" style="width:50%;"><option value="b">학습</select></td>
+											<th id="custInfo_multipleStudy">복수학습</th>
+											<td>
+												<select class="form-control form-control-sm" style="width:50%; float:left;" id="custInfo_DEPT_NAME_study">
+												</select>
+												<select class="form-control form-control-sm" style="width:50%;" id="custInfo_LC_NM_study">
+												</select>
+											</td>
 										</tr>
 										<tr>
 											<th>사업국</th>
