@@ -98,11 +98,18 @@
 				<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
 					<div class="mainDivision">
 						<div class="row mt-2">
-							<div class="col-8">
+							<div class="col-2">
 								<ul class="nav nav-tabs" style="margin-left: 0px; margin-top: -34px;">
 									<li class="nav-item"><a class="nav-link active" style="width:80px;" id="customerTab" data-toggle="tab" href="#counselMain_customerTab">고객<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 									<li class="nav-item"><a class="nav-link" style="width:80px;" id="teacherTab" data-toggle="tab" href="#counselMain_teacherTab">선생님<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 								</ul>
+							</div>
+							<div class="col-6">
+								<div id="blackAndVipArea"  style="background:#f1f5ff; width:30%; height:30px; margin-top: -44px; text-align:center; display:none;">
+									<h4 id="blackAndVip" style="font-size:1.5rem !important; color:red;">
+										정성회원
+									</h4>
+								</div>
 							</div>
 							<div class="col-4" style="margin-top: -44px;">
 								<div style="float:right;">
@@ -136,7 +143,7 @@
 										</tr> -->
 										<tr>
 											<th>성 명</th>
-											<td><input type="text" class="form-control form-control-sm" id="custInfo_NAME"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_NAME" autocomplete="off"></td>
 											<th>고객번호</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_CUST_ID" readonly></td>
 										</tr>
@@ -203,15 +210,15 @@
 										<tr>
 											<th>자택</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_DDD">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO1">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO2">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_DDD" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO1" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO2" autocomplete="off" maxlength="4">
 											</td>
 											<th>회원</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO1">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO2">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO3">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO1" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO2" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO3" autocomplete="off" maxlength="4">
 											</td>
 										</tr>
 										<tr>
@@ -235,26 +242,26 @@
 										<tr>
 											<th>대리인</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW1">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW2">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW3">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW1" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW2" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_LAW3" autocomplete="off" maxlength="4">
 											</td>
 											<th>학부모</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR1">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR2">
-												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR3">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR1" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR2" autocomplete="off" maxlength="4">
+												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_MOBILNO_MBR3" autocomplete="off" maxlength="4">
 											</td>
 										</tr>
 										<tr>
 											<th>대리인명</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FAT_NAME">
+												<input type="text" class="form-control form-control-sm" style="width:55%; float:left;" id="custInfo_FAT_NAME" autocomplete="off">
 												<select class="form-control form-control-sm" style="width:45%;" id="custInfo_FAT_REL" name="FAT_REL">
 												</select>
 											</td>
 											<th>관계번호</th>
-											<td><input type="text" class="form-control form-control-sm" id="custInfo_FAT_RSDNO"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_FAT_RSDNO" autocomplete="off"></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered mt-1">
@@ -278,15 +285,15 @@
 										<tr>
 											<th>사업국</th>
 											<td><input type="text" class="form-control form-control-sm" style="width:30%; float:left;" id="custInfo_DEPT_ID" readonly>
-											<input type="text" class="form-control form-control-sm" style="width:56%; float:left;" id="custInfo_DEPT_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
+											<input type="text" class="form-control form-control-sm" style="width:56%; float:left;" id="custInfo_DEPT_NAME" autocomplete="off"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
 											<th>전화</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_DEPT" readonly></td>
 										</tr>
 										<tr>
 											<th>센터</th>
-											<td><input type="text" class="form-control form-control-sm" style="width:86%; float:left;" id="custInfo_LC_NAME"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
+											<td><input type="text" class="form-control form-control-sm" style="width:86%; float:left;" id="custInfo_LC_NAME" autocomplete="off"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
 											<th>전화</th>
-											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_LC"></td>
+											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_LC" readonly></td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered mt-1">
@@ -337,12 +344,12 @@
 									</table>
 									<div class="row">
 										<div class="col-12">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="SMS" id="" onclick="PopupUtil.open('CCEMPRO046', 1000, 600);" style="padding: 0.25rem .0rem !important;">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="취소" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;" disabled>
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="신규" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="관계회원" onclick="onFamilyBtnClick();" id="" style="padding: 0.25rem .0rem !important;" disabled>
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="정성회원" onclick="PopupUtil.open('CCEMPRO021', 600, 500);" id="" style="padding: 0.25rem .0rem !important;">
-											<input type="button" class="btn btn-sm popup-btn customerBtn" value="저장" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm customerBtn" value="SMS" id="custInfo_smsPopBtn" onclick="PopupUtil.open('CCEMPRO046', 1000, 600);" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm customerBtn" value="취소" onclick="cancelCustInfo();" id="custInfo_cancelBtn" style="padding: 0.25rem .0rem !important;" disabled>
+											<input type="button" class="btn btn-sm customerBtn" value="신규" onclick="newCustomerInsert();" id="custInfo_newCustBtn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm customerBtn" value="관계회원" onclick="onFamilyBtnClick();" id="custInfo_refBtn" style="padding: 0.25rem .0rem !important;" disabled>
+											<input type="button" class="btn btn-sm customerBtn" value="정성회원" onclick="PopupUtil.open('CCEMPRO021', 600, 500);" id="custInfo_blackBtn" style="padding: 0.25rem .0rem !important;" disabled>
+											<input type="button" class="btn btn-sm customerBtn" value="저장" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
 										</div>
 									</div>
 								</div>
@@ -894,7 +901,7 @@
 										</colgroup>
 										<tr>
 											<th>성 명</th>
-											<td><input type="text" class="form-control form-control-sm"></td>
+											<td><input type="text" class="form-control form-control-sm" autocomplete='off'></td>
 											<th>사번</th>
 											<td><input type="text" class="form-control form-control-sm"></td>
 										</tr>
