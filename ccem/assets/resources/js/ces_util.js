@@ -568,6 +568,40 @@ var PopupUtil = {
     },
 }
 
+const ModalUtil = {
+    /**
+     * 알림창
+     * @param {string} title 
+     * @param {string} content 
+     */
+    modalPop(title, content) {
+        $('#modalTilte').html(title);
+        $('#modalContent').html(content);
+        $('#noValuePopup').modal({
+            show: true,
+            focus: true
+        });
+    },
+    /**
+     * 확인창 : 예를 누르면 전달된 함수실행
+     * @param {string} title 
+     * @param {string} content 
+     * @param {function} applyFunction 예를 누르면 실행할 함수
+     * @param {...any} applyArgs 예를 누르면 실행할 함수의 매개변수
+     */
+    confirmPop(title, content, applyFunction, ...applyArgs) {
+        $('#confirmPopup .modal-title').html(title);
+        $('#confirmPopup .modal-body').html(content);
+        $('#confirmPopup button#confirmBtn')
+            .off('click')
+            .on("click", () => applyFunction.apply(null, applyArgs));
+        $('#confirmPopup').modal({
+            show: true,
+            focus: true
+        });
+    },
+}
+
 /**
  * grid 데이터 상세 INSERT
  * @param {object} ev 이벤트정보
