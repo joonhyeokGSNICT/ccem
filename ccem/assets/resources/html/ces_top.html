@@ -116,7 +116,7 @@
 									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1154, 630, '#counselRgtrTab');" value="상담등록" id="">
 									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1154, 630, '#entrRgtrTab');"  value="입회등록" id="assignMemberbtn">
 									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1154, 630, '#tchrIntrdTab');"  value="선생님소개" id="">
-									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO041', 430, 630);"  value="호전환" id="transferCallbtn" style="background:#6fd899; display:none;">
+									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO041', 500, 700);"  value="호전환" id="transferCallbtn" style="background:#6fd899; display:none;">
 								</div>
 							</div>
 						</div>
@@ -225,7 +225,15 @@
 											<th rowspan="2">주소</th>
 											<td colspan="3">
 												<input type="text" style="width:33%; float:left;" class="form-control form-control-sm addressPop" id="custInfo_ZIPCDE" readonly>
-												<input type="text" style="width:61%; float:left;" class="form-control form-control-sm addressPop" id="custInfo_ZIP_ADDR" readonly><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i>
+<!-- 												<input type="text" style="width:61%; float:left;" class="form-control form-control-sm addressPop" id="custInfo_ZIP_ADDR" readonly> -->
+												<div class="input-group" style="width:67%; float:left;">
+					   							 	<input type="text" class="form-control form-control-sm addressPop" id="custInfo_ZIP_ADDR" readonly>
+												    <div class="input-group-append">
+														<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
+		                                       				<img src="../img/popBtn.svg" alt="팝업">
+		                                   				</button>
+												    </div>
+				 								</div>
 											</td>
 										</tr>
 										<tr>
@@ -285,13 +293,31 @@
 										<tr>
 											<th>사업국</th>
 											<td><input type="text" class="form-control form-control-sm" style="width:30%; float:left;" id="custInfo_DEPT_ID" readonly>
-											<input type="text" class="form-control form-control-sm" style="width:56%; float:left;" id="custInfo_DEPT_NAME" autocomplete="off"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
+												<div class="input-group" style="width:70%; float:left;">
+					   							 	<input type="text" class="form-control form-control-sm deptPop" id="custInfo_DEPT_NAME" readonly>
+												    <div class="input-group-append">
+														<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
+		                                       				<img src="../img/popBtn.svg" alt="팝업">
+		                                   				</button>
+												    </div>
+				 								</div>
+											</td>
 											<th>전화</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_DEPT" readonly></td>
 										</tr>
 										<tr>
 											<th>센터</th>
-											<td><input type="text" class="form-control form-control-sm" style="width:86%; float:left;" id="custInfo_LC_NAME" autocomplete="off"><i class="fas fa-sign-in-alt" style="margin: .18rem; color: #4a3c92;"></i></td>
+											<td>
+												<div class="input-group" style="width:100%; float:left;">
+					   							 	<input type="text" class="form-control form-control-sm LCPop" id="custInfo_LC_NAME" readonly>
+												    <div class="input-group-append">
+														<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
+		                                       				<img src="../img/popBtn.svg" alt="팝업">
+		                                   				</button>
+												    </div>
+				 								</div>
+											</td>
+											
 											<th>전화</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_TELPNO_LC" readonly></td>
 										</tr>
@@ -349,7 +375,7 @@
 											<input type="button" class="btn btn-sm customerBtn" value="신규" onclick="newCustomerInsert();" id="custInfo_newCustBtn" style="padding: 0.25rem .0rem !important;">
 											<input type="button" class="btn btn-sm customerBtn" value="관계회원" onclick="onFamilyBtnClick();" id="custInfo_refBtn" style="padding: 0.25rem .0rem !important;" disabled>
 											<input type="button" class="btn btn-sm customerBtn" value="정성회원" onclick="PopupUtil.open('CCEMPRO021', 600, 500);" id="custInfo_blackBtn" style="padding: 0.25rem .0rem !important;" disabled>
-											<input type="button" class="btn btn-sm customerBtn" value="저장" id="counselInsert_btn" style="padding: 0.25rem .0rem !important;">
+											<input type="button" class="btn btn-sm customerBtn" value="저장" onclick="onSaveBtnClick();" id="custInfo_onSaveBtn" style="padding: 0.25rem .0rem !important;">
 										</div>
 									</div>
 								</div>
@@ -1313,6 +1339,41 @@
 			<!-- 고객 찾기 탭 끝 -->
 		</div>
 	</div>
+	<!-- BS4 modalPop-->
+    <div id="noValuePopup" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+           <div class="modal-content">
+              <div class="modal-header">
+                    <h4 class="modal-title" style="font-weight: bold;font-size: 15px;" id="modalTilte"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                       <span aria-hidden="true">&times;</span>
+                    </button>
+              </div>
+              <div class="modal-body">
+                    <p id="modalContent"></p>
+              </div>
+              <div class="modal-footer">
+                    <button type="button" class="btn custom-btn" data-dismiss="modal">Close</button>
+              </div>
+           </div>
+        </div>
+    </div>
+    <!-- BS4 confirm Modal -->
+    <div class="modal fade" data-backdrop="static" id="confirmPopup">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="font-weight: bold;font-size: 15px;">title</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">content</div>
+            <div class="modal-footer">
+                <button type="button" class="btn custom-btn" data-dismiss="modal">아니오</button>
+                <button type="button" class="btn custom-btn pl-4 pr-4" data-dismiss="modal" id="confirmBtn">예</button>
+            </div>
+        </div>
+    </div>
+    </div>
   <script src="../lib/jquery/jquery-3.5.1.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <script src="../lib/toast-grid/js/tui-code-snippet.js"></script>

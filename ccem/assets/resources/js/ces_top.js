@@ -28,7 +28,59 @@ var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT 
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
 var custInfoStatus;
 
-// TRIGGER
+//전역변수
+var sTelNo_DDD = new Array(
+                              "02"    // 서울
+                            , "031"   // 경기도
+                            , "032"   // 인천
+                            , "033"   // 강원
+                            , "041"   // 충남
+                            , "042"   // 대전
+                            , "043"   // 충북
+                            , "044"   // 세종시
+                            , "051"   // 부산
+                            , "052"   // 울산
+                            , "053"   // 대구
+                            , "054"   // 경북
+                            , "055"   // 경남
+                            , "061"   // 전남
+                            , "062"   // 광주
+                            , "063"   // 전북
+                            , "064"   // 제주
+
+                            , "010"   // 통합(이동)
+                            , "011"   // SKT
+                            , "016"   // KTF
+                            , "017"   // SKT
+                            , "018"   // KTF
+                            , "019"   // LGT
+
+                            , "0502"   // 평생번호(KT)
+                            , "0504"   // 평생번호(KT)
+                            , "0505"   // 평생번호(데이콤)
+                            , "0506"   // 평생번호(KT)
+                            , "060"   // 서비스/정보이용
+                            , "070"   // 인터넷전화
+                            , "080"   // 수신자부담(크로바서비스)
+
+                            );
+// 전역변수(핸드폰번호)
+var sTelHPNo_DDD = new Array(                            
+                              "010"   // 통합(이동)
+                            , "011"   // SKT
+                            , "016"   // KTF
+                            , "017"   // SKT
+                            , "018"   // KTF
+                            , "019"   // LGT
+
+                            , "0502"   // 평생번호(KT)
+                            , "0504"   // 평생번호(KT)
+                            , "0505"   // 평생번호(데이콤)
+                            , "0506"   // 평생번호(KT)
+                            
+                            );
+
+// === === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 //sideBar client 받기
 client.on("getSidebarClient", function(sideBarClient_d) {
 	sideBarClient = sideBarClient_d;
@@ -957,7 +1009,10 @@ function isCustDataChanged() {
 			console.log(currentCustInfo.NAME);
 			return true;
 		}
+	}else if($("#custInfo_FML_RANK").val() != ""){
+		return true;
 	}
+	
 	if(currentCustInfo.GND != null){
 		if($("#custInfo_GND").val() != currentCustInfo.GND){									// 성별
 			console.log(currentCustInfo.GND);
@@ -997,7 +1052,7 @@ function isCustDataChanged() {
 		}
 	}
 	if(currentCustInfo.MOBILNO != null){
-		if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() != currentCustInfo.MOBILNO){						// 회원전화번호
+		if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() != currentCustInfo.MOBILNO.replace(/-/gi,"")){						// 회원전화번호
 			console.log(currentCustInfo.MOBILNO);
 			return true;
 		}
@@ -1088,3 +1143,171 @@ function isCustDataChanged() {
 	
 	return false;
 }
+
+function onSaveBtnClick(){
+	//변경된 정보가 존재하는지 체크
+    if(isCustDataChanged() == false){
+    	client.invoke('notify','변경된 정보가 없습니다.', 'alert', 5000);
+        return;
+    }
+    
+    //유효성 체크
+    if(onValueCheck()==false) return;
+    
+    //수정시 확인한다.
+    if(custInfoStatus == 2){
+        ModalUtil.confirmPop("확인 메세지", "정말로 수정 하시겠습니까?", onAutoSearchByTELPNO, "ONSAVE");
+    }else {
+    	onAutoSearchByTELPNO("ONSAVE");
+    }
+    
+}
+
+/**
+ * 저장시 필수 항목 유효성체크
+ * @returns
+ * 21-01-08 최준혁
+ */
+function onValueCheck(){
+    var sMsg = "";
+    var sFocusObj = "";
+    if($.trim($("#custInfo_NAME").val()) == ""){
+        sMsg = "성명을 입력해 주십시요.";
+        sFocusObj = $("#custInfo_NAME");
+    }else if( $.trim($("#custInfo_GRADE_CDE").val()) == ""){
+        sMsg = "학년을 선택하세요.";
+        sFocusObj = $("#custInfo_GRADE_CDE");            
+    }else if($.trim($("#custInfo_DDD").val()) == ""){
+        sMsg = "전화번호(지역번호)를 입력하세요.";
+        sFocusObj = $("#custInfo_DDD");
+    }else if( $.trim($("#custInfo_TELPNO1").val()) == "" ){
+        sMsg = "전화번호(국번)을 입력하세요.";
+        sFocusObj = $("#custInfo_TELPNO1");
+    }else if( gf_chkDDDNumber($.trim($("#custInfo_TELPNO1").val())) ){
+        sMsg = "전화번호(국번)이 올바르지 않습니다.\n\n 다시 입력하세요.";
+        sFocusObj = $("#custInfo_TELPNO1");
+    }else if( $.trim($("#custInfo_TELPNO2").val()) == "" || $.trim($("#custInfo_TELPNO2").val()).length < 4){
+        sMsg = "전화번호(뒷4자리)를 입력하세요.";
+        sFocusObj = $("#custInfo_TELPNO2");
+        
+    //신규 회원일때만 학부모 주민번호를 체크한다.
+    }else if(currentCustInfo.CUST_ID == 0 ) {
+        if( $.trim($("#custInfo_FAT_RSDNO").val()) == "" ){
+            sMsg = "관계번호를 입력하세요.";
+            sFocusObj = $("#custInfo_FAT_RSDNO");
+        }else if($.trim($("#custInfo_FAT_RSDNO").val()).replace(/-/gi,"") < 13){
+            sMsg = "관계번호가 잘못되었습니다.";
+            sFocusObj = $("#custInfo_FAT_RSDNO");
+        }else{
+            return true;
+        }
+        
+    }else{
+        return true;
+    }                
+
+    //메세지 출력하기
+    client.invoke('notify',sMsg, 'alert', 5000);
+    //포커스 옮기기.
+    if(sFocusObj != ""){
+       sFocusObj.focus();
+    }
+    return false;
+}
+
+/**
+ * 국번번호 체크
+ * @param ddd
+ * @returns
+ * 21-01-08 최준혁
+ */
+function gf_chkDDDNumber(ddd){
+    for (i=0 ; i<sTelNo_DDD.length ;i++){
+        if (sTelNo_DDD[i] == ddd) return true;
+    }
+    return false;
+}
+/**
+ * 휴대폰 앞자리 체크
+ * @param ddd
+ * @returns
+ */
+function chkHPDDDNumber(ddd){
+    for (i=0 ; i<sTelHPNo_DDD.length ;i++){
+        if (sTelHPNo_DDD[i] == ddd) return true;
+    }
+    return false;
+}
+/**
+ * 중복 고객, 중복 부모 존재 여부 조회
+// (성명, 학습장소 전화번호로 판단한다.)
+// (저장시:"ONSAVE"
+//  전화번호입력시:"ONTELPNO"
+//  관계회원등록때 이름입력시:"ONNAME"
+//  관계회원콤보선택시 비회원일때: "ONRELCMB"
+ * @param sFlag
+ * @param sName
+ * @returns
+ */
+function onAutoSearchByTELPNO(sFlag,sName){
+    if((custInfoStatus == 1 && sFlag == "ONTELPNO") ||			// 신규 상태고 전화번호 입력시
+       (custInfoStatus == 3 && sFlag == "ONNAME"  ) ||			// 관계회원등록 상태이고 순서대로 이름입력, 저장, 비회원일시
+                               sFlag == "ONSAVE"    ||
+                               sFlag == "ONRELCMB"  ){
+
+        if( $.trim($("#custInfo_NAME").val()).length > 0 &&
+    		$.trim($("#custInfo_TELPNO1").val()).length > 0 &&
+    		$.trim($("#custInfo_TELPNO2").val()).length > 3){
+
+        	//관계회원("ONRELCMB")일 때는 파라미터 이름(sName)을 사용하고, 다른경우는 새로 입력한 이름을 사용한다.
+        	var custName_dp = ""; 
+        	if(sFlag == "ONRELCMB"){
+        		custName_dp = sName;
+        	}else {
+        		custName_dp = $.trim($("#custInfo_NAME").val());
+        	}
+        	
+        	var param = {
+        		    senddataids: ["send1"],
+        		    recvdataids: ["recv1"],
+        		    send1: [{
+        		    	"TELPNO2"		: currentCustInfo.TELPNO2,				// 학습장소 전화 뒷자리
+        		    	"TELPNO1"		: currentCustInfo.TELPNO1,				// 학습장소 전화 국번
+        		    	"NAME"			: custName_dp,							// 고객명
+        		    	"FAT_RSDNO"		: currentCustInfo.FAT_RSDNO,			// 학부모 관계번호
+        		    }]
+        		};
+        	
+        	$.ajax({
+        	    url: API_SERVER + '/cns.getDupliChecking.do',
+        	    type: 'POST',
+        	    dataType: 'json',
+        	    contentType: "application/json",
+        	    data: JSON.stringify(param),
+        	    success: function (response) {
+        	        if(response.errcode == "0"){
+        	        	console.log("DUPLE DATA ===> :" , response);
+        	        	
+        	        }
+        	    }
+        	});
+        	
+        	
+            //sFlagEXISTRECORD = sFlag;
+
+            //관계회원("ONRELCMB")일 때는 sName을 사용하고, 다른경우는 txtNAME.value을 사용한다.
+           /* if( sFlag != "ONRELCMB" ) sName = txtNAME.value;
+            sNameOfCNS5600 = sName;
+            sTel2OfCNS5600 = MSK_TELPNO2.text;
+
+            DS_EXISTRECORD.DataID  = "/cns/cns5400/cns5403V.jsp";
+            DS_EXISTRECORD.DataID += "?sName="    + sName;
+            DS_EXISTRECORD.DataID += "&sTelpno1=" + MSK_TELPNO1.text;
+            DS_EXISTRECORD.DataID += "&sTelpno2=" + MSK_TELPNO2.text;
+            DS_EXISTRECORD.DataID += "&sFatRsdno="+ MSK_FAT_RSDNO.text;
+            DS_EXISTRECORD.reset();*/
+
+        }
+    }
+}
+
