@@ -382,7 +382,8 @@ const calendarUtil = {
         placeholder: "__:__:__", 
         insertMode: false, 
         showMaskOnHover: false,
-        hourFormat: "24"
+        hourFormat: "24",
+        autoUnmask: true,
     },
     /**
      * @param {string} id element id
@@ -550,6 +551,17 @@ const calendarUtil = {
      */
     setImaskValue(id, value) {
         calendarUtil.imasks[id].value = value;
+    },
+    /**
+     * @param {string} id 
+     * @param {boolean} mask 
+     */
+    getImaskValue(id, mask) {
+        if(!mask) {
+            return calendarUtil.imasks[id].unmaskedValue;
+        }else {
+            return calendarUtil.imasks[id].value;
+        }
     }
 }
 
@@ -565,6 +577,40 @@ var PopupUtil = {
         }else {
             this.pops[name] = window.open(`pop_${name}.html${hash||""}`, name, `width=${width}, height=${height}`);
         }
+    },
+}
+
+const ModalUtil = {
+    /**
+     * 알림창
+     * @param {string} title 
+     * @param {string} content 
+     */
+    modalPop(title, content) {
+        $('#modalTilte').html(title);
+        $('#modalContent').html(content);
+        $('#noValuePopup').modal({
+            show: true,
+            focus: true
+        });
+    },
+    /**
+     * 확인창 : 예를 누르면 전달된 함수실행
+     * @param {string} title 
+     * @param {string} content 
+     * @param {function} applyFunction 예를 누르면 실행할 함수
+     * @param {...any} applyArgs 예를 누르면 실행할 함수의 매개변수
+     */
+    confirmPop(title, content, applyFunction, ...applyArgs) {
+        $('#confirmPopup .modal-title').html(title);
+        $('#confirmPopup .modal-body').html(content);
+        $('#confirmPopup button#confirmBtn')
+            .off('click')
+            .on("click", () => applyFunction.apply(null, applyArgs));
+        $('#confirmPopup').modal({
+            show: true,
+            focus: true
+        });
     },
 }
 

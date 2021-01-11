@@ -328,4 +328,10 @@ ul.fancytree-container {
 
 .dropdown-check-list.visible .items {
   display: block;
+}
+
+.popBtn {
+    line-height: 0.5;
+    padding: 0;
+    margin: 0;
 }​

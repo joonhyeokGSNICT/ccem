@@ -1,0 +1,115 @@
+body *{font-size:13px!important;}
+
+/* table */
+.table {
+	margin-bottom: .5rem !important;
+}
+.table td {
+	vertical-align:middle;
+}
+.table th {
+	text-align: left;
+	vertical-align: middle;
+	background: #f1f5ff;
+	color: #333333;
+}
+
+/* button */
+.ccemBtn {
+	background: #7fb6df;
+}
+.popBtn {
+    line-height: 0.5;
+    padding: 0;
+    margin: 0;
+}
+.counselMainBtn {
+	background-color: #73b753;
+	color:white;
+	font-weight:bold;
+}
+.counselMainBtn:hover {
+	background-color: #72da40;
+	color:white;
+	font-weight:bold;
+}
+.baseLineMid {
+	vertical-align: -webkit-baseline-middle;
+	margin-top: 3px;
+}
+
+/* TOAST Grid */
+.tui-grid-layer-state {/* outline border */
+    border-left: 1px solid rgb(205,205,205)!important;
+}
+.tui-grid-cell.cell-selection {/* selected row */
+    background-color: rgb(205,205,205)!important;
+    font-weight:bold;
+}
+.tui-grid-scrollbar-left-bottom {
+    border-width: 0 0;
+    border-left-width: 1px;
+}
+.tui-grid-cell-has-input .tui-grid-cell-content {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.tui-grid-btn-filter {/* filter button */
+	display: none;
+}
+
+/* navs */
+.nav-tabs .active{
+    background-color: #123f8a !important;
+    color: rgb(255, 255, 255)!important;
+    font-size: 13px!important;
+    font-weight: bold;
+}
+.nav-tabs .nav-link:not(.active) {
+    background-color: #ececec!important;
+    color: rgb(163, 163, 163)!important;
+    font-size: 13px!important;
+    font-weight: bold;
+}
+.nav-tabs .nav-link {
+	text-align:center;
+    border-top-left-radius: 0.4rem;
+    border-top-right-radius: 0.4rem;
+    padding: 3px 13px !important;
+}
+.nav-tabs .nav-link:not(.active):hover {
+    background-color: #123f8a !important;
+    color: rgb(255, 255, 255)!important;
+    font-size: 13px!important;
+    font-weight: bold;
+}
+.nav-tabs {
+    border-bottom: 0px;
+}
+
+/* from-control */
+.form-control-sm {
+	height: 1.3rem !important;
+	padding: .25rem .1rem;
+}
+.form-control[readonly]{
+	background-color:white;
+	opacity:1;
+}
+select {
+	padding: 0px !important;
+}
+
+/* ETC */
+.subjectArrow {
+	color: #d20000;
+}
+
+.customBody {
+	max-width:100%;
+}
+
+
+
+
+
