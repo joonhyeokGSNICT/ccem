@@ -8,14 +8,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>고객조회,선생님조회</title>
-	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
-	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
-	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
-	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
-	<link rel="stylesheet" href="../css/ces_top.css">
+<meta charset="utf-8">
+<title>고객조회,선생님조회</title>
+<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css" />
+<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
+<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet"/>
+<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/ces_top.css">
 </head>
 <body>
 	<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
@@ -23,16 +25,16 @@
 			<div class="row mt-2">
 				<div class="col-12">
 					<ul class="nav nav-tabs" style="margin-left: 0px;">
-						<li class="nav-item"><a class="nav-link active" style="width:80px;" id="customerTab" data-toggle="tab" href="#counselMain_customerSearchTab">고객<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
-						<li class="nav-item"><a class="nav-link" style="width:80px;" id="teacherTab" data-toggle="tab" href="#counselMain_teacherSearchTab">선생님<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+						<li class="nav-item"><a class="nav-link active" style="width: 80px;" id="customerTab" data-toggle="tab" href="#counselMain_customerSearchTab">고객<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+						<li class="nav-item"><a class="nav-link" style="width: 80px;" id="teacherTab" data-toggle="tab" href="#counselMain_teacherSearchTab">선생님<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
 					</ul>
 				</div>
 			</div>
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane fade active show" id="counselMain_customerSearchTab">
-				
-					<div id="custSearchDiv" style="height:90px;">
-						<table class="table table-xs table-bordered" style="width:90%; float:left;">
+
+					<div id="custSearchDiv" style="height: 90px;">
+						<table class="table table-xs table-bordered mt-2" style="width: 90%; float: left;">
 							<colgroup>
 								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 15%;">
@@ -45,82 +47,98 @@
 							</colgroup>
 							<tr>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">고객명
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerNameCheck">고객명
 									</label>
 								</th>
 								<td>
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerName" name="searchInputCheck" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">전화번호
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerPhoneCheck">전화번호
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">E-MAIL 주소
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerEmailCheck">E-MAIL 주소
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerEmail" name="searchInputCheck" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">학년
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerGradeCheck">학년
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<select class="form-control form-control-sm searchInputCheck" id="customerGrade" name="GRADE_CDE">
+										<!-- INPUT -->
+										<option></option>
+									</select>
 								</td>
 							</tr>
 							<tr>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">회원번호
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerMNumCheck">회원번호
 									</label>
 								</th>
 								<td>
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerMNum" name="searchInputCheck" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">생년월일
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerBirthCheck">생년월일
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerBirth" name="searchInputCheck" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">주소
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerAddrCheck">주소
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerAddr" name="searchInputCheck" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">과목
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSubjectCheck">과목
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<select class="form-control form-control-sm searchInputCheck" id="customerSubject" name="PRDT_ID">
+										<!-- INPUT -->
+										<option></option>
+									</select>
 								</td>
 							</tr>
 							<tr>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">지점
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSpotCheck">지점
 									</label>
 								</th>
 								<td>
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSpot" name="searchInputCheck" autocomplete="off">
+									<!-- INPUT -->
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">본부
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerDeptCheck">본부
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<select class="form-control form-control-sm searchInputCheck" id="customerDept" name="DIV_CDE">
+										<!-- INPUT -->
+										<option></option>
+									</select>
 								</td>
 							</tr>
 						</table>
-						<input type="button" class="btn btn-sm popup-btn customerBtn searchBtn" value="조회" id="" style="float:right; margin:1.5rem;">
+						<input type="button" class="btn btn-sm popup-btn customerBtn searchBtn" value="조회" id="custSearchDivBtn" style="float: right; margin: 1.5rem;">
 					</div>
 					<div class="row mt-2">
 						<div class="col">
@@ -130,9 +148,9 @@
 					<div id="customerSearchList_grid"></div>
 				</div>
 				<div role="tabpanel" class="tab-pane fade show" id="counselMain_teacherSearchTab">
-				
-					<div id="teacherSearchDiv" style="height:75px;">
-						<table class="table table-xs table-bordered" style="width:90%; float:left;">
+
+					<div id="teacherSearchDiv" style="height: 75px;">
+						<table class="table table-xs table-bordered mt-2" style="width: 90%; float: left;">
 							<colgroup>
 								<col span="1" style="width: 10%;">
 								<col span="1" style="width: 15%;">
@@ -145,52 +163,56 @@
 							</colgroup>
 							<tr>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">선생님명
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherNameCheck">선생님명
 									</label>
 								</th>
 								<td>
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherName">
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">사원번호
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherDNumCheck">사원번호
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" maxlength="8" id="teacherDNum">
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">재직구분
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherStatCheck">재직구분
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<select class="form-control form-control-sm searchInputCheck" name="STS_CDE" id="teacherStat">
+										<option></option>
+									</select>
 								</td>
 							</tr>
 							<tr>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">센터
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherLCNameCheck">센터
 									</label>
 								</th>
 								<td>
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherLCName">
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">사업국
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherDeptNameCheck">사업국
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherDeptName">
 								</td>
 								<th class="tdCheck thCheck" colspan="">
-									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">본부
+									<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherUpDeptNameCheck">본부
 									</label>
 								</th>
 								<td colspan="">
-									<select class="form-control form-control-sm"></select>
+									<select class="form-control form-control-sm searchInputCheck" name="DIV_CDE" id="teacherUpDeptName">
+										<option></option>
+									</select>
 								</td>
 							</tr>
 						</table>
-						<input type="button" class="btn btn-sm popup-btn customerBtn" value="조회" id="counselInsert_btn" style="float:right; margin:1.5rem;">
+						<input type="button" class="btn btn-sm popup-btn customerBtn searchBtn" value="조회" id="teacherSearchDivBtn" style="float: right; margin: 1.5rem;">
 					</div>
 					<div class="row mt-1">
 						<div class="col">
@@ -202,19 +224,20 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
 	<script src="../lib/toast-grid/js/tui-pagination.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
 	<script src="../lib/imask.js"></script>
-    <script src="../lib/moment.min.js"></script>
+	<script src="../lib/moment.min.js"></script>
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../lib/jquery.inputmask.bundle.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO033.js"></script>
-  
+
 </body>
 </html>
