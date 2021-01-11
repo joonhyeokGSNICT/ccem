@@ -3,7 +3,7 @@
  * 설  명 : 호전환 JS
  * 생성자 : 이재민
  * 작성일 : 2020-12-18
- * 수정일 : 2020-12-18
+ * 수정일 : 2021-01-11
  */
 
 
@@ -271,7 +271,7 @@ const _getTelList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log(response);
+				// console.log(response);
 				_daekyoInterPhone_list = response.dsRecv;
 				_daekyoInterPhone_grid.resetData(response.dsRecv);
 			}, error: function (response) {
@@ -293,7 +293,7 @@ const _getTelList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log(response);
+				// console.log(response);
 				_branchInterPhone_list = response.dsRecv;
 				_branchInterPhone_grid.resetData(response.dsRecv);
 			}, error: function (response) {
@@ -321,7 +321,7 @@ const _getComboList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log(response);
+				// console.log(response);
 				var codeList = response.dsRecv;
 				if (codeName = 'USER_GRP_CDE'){
 					codeList.forEach(code => {

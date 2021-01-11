@@ -24,6 +24,10 @@
 	<!-- fancy tree -->
 	<!-- <link href="https://devccem.daekyo.co.kr/ccem/resources/lib/fancytree/skin-win8/ui.fancytree.css" rel="stylesheet"> -->
 	 
+	<!-- loading.css -->
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading-animate.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading.css">
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
@@ -42,8 +46,8 @@
 						<span class="textBold">&nbsp;읍면동/도로명</span>
 					</div>
 				</div>
-				<input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-				<button id="searchOrgAddr" class="btn btn-sm navBtn floatRight" type="button" onclick="searchOrgAddr()" style="margin-top:0px; margin-bottom:0px; padding:3px; height:30px; margin-left: 0px; margin-right: 0px;border-top-left-radius: 0px; border-bottom-left-radius: 0px;">조회</button>
+				<input type="text" id="searchAddr_input" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+				<button id="searchAddr_btn" class="btn btn-sm navBtn floatRight" type="button" onclick="_searchTable.addrList()" style="margin-top:0px; margin-bottom:0px; padding:3px; height:30px; margin-left: 0px; margin-right: 0px;border-top-left-radius: 0px; border-bottom-left-radius: 0px;">조회</button>
 			</div>
 			<div class="input-group input-group-sm" style="width:100%;margin-top:10px;">
 				<div class="input-group-prepend">
@@ -116,9 +120,9 @@
 					<tbody>
 						<tr>
 							<th>우편번호</th>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly></td>
+							<td><input type="text" class="form-control form-control-sm" id="addrZipCode_input" readonly></td>
 							<th>읍면동/지번</th>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly></td>
+							<td><input type="text" class="form-control form-control-sm" id="addrZipAddr_input" readonly></td>
 							<td style="padding:0;">
 								<button id="searchOrgAddr" class="btn btn-sm navBtn floatRight" type="button" onclick="searchOrgAddr()" style="margin-top:0px; margin-bottom:0px; padding:3px; height:30px; margin-left: 0px; margin-right: 0px;border-radius: 0px; width:100%;">검증</button>
 							</td>
@@ -198,7 +202,7 @@
 				</table>
 				<div id="chooseAddrGrid" style="float:left;margin-top: -9px; width:100%;"></div>
 			</div>
-			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; float:right" value="닫기" id="">
+			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; float:right" value="닫기"  onclick="window.close()">
 			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; float:right; margin-right: 5px;" value="선택" id="">
 		</div>
 	</div>
@@ -212,6 +216,7 @@
 	<script src="../lib/imask.js"></script>
 	<script src="../lib/moment.min.js"></script>
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 
 	<!-- <script src="https://devccem.daekyo.co.kr/ccem/resources/lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="https://devccem.daekyo.co.kr/ccem/resources/lib/fancytree/jquery.fancytree.ui-deps.js"></script>

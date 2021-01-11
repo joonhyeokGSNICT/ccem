@@ -1,3 +1,12 @@
+/**
+ * 파일명 : POP_CCEMPRO043.js
+ * 설  명 : 주소찾기 JS
+ * 생성자 : 이재민
+ * 작성일 : 2020-12-18
+ * 수정일 : 2021-01-11
+ */
+
+
 var _addrGrid;
 var _orgBcdGrid;
 var _orgCenterGrid;
@@ -10,18 +19,17 @@ function init(){
 		el: document.getElementById('addrGrid'),
 		bodyHeight: 180,
 		bodyWidth:'auto', 
-		columns: [
+		rowHeaders: [
 			{
-				header: 'No',
-				name: 'name1',
-				align: "center",
+				type: 'rowNum',
 				sortable: true,
 				ellipsis: true,
-				width: 40
-            },
+			}
+		],
+		columns: [
             {
 				header: '우편번호',
-				name: 'name2',
+				name: 'ZIPCDE',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -29,15 +37,15 @@ function init(){
 			},
 			{
 				header: '주소',
-				name: 'name3',
-				align: "center",
+				name: 'ZIP_ADDR',
+				align: "left",
 				minWidth: 170,
 				sortable: true,
 				ellipsis: true,
             },
 			{
 				header: 'DDD',
-				name: 'name4',
+				name: 'DDD',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -45,7 +53,7 @@ function init(){
 			},
 			{
 				header: '지역구분',
-				name: 'name5',
+				name: 'AREA_CDE',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -53,7 +61,7 @@ function init(){
             },
 			{
 				header: '지역명',
-				name: 'name6',
+				name: 'AREA_NAME',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -66,6 +74,10 @@ function init(){
 		_addrGrid.addSelection(ev);
 		_addrGrid.clickSort(ev);
 		_addrGrid.clickCheck(ev);
+
+		$('#addrZipCode_input').val(_addrGrid.getFormattedValue(ev.rowKey, "ZIPCDE"));
+		$('#addrZipAddr_input').val(_addrGrid.getFormattedValue(ev.rowKey, "ZIP_ADDR"));
+		_getAddrList.branchAddrList(_addrGrid.getFormattedValue(ev.rowKey, "ZIPCDE"));
     });
 
 	// 사업국목록 LIST
@@ -73,55 +85,38 @@ function init(){
 		el: document.getElementById('orgBcdGrid'),
 		bodyHeight: 120,
 		bodyWidth:'auto', 
+		rowHeaders: [
+			{
+				type: 'rowNum',
+				sortable: true,
+				ellipsis: true,
+			}
+		],
 		columns: [
-			{
-				header: 'No',
-				name: 'name1',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 40
-            },
             {
-				header: '우편번호',
-				name: 'name2',
-				align: "center",
+				header: '본부',
+				name: 'DIV_NAME',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
-				width: 80
+				width: 140
 			},
 			{
-				header: '주소',
-				name: 'name3',
-				align: "center",
+				header: '사업국',
+				name: 'DEPT_NAME',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
+				width: 140
             },
 			{
-				header: 'DDD',
-				name: 'name4',
-				align: "center",
+				header: '관할지역',
+				name: 'ZIP_CNTS',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
-				width: 40
-			},
-			{
-				header: '지역구분',
-				name: 'name5',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 80
-            },
-			{
-				header: '지역명',
-				name: 'name6',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 120
-            }
-			
+				width: 500
+			}
 		],
 	});
 	_orgBcdGrid.on('click', (ev) => {
@@ -137,52 +132,37 @@ function init(){
 		bodyWidth:'auto', 
 		columns: [
 			{
-				header: 'No',
-				name: 'name1',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 40
-            },
-            {
-				header: '우편번호',
+				header: '본부',
 				name: 'name2',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
-				width: 80
+				width: 140
 			},
 			{
-				header: '주소',
+				header: '사업국',
 				name: 'name3',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
+				width: 140
+			},
+			{
+				header: '센터',
+				name: 'name3',
+				align: "center",
+				sortable: true,
+				ellipsis: true,
+				width: 140
             },
 			{
-				header: 'DDD',
+				header: '관할지역',
 				name: 'name4',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 				width: 40
-			},
-			{
-				header: '지역구분',
-				name: 'name5',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 80
-            },
-			{
-				header: '지역명',
-				name: 'name6',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 120
-            }
+			}
 			
 		],
 	});
@@ -283,10 +263,109 @@ var _styleChanger = {
 		_orgCenterGrid.setHeight(heightSize-30);
 		
 		heightSize = $('#chooseAddrGrid').closest('body').height();
-		console.log(heightSize);
+		// console.log(heightSize);
 		_chooseAddrGrid.setHeight(heightSize-485);
 	}
 }
 
+
+/**
+ * 테이블 내역 조회
+ */
+const _searchTable = {
+	addrList(){
+		var searchText = $('#searchAddr_input').val();
+		_getAddrList.addrList(searchText);
+	},
+}
+
+
+/**
+ * API 조회
+ */
+const _getAddrList = {
+	addrList(prop){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{JUSO_TXT:prop}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/cns.getZIPNM.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				// console.log("addrList값",response.dsRecv);
+				var temp = response.dsRecv;
+				temp = temp.map(el => {
+					return {
+						ZIPCDE : 	el.ZIPCDE,
+						ZIP_ADDR : el.ZIP_ADDR,
+						DDD : el.DDD,
+						AREA_CDE : el.AREA_CDE,
+						AREA_NAME : el.AREA_NAME,
+					};
+				});
+				_addrGrid.resetData(temp);
+
+			}, error: function (response) {
+			}
+		});
+	},
+
+	branchAddrList(prop){
+		let today = new Date();   
+
+		let year = today.getFullYear(); // 년도
+		let month = today.getMonth() + 1;  // 월
+		let date = today.getDate();  // 날짜
+		 
+		if (month <10) {
+			month = '0'+month;
+		}
+
+		let todaydate = year+month+date;
+
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{ZIPCDE:prop, ACT_EDDATE:todaydate}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/cns.getBranchNM.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log("branchAddrList값",response.dsRecv);
+				var temp = response.dsRecv;
+				temp = temp.map(el => {
+					return {
+						DIV_NAME : 	el.DIV_NAME,
+						DEPT_NAME : el.DEPT_NAME,
+						ZIP_CNTS : el.ZIP_CNTS
+					};
+				});
+				_orgBcdGrid.resetData(temp);
+
+			}, error: function (response) {
+			}
+		});
+	},
+}
+
+/**
+ * 엔터키 이벤트
+ */
+$('#searchAddr_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchAddr_btn').trigger('click');
+    }
+});
 
 init();
