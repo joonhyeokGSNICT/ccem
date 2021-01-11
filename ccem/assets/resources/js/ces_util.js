@@ -382,7 +382,8 @@ const calendarUtil = {
         placeholder: "__:__:__", 
         insertMode: false, 
         showMaskOnHover: false,
-        hourFormat: "24"
+        hourFormat: "24",
+        autoUnmask: true,
     },
     /**
      * @param {string} id element id
