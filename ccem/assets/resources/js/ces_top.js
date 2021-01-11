@@ -512,30 +512,7 @@ function customerSearch(currentDiv){
 		        	if(response.recv1.length == "1"){
 		        		initAll(); 													// 기존 정보 초기화
 		        		custInfo = customerSearchList_grid.getRow(0);
-		        		var param = {
-		        			    senddataids: ["send1"],
-		        			    recvdataids: ["recv1"],
-		        			    send1: [{
-		        			    	"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
-		        			    }]
-		        			};
-		        		$.ajax({
-		        		    url: API_SERVER + '/cns.getCustInfo.do',
-		        		    type: 'POST',
-		        		    dataType: 'json',
-		        		    contentType: "application/json",
-		        		    data: JSON.stringify(param),
-		        		    success: function (response) {
-		        		        if(response.errcode == "0"){
-		        		        currentCustInfo = response.recv1[0];				// 고객정보 상주
-		        		        loadCustInfoMain();									// 고객정보 로드 함수
-		        		        }else {
-		        		        	loading.out();
-		        		        	client.invoke("notify", response.errmsg, "error", 60000);
-		        		        }
-		        		    }, error: function (response) {
-		        		    }
-		        		});
+		        		onAutoSearch(custInfo.CUST_ID)
 		        	}
 		        	
 		        }else {
@@ -573,6 +550,44 @@ function customerSearch(currentDiv){
 		});
 		break;
 	}
+}
+
+/**\
+ * 고객정보 조회
+ * @param sCustId
+ * @returns
+ * 21-01-11 최준혁
+ */
+function onAutoSearch(sCustId){
+
+	var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{
+		    	"CUST_ID"		:sCustId,				// 회원번호
+		    }]
+		};
+	$.ajax({
+	    url: API_SERVER + '/cns.getCustInfo.do',
+	    type: 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data: JSON.stringify(param),
+	    success: function (response) {
+	        if(response.errcode == "0"){
+	        currentCustInfo = response.recv1[0];				// 고객정보 상주
+	        loadCustInfoMain();									// 고객정보 로드 함수
+	        }else {
+	        	loading.out();
+	        	client.invoke("notify", response.errmsg, "error", 60000);
+	        }
+	    }, error: function (response) {
+	    }
+	});
+    /*onNew();
+    gf_setBlock(true);
+    DS_CUST.DataId = "/cns/cns5400/cns5400V.jsp?sCustId="+sCustId;
+    DS_CUST.reset();*/
 }
 
 function openPop(popName,w,h){
@@ -970,7 +985,7 @@ function onFamilyBtnClick(){
 	
 	 //변경된 정보가 존재하는지 체크
     if(isCustDataChanged()) {
-    	client.invoke('notify',"고객정보를 변경하셨습니다. \n\n먼저 저장을 하시고 관계회원 등록을 하시기 바랍니다.", 'alert', 5000);
+    	client.invoke('notify',"고객정보를 변경하셨습니다. <br>먼저 저장을 하시고 관계회원 등록을<br> 하시기 바랍니다.", 'alert', 5000);
         return;
     }
     
@@ -1321,11 +1336,13 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	                var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.\n\n위 고객으로 조회하시겠습니까?";
         	                
         	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
-        	                	function d(){
-        	                		
-        	                	}
+        	                	//관계회원이면, 학부모정보를 저장해 둔다.
+        	                    if(sJobKind == "RELINSERT"){
+        	                        sFAT_NAME  = $("#custInfo_FAT_NAME").val();
+        	                        sFAT_RSDNO = $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+        	                        sFAT_REL   = $("#custInfo_FAT_REL").val();
+        	                    }
         	                })
-        	                
         	                
         	                if(confirm(sConfMsg)){
         	                    //관계회원이면, 학부모정보를 저장해 둔다.
@@ -1334,7 +1351,7 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	                        sFAT_RSDNO = MSK_FAT_RSDNO.text;
         	                        sFAT_REL   = CMB_FAT_REL.bindColVal;
         	                    }
-        	                    onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
+        	                    onAutoSearch(existCustInfo.CUST_ID);
         	                }else{
         	                    alert("성명, 전화번호 중 한 가지가 달라야 새로운 고객으로 등록됩니다.");
         	                }
