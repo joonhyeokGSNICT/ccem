@@ -599,14 +599,17 @@ const ModalUtil = {
      * @param {string} title 
      * @param {string} content 
      * @param {function} applyFunction 예를 누르면 실행할 함수
-     * @param {...any} applyArgs 예를 누르면 실행할 함수의 매개변수
+     * @param {function} applyFunction 아니오를 누르면 실행할 함수
      */
-    confirmPop(title, content, applyFunction, ...applyArgs) {
+    confirmPop(title, content, applyFunction, cancelFunction) {
         $('#confirmPopup .modal-title').html(title);
         $('#confirmPopup .modal-body').html(content);
         $('#confirmPopup button#confirmBtn')
             .off('click')
-            .on("click", () => applyFunction.apply(null, applyArgs));
+            .on("click", () => applyFunction());
+        $('#confirmPopup button#cancelBtn')
+            .off('click')
+            .on("click", () => cancelFunction());
         $('#confirmPopup').modal({
             show: true,
             focus: true
