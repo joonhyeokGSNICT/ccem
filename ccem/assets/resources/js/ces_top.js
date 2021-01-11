@@ -17,6 +17,11 @@ var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo;							// 현재 선택된 고객의 정보
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
+var existCustInfo;								// 기존 존재하는 고객의 정보
+
+var sFAT_NAME;									// 현재고객 부모 명
+var sFAT_RSDNO;									// 현재고객 부모 관계번호
+var sFAT_REL;									// 현재고객 부모 관계
 
 var deptData;									// 현재 고객의 사업국 리스트
 var lcData;										// 현재 고객의 센터 리스트
@@ -1251,9 +1256,9 @@ function chkHPDDDNumber(ddd){
  */
 function onAutoSearchByTELPNO(sFlag,sName){
     if((custInfoStatus == 1 && sFlag == "ONTELPNO") ||			// 신규 상태고 전화번호 입력시
-       (custInfoStatus == 3 && sFlag == "ONNAME"  ) ||			// 관계회원등록 상태이고 순서대로 이름입력, 저장, 비회원일시
-                               sFlag == "ONSAVE"    ||
-                               sFlag == "ONRELCMB"  ){
+       (custInfoStatus == 3 && sFlag == "ONNAME"  ) ||			// 관계회원등록 상태이고 순서대로 이름입력일시
+                               sFlag == "ONSAVE"    ||			// 저장일 시
+                               sFlag == "ONRELCMB"  ){			// 관계회원등록일 시
 
         if( $.trim($("#custInfo_NAME").val()).length > 0 &&
     		$.trim($("#custInfo_TELPNO1").val()).length > 0 &&
@@ -1287,7 +1292,65 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	    success: function (response) {
         	        if(response.errcode == "0"){
         	        	console.log("DUPLE DATA ===> :" , response);
-        	        	
+        	        	existCustInfo = response.recv1;
+        	        	//(저장시:"ONSAVE", 전화번호입력시:"ONTELPNO", 관계회원등록때 이름입력시:"ONNAME")
+        	            //저장시:"ONSAVE"
+        	            if(sFlag == "ONSAVE"){
+        	                onSave();
+        	            }//전화번호입력시:"ONTELPNO",관계회원등록때 이름입력시:"ONNAME"
+        	        }else if(sFlag == "ONTELPNO" || sFlag == "ONNAME"){
+        	            if (existCustInfo.CUST_ID == "MOREDATAFOUND"){
+        	                var sConfMsg = "해당 성명,전화번호와 동일한 고객이 이미 존재합니다.<br>고객찾기로 조회하시겠습니까?";
+        	                var tempName = $("#custInfo_NAME").val();
+        	                var tempTelNum = $("#custInfo_MOBILNO3").val();
+        	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
+        	                	function d(tempName, tempTelNum){
+        	                		$("#customerSearch").click();
+        	                		$("#customerName").val(tempName);
+        	                		$("#customerNameCheck").prop('checked',true);
+        	                		$("#customerPhone").val(tempTelNum);
+        	                		$("#customerPhoneCheck").prop('checked',true);
+        	                	}
+        	                	d(tempName,tempTelNum);
+        	                	
+        	                }, function() {
+        	                	ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
+        	                });
+        	                
+        	            }else if(existCustInfo.CUST_ID != "NODATAFOUND"){
+        	                var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.\n\n위 고객으로 조회하시겠습니까?";
+        	                
+        	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
+        	                	function d(){
+        	                		
+        	                	}
+        	                })
+        	                
+        	                
+        	                if(confirm(sConfMsg)){
+        	                    //관계회원이면, 학부모정보를 저장해 둔다.
+        	                    if(sJobKind == "RELINSERT"){
+        	                        sFAT_NAME  = txtFAT_NAME.value;
+        	                        sFAT_RSDNO = MSK_FAT_RSDNO.text;
+        	                        sFAT_REL   = CMB_FAT_REL.bindColVal;
+        	                    }
+        	                    onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
+        	                }else{
+        	                    alert("성명, 전화번호 중 한 가지가 달라야 새로운 고객으로 등록됩니다.");
+        	                }
+        	            }
+
+
+        	        //관계회원콤보선택시 비회원일때:"ONRELCMB"
+        	        }else if(sFlagEXISTRECORD == "ONRELCMB"){
+        	            if(DS_EXISTRECORD.nameValue(1,"CUST_ID") == "MOREDATAFOUND") {
+        	                //고객번호가 여러개일때, 고객찾기로 넘기자.
+        	                parent.frames("frmCNS5600").onSearchByNameTelNo(sNameOfCNS5600,sTel2OfCNS5600);
+        	            }else if(DS_EXISTRECORD.nameValue(1,"CUST_ID") == "NODATAFOUND"){
+        	                alert("학부모이거나 고객번호가 없어 조회 할수 없는 관계회원입니다.");
+        	            }else if(cnt==1){
+        	                onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
+        	            }
         	        }
         	    }
         	});
@@ -1311,3 +1374,89 @@ function onAutoSearchByTELPNO(sFlag,sName){
     }
 }
 
+//============================================================================
+// 저장 하는 함수
+// 유효성 체크가 끝나면 호출된다.(onSaveBtnClicked() --> onValueCheck() --> onSave())
+//============================================================================
+function onSave(){
+
+
+    //sJobKind가 "UPDATE"가 아닌데, 고객이 이미 존재할 경우,
+   if(sJobKind != "UPDATE" && DS_EXISTRECORD.nameValue(1,"CUST_ID") != "NODATAFOUND"){
+
+        var sConfMsg = "고객번호 ["+ DS_EXISTRECORD.nameValue(1,"CUST_ID") +"]인 고객이 이미 존재합니다.\n\n위 고객으로 조회하시겠습니까?";
+        if(confirm(sConfMsg)){
+            //관계회원이면, 학부모정보를 저장해 둔다.
+            if(sJobKind == "RELINSERT"){
+                sFAT_NAME  = txtFAT_NAME.value;
+                sFAT_RSDNO = MSK_FAT_RSDNO.text;
+                sFAT_REL   = CMB_FAT_REL.bindColVal;
+            }
+            onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
+            return;
+        }
+        alert("성명, 전화번호 중 한 가지가 달라야 새로운 고객으로 등록됩니다.");
+        return;
+
+    //sJobKind가 "RELINSERT"가 아니고, 이전 학부모 주민번호가 다를때, 학부모가 존재할 경우,
+    }
+    if(sJobKind != "RELINSERT" &&
+             DS_EXISTRECORD.nameValue(1,"FAT_RSDNO")  != "NODATAFOUND" &&
+//             DS_CUST.nameValue(1,"FAT_RSDNO") != DS_CUST.OrgNameValue(1,"FAT_RSDNO")){
+             DS_CUST.nameValue(1,"FAT_RSDNO") != sOrgFAT_RSDNO){
+
+        //학부모가 존재하는데 관계회원 등록안하면, [C+전화번호]일 경우에는 사용자에게 물어보고 등록한다.
+        if(DS_EXISTRECORD.nameValue(1,"FAT_RSDNO").substring(0,1).toUpperCase() == "C"){
+            if(confirm("학부모번호가 이미 존재 하여 관계회원으로 등록됩니다.\n\n관계회원으로 저장 하시겠습니까?")){
+                sJobKind = "RELINSERT";
+            }else{
+                if(confirm("관계회원으로 저장하지 않으면, 학부모정보를 저장 할 수 없습니다.\n\n계속하시겠습니까?")){
+                    sJobKind = "RELINSERTNOT";
+                    //학부모정보를 모두 지운다.
+                    MSK_FAT_RSDNO.text = "";    //세대주관계번호
+                    txtFAT_NAME.value = "";     //세대주명
+                    CMB_FAT_REL.bindColVal = "";//관계
+                }else{
+                    return;
+                }
+            }
+
+        //학부모가 존재하는데 관계회원 등록안하면, 실주민번호일 경우에는 자동 등록한다.
+        }else{
+            sJobKind = "RELINSERT";
+        }
+    }
+
+//alert("sJobKind="+sJobKind+"\nDS_EXISTRECORD.nameValue(1,'CUST_ID')="+DS_EXISTRECORD.nameValue(1,"CUST_ID")+"\nDS_EXISTRECORD.nameValue(1,'FAT_RSDNO')="+DS_EXISTRECORD.nameValue(1,"FAT_RSDNO")+"\nsOrgFAT_RSDNO="+sOrgFAT_RSDNO);
+
+//    alert("sJobKind="+sJobKind+"\nDS_CUST.RowStatus="+DS_CUST.RowStatus(1)+"\nDS_ADDR.RowStatus="+DS_ADDR.RowStatus(1));
+    //저장 데이터 설정 : IsUpdated 영향을 끼치는 항목 설정
+    //E-mail수신여부 = 0:허용 1:수신거부
+   /* DS_CUST.nameValue(1,"MAIL_RCV_FLAG") = DS_CUST.nameValue(1,"MAIL_RCV_FLAG") == "0" ? "Y" : "N";
+    DS_CUST.nameValue(1,"CHG_USER_ID") = "nw008"; //수정자ID
+
+    DS_ADDR.nameValue(1,"PERSON_MK")   = "FM";
+    DS_ADDR.nameValue(1,"CUST_CGNT_NO")= DS_CUST.nameValue(1,"FAT_RSDNO");
+    DS_ADDR.nameValue(1,"ADDR_MK")     = "2";
+    DS_ADDR.nameValue(1,"REG_USER_ID") = "nw008"; //등록자ID
+*/
+    // 고객정보 변경전,변경후 데이타 만들기
+    setCustChangeData();
+	
+	// 세대주 주민번호 없이 주소만 변경하는 경우에 return		
+	if(DS_CUST_CHG.nameValue(1,"ADDR_CHG_FLAG2"     ) == "Y" && gf_trimstr(DS_CUST.NameValue(1,"FAT_RSDNO")).length == 0){
+		alert("세대주 주민번호를 입력후 저장하세요.");
+		return;
+	}
+	
+    //DS_ADDR.UseChangeInfo = false;
+
+	//alert("sJobKind="+sJobKind+"\nDS_CUST.RowStatus="+DS_CUST.RowStatus(1)+"\nDS_ADDR.RowStatus="+DS_ADDR.RowStatus(1));
+  /*  gf_setBlock(true);
+    DS_SAP_USE_FLAG.UserStatus(2) = 1;
+    TR_CUST.Action   = "/cns/cns5400/cns5400T.jsp";
+    TR_CUST.KeyValue = "JSP(I:CUST=DS_CUST,I:ADDR=DS_ADDR,I:CUST_CHG=DS_CUST_CHG,I:SAP=DS_SAP_USE_FLAG,O:CUST_ID=DS_CUST_ID)";
+    TR_CUST.parameters = "sJobKind="+sJobKind;
+    setTimeout("TR_CUST.post()",250);*/
+
+}
