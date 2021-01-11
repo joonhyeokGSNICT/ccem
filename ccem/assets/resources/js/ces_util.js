@@ -550,6 +550,17 @@ const calendarUtil = {
      */
     setImaskValue(id, value) {
         calendarUtil.imasks[id].value = value;
+    },
+    /**
+     * @param {string} id 
+     * @param {boolean} mask 
+     */
+    getImaskValue(id, mask) {
+        if(!mask) {
+            return calendarUtil.imasks[id].unmaskedValue;
+        }else {
+            return calendarUtil.imasks[id].value;
+        }
     }
 }
 
