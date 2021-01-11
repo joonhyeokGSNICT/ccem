@@ -2,7 +2,7 @@
 	화면ID : CCEM-PRO-041
 		[팝업] 호전환
 	AS-IS : CES
-	// PopupUtil.open('CCEMPRO041', 430, 600);
+	// PopupUtil.open('CCEMPRO041', 500, 700);
  -->
  <!DOCTYPE html>
 <html>
@@ -38,9 +38,9 @@
 			<table class="col-12" style="border-top: 2px solid #cacaca;border-bottom: 2px solid #cacaca;">
 				<tr>
 					<td class="top_Table_Title"><span>대상명</span></td>
-					<td style="width:30%"><input class="col-12 top_Table_Input"></td>
+					<td style="width:30%"><input id="top_input_name" class="col-12 top_Table_Input" readonly></td>
 					<td class="top_Table_Title"><span>전화번호</span></td>
-					<td style="width:35%"><input class="col-12 top_Table_Input"></td>
+					<td style="width:35%"><input id="top_input_tel" class="col-12 top_Table_Input" readonly></td>
 				</tr>
 			</table>
 		</div>
@@ -53,6 +53,8 @@
 				<li class="nav-item"><a class="nav-link tab_width" id="branchInterPhone" data-toggle="tab" onclick="_styleChanger.resizeWidth()" href="#branchInterPhoneTab">지점</a></li>
 			</ul>
 			<div class="tab-content">
+
+				<!-- 센터내선 -->
 				<div role="tabpanel" class="tab-pane active show" id="centerInterPhoneTab">
 					<div class="col-12 tab_Content">
 						<table id="centerInterPhoneTable">
@@ -66,11 +68,11 @@
 										</select>
 									</div>
 								</td>
-								<td style="width:45%;">
-									<input class="col-12" style="padding: 0 5px">
-								</td>
-								<td style="width:12%;">
-									<input type="button" class="btn btn-sm popup-btn table_button" value="조회" id="">
+								<td style="width:57%;">
+									<div class="input-group input-group-sm" style="width:100%; padding-right: 5px;">
+										<input id="searchCenterInterPhone_input" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" style="padding: 0px 5px; height: 21px; margin-top: 0px;">
+										<button id="searchCenterInterPhone_btn" class="btn btn-sm table_button floatRight" type="button" onclick="_searchTable.centerTelList()" style="margin-top:0px; margin-bottom:0px; margin-left: 0px; margin-right: 0px;border-top-left-radius: 0px; border-bottom-left-radius: 0px;">조회</button>
+									</div>
 								</td>
 							</th>
 							<tr>
@@ -82,6 +84,7 @@
 					</div>
 				</div>
 				
+				<!-- 대교내선 -->
 				<div role="tabpanel" class="tab-pane show" id="daekyoInterPhoneTab">
 					<div class="col-12 tab_Content">
 						<table id="daekyoInterPhoneTable">
@@ -91,18 +94,18 @@
 									<div class="col-12 my-1" style="padding:0px 5px">
 										<label class="mr-sm-2 sr-only" for="daekyoSelectBox">Preference</label>
 										<select class="mr-sm-2 col-12" id="daekyoSelectBox" style="border: 1px solid #ced4da; border-radius: .25rem;">
-											<option selected>전체</option>
-											<option value="1">그룹명</option>
-											<option value="2">상담원명</option>
-											<option value="3">전화번호</option>
+											<option value="EMP_NM">성명</option>
+											<option value="DEPT_NM">팀명</option>
+											<option value="JIC_NM">직책</option>
+											<option value="CO_NM">회사명</option>
 										</select>
 									</div>
 								</td>
-								<td style="width:45%;">
-									<input class="col-12" style="padding: 0 5px">
-								</td>
-								<td style="width:12%;">
-									<input type="button" class="btn btn-sm popup-btn table_button" value="조회" id="">
+								<td>
+									<div class="input-group input-group-sm" style="width:100%; padding-right: 5px;">
+										<input id="searchDaekyoInterPhone_input" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" style="padding: 0px 5px; height: 21px; margin-top: 0px;">
+										<button id="searchDaekyoInterPhone_btn" class="btn btn-sm table_button floatRight" type="button" onclick="_searchTable.daekyoTelList()" style="margin-top:0px; margin-bottom:0px; margin-left: 0px; margin-right: 0px;border-top-left-radius: 0px; border-bottom-left-radius: 0px;">조회</button>
+									</div>
 								</td>
 							</th>
 							<tr>
@@ -114,16 +117,17 @@
 					</div>
 				</div>
 				
+				<!-- 지점 -->
 				<div role="tabpanel" class="tab-pane show" id="branchInterPhoneTab">
 					<div class="col-12 tab_Content">
-						<table id="branchInterPhoneTable">
+						<table id="branchInterPhoneTable" style="margin-top:5px;">
 							<th>
-								<td class="table_Title" style="width:18%;"><span>지점명</span></td>
-								<td style="width:70%;">
-									<input class="col-12" style="margin: 2px 0; padding: 0 5px">
-								</td>
-								<td style="width:12%;">
-									<input type="button" class="btn btn-sm popup-btn table_button" value="조회" id="">
+								<td class="table_Title" style="width:18%; padding-bottom: 4px;"><span>지점명</span></td>
+								<td style="width:82%; padding-bottom: 4px;">
+									<div class="input-group input-group-sm" style="width:100%; padding-right: 5px;">
+										<input id="searchBranchInterPhone_input" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" style="padding: 0px 5px; height: 21px; margin-top: 0px;">
+										<button id="searchBranchInterPhone_btn" class="btn btn-sm table_button floatRight" type="button" onclick="_searchTable.branchTelList()" style="margin-top:0px; margin-bottom:0px; margin-left: 0px; margin-right: 0px;border-top-left-radius: 0px; border-bottom-left-radius: 0px;">조회</button>
+									</div>
 								</td>
 							</th>
 							<tr>

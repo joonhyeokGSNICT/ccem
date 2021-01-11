@@ -12,6 +12,10 @@ body {
     padding:0px;
     background-color: #eeeeee;
 }
+.tab_Content > table {
+    margin-top:2px;
+}
+
 
 /* Table */
 .top_Table_Title {
@@ -21,7 +25,10 @@ body {
     text-align:center;
 }
 .top_Table_Input {
-    padding: 0 5px;
+    padding: 0px 5px;
+    height: 21px;
+    margin-top: 0px;
+    border:none;
 }
 .table_Title {
     font-weight:bold; 
@@ -33,4 +40,10 @@ body {
     font-weight: bold;
     padding: 0px 9px 1px; 
     margin-right:5px;
+    height: 21px;
+}
+.table_button:hover {
+	background-color: #3f7ee6;
+	color:white;
+	font-weight:bold;
 }

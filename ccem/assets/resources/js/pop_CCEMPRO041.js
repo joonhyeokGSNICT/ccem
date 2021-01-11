@@ -11,6 +11,9 @@
 var _centerInterPhone_grid;		// 센터내선 Grid
 var _daekyoInterPhone_grid;		// 대교내선 Grid
 var _branchInterPhone_grid;		// 지점 Grid
+var _centerInterPhone_list;		// 센터내선 list
+var _daekyoInterPhone_list;		// 대교내선 list
+var _branchInterPhone_list;		// 지점 list
 
 
 // #01 init_화면 초기화
@@ -25,9 +28,8 @@ function init(){
 			scrollX: false,
 			rowHeaders: [
 				{
-					type: 'rowNum',
-					header: "NO",
-				},
+					type: 'rowNum'
+				}
 			],
 			columns: [
 				{
@@ -59,12 +61,17 @@ function init(){
 			_centerInterPhone_grid.clickCheck(ev);
 		});
 
+		_centerInterPhone_grid.on("dblclick", ev => {
+			$('#top_input_name').val(_centerInterPhone_grid.getFormattedValue(ev.rowKey, "USER_NAME"));
+			$('#top_input_tel').val(_centerInterPhone_grid.getFormattedValue(ev.rowKey, "USER_IN_TEL"));
+		});
+
 		// #01_001_02 대교내선
 		_daekyoInterPhone_grid = new Grid({
 			el: document.getElementById('daekyoInterPhone_grid'),
 			bodyHeight: 300,
 			bodyWidht: "100%",
-			scrollX: false,
+			scrollX: true,
 			rowHeaders: [
 				{
 					type: 'rowNum',
@@ -76,6 +83,7 @@ function init(){
 					header: '회사명',
 					name: 'CO_NM',
 					align: "center",
+					width: "120",
 					sortable: true,
 					ellipsis: true,
 				},
@@ -83,6 +91,7 @@ function init(){
 					header: '팀명',
 					name: 'DEPT_NM',
 					align: "center",
+					width: "120",
 					sortable: true,
 					ellipsis: true,
 				},
@@ -90,13 +99,15 @@ function init(){
 					header: '직책',
 					name: 'JIC_NM',
 					align: "center",
+					width: "80",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
-					header: '사원',
+					header: '성명',
 					name: 'EMP_NM',
 					align: "center",
+					width: "80",
 					sortable: true,
 					ellipsis: true,
 				},
@@ -104,6 +115,7 @@ function init(){
 					header: '전화번호',
 					name: 'TELPNO',
 					align: "center",
+					width: "120",
 					sortable: true,
 					ellipsis: true,
 				}
@@ -114,6 +126,10 @@ function init(){
 			_daekyoInterPhone_grid.clickSort(ev);
 			_daekyoInterPhone_grid.clickCheck(ev);
 		});
+		_daekyoInterPhone_grid.on("dblclick", ev => {
+			$('#top_input_name').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "EMP_NM"));
+			$('#top_input_tel').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "TELPNO"));
+		});
 		
 		// #01_001_03 지점
 		_branchInterPhone_grid = new Grid({
@@ -121,32 +137,30 @@ function init(){
 			bodyHeight: 300,
 			bodyWidht: "100%",
 			scrollX: false,
+			rowHeaders: [
+				{
+					type: 'rowNum',
+					header: "NO",
+				},
+			],
 			columns: [
 				{
-					header: 'No',
-					name: 'name1',
-					align: "center",
-					sortable: true,
-					ellipsis: true,
-					width: 60
-				},
-				{
 					header: '본부',
-					name: 'name2',
+					name: 'DIV_NAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '지점',
-					name: 'name3',
+					name: 'DEPT_NAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '전화번호',
-					name: 'name4',
+					name: 'TELNO',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -158,6 +172,10 @@ function init(){
 			_branchInterPhone_grid.clickSort(ev);
 			_branchInterPhone_grid.clickCheck(ev);
 		});
+		_branchInterPhone_grid.on("dblclick", ev => {
+			$('#top_input_name').val(_branchInterPhone_grid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
+			$('#top_input_tel').val(_branchInterPhone_grid.getFormattedValue(ev.rowKey, "TELNO"));
+		});
 
 	// #01_002 그리드 사이즈 초기화
 	_styleChanger.resizeWidth();
@@ -167,7 +185,7 @@ function init(){
 	_getTelList.inDeptTelList();
 	_getTelList.deptTelList();
 
-	_getComboList.codeBook('USER_GRP_CDE');
+	// _getComboList.codeBook('USER_GRP_CDE');
 };
 
 // #02 document ready function모음
@@ -196,13 +214,13 @@ var _styleChanger = {
 	},
 	// #03_02 그리드 세로 수정
 	resizeHeight(){
-		var heightSize = window.innerHeight - 160;
+		var heightSize = window.innerHeight - 168;
 		if (window.innerHeight <= 300) {
 			heightSize = 140;
 		}
-		_centerInterPhone_grid.setHeight(heightSize);
+		_centerInterPhone_grid.setHeight(heightSize+1);
 		_daekyoInterPhone_grid.setHeight(heightSize);
-		_branchInterPhone_grid.setHeight(heightSize);
+		_branchInterPhone_grid.setHeight(heightSize+1);
 	}
 }
 
@@ -224,8 +242,16 @@ const _getTelList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log(response);
+				// console.log("_centerInterPhone_grid와 list값",response.dsRecv);
+				_centerInterPhone_list = response.dsRecv;
 				_centerInterPhone_grid.resetData(response.dsRecv);
+
+				// 상담원그룹 selectBox 삽입
+				var temp = removeDuplicates(_centerInterPhone_list,"GRP_NAME");
+				temp.forEach(temp => {
+					$('#centerSelectBox').append(new Option(temp.GRP_NAME, temp.USER_GRP_CDE));
+				});
+
 			}, error: function (response) {
 			}
 		});
@@ -246,6 +272,7 @@ const _getTelList = {
 			data: JSON.stringify(param),
 			success: function (response) {
 				console.log(response);
+				_daekyoInterPhone_list = response.dsRecv;
 				_daekyoInterPhone_grid.resetData(response.dsRecv);
 			}, error: function (response) {
 			}
@@ -267,6 +294,8 @@ const _getTelList = {
 			data: JSON.stringify(param),
 			success: function (response) {
 				console.log(response);
+				_branchInterPhone_list = response.dsRecv;
+				_branchInterPhone_grid.resetData(response.dsRecv);
 			}, error: function (response) {
 			}
 		});
@@ -307,26 +336,115 @@ const _getComboList = {
 	}
 }
 
-// const getCodeList = () => {
-// 	let settings = {
-// 		url: `${API_SERVER}/sys.getCenterTelList.do`,
-// 		method: 'POST',
-// 		contentType: "application/json; charset=UTF-8",
-// 		dataType: "json",
-// 		data: JSON.stringify({
-// 			senddataids: ["dsSend"],
-// 			recvdataids: ["dsRecv"],
-// 			dsSend: [{}],
-// 		}),
-// 	}
-// 	$.ajax(settings).done(data => {
-// 		if (checkApi(data, settings)) {
-// 			let codeList = data.dsRecv;
-// 			console.log(codeList);
-// 			console.log("1");
-// 		}
-// 	});
-// }
 
+/**
+ * 테이블 내역 조회
+ */
+const _searchTable = {
+	centerTelList(){
+		var searchGroup = $('#centerSelectBox').val();
+		var temp = _centerInterPhone_list;
+		if(searchGroup!='전체' ){
+			temp = temp.filter(data=> data.USER_GRP_CDE == searchGroup);
+		}
+		var searchText = $('#searchCenterInterPhone_input').val();
+		temp = temp.filter(data => new RegExp(searchText,"i").test(data.USER_NAME));
+		temp = temp.map(el => {
+			return {
+				GRP_NAME : 	el.GRP_NAME,
+				USER_NAME : el.USER_NAME,
+				USER_IN_TEL : el.USER_IN_TEL
+			};
+		});
+		_centerInterPhone_grid.resetData(temp);
+	},
+	daekyoTelList(){
+		var searchGroup = $('#daekyoSelectBox').val();
+		var temp = _daekyoInterPhone_list;
+		var searchText = $('#searchDaekyoInterPhone_input').val();
+		temp = temp.filter(data => new RegExp(searchText,"i").test(data[searchGroup]));
+		temp = temp.map(el => {
+			return {
+				CO_NM: el.CO_NM,
+				DEPT_NM: el.DEPT_NM,
+				EMP_NM: el.EMP_NM,
+				JIC_NM: el.JIC_NM,
+				TELPNO: el.TELPNO
+			};
+		});
+		_daekyoInterPhone_grid.resetData(temp);
+	},
+	branchTelList(){
+		var temp = _branchInterPhone_list;
+		var searchText = $('#searchBranchInterPhone_input').val();
+		temp = temp.filter(data => new RegExp(searchText,"i").test(data.DEPT_NAME));
+		temp = temp.map(el => {
+			return {
+				DIV_NAME: el.DIV_NAME,
+				DEPT_NAME: el.DEPT_NAME,
+				TELNO: el.TELNO
+			};
+		});
+		_branchInterPhone_grid.resetData(temp);
+	}
+}
+/**
+ * 엔터키 이벤트
+ */
+$('#searchCenterInterPhone_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchCenterInterPhone_btn').trigger('click');
+    }
+});
+
+$('#searchDaekyoInterPhone_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchDaekyoInterPhone_btn').trigger('click');
+    }
+});
+
+$('#searchBranchInterPhone_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchBranchInterPhone_btn').trigger('click');
+    }
+});
+
+
+/**
+ * 중복값을 제거
+ * @param {중복값을 제거할 배열} originalArray 
+ * @param {기준 값} prop 
+ */
+function removeDuplicates(originalArray, prop) {
+	// console.log("(common)removeDuplicates 진입 >>> ", prop);
+    var newArray = [];
+	var lookupObject  = {};
+	if (isEmpty(prop)) {
+		for(var i in originalArray) {
+			lookupObject[originalArray[i]] = originalArray[i];
+		 }
+		 for(i in lookupObject) {
+			 newArray.push(lookupObject[i]);
+		 }
+	} else {
+		for(var i in originalArray) {
+		   lookupObject[originalArray[i][prop]] = originalArray[i];
+		}
+		for(i in lookupObject) {
+			newArray.push(lookupObject[i]);
+		}
+	}
+	return newArray;
+}
+
+/**
+ * 빈값 확인
+ * @param {빈값확인하는 데이터} data 
+ */
+function isEmpty(data) {
+	if (!data || data == "" || data == undefined || Object.keys(data).length === 0 ) return true;
+	else return false;
+}
 
 init();
+
