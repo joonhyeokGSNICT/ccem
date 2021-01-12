@@ -699,10 +699,13 @@ function exitAlert(id,w,h){
 	}
 };
 
-// Global Ajax Event Handlers
-$(this).ajaxStart(function () {
-	loading = new Loading({
-		title: 					'데이터를 불러오는 중입니다.',
+/**
+ * 로딩 설정값 반환
+ * @param {string} title 
+ */
+function getLoadingSet(title) {
+    return {
+		title: 					title || '데이터를 불러오는 중입니다.',
 		titleColor: 			'gray',
 		discription: 			'Loading...',
 		discriptionColor: 		'rgb(77, 150, 223)',
@@ -713,7 +716,12 @@ $(this).ajaxStart(function () {
 		animationOut: false,
 		animationDuration: 20,
     	defaultApply: 	true,
-	});
+	}
+}
+
+// Global Ajax Event Handlers
+$(this).ajaxStart(function () {
+	loading = new Loading(getLoadingSet());
 });
 
  $(this).ajaxStop(function () {
