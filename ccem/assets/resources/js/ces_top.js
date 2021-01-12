@@ -18,6 +18,8 @@ var currentCustInfo;							// 현재 선택된 고객의 정보
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
 var existCustInfo;								// 기존 존재하는 고객의 정보
+var existCustName;								// 기존 존재하는 고객의 이름
+var existCustTelNo;								// 기존 존재하는 고객의 전화번호
 
 var sFAT_NAME;									// 현재고객 부모 명
 var sFAT_RSDNO;									// 현재고객 부모 관계번호
@@ -1283,6 +1285,9 @@ function onAutoSearchByTELPNO(sFlag,sName){
         		custName_dp = $.trim($("#custInfo_NAME").val());
         	}
         	
+        	existCustName = custName_dp;								// 기존 존재하는 고객의 이름
+        	existCustTelNo = $("#custInfo_TELPNO2").val();
+        	
         	var param = {
         		    senddataids: ["send1"],
         		    recvdataids: ["recv1"],
@@ -1348,7 +1353,11 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	        }else if(sFlag == "ONRELCMB"){
         	            if(existCustInfo.CUST_ID == "MOREDATAFOUND") {
         	                //고객번호가 여러개일때, 고객찾기로 넘기자.
-        	                parent.frames("frmCNS5600").onSearchByNameTelNo(sNameOfCNS5600,sTel2OfCNS5600);
+        	            	$("#customerSearch").click();
+	                		$("#customerName").val(existCustName);
+	                		$("#customerNameCheck").prop('checked',true);
+	                		$("#customerPhone").val(existCustTelNo);
+	                		$("#customerPhoneCheck").prop('checked',true);
         	            }else if(DS_EXISTRECORD.nameValue(1,"CUST_ID") == "NODATAFOUND"){
         	                alert("학부모이거나 고객번호가 없어 조회 할수 없는 관계회원입니다.");
         	            }else if(cnt==1){
