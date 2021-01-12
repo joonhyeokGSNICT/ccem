@@ -213,35 +213,13 @@ $(function(){
     });
 	
 	customerSearchList_grid.on('dblclick', (ev) => {
-		initAll(); 													// 기존 정보 초기화
-		custInfo = customerSearchList_grid.getRow(ev.rowKey);
-		var param = {
-			    senddataids: ["send1"],
-			    recvdataids: ["recv1"],
-			    send1: [{
-			    	"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
-			    }]
-			};
-		
-		$.ajax({
-		    url: API_SERVER + '/cns.getCustInfo.do',
-		    type: 'POST',
-		    dataType: 'json',
-		    contentType: "application/json",
-		    data: JSON.stringify(param),
-		    success: function (response) {
-		        if(response.errcode == "0"){
-		        currentCustInfo = response.recv1[0];				// 고객정보 상주
-		        loadCustInfoMain();									// 고객정보 로드 함수
-		        	$("#customerInfo").click();	// 탭 이동
-		        	$("#customerTab").click();	// 탭 이동
-		        }else {
-		        	loading.out();
-		        	client.invoke("notify", response.errmsg, "error", 60000);
-		        }
-		    }, error: function (response) {
-		    }
-		});
+        const openerName = opener ? opener.name : "";
+        // 상담등록 > 고객조회 버튼으로 오픈했을때.
+        if(openerName.includes("CCEMPRO022")) {
+            const custId = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
+            opener.getBaseData("C", custId);
+            window.close();
+        }
     });
 	
 	// 고객찾기 고객찾기 GRID 끝
