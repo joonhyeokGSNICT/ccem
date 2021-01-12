@@ -20,6 +20,7 @@ var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
 var existCustInfo;								// 기존 존재하는 고객의 정보
 var existCustName;								// 기존 존재하는 고객의 이름
 var existCustTelNo;								// 기존 존재하는 고객의 전화번호
+var sOrgFAT_RSDNO;								//학부모 주민번호 변경여부 체크 하기 위한 변수
 
 var sFAT_NAME;									// 현재고객 부모 명
 var sFAT_RSDNO;									// 현재고객 부모 관계번호
@@ -112,6 +113,9 @@ function initAll() {
 	$("#solar").css('display','');
 	$("#lunar").css('display','none');
 	$("#lunarSolarInput").val("1");
+	
+	// 고객구분 초기세팅
+	$("#custInfo_CUST_MK").val("CM");
 	
 	// input 내용 삭제
 	$("#customerInfoTab").find("input:text").each( function () {
@@ -515,6 +519,7 @@ function customerSearch(currentDiv){
 		        		initAll(); 													// 기존 정보 초기화
 		        		custInfo = customerSearchList_grid.getRow(0);
 		        		onAutoSearch(custInfo.CUST_ID)
+		        		
 		        	}
 		        	
 		        }else {
@@ -579,6 +584,7 @@ function onAutoSearch(sCustId){
 	        if(response.errcode == "0"){
 	        currentCustInfo = response.recv1[0];				// 고객정보 상주
 	        loadCustInfoMain();									// 고객정보 로드 함수
+	        sOrgFAT_RSDNO = currentCustInfo.FAT_RSDNO; 			// 학부모 주민번호 변경여부 체크 변수
 	        }else {
 	        	loading.out();
 	        	client.invoke("notify", response.errmsg, "error", 60000);
@@ -681,7 +687,6 @@ function setCertData(){
  * 2020-12-30 최준혁
  */
 function loadCustInfoMain() {
-	
 	$("#customerInfo").click();	// 탭 이동
 	$("#customerTab").click();	// 탭 이동
 	for(key in currentCustInfo){												// input 자동 기입
@@ -1338,7 +1343,7 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	                
         	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
         	                	//관계회원이면, 학부모정보를 저장해 둔다.
-        	                    if(sJobKind == "RELINSERT"){
+        	                    if(custInfoStatus == 3){
         	                        sFAT_NAME  = $("#custInfo_FAT_NAME").val();
         	                        sFAT_RSDNO = $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
         	                        sFAT_REL   = $("#custInfo_FAT_REL").val();
@@ -1360,28 +1365,12 @@ function onAutoSearchByTELPNO(sFlag,sName){
 	                		$("#customerPhoneCheck").prop('checked',true);
         	            }else if(existCustInfo.CUST_ID == "NODATAFOUND"){
         	            	ModalUtil.modalPop("알림","학부모이거나 고객번호가 없어<br> 조회 할수 없는 관계회원입니다.");
-        	            }else if(cnt==1){
-        	                onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
+        	            }else{
+        	                onAutoSearch(existCustInfo.CUST_ID);
         	            }
         	        }
         	    }
         	});
-        	
-        	
-            //sFlagEXISTRECORD = sFlag;
-
-            //관계회원("ONRELCMB")일 때는 sName을 사용하고, 다른경우는 txtNAME.value을 사용한다.
-           /* if( sFlag != "ONRELCMB" ) sName = txtNAME.value;
-            sNameOfCNS5600 = sName;
-            sTel2OfCNS5600 = MSK_TELPNO2.text;
-
-            DS_EXISTRECORD.DataID  = "/cns/cns5400/cns5403V.jsp";
-            DS_EXISTRECORD.DataID += "?sName="    + sName;
-            DS_EXISTRECORD.DataID += "&sTelpno1=" + MSK_TELPNO1.text;
-            DS_EXISTRECORD.DataID += "&sTelpno2=" + MSK_TELPNO2.text;
-            DS_EXISTRECORD.DataID += "&sFatRsdno="+ MSK_FAT_RSDNO.text;
-            DS_EXISTRECORD.reset();*/
-
         }
     }
 }
@@ -1393,49 +1382,48 @@ function onAutoSearchByTELPNO(sFlag,sName){
 function onSave(){
 
 
-    //sJobKind가 "UPDATE"가 아닌데, 고객이 이미 존재할 경우,
-   if(sJobKind != "UPDATE" && DS_EXISTRECORD.nameValue(1,"CUST_ID") != "NODATAFOUND"){
+    //custInfoStatus가 2 : 고객조회된 상태// "UPDATE"가 아닌데, 고객이 이미 존재할 경우,
+   if(custInfoStatus != 2 && existCustInfo.CUST_ID != "NODATAFOUND"){
 
-        var sConfMsg = "고객번호 ["+ DS_EXISTRECORD.nameValue(1,"CUST_ID") +"]인 고객이 이미 존재합니다.\n\n위 고객으로 조회하시겠습니까?";
-        if(confirm(sConfMsg)){
-            //관계회원이면, 학부모정보를 저장해 둔다.
-            if(sJobKind == "RELINSERT"){
-                sFAT_NAME  = txtFAT_NAME.value;
-                sFAT_RSDNO = MSK_FAT_RSDNO.text;
-                sFAT_REL   = CMB_FAT_REL.bindColVal;
+        var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.<br>위 고객으로 조회하시겠습니까?";
+        
+        ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
+        	//관계회원이면, 학부모정보를 저장해 둔다.
+            if(custInfoStatus == 3){
+                sFAT_NAME  = $("#custInfo_FAT_NAME").val();
+                sFAT_RSDNO = $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+                sFAT_REL   = $("#custInfo_FAT_REL").val();
             }
-            onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
+            onAutoSearch(existCustInfo.CUST_ID);
             return;
-        }
-        alert("성명, 전화번호 중 한 가지가 달라야 새로운 고객으로 등록됩니다.");
-        return;
+        }, function() {
+        	ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
+        	return;
+        });
 
-    //sJobKind가 "RELINSERT"가 아니고, 이전 학부모 주민번호가 다를때, 학부모가 존재할 경우,
+    //custInfoStatus가 3 : 관계회원 조회, "RELINSERT"가 아니고, 이전 학부모 주민번호가 다를때, 학부모가 존재할 경우,
     }
-    if(sJobKind != "RELINSERT" &&
-             DS_EXISTRECORD.nameValue(1,"FAT_RSDNO")  != "NODATAFOUND" &&
+    if(custInfoStatus != 3 &&
+    		existCustInfo.FAT_RSDNO != "NODATAFOUND" &&
 //             DS_CUST.nameValue(1,"FAT_RSDNO") != DS_CUST.OrgNameValue(1,"FAT_RSDNO")){
-             DS_CUST.nameValue(1,"FAT_RSDNO") != sOrgFAT_RSDNO){
+    		existCustInfo.FAT_RSDNO != sOrgFAT_RSDNO){
 
         //학부모가 존재하는데 관계회원 등록안하면, [C+전화번호]일 경우에는 사용자에게 물어보고 등록한다.
-        if(DS_EXISTRECORD.nameValue(1,"FAT_RSDNO").substring(0,1).toUpperCase() == "C"){
-            if(confirm("학부모번호가 이미 존재 하여 관계회원으로 등록됩니다.\n\n관계회원으로 저장 하시겠습니까?")){
-                sJobKind = "RELINSERT";
+        if(existCustInfo.FAT_RSDNO.substring(0,1).toUpperCase() == "C"){
+            if(confirm("학부모번호가 이미 존재 하여 관계회원으로 등록됩니다.<br>관계회원으로 저장 하시겠습니까?")){
+            	custInfoStatus = 3;
             }else{
-                if(confirm("관계회원으로 저장하지 않으면, 학부모정보를 저장 할 수 없습니다.\n\n계속하시겠습니까?")){
-                    sJobKind = "RELINSERTNOT";
+            	ModalUtil.confirmPop("확인 메세지", "관계회원으로 저장하지 않으면, 학부모정보를 저장 할 수 없습니다.<br>계속하시겠습니까?", function() {
+            		custInfoStatus = 4//"RELINSERTNOT";
                     //학부모정보를 모두 지운다.
-                    MSK_FAT_RSDNO.text = "";    //세대주관계번호
-                    txtFAT_NAME.value = "";     //세대주명
-                    CMB_FAT_REL.bindColVal = "";//관계
-                }else{
-                    return;
-                }
+                    $("#MSK_FAT_RSDNO").val("");    		//세대주관계번호
+                    $("#custInfo_FAT_NAME").val("");    	//세대주명
+                    $("#custInfo_FAT_REL").val("");			//관계
+                });
             }
-
         //학부모가 존재하는데 관계회원 등록안하면, 실주민번호일 경우에는 자동 등록한다.
         }else{
-            sJobKind = "RELINSERT";
+        	custInfoStatus = 3;// "RELINSERT";
         }
     }
 
@@ -1444,16 +1432,17 @@ function onSave(){
 //    alert("sJobKind="+sJobKind+"\nDS_CUST.RowStatus="+DS_CUST.RowStatus(1)+"\nDS_ADDR.RowStatus="+DS_ADDR.RowStatus(1));
     //저장 데이터 설정 : IsUpdated 영향을 끼치는 항목 설정
     //E-mail수신여부 = 0:허용 1:수신거부
-   /* DS_CUST.nameValue(1,"MAIL_RCV_FLAG") = DS_CUST.nameValue(1,"MAIL_RCV_FLAG") == "0" ? "Y" : "N";
+    /*
+    DS_CUST.nameValue(1,"MAIL_RCV_FLAG") = DS_CUST.nameValue(1,"MAIL_RCV_FLAG") == "0" ? "Y" : "N";
     DS_CUST.nameValue(1,"CHG_USER_ID") = "nw008"; //수정자ID
 
     DS_ADDR.nameValue(1,"PERSON_MK")   = "FM";
     DS_ADDR.nameValue(1,"CUST_CGNT_NO")= DS_CUST.nameValue(1,"FAT_RSDNO");
     DS_ADDR.nameValue(1,"ADDR_MK")     = "2";
     DS_ADDR.nameValue(1,"REG_USER_ID") = "nw008"; //등록자ID
-*/
-    // 고객정보 변경전,변경후 데이타 만들기
-    setCustChangeData();
+     */
+    // 고객정보 변경전,변경후 여부 객체
+    var chgYn = setCustChangeData();
 	
 	// 세대주 주민번호 없이 주소만 변경하는 경우에 return		
 	if(DS_CUST_CHG.nameValue(1,"ADDR_CHG_FLAG2"     ) == "Y" && gf_trimstr(DS_CUST.NameValue(1,"FAT_RSDNO")).length == 0){
@@ -1464,11 +1453,152 @@ function onSave(){
     //DS_ADDR.UseChangeInfo = false;
 
 	//alert("sJobKind="+sJobKind+"\nDS_CUST.RowStatus="+DS_CUST.RowStatus(1)+"\nDS_ADDR.RowStatus="+DS_ADDR.RowStatus(1));
-  /*  gf_setBlock(true);
-    DS_SAP_USE_FLAG.UserStatus(2) = 1;
+	
+	var param = {
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{}]
+		};
+	
+	if(custInfoStatus == 1 || custInfoStatus == 3){
+		param.send1[0].ROW_TYPE = "I";
+		switch(custInfoStatus){
+		case 1 :
+			param.send1[0].JOBKIND = 'NEW'; 
+			break;
+		case 3 :
+			param.send1[0].JOBKIND = 'REL'; 
+			break;
+		case 4 :
+			param.send1[0].JOBKIND = 'NUP'; 
+			break;
+		default:
+			param.send1[0].JOBKIND = ''; 
+		break;
+		}
+		param.send1[0].CUST_ID = 		"";
+		param.send1[0].CUST_CGNT_NO = 	"";
+		param.send1[0].MBR_ID = 		"";
+		
+	}else {
+		param.send1[0].ROW_TYPE = 		"U";
+		param.send1[0].JOBKIND = 		''; 
+		param.send1[0].CUST_ID = 		currentCustInfo.CUST_ID;
+		param.send1[0].CUST_CGNT_NO = 	currentCustInfo.CUST_CGNT_NO;
+		param.send1[0].MBR_ID = 		currentCustInfo.MBR_ID;
+		
+		param.send1[0].NAME_OLD				= currentCustInfo.NAME;
+		param.send1[0].NAME_ENG_OLD			= currentCustInfo.NAME_ENG;
+		param.send1[0].GND_OLD				= currentCustInfo.GND;
+		param.send1[0].RSDNO_OLD			= currentCustInfo.RSDNO;
+		param.send1[0].GRADE_CDE_OLD		= currentCustInfo.GRADE_CDE;	
+		param.send1[0].BIRTH_MK_OLD			= currentCustInfo.BIRTH_MK;
+		param.send1[0].BIRTH_YR_OLD			= currentCustInfo.BIRTH_YMD.substring(0,4);
+		param.send1[0].BIRTH_MD_OLD			= currentCustInfo.BIRTH_YMD.substring(4,8);
+		param.send1[0].FAT_RSDNO_OLD		= currentCustInfo.FAT_RSDNO;	
+		param.send1[0].FAT_NAME_OLD			= currentCustInfo.FAT_NAME;
+		param.send1[0].FAT_REL_OLD			= currentCustInfo.FAT_REL;
+		param.send1[0].REP_EMAIL_ADDR_OLD	= currentCustInfo.REP_EMAIL_ADDR;
+		//param.send1[0].MAIL_RCV_FLAG_OLD
+		param.send1[0].ADDR_CHG_FLAG1		= chgYn.isCustChanged;
+		param.send1[0].ADDR_CHG_FLAG2		= chgYn.isFatAddrChanged;
+		param.send1[0].ADDR_CHG_FLAG3		= chgYn.isMbrMobilChanged;
+	}
+	
+	param.send1[0].CUST_MK = 		$("#custInfo_CUST_MK").val();
+	param.send1[0].NAME = 			$("#custInfo_NAME").val();
+	param.send1[0].NAME_ENG = 		"";
+	param.send1[0].GND = 			$("#custInfo_GND").val();
+	param.send1[0].BIRTH_MK = 		$("#lunarSolarInput").val();
+	param.send1[0].BIRTH_YR =		$("#custInfo_BIRTH_YMD").val().split("-")[0];
+	param.send1[0].BIRTH_MD = 		$("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2];
+	param.send1[0].GRADE_CDE = 		$("#custInfo_GRADE_CDE").val();
+	param.send1[0].FAT_RSDNO = 		$("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+	param.send1[0].FAT_NAME = 		$("#custInfo_FAT_NAME").val();
+	param.send1[0].FAT_REL = 		$("#custInfo_FAT_REL").val();
+	param.send1[0].ZIPCDE = 		$("#custInfo_ZIPCDE").val();
+	param.send1[0].ADDR = 			$("#custInfo_ADDR").val();
+	param.send1[0].DDD = 			$("#custInfo_DDD").val();
+	param.send1[0].TELPNO1 = 		$("#custInfo_TELPNO1").val();
+	param.send1[0].TELPNO2 = 		$("#custInfo_TELPNO2").val();
+	param.send1[0].DEPT_ID = 		$("#custInfo_DEPT_ID").val();
+	param.send1[0].FML_RANK = 		$("#custInfo_FML_RANK").val();
+	param.send1[0].MOBILNO = 		$("#custInfo_MOBILNO").val().replace(/-/gi,"");
+	param.send1[0].MOBILNO_MBR =	$("#custInfo_MOBILNO_MBR").val().replace(/-/gi,"");
+	param.send1[0].MOBILNO_FAT =	$("#custInfo_MOBILNO_FAT").val().replace(/-/gi,"");
+	param.send1[0].MOBILNO3 = 		$("#custInfo_MOBILNO3").val();
+	param.send1[0].MOBILNO3_MBR =	$("#custInfo_MOBILNO3_MBR").val();
+	param.send1[0].MOBILNO3_FAT =	$("#custInfo_MOBILNO3_FAT").val();
+	param.send1[0].ZIP_ADDR = 		$("#custInfo_ZIP_ADDR").val();
+	param.send1[0].FAT_CO_DDD = 	$("#custInfo_FAT_CO_DDD").val();
+	param.send1[0].FAT_CO_TELPNO1 = $("#custInfo_FAT_CO_TELPNO1").val();
+	param.send1[0].FAT_CO_TELPNO1 = $("#custInfo_FAT_CO_TELPNO2").val();
+	param.send1[0].MOBILNO_LAW = 	$("#custInfo_MOBILNO_LAW").val();
+	param.send1[0].MOBILNO3_LAW = 	$("#custInfo_MOBILNO3_LAW").val();
+	param.send1[0].LC_ID = 			$("#custInfo_LC_ID").val();
+	param.send1[0].CHG_USER_ID = 	currentUserInfo.external_id;
+	
+	$.ajax({
+	    url: API_SERVER + '/cns.saveCust.do',
+	    type: 'POST',
+	    dataType: 'json',
+	    contentType: "application/json",
+	    data: JSON.stringify(param),
+	    success: function (response) {
+	    	
+	    }
+	});
+	
+	
+	/*DS_SAP_USE_FLAG.UserStatus(2) = 1;
     TR_CUST.Action   = "/cns/cns5400/cns5400T.jsp";
     TR_CUST.KeyValue = "JSP(I:CUST=DS_CUST,I:ADDR=DS_ADDR,I:CUST_CHG=DS_CUST_CHG,I:SAP=DS_SAP_USE_FLAG,O:CUST_ID=DS_CUST_ID)";
     TR_CUST.parameters = "sJobKind="+sJobKind;
     setTimeout("TR_CUST.post()",250);*/
 
 }
+
+/**
+ * // 고객정보 변경전,변경후 여부 객체 생성
+ * @returns
+ * 21-01-12 최준혁
+ */
+function setCustChangeData(){
+    var isCustChanged    = "N";  //학습장소주소변경여부
+    var isFatAddrChanged = "N";  //학부모직장주소변경여부
+    var isMbrMobilChanged = "N"; //회원모핸드폰번호변경여부
+
+    //학습장소주소변경여부 판단한다.
+    if(DS_CUST.nameValue(1,"ZIPCDE"         ) != currentCustInfo.ZIPCDE) isCustChanged = "Y";   	/* [34] 우편번호                  */
+    if(DS_CUST.nameValue(1,"ADDR"           ) != currentCustInfo.ADDR) isCustChanged = "Y";   		/* [35] 주소                      */
+    if(DS_CUST.nameValue(1,"DDD"            ) != currentCustInfo.DDD) isCustChanged = "Y";   		/* [36] 지역번호                  */
+    if(DS_CUST.nameValue(1,"TELPNO1"        ) != currentCustInfo.TELPNO1) isCustChanged = "Y";   	/* [37] 전화국번                  */
+    if(DS_CUST.nameValue(1,"TELPNO2"        ) != currentCustInfo.TELPNO2) isCustChanged = "Y";   	/* [38] 전화번호                  */
+    if(DS_CUST.nameValue(1,"MOBILNO"        ) != currentCustInfo.MOBILNO) isCustChanged = "Y";   	/* [39] 핸드폰번호_회원         */
+    if(DS_CUST.nameValue(1,"MOBILNO3"       ) != currentCustInfo.MOBILNO3) isCustChanged = "Y";   	/* [56] 핸드폰번호3_회원        */
+
+    //학부모직장주소변경여부 판단한다.
+    if(DS_CUST.nameValue(1,"MOBILNO_FAT"    ) != currentCustInfo.MOBILNO_FAT) isFatAddrChanged = "Y";   /* [58] 핸드폰번호_회원부         */
+    if(DS_CUST.nameValue(1,"MOBILNO3_FAT"   ) != currentCustInfo.MOBILNO3_FAT) isFatAddrChanged = "Y";   /* [60] 핸드폰번호3_회원부        */
+    if(DS_CUST.nameValue(1,"FAT_CO_DDD"     ) != currentCustInfo.FAT_CO_DDD) isFatAddrChanged = "Y";   /* [73] 직장지역번호              */
+    if(DS_CUST.nameValue(1,"FAT_CO_TELPNO1" ) != currentCustInfo.FAT_CO_TELPNO1) isFatAddrChanged = "Y";   /* [74] 직장국번                  */
+    if(DS_CUST.nameValue(1,"FAT_CO_TELPNO2" ) != currentCustInfo.FAT_CO_TELPNO2) isFatAddrChanged = "Y";   /* [75] 직장뒷자리                */
+    if(DS_CUST.nameValue(1,"FAT_RSDNO"      ) != currentCustInfo.FAT_RSDNO) isFatAddrChanged = "Y";   /* 학부모 주민번호 변경시         */
+	
+	//회원모핸드폰변경여부 판단한다.
+	if(DS_CUST.nameValue(1,"MOBILNO_MBR"    ) != currentCustInfo.MOBILNO_MBR) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
+
+    //고객변경정보를 셋팅한다.
+	var returnObject = {
+			"isCustChanged" : isCustChanged,
+			"isFatAddrChanged" : isFatAddrChanged,
+			"isMbrMobilChanged" : isMbrMobilChanged,
+	} 
+    /*DS_CUST_CHG.nameValue(1,"FAT_RSDNO_OLD"      ) = sOrgFAT_RSDNO;//DS_CUST.OrgNameValue(1, "FAT_RSDNO"       );
+    DS_CUST_CHG.nameValue(1,"FAT_NAME_OLD"       ) = DS_CUST.OrgNameValue(1, "FAT_NAME"        );
+    DS_CUST_CHG.nameValue(1,"FAT_REL_OLD"        ) = DS_CUST.OrgNameValue(1, "FAT_REL"         );
+    DS_CUST_CHG.nameValue(1,"REP_EMAIL_ADDR_OLD" ) = DS_CUST.OrgNameValue(1, "REP_EMAIL_ADDR"  );
+    DS_CUST_CHG.nameValue(1,"MAIL_RCV_FLAG_OLD"  ) = (DS_CUST.OrgNameValue(1, "MAIL_RCV_FLAG"  )== "0" ? "Y" : "N");*/
+    return returnObject;
+}
+
