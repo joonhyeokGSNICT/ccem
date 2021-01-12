@@ -88,7 +88,7 @@ var sTelHPNo_DDD = new Array(
 // === === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 //sideBar client 받기
 client.on("getSidebarClient", function(sideBarClient_d) {
-	sideBarClient = sideBarClient_d;
+	sideBarClient = client.instance(sideBarClient_d);
 });
 client.on("getCodeData", function(d){
 	codeData = d;
@@ -584,10 +584,6 @@ function onAutoSearch(sCustId){
 	    }, error: function (response) {
 	    }
 	});
-    /*onNew();
-    gf_setBlock(true);
-    DS_CUST.DataId = "/cns/cns5400/cns5400V.jsp?sCustId="+sCustId;
-    DS_CUST.reset();*/
 }
 
 function openPop(popName,w,h){
@@ -1333,7 +1329,7 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	                });
         	                
         	            }else if(existCustInfo.CUST_ID != "NODATAFOUND"){
-        	                var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.\n\n위 고객으로 조회하시겠습니까?";
+        	                var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.<br>위 고객으로 조회하시겠습니까?";
         	                
         	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
         	                	//관계회원이면, 학부모정보를 저장해 둔다.
@@ -1342,25 +1338,15 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	                        sFAT_RSDNO = $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
         	                        sFAT_REL   = $("#custInfo_FAT_REL").val();
         	                    }
-        	                })
-        	                
-        	                if(confirm(sConfMsg)){
-        	                    //관계회원이면, 학부모정보를 저장해 둔다.
-        	                    if(sJobKind == "RELINSERT"){
-        	                        sFAT_NAME  = txtFAT_NAME.value;
-        	                        sFAT_RSDNO = MSK_FAT_RSDNO.text;
-        	                        sFAT_REL   = CMB_FAT_REL.bindColVal;
-        	                    }
         	                    onAutoSearch(existCustInfo.CUST_ID);
-        	                }else{
-        	                    alert("성명, 전화번호 중 한 가지가 달라야 새로운 고객으로 등록됩니다.");
-        	                }
+        	                }, function() {
+        	                	ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
+        	                })
         	            }
 
-
         	        //관계회원콤보선택시 비회원일때:"ONRELCMB"
-        	        }else if(sFlagEXISTRECORD == "ONRELCMB"){
-        	            if(DS_EXISTRECORD.nameValue(1,"CUST_ID") == "MOREDATAFOUND") {
+        	        }else if(sFlag == "ONRELCMB"){
+        	            if(existCustInfo.CUST_ID == "MOREDATAFOUND") {
         	                //고객번호가 여러개일때, 고객찾기로 넘기자.
         	                parent.frames("frmCNS5600").onSearchByNameTelNo(sNameOfCNS5600,sTel2OfCNS5600);
         	            }else if(DS_EXISTRECORD.nameValue(1,"CUST_ID") == "NODATAFOUND"){
