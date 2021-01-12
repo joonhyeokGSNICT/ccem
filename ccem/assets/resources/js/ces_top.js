@@ -1358,8 +1358,8 @@ function onAutoSearchByTELPNO(sFlag,sName){
 	                		$("#customerNameCheck").prop('checked',true);
 	                		$("#customerPhone").val(existCustTelNo);
 	                		$("#customerPhoneCheck").prop('checked',true);
-        	            }else if(DS_EXISTRECORD.nameValue(1,"CUST_ID") == "NODATAFOUND"){
-        	                alert("학부모이거나 고객번호가 없어 조회 할수 없는 관계회원입니다.");
+        	            }else if(existCustInfo.CUST_ID == "NODATAFOUND"){
+        	            	ModalUtil.modalPop("알림","학부모이거나 고객번호가 없어<br> 조회 할수 없는 관계회원입니다.");
         	            }else if(cnt==1){
         	                onAutoSearch(DS_EXISTRECORD.nameValue(1,"CUST_ID"));
         	            }
