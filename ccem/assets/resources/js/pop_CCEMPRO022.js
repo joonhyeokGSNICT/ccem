@@ -1,14 +1,14 @@
-let currentUser;		// 현재 사용중인 유저의 정보(ZENDESK)
-
-let prods;	// 과목리스트
+let sidebarClient;			// 현재 오픈된 티켓사이드
+let topbarClient;		
+let currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
+let prods	 = [];			// 과목리스트
+let codeData = [];			// 전체 공통코드
 
 let grid1;	// 상담등록 > 과목 grid
 let grid2;	// 상담등록 > 상담과목 grid
 let grid3;	// 상담등록 > 학습중인과목 grid
 let grid4;	// 입회등록 > 과목 grid
 let grid5;	// 입회등록 > 입회과목 grid
-
-const RegExpNotNum = /[^0-9]/gi;	// 숫자제외
 
 $(function () {
 	
@@ -43,6 +43,19 @@ $(function () {
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
+
+	// event
+	$("#button10").on("click", ev => {
+		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		openNewTicket()
+			.then((succ) => { if (succ) alert("티켓생성이 완료되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
 
 	onStart(opener ? opener.name : "");
 
@@ -385,8 +398,7 @@ const setCodeData = () => {
 	];
 
 	// get code
-	const openerName = opener.name;
-	let codeData;
+	const openerName = opener ? opener.name : "";
 	if(openerName.includes("top_bar")) {
 		codeData = opener.codeData;
 	}else if(openerName.includes("CCEMPRO035")) {
@@ -400,8 +412,6 @@ const setCodeData = () => {
 
 	// create select option
 	for(const code of codeList) {
-		let text =  "";
-		let value = "";
 
 		// filtering
 		if(code.CODE_MK == "DM_TYPE_CDE") { // 지급사유
@@ -409,13 +419,8 @@ const setCodeData = () => {
 		}
 
 		// custom text
-		if(code.CODE_MK == "GRADE_CDE") {	// 학년
-			text = `[${code.CODE_ID}] ${code.CODE_NAME}`;
-			value = code.CODE_ID;
-		}else {
-			text = code.CODE_NAME;
-			value = code.CODE_ID;
-		}
+		const text = code.CODE_NAME;
+		const value = code.CODE_ID;
 		
 		// set
 		$(`select[name='${code.CODE_MK}']`).append(new Option(text, value));
@@ -439,7 +444,9 @@ const onStart = (openerName) => {
 
 	// 탑바 > 고객정보 > 고객 > 상담등록 버튼으로 오픈
 	if(openerName.includes("top_bar")) {	
-		currentUser = opener.currentUserInfo.user; // 젠데스크 사용자정보
+		sidebarClient = opener.sideBarClient;
+		topbarClient = opener.client;
+		currentUser = opener.currentUserInfo.user;
 
 		const custId = opener.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
 		const custMk = opener.document.getElementById("custInfo_CUST_MK").value;	// 고객구분
@@ -448,7 +455,9 @@ const onStart = (openerName) => {
 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	}else if(openerName.includes("CCEMPRO035")) {	
-		currentUser = opener.opener.currentUserInfo.user;	// 젠데스크 사용자정보
+		sidebarClient = opener.opener.sideBarClient;
+		topbarClient = opener.opener.client;
+		currentUser = opener.opener.currentUserInfo.user;
 
 		const counselGrid = opener.grid1;	// 상담조회 grid
 		const rowKey = counselGrid.getSelectedRowKey();
@@ -468,7 +477,7 @@ const onStart = (openerName) => {
  * @param {string} target 대상구분 ( "C" : 고객, "T" : 선생님 )
  * @param {string} targetId 고객번호 or 사번
  */
-const getBaseData = (target, targetId) => {
+var getBaseData = (target, targetId) => {
 
 	let service, condition;
 
@@ -665,6 +674,176 @@ const setLable = (target) => {
 }
 
 /**
+ * 사용자/티켓생성
+ */
+const openNewTicket = async () => {
+
+	const custId = $("#hiddenbox6").val();
+	const custNm = $("#textbox21").val();
+	const custMk = $("#hiddenbox2").val();	// 고객구분
+	const target = (custMk == "PE" || custMk == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
+
+	if (!custId || !custNm) {
+		alert("조회된 고객이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+
+	let sMsg = "";
+	sMsg += "\n * 고객번호 : " + custId;
+	sMsg += "\n * 고객명   : " + custNm;
+	sMsg += "\n\n 위 항목으로 티켓을 생성 하시겠습니까?";
+	if (confirm(sMsg) == false) return false;
+
+	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${custId}`);
+	let requester = "";
+	
+	// 젠데스크 사용자가 없으면 사용자생성 후 티켓생성
+	if (users.length === 0) {
+		const custInfo = await getCustInfo(target, custId);
+		const { user } = await createUser(custInfo);
+		requester = user.id;
+	} else {
+		requester = users[0].id;
+	}
+
+	const { ticket } = await createTicket({ requester });
+	await topbarClient.invoke('routeTo', 'ticket', ticket.id);	// 티켓오픈
+	return true;
+}
+
+/**
+ * 고객정보조회 for createUser()
+ */
+const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
+	
+	let service, condition;
+
+	// 고객
+	if (target == "C") {
+		service = "/cns.getCustInfo.do";
+		condition = { CUST_ID: custId };
+	// TODO 선생님 조회 서비스 URL/조건 확인필요
+	} else if (target == "T") {
+		service = "/cns.getCustInfo.do";
+		condition = { CUST_ID: custId };
+	}
+
+	const settings = {
+		global: false,	// 로딩화면 사용안함
+		url: `${API_SERVER + service}`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [condition],
+		}),
+		errMsg: "고객정보조회 중 오류가 발생하였습니다.",
+	}
+	$.ajax(settings)
+		.done(data => {
+			if (data.errcode != "0") return reject(data.errmsg);
+			return resolve(data.dsRecv[0]);
+		})
+		.fail(error => {
+			return reject(error);
+		});
+});
+
+/**
+ * 사용자생성
+ * @param {object} data 
+ */
+const createUser = async (data) => {
+
+	if(!data.NAME || !data.CUST_ID) {
+		throw new Error("젠데스크 사용자 생성시 필수 값이 존재하지 않습니다.");
+	}
+
+	// custom data
+	const mobilnoMbr = data.MOBILNO_MBR ? data.MOBILNO_MBR.replace(/[^0-9]/gi, "") : "";	// 휴대폰번호(엄마)	
+	const mobilnoFat = data.MOBILNO_FAT ? data.MOBILNO_FAT.replace(/[^0-9]/gi, "") : ""; 	// 휴대폰번호(아빠)
+	const mobilnoLaw = data.MOBILNO_LAW ? data.MOBILNO_LAW.replace(/[^0-9]/gi, "") : "";	// 휴대폰번호(법정대리인)	
+	const telpno = (data.DDD || "") + (data.TELPNO1 || "") + (data.TELPNO2 || "");			// 자택 전화번호
+	const custMk = (data.CUST_MK == "PE" || data.CUST_MK == "TC") ? "선생님" : "고객";		 // 고객구분
+	const gradeNm = findCodeName("GRADE_CDE", data.GRADE_CDE);
+	const fatRelNm = findCodeName("FAT_REL", data.FAT_REL);
+
+	// create user field
+	const user_fields = {
+		bonbu				: data.UPDEPTNAME,	// 본부
+		dept				: data.DEPT_NAME,	// 사업국	
+		center				: data.LC_NAME,		// 센터
+		grade				: gradeNm,			// 학년	
+		mobilno_mother		: mobilnoMbr,		// 휴대폰번호(엄마)	
+		mobilno_father		: mobilnoFat,		// 휴대폰번호(아빠)
+		mobile_legal		: mobilnoLaw,		// 휴대폰번호(법정대리인)	
+		home_tel			: telpno,			// 자택 전화번호
+		custom_no			: data.MBR_ID,		// 회원번호	
+		fml_connt_cde		: fatRelNm,			// 가족관계
+		fml_seq				: data.FAT_RSDNO,	// 관계번호
+		cust_mk				: custMk,			// 고객구분
+	}
+	
+	// request create user
+    const option = {
+		url: '/api/v2/users',
+		method: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({
+			user: {
+				name		: data.NAME,	// 고객명
+				external_id	: data.CUST_ID,	// 고객번호
+				user_fields,				// 사용자필드
+			},
+		}),
+	}
+	return await topbarClient.request(option);
+}
+
+/**
+ * 티켓생성
+ * @param {object} param0 
+ */
+const createTicket = async ({
+	formId = "360005566214",
+	requester = "427612648894",
+	title = "TEST",
+	content = "상담등록 화면에서 생성된 티켓입니다.",
+}) => {
+
+	const option = {
+		url: '/api/v2/tickets.json',
+		method: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({
+			ticket: {
+				subject			: title,		// 제목
+				ticket_form_id	: formId,  		// 양식ID
+				requester_id	: requester,	// 요청자ID
+				comment: {
+					public	: false,
+					body	: content,
+				},
+			},
+		}),
+	}
+
+	return await topbarClient.request(option);
+}
+
+/**
+ * 해당코드의 NAME을 반환.
+ * @param {string} mk 코드구분 
+ * @param {string} id 코드ID
+ */
+const findCodeName = (mk, id) => {
+	const code = codeData.find(el => el.CODE_MK == mk && el.CODE_ID == id);
+	return code ? code.CODE_NAME : "";
+}
+
+/**
  * 신규버튼 선택시에 고객 기본정보 초기화
  * - as-is : onNewCustInit()
  */
@@ -763,8 +942,6 @@ const saveCounsel = async () => {
 		}),
 		errMsg: "상담정보 저장중 오류가 발생하였습니다.",
 	}
-	// TODO debug
-	console.debug("save: ", condition)
 	
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
@@ -1079,7 +1256,7 @@ const saveCounselCondition = async (sJobType) => {
 
         //"I"이고, 상담일자가 없을경우, (추가등록,관계회원등록 일때)
         if (!data.CSEL_DATE) {
-            data.CSEL_DATE = getDateFormat().replace(RegExpNotNum, '');
+            data.CSEL_DATE = getDateFormat().replace(/[^0-9]/gi, '');
         }
        
         // TODO O/B통화결과에서 팝업되었을때,
@@ -1126,7 +1303,10 @@ const setPlProd = (grid, data) => {
 	const checkeds = data ? data.split("_") : "";
 	const gridData = grid.getData();
 
-	if(checkeds.length == 0) return;
+	if(checkeds.length == 0) {
+		gridData.forEach(el => grid.uncheck(el.rowKey));
+		return;
+	}
 
 	gridData.forEach(el => {
 		if (checkeds.includes(el.PRDT_ID)) {
