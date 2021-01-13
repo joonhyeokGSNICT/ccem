@@ -183,45 +183,59 @@ $(function(){
 	$("#tree").fancytree({
 				click: function(event, data) {
 					console.log(event, data, ", targetType=" + data.targetType);
-
-					if(data.node.parent != null){
-						if(data.node.type == "지점"){
-							//alert("dd");
-							$("#HQ_NAME").text(data.node.parent.title);
-							$("#DEPT_NAME").text(data.node.title);
-							//$("#LC_NAME").text(data.node.title);
-							$("#POSTNUM").val(data.node.data.POSTNUM);
-							$("#POSTADDR").val(data.node.data.POSTADDR);
-							$("#ADDR").val(data.node.data.ADDR);
-							$("#PHONE").val(data.node.data.PHONE);
-							$("#FAXNUM").val(data.node.data.FAXNUM);
-							$("#HQ_NAME2").text(data.node.parent.title);
-							$("#DEPT_NAME2").text(data.node.title);
-							$("#POSTNUM2").val(data.node.data.POSTNUM);
-							$("#POSTADDR2").val(data.node.data.POSTADDR);
-							$("#ADDR2").val(data.node.data.ADDR);
-							$("#PHONE2").val(data.node.data.PHONE);
-							$("#FAXNUM2").val(data.node.data.FAXNUM);
-							
-						}else if(data.node.type == "센터"){
-							$("#HQ_NAME").text(data.node.parent.parent.title);
-							$("#DEPT_NAME").text(data.node.parent.title);
-							$("#LC_NAME").text(data.node.title);
-							$("#POSTNUM").val(data.node.data.POSTNUM);
-							$("#POSTADDR").val(data.node.data.POSTADDR);
-							$("#ADDR").val(data.node.data.ADDR);
-							$("#PHONE").val(data.node.data.PHONE);
-							$("#FAXNUM").val(data.node.data.FAXNUM);
-							$("#HQ_NAME2").text(data.node.parent.parent.title);
-							$("#DEPT_NAME2").text(data.node.parent.title);
-							$("#LC_NAME2").text(data.node.title);
-							$("#POSTNUM2").val(data.node.data.POSTNUM);
-							$("#POSTADDR2").val(data.node.data.POSTADDR);
-							$("#ADDR2").val(data.node.data.ADDR);
-							$("#PHONE2").val(data.node.data.PHONE);
-							$("#FAXNUM2").val(data.node.data.FAXNUM);
-						}
+					if(data.node.data.LV == "1"){
+						$("#HQ_NAME").text(data.node.title);
+						$("#DEPT_NAME").text("");
+						$("#LC_NAME").text("");
+						$("#POSTNUM").val(data.node.data.ZIPCDE);
+						$("#POSTADDR").val(data.node.data.ZIP_ADDR);
+						$("#ADDR").val(data.node.data.ADDR);
+						$("#PHONE").val(data.node.data.TELPNO);
+						$("#FAXNUM").val(data.node.data.FAXNO);
+						$("#HQ_NAME2").text(data.node.title);
+						$("#DEPT_NAME2").text("");
+						$("#LC_NAME2").text("");
+						$("#POSTNUM2").val(data.node.data.ZIPCDE);
+						$("#POSTADDR2").val(data.node.data.ZIP_ADDR);
+						$("#ADDR2").val(data.node.data.ADDR);
+						$("#PHONE2").val(data.node.data.TELPNO);
+						$("#FAXNUM2").val(data.node.data.FAXNO);
+					} else if(data.node.data.LV == "2"){
+						$("#HQ_NAME").text(data.node.parent.title);
+						$("#DEPT_NAME").text(data.node.title);
+						$("#LC_NAME").text("");
+						$("#POSTNUM").val(data.node.data.ZIPCDE);
+						$("#POSTADDR").val(data.node.data.ZIP_ADDR);
+						$("#ADDR").val(data.node.data.ADDR);
+						$("#PHONE").val(data.node.data.TELPNO);
+						$("#FAXNUM").val(data.node.data.FAXNO);
+						$("#HQ_NAME2").text(data.node.parent.title);
+						$("#DEPT_NAME2").text(data.node.title);
+						$("#LC_NAME2").text("");
+						$("#POSTNUM2").val(data.node.data.ZIPCDE);
+						$("#POSTADDR2").val(data.node.data.ZIP_ADDR);
+						$("#ADDR2").val(data.node.data.ADDR);
+						$("#PHONE2").val(data.node.data.TELPNO);
+						$("#FAXNUM2").val(data.node.data.FAXNO);
+					} else if(data.node.data.LV == "3"){
+						$("#HQ_NAME").text(data.node.parent.parent.title);
+						$("#DEPT_NAME").text(data.node.parent.title);
+						$("#LC_NAME").text(data.node.title);
+						$("#POSTNUM").val(data.node.data.ZIPCDE);
+						$("#POSTADDR").val(data.node.data.ZIP_ADDR);
+						$("#ADDR").val(data.node.data.ADDR);
+						$("#PHONE").val(data.node.data.TELPNO);
+						$("#FAXNUM").val(data.node.data.FAXNO);
+						$("#HQ_NAME2").text(data.node.parent.parent.title);
+						$("#DEPT_NAME2").text(data.node.parent.title);
+						$("#LC_NAME2").text(data.node.title);
+						$("#POSTNUM2").val(data.node.data.ZIPCDE);
+						$("#POSTADDR2").val(data.node.data.ZIP_ADDR);
+						$("#ADDR2").val(data.node.data.ADDR);
+						$("#PHONE2").val(data.node.data.TELPNO);
+						$("#FAXNUM2").val(data.node.data.FAXNO);
 					}
+					_getList.employeeList(data.node.data.DEPT_ID);
 				}
 			});
 	
@@ -237,72 +251,124 @@ $(function(){
 	});
 	
 	tree = $.ui.fancytree.getTree("#tree");
-	
-	tree.reload([
-        {title: "북서울BCG", folder:true, expanded:true, children:[
-        	{title: "용산HL", type:"지점", POSTNUM:"04317",POSTADDR:"서울 용산구 효창동",ADDR:"5-86번지 대정빌딩 2층", PHONE:"02-718-2295", FAXNUM:"02-711-2294"},
-        	{title: "마포HL"},
-        	{title: "은평HL"},
-        	{title: "덕양HL"},
-        	{title: "일산HL"},
-        	{title: "교하HL"},
-        	{title: "파주HL"},
-        	{title: "도봉HL"},
-        	{title: "성북HL"},
-        	{title: "노원HL"},
-        	{title: "동대문HL"},
-        	{title: "성동광진HL"},
-        	{title: "최덕규BCL", folder:true, children:[
-        		{title: "갈현", type:"센터", POSTNUM:"04317",POSTADDR:"경기 고양시 일산동구 탄중로 323",ADDR:"86-31번지 미주빌딩", PHONE:"02-384-9509", FAXNUM:""},
-        		{title: "홍은"},
-        		{title: "별빛드림"},
-        		{title: "중산중앙"},
-        		{title: "장위"},
-        		{title: "한신한진"},
-        		{title: "무학"},
-        		{title: "길음"},
-        		{title: "정릉"},
-        		{title: "공릉"},
-        	]},
-        	{title: "홍기연BCL", folder:true, children:[
-        		{title: "갈현", type:"센터", POSTNUM:"04317",POSTADDR:"경기 고양시 일산동구 탄중로 323",ADDR:"86-31번지 미주빌딩"},
-        		{title: "홍은"},
-        		{title: "별빛드림"},
-        		{title: "중산중앙"},
-        		{title: "장위"},
-        		{title: "한신한진"},
-        		{title: "무학"},
-        		{title: "길음"},
-        		{title: "정릉"},
-        		{title: "공릉"},
-        	]},
-        	{title: "황영애BCL", folder:true, children:[
-        		{title: "갈현"},
-        		{title: "홍은"},
-        		{title: "별빛드림"},
-        		{title: "중산중앙"},
-        		{title: "장위"},
-        		{title: "한신한진"},
-        		{title: "무학"},
-        		{title: "길음"},
-        		{title: "정릉"},
-        		{title: "공릉"},
-        	]},
-        	{title: "이은희BCL", folder:true, children:[
-        		{title: "갈현"},
-        		{title: "홍은"},
-        		{title: "별빛드림"},
-        		{title: "중산중앙"},
-        		{title: "장위"},
-        		{title: "한신한진"},
-        		{title: "무학"},
-        		{title: "길음"},
-        		{title: "정릉"},
-        		{title: "공릉"},
-        	]}
-        ]},
-        {title: "node2"}
-      ]).done(function(){
-        //alert("reloaded");
-      });
+	  
+	_getList.orgList();
 });
+
+
+
+/**
+ * API 조회
+ */
+const _getList = {
+	orgList(){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{ACTIVE_FLAG:"Y"}]
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/sys.getDeptLcList.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log("orgList값 >> ",response.dsRecv);
+				// var temp = response.dsRecv;
+				// temp = temp.map(el => {
+				// 	return {
+				// 		ZIPCDE : 	el.ZIPCDE,
+				// 		ZIP_ADDR : el.ZIP_ADDR,
+				// 		DDD : el.DDD,
+				// 		AREA_CDE : el.AREA_CDE,
+				// 		AREA_NAME : el.AREA_NAME,
+				// 	};
+				// });
+				// _addrGrid.resetData(temp);
+				var templist = response.dsRecv;
+				for(index in templist) {
+					templist[index].title = templist[index].DEPT_NAME;
+				}
+
+				_sortList.orgList(templist);
+			}, error: function (response) {
+			}
+		});
+	},
+	employeeList(orgId){
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{SEARCH_DEPT_ID:"Y", SEARCH_DEPT_ID_TXT:orgId}]
+			// dsSend: [{SEARCH_STS_CDE:"Y", SEARCH_STS_CDE_TXT:"9"}]
+			// dsSend: [{}]
+		};
+
+		$.ajax({
+			url: API_SERVER + '/sys.getEmployeeList.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log("employeeList >> ",response.dsRecv);
+				// var temp = response.dsRecv;
+				// temp = temp.map(el => {
+				// 	return {
+				// 		ZIPCDE : 	el.ZIPCDE,
+				// 		ZIP_ADDR : el.ZIP_ADDR,
+				// 		DDD : el.DDD,
+				// 		AREA_CDE : el.AREA_CDE,
+				// 		AREA_NAME : el.AREA_NAME,
+				// 	};
+				// });
+				// _addrGrid.resetData(temp);
+				var templist = response.dsRecv;
+				var lv1List = templist.filter(data => data.LV == "1" );
+				var lv2List = templist.filter(data => data.LV == "2" );
+				var lv3List = templist.filter(data => data.LV == "3" );
+				console.log("lv3 List >> ",lv3List);
+				console.log("lv2 List >> ",lv2List);
+				console.log("lv1 List >> ",lv1List);
+			}, error: function (response) {
+			}
+		});
+
+	}
+}
+
+/**
+ * 트리구조 필드 데이터 정렬
+ */
+const _sortList = {
+	orgList(templist){
+		var lv1List = templist.filter(data => data.LV == "1" );
+		var lv2List = templist.filter(data => data.LV == "2" );
+		var lv3List = templist.filter(data => data.LV == "3" );
+		console.log("lv3 List >> ",lv3List);
+		console.log("lv2 List >> ",lv2List);
+		console.log("lv1 List >> ",lv1List);
+
+		// for(index in lv2List) {
+		// 	lv3List.filter(data=> data.PARE_DEPT_ID == lv2List[index].DEPT_ID);
+		// }
+		for(index in lv2List){
+			var tempLv3List = lv3List.filter(data=> data.PARE_DEPT_ID == lv2List[index].DEPT_ID);
+			// console.log("tempLv3List // "+lv2List[index].DEPT_NAME+" >> ", tempLv3List);
+			lv2List[index].children = tempLv3List;
+			lv2List[index].folder = true;
+		}
+
+		for(index in lv1List) {
+			var tempLv2List = lv2List.filter(data=> data.UP_DEPT == lv1List[index].DEPT_ID);
+			// console.log("tempLv2List // "+lv1List[index].DEPT_NAME+" >> ", tempLv2List);
+			lv1List[index].children = tempLv2List;
+			lv1List[index].folder = true;
+		}
+
+		tree.reload(lv1List);
+
+	}
+}
