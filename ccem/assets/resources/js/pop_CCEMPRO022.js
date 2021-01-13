@@ -1,14 +1,18 @@
-let sidebarClient;			// 현재 오픈된 티켓사이드
-let topbarClient;		
-let currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
-let prods	 = [];			// 과목리스트
-let codeData = [];			// 전체 공통코드
+var sidebarClient;			// 현재 오픈된 티켓사이드바 client
+var topbarClient;			// 탑바 client
+var currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
+var codeData = [];			// 전체 공통코드
+var prods	 = [];			// 과목리스트
 
-let grid1;	// 상담등록 > 과목 grid
-let grid2;	// 상담등록 > 상담과목 grid
-let grid3;	// 상담등록 > 학습중인과목 grid
-let grid4;	// 입회등록 > 과목 grid
-let grid5;	// 입회등록 > 입회과목 grid
+var grid1;	// 상담등록 > 과목 grid
+var grid2;	// 상담등록 > 상담과목 grid
+var grid3;	// 상담등록 > 학습중인과목 grid
+var grid4;	// 입회등록 > 과목 grid
+var grid5;	// 입회등록 > 입회과목 grid
+
+var DS_DROP_TEMP1  = [{}];		// DM 사은품 접수 정보 저장 data
+var DS_DROP_TEMP2  = [{}];		// 개인정보동의 정보 저장 data
+var DS_DROP_CHG    = [{}];		// 고객직접퇴회 정보 저장 data
 
 $(function () {
 	
@@ -375,7 +379,7 @@ const uncheckProd = (grid, data) => {
 
 /**
  * 콤보박스 세팅
- * - as-is : setCodeData()
+ * - as-is : cns5810.setCodeData()
  */
 const setCodeData = () => {
 
@@ -473,7 +477,7 @@ const onStart = (openerName) => {
 
 /**
  * 상담등록 기본정보 조회 and 학습중인 제품 조회
- * - as-is : onSearchBaseData()
+ * - as-is : cns5810.onSearchBaseData()
  * @param {string} target 대상구분 ( "C" : 고객, "T" : 선생님 )
  * @param {string} targetId 고객번호 or 사번
  */
@@ -527,7 +531,10 @@ var getBaseData = (target, targetId) => {
 			$("#hiddenbox2").val(row.MK); 			// 고객구분코드
 			$("#hiddenbox3").val(row.DEPT_EMP_ID); 	// 사업국장    
 			$("#hiddenbox4").val(row.LC_EMP_ID); 	// 센터장
-			$("#hiddenbox6").val(targetId); 	// 고객번호
+			$("#hiddenbox6").val(targetId); 		// 고객번호
+			DS_DROP_TEMP1  = [{}];
+			DS_DROP_TEMP2  = [{}];
+			DS_DROP_CHG    = [{}];
 
 			setLable(target);
 			getStudy(row.ID);
@@ -538,7 +545,7 @@ var getBaseData = (target, targetId) => {
 
 /**
  * 학습중인 제품 조회
- * - as-is : onSearchDS_STUDY_NOW()
+ * - as-is : cns5810.onSearchDS_STUDY_NOW()
  * @param {string} id 회원번호
  */
 const getStudy = (id) => {
@@ -562,7 +569,7 @@ const getStudy = (id) => {
 
 /**
  * 상담등록 기존 데이타 조회 for update
- * - as-is : onSearchDS_COUNSEL()
+ * - as-is : cns5810.onSearchDS_COUNSEL()
  * @param {string} sCselSeq 상담순번
  * @param {boolean} isFirst 최초조회 여부
  */
@@ -601,7 +608,7 @@ const getCounsel = (sCselSeq, isFirst) => {
 			$("#selectbox14").empty();
 			counselData.forEach(el => {
 				const option = new Option(el.CSEL_SEQ, el.CSEL_SEQ);
-				$(option).data("jobType", "U");
+				option.dataset.jobType = "U";
 				$("#selectbox14").append(option);
 			});
 		}
@@ -845,29 +852,39 @@ const findCodeName = (mk, id) => {
 
 /**
  * 신규버튼 선택시에 고객 기본정보 초기화
- * - as-is : onNewCustInit()
+ * - as-is : cns5810.onNewCustInit()
  */
 const onNewCustInit = () => {
-    $("#textbox1").val("");   // 본부코드
-    $("#textbox2").val("");   // 본부명  
-    $("#textbox3").val("");   // 지역코드
-    $("#textbox4").val("");   // 지역명  
-    $("#textbox5").val("");   // 사업국코드 
-	$("#textbox6").val("");   // 사업국명 
-    $("#textbox7").val("");   // 지점전화
-    $("#hiddenbox3").val("");  // 지점장번호
-    $("#hiddenbox1").val("");	  // 센터코드
-    $("#textbox9").val("");   // 센터명
-    $("#textbox10").val("");  // 센터전화
-	$("#hiddenbox4").val("")  // 센터장사번
+	$("#textbox21").val("");		// 고객명, 선생님명
+	$("#textbox22").val("");		// 회원번호, 사원번호
+	$("#textbox23").val("");		// 고객전화번호
+	$("#textbox24").val("");		// 고객주소
+	$("#textbox25").val("");		// 고객상세주소
+	$("#textbox3").val("");   		// 지역코드
+	$("#textbox4").val("");   		// 지역명 
+	$("#textbox5").val("");   		// 사업국코드 
+	$("#textbox6").val("");   		// 사업국명
+	$("#textbox1").val("");   		// 본부코드
+	$("#textbox2").val("");   		// 본부명
+	$("#textbox7").val("");   		// 지점전화
+	$("#textbox9").val("");   		// 센터명
+	$("#textbox10").val("");  		// 센터전화
+	$("#selectbox13").val("00");	// 학년
+	$("#hiddenbox1").val(""); 		// 센터코드		
+	$("#hiddenbox2").val(""); 		// 고객구분코드
+	$("#hiddenbox3").val(""); 		// 지점장번호
+	$("#hiddenbox4").val("")  		// 센터장사번
+	$("#hiddenbox6").val(""); 		// 고객번호
 	$("#checkbox1").prop("checked", false);   	// LC
 	$("#checkbox2").prop("checked", false);		// YC
 	$("#checkbox3").prop("checked", false);		// HL 
     $("#selectbox9").val("");   	// 상담경로
-	$("#selectbox13").val("00");	// 학년
-    $("#hiddenbox2").val(""); 		// 고객구분코드
     $("#textbox11").val("");		// 연계부서코드
 	$("#textbox26").val("");		// 연계부서명  
+	DS_DROP_TEMP1  = [{}];
+	DS_DROP_TEMP2  = [{}];
+	DS_DROP_CHG    = [{}];
+	grid3.clear();			  		// 학습중인 과목
 }
 
 /**
@@ -881,7 +898,7 @@ const addCsel = () => {
 	// 상담순번 설정
 	const newIdx = $("#selectbox14 option").length + 1;
 	const option = new Option(newIdx, newIdx);
-	$(option).data("jobType", "I");
+	option.dataset.jobType = "I";
 	$("#selectbox14").append(option);
 	$("#selectbox14").val(newIdx);
 
@@ -895,7 +912,7 @@ const addCsel = () => {
 
 /**
  * 추가등록 by 관계회원
- * - as-is : onAddCsel()
+ * - as-is : cns5810.onAddCsel()
  * @param {object} data
  */
 var addCselByFamily = (data) => {
@@ -915,18 +932,27 @@ var addCselByFamily = (data) => {
 
 /**
  * 저장
- * - as-is : onSave()
+ * - as-is : cns5810.onSave()
  * - ccem, ZEN모두 저장
  */
 const saveCounsel = async () => {
 
+	// TODO 
+	// if(!sidebarClient) {
+	// 	alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+	// 	return;
+	// }
+
 	// 과목군을 전체로 변경하여 filter 처리후에 검색어 검색 처리
 	$("#selectbox12").val("").trigger("change");
 
-	// value check
-	const sJobType = $("#selectbox14 option:selected").data("jobType");	// 저장구분(I/U/D)
-	let condition = await saveCounselCondition(sJobType);
-	if (!condition) return;
+	// 저장구분(I: 신규, U: 수정) 구하기
+	const selectSeq = document.getElementById("selectbox14");
+	const sJobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;	
+
+	// 상담정보 value check
+	const counselData = await getCounselCondition(sJobType);
+	if (!counselData) return;
 
 	const settings = {
 		url: `${API_SERVER}/cns.saveCounsel.do`,
@@ -934,11 +960,11 @@ const saveCounsel = async () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
-			senddataids: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
-			recvdataids: ["dsRecv"],
-			DS_COUNSEL: [condition],	// 상담정보 저장
-			DS_ADDINFO: [{}],			// DM 사은품 접수 정보 저장, 개인정보동의 정보 저장, 고객직접퇴회 정보 저장
-			DS_OB: [{}],				// OB관련 데이터
+			senddataids	: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
+			recvdataids	: ["dsRecv"],
+			DS_COUNSEL	: [counselData],			// 상담정보
+			DS_ADDINFO	: getAddInfoCondition(), 	// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
+			DS_OB		: [{}],					 	// TODO OB관련 데이터
 		}),
 		errMsg: "상담정보 저장중 오류가 발생하였습니다.",
 	}
@@ -947,14 +973,21 @@ const saveCounsel = async () => {
 		if (!checkApi(data, settings)) return;
 		
 		const recv = data.dsRecv;
-		if(recv.length >= 1) {
-			$("#textbox28").val(data.dsRecv[0].CSEL_NO);			// 접수번호
-			$("#selectbox14 option:selected").data("jobType", "U"); // 저장구분 변경
-			setBtnCtrlAtLoadComp();
-			alert("저장 되었습니다.");
-		}else {
-			alert("저장 실패");
+
+		if(recv.length == 0) {
+			alert(settings.errMsg);
+			return;
 		}
+
+		// 접수번호 세팅
+		$("#textbox28").val(data.dsRecv[0].CSEL_NO);			
+			
+		// 저장이 완료된 순번의 저장구분 값 변경
+		selectSeq.options[selectSeq.selectedIndex].dataset.jobType = "U"; 
+
+		setBtnCtrlAtLoadComp();
+
+		alert("저장 되었습니다.");
 		
 	});
 
@@ -962,11 +995,11 @@ const saveCounsel = async () => {
 }
 
 /**
- * 저장 value check
- * - as-is : onValueCheck()
+ * 상담저장 정보 value check
+ * - as-is : cns5810.onValueCheck()
  * @param {string} sJobType 저장구분(I/U/D)
  */
-const saveCounselCondition = async (sJobType) => {
+const getCounselCondition = async (sJobType) => {
 
 	const data = {
 		ROW_TYPE         : sJobType,             // 저장구분(I/U/D)    
@@ -1294,8 +1327,26 @@ const saveCounselCondition = async (sJobType) => {
 }
 
 /**
+ * 상담결과 구분에 따라 저장 data 선택
+ */
+const getAddInfoCondition = () => {
+
+	const cselRstMk = $("#selectbox8").val();	// 상담결과 구분
+
+	if (cselRstMk == "12") {		// DM 사은품 접수
+		return DS_DROP_TEMP1;
+	} else if (cselRstMk == "19") {	// 개인정보동의
+		return DS_DROP_TEMP2;
+	} else if (cselRstMk == "20") {	// 고객직접퇴회
+		return DS_DROP_CHG;
+	} else {
+		return [{}];
+	}
+}
+
+/**
  * 병행과목코드의 PLURAL_PRDT_LIST로 grid 체크하는 함수
- * - as-is : gf_setPlProd()
+ * - as-is : comm.js.gf_setPlProd()
  * @param {object} grid TOAST UI Grid
  * @param {string} data PLURAL_PRDT_LIST
  */
@@ -1319,7 +1370,7 @@ const setPlProd = (grid, data) => {
 
 /**
  * 선택된 과목들을 과목코드로 sorting하여 병행과목리스트 반환. 
- * - as-is : gf_getPlProd()
+ * - as-is : com.js.gf_getPlProd()
  * @param {object} grid TOAST UI Grid
  * @returns {object} { ids, names }
  */
@@ -1402,7 +1453,7 @@ const openPopup = (key) => {
 
 /**
  * 상담 분류 팝업
- * - as-is : onCselTypePopUp()
+ * - as-is : cns5810.onCselTypePopUp()
  * @param {number} keyCode 
  */
 const openCCEMPRO042 = (keyCode) => {
@@ -1413,7 +1464,7 @@ const openCCEMPRO042 = (keyCode) => {
 
 /**
  * 사업국/센터/연계부서 팝업
- * - as-is : openCOM1300(), openCOM1620(), openCOM1030()
+ * - as-is : cns5810.openCOM1300(), openCOM1620(), openCOM1030()
  * @param {number} keyCode 
  */
 const openCCEMPRO044 = (keyCode) => {
@@ -1424,7 +1475,7 @@ const openCCEMPRO044 = (keyCode) => {
 
 /**
  * 주소 팝업
- * - as-is : openCNS6610()
+ * - as-is : cns5810.openCNS6610()
  * @param {number} keyCode 
  */
 function openCCEMPRO043(keyCode){
@@ -1435,7 +1486,7 @@ function openCCEMPRO043(keyCode){
 
 /**
  * 상담결과 selectbox 팝업.
- * - as-is : onCselRstMkPopUp()
+ * - as-is : cns5810.onCselRstMkPopUp()
  * @param {string} code 
  */
 const openCselRst = code => {
@@ -1468,7 +1519,7 @@ const openCselRst = code => {
 				alert("회원번호가 없습니다.\n\n고객직접퇴회 신청을 할 수 없습니다.");
 				return;
 			}
-			PopupUtil.open("CCEMPRO024", 663, 705);
+			PopupUtil.open("CCEMPRO024", 670, 800);
 			break;
 		case "확인필요":	// TODO MOS문의답변 code 확인필요
 			PopupUtil.open("CCEMPRO094", 570, 720);
@@ -1494,7 +1545,7 @@ const openCselRst = code => {
 
 /**
  * 상담구분, 상담채널 변경시 호출되는 함수
- * - as-is : onCloseUpCMB_CSEL_MK()
+ * - as-is : cns5810.onCloseUpCMB_CSEL_MK()
  */
 const changeCselType =() => {
     
@@ -1527,7 +1578,7 @@ const changeCselType =() => {
 
 /**
  * 저장이 완료 되었거나, 팝업되어 수정 상황일때 버튼 컨트롤 하는 함수.
- * - as-is : setBtnCtrlAtLoadComp()
+ * - as-is : cns5810.setBtnCtrlAtLoadComp()
  */
 const setBtnCtrlAtLoadComp = () => {
 	$("#button5").prop("disabled", false);	// 추가등록
@@ -1557,7 +1608,7 @@ const setBtnCtrlAtLoadComp = () => {
 
 /**
  * 상담내용 현재 입력 bytes 체크하기
- * - as-is : onTextAreaKeyUp()
+ * - as-is : cns5810.onTextAreaKeyUp()
  */
 const checkTextLengh = () => {
 	
