@@ -329,6 +329,40 @@ const _getAddrList = {
 			}, error: function (response) {
 			}
 		});
+
+		// 테이블 목록 비우기
+		_orgBcdGrid.clear();
+		_orgCenterGrid.clear();
+		_chooseAddrGrid.clear();
+
+		// 선택한 사업국/센터
+		$('#orgBcd_NAME').val("");
+		$('#orgCenter_NAME').val("");
+		$('#orgDetail_NAME').val("");
+
+		// 상세주소
+		$('#addrZipCode_input').val("");
+		$('#addrZipAddr_input').val("");
+		$('#addrZipAddr2_input').val("");
+			
+		// 검증결과
+		$('#checkAddr').val("");
+
+		// 입력주소
+		$('#typedPostNo').val("");
+		$('#typedAddr1').val("");
+		$('#typedAddr2').val("");
+
+		// 정제된 지번주소
+		$('#jibunPostNo').val("");
+		$('#jibunAddr1').val("");
+		$('#jibunAddr2').val("");
+
+		
+		// 정제된 도로명주소
+		$('#doroPostNo').val("");
+		$('#doroAddr1').val("");
+		$('#doroAddr2').val("");
 	},
 
 	branchAddrList(prop){
@@ -379,9 +413,8 @@ const _getAddrList = {
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{
-				GUBUN:"C",
-				// ZIPCDE:prop,
-				LC_ID:"I43600001590"
+				GUBUN:"Z",
+				ZIPCDE:prop,
 			}] // GUBUN : 검색조건(C:센터ID, Z:우편, L : 센터명)
 		};
 		
@@ -497,6 +530,12 @@ const _getAddrList = {
 $('#searchAddr_input').keyup(function(){
     if(event.keyCode == 13){
         $('#searchAddr_btn').trigger('click');
+    }
+});
+
+$('#addrZipAddr2_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchOrgAddr').trigger('click');
     }
 });
 
