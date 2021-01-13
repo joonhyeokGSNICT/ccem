@@ -361,7 +361,7 @@ const FormatUtil = {
     },
 }
 
-const calendarUtil = {
+var calendarUtil = {
     imasks: {},
     calendarOption: {
         autoUpdateInput: false,
