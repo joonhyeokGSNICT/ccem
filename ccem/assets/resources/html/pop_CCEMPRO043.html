@@ -124,16 +124,16 @@
 							<th>읍면동/지번</th>
 							<td><input type="text" class="form-control form-control-sm" id="addrZipAddr_input" readonly></td>
 							<td style="padding:0;">
-								<button id="searchOrgAddr" class="btn btn-sm navBtn floatRight" type="button" onclick="searchOrgAddr()" style="margin-top:0px; margin-bottom:0px; padding:3px; height:30px; margin-left: 0px; margin-right: 0px;border-radius: 0px; width:100%;">검증</button>
+								<button id="searchOrgAddr" class="btn btn-sm navBtn floatRight" type="button" onclick="_getAddrList.chooseAddrList()" style="margin-top:0px; margin-bottom:0px; padding:3px; height:30px; margin-left: 0px; margin-right: 0px;border-radius: 0px; width:100%;">검증</button>
 							</td>
 						</tr>
 						<tr>
 							<th>주소입력</th>
-							<td colspan="4"><input type="text" class="form-control form-control-sm" id=""></td>
+							<td colspan="4"><input type="text" class="form-control form-control-sm" id="addrZipAddr2_input"></td>
 						</tr>
 						<tr>
 							<th>검증결과</th>
-							<td colspan="4"><input type="text" class="form-control form-control-sm" id="" readonly></td>
+							<td colspan="4"><input type="text" class="form-control form-control-sm" id="checkAddr" readonly></td>
 						</tr>
 					</tbody>
 				</table>
@@ -156,47 +156,47 @@
 						<tr>
 							<th rowspan="2">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" selected="false">
 									<label class="form-check-label" for="flexRadioDefault1">
 										입력주소
 									</label>
 								</div>
 							</th>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly value="08524"></td>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly value="서울 금천구 시흥동"></td>
+							<td><input type="text" class="form-control form-control-sm" id="typedPostNo" readonly value=""></td>
+							<td><input type="text" class="form-control form-control-sm" id="typedAddr1" readonly value=""></td>
 						</tr>
 						<tr>
-							<td colspan="2"><input type="text" class="form-control form-control-sm" id="" readonly value="872 보라그린 123호"></td>
+							<td colspan="2"><input type="text" class="form-control form-control-sm" id="typedAddr2" readonly value=""></td>
 						</tr>
 						<tr>
 							<th rowspan="2">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" selected="false">
 									<label class="form-check-label" for="flexRadioDefault2">
 										정제된<br>지번주소
 									</label>
 								</div>
 							</th>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly value="08524"></td>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly value="서울 금천구 시흥동"></td>
+							<td><input type="text" class="form-control form-control-sm" id="jibunPostNo" readonly value=""></td>
+							<td><input type="text" class="form-control form-control-sm" id="jibunAddr1" readonly value=""></td>
 						</tr>
 						<tr>
-							<td colspan="2"><input type="text" class="form-control form-control-sm" id="" readonly value="872 보라그린 123호"></td>
+							<td colspan="2"><input type="text" class="form-control form-control-sm" id="jibunAddr2" readonly value=""></td>
 						</tr>
 						<tr>
 							<th rowspan="2">
 								<div class="form-check">
-									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-									<label class="form-check-label" for="flexRadioDefault2">
+									<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" selected="false">
+									<label class="form-check-label" for="flexRadioDefault3">
 										정제된<br>도로명주소
 									</label>
 								</div>
 							</th>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly value="08524"></td>
-							<td><input type="text" class="form-control form-control-sm" id="" readonly value="서울 금천구 시흥동"></td>
+							<td><input type="text" class="form-control form-control-sm" id="doroPostNo" readonly value=""></td>
+							<td><input type="text" class="form-control form-control-sm" id="doroAddr1" readonly value=""></td>
 						</tr>
 						<tr>
-							<td colspan="2"><input type="text" class="form-control form-control-sm" id="" readonly value="872 보라그린 123호"></td>
+							<td colspan="2"><input type="text" class="form-control form-control-sm" id="doroAddr2" readonly value=""></td>
 						</tr>
 					</tbody>
 				</table>

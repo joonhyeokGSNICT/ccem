@@ -78,6 +78,7 @@ function init(){
 		$('#addrZipCode_input').val(_addrGrid.getFormattedValue(ev.rowKey, "ZIPCDE"));
 		$('#addrZipAddr_input').val(_addrGrid.getFormattedValue(ev.rowKey, "ZIP_ADDR"));
 		_getAddrList.branchAddrList(_addrGrid.getFormattedValue(ev.rowKey, "ZIPCDE"));
+		_getAddrList.centerAddrList(_addrGrid.getFormattedValue(ev.rowKey, "ZIPCDE"));
     });
 
 	// 사업국목록 LIST
@@ -123,6 +124,10 @@ function init(){
 		_orgBcdGrid.addSelection(ev);
 		_orgBcdGrid.clickSort(ev);
 		_orgBcdGrid.clickCheck(ev);
+		
+		$('#orgBcd_NAME').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DIV_NAME"));
+		$('#orgCenter_NAME').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
+		$('#orgDetail_NAME').val("");
 	});
 	
 	// 센터목록 LIST
@@ -130,38 +135,45 @@ function init(){
 		el: document.getElementById('orgCenterGrid'),
 		bodyHeight: 120,
 		bodyWidth:'auto', 
+		rowHeaders: [
+			{
+				type: 'rowNum',
+				sortable: true,
+				ellipsis: true,
+			}
+		],
 		columns: [
 			{
 				header: '본부',
-				name: 'name2',
-				align: "center",
+				name: 'DIV_NAME',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 				width: 140
 			},
 			{
 				header: '사업국',
-				name: 'name3',
-				align: "center",
+				name: 'DEPT_NAME',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 				width: 140
 			},
 			{
 				header: '센터',
-				name: 'name3',
-				align: "center",
+				name: 'LC_NAME',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 				width: 140
             },
 			{
 				header: '관할지역',
-				name: 'name4',
-				align: "center",
+				name: 'ZIP_CNTS',
+				align: "left",
 				sortable: true,
 				ellipsis: true,
-				width: 40
+				width: 500
 			}
 			
 		],
@@ -170,6 +182,10 @@ function init(){
 		_orgCenterGrid.addSelection(ev);
 		_orgCenterGrid.clickSort(ev);
 		_orgCenterGrid.clickCheck(ev);
+
+		$('#orgBcd_NAME').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DIV_NAME"));
+		$('#orgCenter_NAME').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
+		$('#orgDetail_NAME').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "LC_NAME"));
     });
 
 	// 선택할 주소
@@ -177,18 +193,17 @@ function init(){
 		el: document.getElementById('chooseAddrGrid'),
 		bodyHeight: 130,
 		bodyWidth:'auto', 
-		columns: [
+		rowHeaders: [
 			{
-				header: 'No',
-				name: 'name1',
-				align: "center",
+				type: 'rowNum',
 				sortable: true,
 				ellipsis: true,
-				width: 40
-            },
+			}
+		],
+		columns: [
             {
 				header: '우편번호',
-				name: 'name2',
+				name: 'ZPRNJ',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -196,19 +211,19 @@ function init(){
 			},
 			{
 				header: '지번',
-				name: 'name3',
+				name: 'ADDRJ',
 				align: "center",
-				minWidth: 170,
+				minWidth: 250,
 				sortable: true,
 				ellipsis: true,
             },
 			{
 				header: '도로명',
-				name: 'name4',
+				name: 'ADDRR',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
-				width: 170
+				width: 250
 			}
 		],
 	});
@@ -314,6 +329,40 @@ const _getAddrList = {
 			}, error: function (response) {
 			}
 		});
+
+		// 테이블 목록 비우기
+		_orgBcdGrid.clear();
+		_orgCenterGrid.clear();
+		_chooseAddrGrid.clear();
+
+		// 선택한 사업국/센터
+		$('#orgBcd_NAME').val("");
+		$('#orgCenter_NAME').val("");
+		$('#orgDetail_NAME').val("");
+
+		// 상세주소
+		$('#addrZipCode_input').val("");
+		$('#addrZipAddr_input').val("");
+		$('#addrZipAddr2_input').val("");
+			
+		// 검증결과
+		$('#checkAddr').val("");
+
+		// 입력주소
+		$('#typedPostNo').val("");
+		$('#typedAddr1').val("");
+		$('#typedAddr2').val("");
+
+		// 정제된 지번주소
+		$('#jibunPostNo').val("");
+		$('#jibunAddr1').val("");
+		$('#jibunAddr2').val("");
+
+		
+		// 정제된 도로명주소
+		$('#doroPostNo').val("");
+		$('#doroAddr1').val("");
+		$('#doroAddr2').val("");
 	},
 
 	branchAddrList(prop){
@@ -342,7 +391,7 @@ const _getAddrList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("branchAddrList값",response.dsRecv);
+				// console.log("branchAddrList값",response.dsRecv);
 				var temp = response.dsRecv;
 				temp = temp.map(el => {
 					return {
@@ -352,6 +401,122 @@ const _getAddrList = {
 					};
 				});
 				_orgBcdGrid.resetData(temp);
+
+			}, error: function (response) {
+			}
+		});
+	},
+
+	centerAddrList(prop){
+		// console.log(prop);
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{
+				GUBUN:"Z",
+				ZIPCDE:prop,
+			}] // GUBUN : 검색조건(C:센터ID, Z:우편, L : 센터명)
+		};
+		
+		$.ajax({
+			url: API_SERVER + '/cns.getLcNM.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				// console.log("centerAddrList값",response.dsRecv);
+				var temp = response.dsRecv;
+				temp = temp.map(el => {
+					return {
+						DIV_NAME : 	el.DIV_NAME,
+						DEPT_NAME : el.DEPT_NAME,
+						LC_NAME : el.LC_NAME,
+						ZIP_CNTS : el.ZIP_CNTS
+					};
+				});
+				_orgCenterGrid.resetData(temp);
+
+			}, error: function (response) {
+			}
+		});
+	},
+
+	chooseAddrList(){
+		var postNo = $('#addrZipCode_input').val();
+		var addr1 = $('#addrZipAddr_input').val();
+		var addr2 = $('#addrZipAddr2_input').val();
+		// console.log(postNo+"/"+addr1+"/"+addr2);
+
+		var param = {
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{
+				POST_NO: postNo,
+				ADDR1: addr1,
+				ADDR2: addr2
+			}]
+		};
+
+		if ( isEmpty(postNo) ) {
+			alert("우편번호가 비어 있습니다. 주소를 검색해주세요.");
+			$('#searchAddr_input').focus();
+			return false;
+		} else if ( isEmpty(addr1) ){
+			alert("읍면동 주소가 없습니다. 주소를 검색해주세요.");
+			$('#searchAddr_input').focus();
+			return false;
+		} else if ( isEmpty(addr2) ){
+			alert("상세주소가 없습니다. 상세주소를 입력해주세요.");
+			$('#addrZipAddr2_input').focus();
+			return false;
+		}
+		
+		$.ajax({
+			url: API_SERVER + '/cns.getCheckJuso.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log("chooseAddrList값",response.dsRecv);
+				if( isEmpty(response.dsRecv[0].ZPRNJ) ) {
+					// 입력주소
+					$('#typedPostNo').val(postNo);
+					$('#flexRadioDefault1 > option:selected').val();
+				} else {
+					var temp = response.dsRecv;
+					temp = temp.map(el => {
+						return {
+							ZPRNJ : el.ZPRNJ,
+							ADDRJ : el.ADDRJ,
+							ADDRR : el.ADDRR
+						};
+					});
+					_chooseAddrGrid.resetData(temp);
+					
+					// 입력주소
+					$('#typedPostNo').val(response.dsRecv[0].ZPRNJ);
+					$('#flexRadioDefault2 > option:selected').val();
+				}
+				
+				// 검증결과
+				$('#checkAddr').val(response.dsRecv[0].RMG3);
+
+				// 입력주소
+				$('#typedAddr1').val(addr1);
+				$('#typedAddr2').val(addr2);
+
+				// 정제된 지번주소
+				$('#jibunPostNo').val(response.dsRecv[0].ZPRNJ);
+				$('#jibunAddr1').val(response.dsRecv[0].ADDR1Y);
+				$('#jibunAddr2').val(response.dsRecv[0].STDADDR);
+
+				
+				// 정제된 도로명주소
+				$('#doroPostNo').val(response.dsRecv[0].ZPRNR);
+				$('#doroAddr1').val(response.dsRecv[0].NADR1S);
+				$('#doroAddr2').val(response.dsRecv[0].NADR3S);
 
 			}, error: function (response) {
 			}
@@ -367,5 +532,21 @@ $('#searchAddr_input').keyup(function(){
         $('#searchAddr_btn').trigger('click');
     }
 });
+
+$('#addrZipAddr2_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchOrgAddr').trigger('click');
+    }
+});
+
+
+/**
+ * 빈값 확인
+ * @param {빈값확인하는 데이터} data 
+ */
+function isEmpty(data) {
+	if (!data || data == "" || data == undefined || Object.keys(data).length === 0 ) return true;
+	else return false;
+}
 
 init();
