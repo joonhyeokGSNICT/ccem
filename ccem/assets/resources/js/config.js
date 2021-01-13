@@ -36,7 +36,7 @@ const ZDK_INFO = {
 
         },
         ticketField: {
-            
+            list_cust_id: "360055210094",   // 리스트ID_고객번호
         },
         userField: {
 
@@ -45,12 +45,12 @@ const ZDK_INFO = {
 
         },
     },
-    sandbax: {
+    sandbox: {
         ticketForm: {
 
         },
         ticketField: {
-
+            list_cust_id: "360055210114",   // 리스트ID_고객번호
         },
         userField: {
 
