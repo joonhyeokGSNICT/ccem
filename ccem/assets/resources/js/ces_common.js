@@ -87,6 +87,15 @@ const tableToExcel = (tableEl, fileName) => {
 }
 
 /**
+ * 빈 객체(또는 빈 배열) 체크
+ * @param {object|Array} param 
+ */
+const isEmpty = (param) => {
+    if (!param)  return true;
+    return Object.keys(param).length === 0;
+}
+
+/**
  * 녹취청취
  */
 const recordPlay = recordId => {
