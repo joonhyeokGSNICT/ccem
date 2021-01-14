@@ -249,13 +249,13 @@ const openPopup = async (key) => {
  */
 const onSave = () => {
 
-	opener.DS_DROP_CHG[0]["CSEL_DATE"]    = sCSEL_DATE;	// 상담일자
-	opener.DS_DROP_CHG[0]["CSEL_NO"] 	  = sCSEL_NO;	// 상담번호
-	opener.DS_DROP_CHG[0]["CSEL_SEQ"] 	  = sCSEL_SEQ;	// 상담순번
-	opener.DS_DROP_CHG[0]["CUST_ID"] 	  = sCUST_ID;	// 고객번호
-	opener.DS_DROP_CHG[0]["LIST_ID"]	  = sLIST_CUST_ID ? sLIST_CUST_ID.split("_")[0] : "";	// 리스트아이디
-	opener.DS_DROP_CHG[0]["RFD_PROC_MK"]  = $("input[name='RFD_PROC_MK']:checked").val();		// 퇴회처리구분
-	opener.DS_DROP_CHG[0]["CTI_CHGDATE"]  = "";			// 변경일
+	opener.DS_DROP_CHG.CSEL_DATE    = sCSEL_DATE;	// 상담일자
+	opener.DS_DROP_CHG.CSEL_NO 	  	= sCSEL_NO;	// 상담번호
+	opener.DS_DROP_CHG.CSEL_SEQ 	= sCSEL_SEQ;	// 상담순번
+	opener.DS_DROP_CHG.CUST_ID 	  	= sCUST_ID;	// 고객번호
+	opener.DS_DROP_CHG.LIST_ID	  	= sLIST_CUST_ID ? sLIST_CUST_ID.split("_")[0] : "";	// 리스트아이디
+	opener.DS_DROP_CHG.RFD_PROC_MK  = $("input[name='RFD_PROC_MK']:checked").val();		// 퇴회처리구분
+	opener.DS_DROP_CHG.CTI_CHGDATE  = "";			// 변경일
 
 	// 상담등록 > 상담내용 세팅
 	const cselCnts = opener.document.getElementById("textbox13");	// 상담등록 > 상담내용 textarea
@@ -277,7 +277,7 @@ const onClose = () => {
 	if (sFLAG == "U") {
 		onSave();
 	} else {
-		opener.DS_DROP_CHG = [{}];
+		opener.DS_DROP_CHG = {};
 		window.close();
 	}
 }

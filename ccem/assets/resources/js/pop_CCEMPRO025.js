@@ -1,5 +1,3 @@
-let topbarObject;
-let sidebarClient;
 
 const TEL_LIST = {
     home  : [],   // 자택
@@ -61,9 +59,8 @@ $(function() {
 
 const onStart = async () => {
     const openerNm = opener ? opener.name : "";
-
+    
     if(openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
-        topbarObject = opener.topbarObject;
         const CUST_ID = opener.document.getElementById("hiddenbox6").value;
 
         // 자택, 직장, 회원모, 회원 전화번호 가져오기
@@ -111,46 +108,11 @@ const getTelNo = (CUST_ID) => new Promise((resolve, reject) => {
  * 저장
  */
 const onSave = async () => {
+    const openerNm = opener ? opener.name : "";
 
-    sidebarClient = topbarObject.sidebarClient;
-
-    if(!sidebarClient) {
-        alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-        return;
+    if(openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
+        opener.DS_SCHEDULE.TELNO = $("#textbox1").val() + $("#textbox2").val() + $("#textbox3").val();
     }
 
-    const tel = $("#textbox1").val() + $("#textbox2").val() + $("#textbox3").val();
-    let req = new Object(), res = new Object();
-    req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["re_call_no"]}`] = tel;
-
-    // 티켓필드 입력
-    res = await sidebarClient.set(req);
-
-    // 티켓이 존재하지 않을때...
-    if(res["code"]) {
-        console.error(res);
-        alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-        return;
-    }
-
-    // 티켓필드 입력 성공여부 체크
-    let succ = false;
-    for(let key in req) {
-        if(res[key] === req[key]) {
-            succ = true;
-        }else {
-            succ = false;
-            break;
-        }
-    }
-
-    // 티켓필드가 존재하지 않을때...
-    if(!succ) {
-        console.error(res);
-        alert("[재통화연락처] 필드가 없습니다. 관리자에게 문의하시기 바랍니다.");
-        return;
-    }
-
-    alert("저장 되었습니다.");
-
+    window.close();
 }

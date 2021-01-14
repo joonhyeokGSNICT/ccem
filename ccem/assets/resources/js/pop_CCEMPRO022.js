@@ -14,10 +14,10 @@ var grid3;	// 상담등록 > 학습중인과목 grid
 var grid4;	// 입회등록 > 과목 grid
 var grid5;	// 입회등록 > 입회과목 grid
 
-var DS_DM_RECEIPT  = [{}];		// DM 사은품 접수 정보 저장 data
-var DS_DROP_TEMP2  = [{}];		// 개인정보동의 정보 저장 data
-var DS_DROP_CHG    = [{}];		// 고객직접퇴회 정보 저장 data
-var DS_SCHEDULE	   = [{}];		// 재통화예약 정보 저장 data
+var DS_DM_RECEIPT  = {};		// DM 사은품 접수 정보 저장 data
+var DS_DROP_TEMP2  = {};		// 개인정보동의 정보 저장 data
+var DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
+var DS_SCHEDULE	   = {};		// 재통화예약 정보 저장 data
 
 $(function () {
 	
@@ -955,19 +955,69 @@ var addCselByFamily = (data) => {
 }
 
 /**
- * 저장
- * - as-is : cns5810.onSave()
- * - ccem, ZEN모두 저장
+ * Zendesk 저장
+ * @return {boolean} 성공여부
  */
-const saveCounsel = async () => {
+const saveZendesk = async (counselData, addInfoData) => {
+
+	// TODO 상담정보를 젠데스트 티켓필드에 저장한다.
 
 	sidebarClient = topbarObject.sidebarClient;
 
-	// TODO 
-	// if(!sidebarClient) {
-	// 	alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-	// 	return;
-	// }
+	if(!sidebarClient) {
+		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+
+	const { ticket } = await sidebarClient.get("ticket");
+	counselData.ZEN_TICKET_ID = ticket.id;
+	
+	let req = new Object(), res = new Object();
+
+	// 상담결과 구분이 재통화예약일경우
+	if($("#selectbox8").val() == "01")	{
+		req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["re_call_no"]}`] = DS_SCHEDULE.TELNO;
+	}
+
+	if(isEmpty(req)) return true;
+
+	// 티켓필드 입력
+	res = await sidebarClient.set(req);
+	
+	// 티켓이 존재하지 않을때...
+	if(res["code"]) {
+		console.error(res);
+		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+
+	// 티켓필드 입력 성공여부 체크
+	let succ = false;
+	for(let key in req) {
+		if(res[key] === req[key]) {
+			succ = true;
+		}else {
+			succ = false;
+			break;
+		}
+	}
+
+	// 티켓필드가 존재하지 않을때...
+	if(!succ) {
+		console.error(res);
+		alert("요청한 티켓필드가 없습니다. 관리자에게 문의하시기 바랍니다.");
+		return false;
+	}
+
+	return true;
+	
+}
+
+/**
+ * CCEM 저장
+ * - as-is : cns5810.onSave()
+ */
+const saveCounsel = async () => {
 
 	// 과목군을 전체로 변경하여 filter 처리후에 검색어 검색 처리
 	$("#selectbox12").val("").trigger("change");
@@ -981,6 +1031,7 @@ const saveCounsel = async () => {
 	if (!counselData) return;
 	const addInfoData = getAddInfoCondition();
 	if (!addInfoData) return;
+	if (!await saveZendesk(counselData, addInfoData)) return;
 
 	const settings = {
 		url: `${API_SERVER}/cns.saveCounsel.do`,
@@ -991,7 +1042,7 @@ const saveCounsel = async () => {
 			senddataids	: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
 			recvdataids	: ["dsRecv"],
 			DS_COUNSEL	: [counselData],			// 상담정보
-			DS_ADDINFO	: addInfoData, 				// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
+			DS_ADDINFO	: [addInfoData], 			// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
 			DS_OB		: [{}],					 	// TODO OB관련 데이터
 		}),
 		errMsg: "상담정보 저장중 오류가 발생하였습니다.",
@@ -1045,7 +1096,7 @@ const getCounselCondition = async (sJobType) => {
 		PROC_HOPE_DATE   : calendarUtil.getImaskValue("calendar2"),             // 처리희망일자       
 		CSEL_MAN_MK      : $("#selectbox2").val(),             // 내담자구분         
 		CUST_RESP_MK     : $("#selectbox6").val(),             // 고객반응구분       
-		// CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 
+		CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 
 		CSEL_RST_MK1     : $("#selectbox8").val(),             // 상담결과구분       
 		CSEL_RST_MK2     : "",             // 상담결과구분2      
 		PROC_MK          : $("#selectbox4").val(),             // 처리구분           
@@ -1362,7 +1413,7 @@ const getAddInfoCondition = () => {
 	} else if (cselRstMk == "20") {	// 고객직접퇴회
 		return DS_DROP_CHG;
 	} else {
-		return [{}];
+		return {};
 	}
 }
 
@@ -1588,9 +1639,10 @@ const openCselRst = code => {
  * - as-is : cns5810.setInitCselRstMkDS()
  */
 const setInitCselRstMkDS = () => {
-	DS_DM_RECEIPT  = [{}];		// DM 사은품 접수 정보 저장 data
-	DS_DROP_TEMP2  = [{}];		// 개인정보동의 정보 저장 data
-	DS_DROP_CHG    = [{}];		// 고객직접퇴회 정보 저장 data
+	DS_DM_RECEIPT  = {};		// DM 사은품 접수 정보 저장 data
+	DS_DROP_TEMP2  = {};		// 개인정보동의 정보 저장 data
+	DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
+	DS_SCHEDULE	   = {};		// 재통화예약 정보 저장 data
 }
 
 /**
@@ -1602,23 +1654,23 @@ const onDmReceiptChange = () => {
 	dmTypeValue = $("#selectbox16 option:selected").val();
 
 	if(!dmTypeValue) {
-		DS_DM_RECEIPT = [{}];
+		DS_DM_RECEIPT = {};
 		return;
 	}
 
-	DS_DM_RECEIPT[0].CSEL_DATE   =	calendarUtil.getImaskValue("textbox27");	// 상담일자		
-	DS_DM_RECEIPT[0].CSEL_NO     =	$("#textbox28").val();						// 상담번호
-	DS_DM_RECEIPT[0].CSEL_SEQ    =	$("#selectbox14").val();					// 상담순번
-	DS_DM_RECEIPT[0].CUST_ID     =	$("#hiddenbox6").val();						// 고객번호
-	DS_DM_RECEIPT[0].CUST_NAME   =	$("#textbox21").val();						// 고객명
-	DS_DM_RECEIPT[0].DM_MATCHCD  =	$("#hiddenbox7").val();						// DM매치코드
-	DS_DM_RECEIPT[0].DM_LIST_ID  =	$("#hiddenbox8").val();						// DM목록ID
-	DS_DM_RECEIPT[0].DM_TYPE_CDE =	dmTypeValue;								// DM종류코드
-	DS_DM_RECEIPT[0].DMLABEL	 =  dmTypeText;									// DM종류
-	DS_DM_RECEIPT[0].DM_ZIPCDE   =	$("#textbox24").val();						// 우편번호
-	DS_DM_RECEIPT[0].DM_ADDR     =	$("#textbox25").val();						// 주소
-	DS_DM_RECEIPT[0].DM_REQ_DATE =	getDateFormat().replace(/[^0-9]/gi, '');	// 요청일자
-	DS_DM_RECEIPT[0].REQ_USER_ID =	currentUser.external_id;					// 요청자ID	
+	DS_DM_RECEIPT.CSEL_DATE   =	calendarUtil.getImaskValue("textbox27");	// 상담일자		
+	DS_DM_RECEIPT.CSEL_NO     =	$("#textbox28").val();						// 상담번호
+	DS_DM_RECEIPT.CSEL_SEQ    =	$("#selectbox14").val();					// 상담순번
+	DS_DM_RECEIPT.CUST_ID     =	$("#hiddenbox6").val();						// 고객번호
+	DS_DM_RECEIPT.CUST_NAME   =	$("#textbox21").val();						// 고객명
+	DS_DM_RECEIPT.DM_MATCHCD  =	$("#hiddenbox7").val();						// DM매치코드
+	DS_DM_RECEIPT.DM_LIST_ID  =	$("#hiddenbox8").val();						// DM목록ID
+	DS_DM_RECEIPT.DM_TYPE_CDE =	dmTypeValue;								// DM종류코드
+	DS_DM_RECEIPT.DMLABEL	  =  dmTypeText;								// DM종류
+	DS_DM_RECEIPT.DM_ZIPCDE   =	$("#textbox24").val();						// 우편번호
+	DS_DM_RECEIPT.DM_ADDR     =	$("#textbox25").val();						// 주소
+	DS_DM_RECEIPT.DM_REQ_DATE =	getDateFormat().replace(/[^0-9]/gi, '');	// 요청일자
+	DS_DM_RECEIPT.REQ_USER_ID =	currentUser.external_id;					// 요청자ID	
 
 }
 
