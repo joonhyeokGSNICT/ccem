@@ -396,7 +396,6 @@ const setCodeData = () => {
 		"PROC_MK",			// 처리구분
 		"LIMIT_MK",			// 처리시한
 		"CUST_RESP_MK", 	// 고객반응
-		"CALL_RST_MK", 		// OB결과
 		"CSEL_RST_MK",		// 상담결과
 		"STD_CRS_CDE", 		// 상담경로
 		"PROC_STS_MK",		// 처리상태
@@ -447,7 +446,6 @@ const onStart = (openerName) => {
 
 	// init
 	$("#selectbox6").val("2");				// 고객반응
-	$("#selectbox7").val("").prop("disabled", true);	// OB결과
 	$("#selectbox10").val("99");			// 처리상태
 	$("#button4").prop("disabled", true);	// 상담연계
 	$("#button5").prop("disabled", true);	// 추가등록
@@ -665,7 +663,6 @@ const getCounsel = (sCselSeq, isFirst) => {
 			$("#selectbox5").val(rowData.LIMIT_MK);											// 처리시한구분
 			$("#selectbox6").val(rowData.CUST_RESP_MK);										// 고객반응구분
 			calendarUtil.setImaskValue("calendar2", rowData.PROC_HOPE_DATE);				// 처리희망일자
-			$("#selectbox7").val(rowData.CALL_RST_MK);				                		// 통화결과구분      (O/B결과) 
 			$("#selectbox8").val(rowData.CSEL_RST_MK1);				                		// 상담결과구분
 			$("#selectbox9").val(rowData.FST_CRS_CDE);										// 첫상담경로
 			$("#selectbox10").val(rowData.PROC_STS_MK);					            		// 처리상태구분
@@ -679,15 +676,13 @@ const getCounsel = (sCselSeq, isFirst) => {
 
 			// 상담결과 구분이 DM 사은품접수일 경우.
 			if(rowData.CSEL_RST_MK1 == "12") { 
-				// 지급사유 selectbox 표시
-				$("#dmTyTd1").attr("colspan", "04");
-				$("#dmTyTd2").css("display", "");
-				$("#dmTyTd3").css("display", "");
-			}else {
-				// 지급사유 selectbox 숨김
-				$("#dmTyTd1").attr("colspan", "06");
-				$("#dmTyTd2").css("display", "none");
-				$("#dmTyTd3").css("display", "none");
+				// 지급사유 selectbox 활성화
+				$("#selectbox16").prop("disabled", false);
+				return;
+			} else {
+				// 지급사유 selectbox 비활성화
+				$("#selectbox16").prop("disabled", true);
+				$("#selectbox16").val("");
 			}
 
 			setBtnCtrlAtLoadComp();
@@ -1050,7 +1045,7 @@ const getCounselCondition = async (sJobType) => {
 		PROC_HOPE_DATE   : calendarUtil.getImaskValue("calendar2"),             // 처리희망일자       
 		CSEL_MAN_MK      : $("#selectbox2").val(),             // 내담자구분         
 		CUST_RESP_MK     : $("#selectbox6").val(),             // 고객반응구분       
-		CALL_RST_MK      : $("#selectbox7").val(),             // 통화결과구분      (O/B결과) 
+		// CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 
 		CSEL_RST_MK1     : $("#selectbox8").val(),             // 상담결과구분       
 		CSEL_RST_MK2     : "",             // 상담결과구분2      
 		PROC_MK          : $("#selectbox4").val(),             // 처리구분           
@@ -1533,16 +1528,12 @@ const openCselRst = code => {
 
 	// 사은품접수
 	if (code == "12") {
-		// 지급사유 selectbox 표시
-		$("#dmTyTd1").attr("colspan", "04");
-		$("#dmTyTd2").css("display", "");
-		$("#dmTyTd3").css("display", "");
+		// 지급사유 selectbox 활성화
+		$("#selectbox16").prop("disabled", false);
 		return;
 	} else {
-		// 지급사유 selectbox 숨김
-		$("#dmTyTd1").attr("colspan", "06");
-		$("#dmTyTd2").css("display", "none");
-		$("#dmTyTd3").css("display", "none");
+		// 지급사유 selectbox 비활성화
+		$("#selectbox16").prop("disabled", true);
 		$("#selectbox16").val("");
 	}
 

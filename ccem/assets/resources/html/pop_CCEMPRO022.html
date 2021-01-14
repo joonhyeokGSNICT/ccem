@@ -301,15 +301,15 @@
 									<tr>
 										<th>처리희망일</th>
 										<td><input type="text" class="form-control form-control-sm calendar" id="calendar2"/></td>
-										<th>O/B결과</th>
-										<td>
-											<select class="form-control form-control-sm" name="CALL_RST_MK" id="selectbox7">
-												<option value=""></option>
-											</select>
-										</td>
 										<th>상담결과</th>
 										<td>
 											<select class="form-control form-control-sm" name="CSEL_RST_MK" id="selectbox8" onchange="openCselRst(this.value)">
+												<option value=""></option>
+											</select>
+										</td>
+										<th>지급사유</th>
+										<td>
+											<select class="form-control form-control-sm" name="DM_TYPE_CDE" id="selectbox16" onchange="onDmReceiptChange()" disabled>
 												<option value=""></option>
 											</select>
 										</td>
@@ -335,13 +335,7 @@
 										<td class="text-center align-bottom"><input type="checkbox" id="checkbox5"></td>
 									</tr>
 									<tr>
-										<td id="dmTyTd1" colspan="6"></td>
-										<th id="dmTyTd2" style="display: none;">지급사유</th>
-										<td id="dmTyTd3" style="display: none;">
-											<select class="form-control form-control-sm" name="DM_TYPE_CDE" id="selectbox16" onchange="onDmReceiptChange()">
-												<option value=""></option>
-											</select>
-										</td>
+										<td colspan="6"></td>
 										<th>재통화완료</th>
 										<td class="text-center align-bottom"><input type="checkbox" id="checkbox6"></td>
 									</tr>
