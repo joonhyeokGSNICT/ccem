@@ -571,7 +571,18 @@ const getStudy = (id) => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-		grid3.resetData(data.dsRecv);
+		
+		const studyList = data.dsRecv;
+		grid3.resetData(studyList);
+
+		// 신규상담일 경우 학습중인 과목을 좌측 상담과목 선택
+		const selectSeq = document.getElementById("selectbox14")
+		const jobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;
+		if(jobType == "I") {
+			const study_id_arr = studyList.map(el => el.PRDT_ID);
+			const study_id_str = study_id_arr.join("_");
+			setPlProd(grid1, study_id_str);
+		}
 	});
 }
 
@@ -631,7 +642,7 @@ const getCounsel = (sCselSeq, isFirst) => {
 			const CUST_MK			= rowData.CUST_MK;			// 고객구분
 			const target 			= (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C"; // C : 고객, T : 선생님
 			getBaseData(target, rowData.CUST_ID);		// 기본정보조회
-			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	// 병행과목코드리스트
+			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	// 상담과목 선택
 			
 			$("#hiddenbox5").val(rowData.CSEL_RST_MK1);										// 상담결과구분코드
 			$("#textbox29").val(rowData.CSEL_STTIME);										// 상담시간
