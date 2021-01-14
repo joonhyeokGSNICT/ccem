@@ -36,7 +36,8 @@ const ZDK_INFO = {
 
         },
         ticketField: {
-            list_cust_id: "360055210094",   // 리스트ID_고객번호
+            list_cust_id    : "360055210094",       // 리스트ID_고객번호
+            re_call_no      : "1500000369381",      // 재통화 연락처
         },
         userField: {
 
@@ -50,7 +51,8 @@ const ZDK_INFO = {
 
         },
         ticketField: {
-            list_cust_id: "360055210114",   // 리스트ID_고객번호
+            list_cust_id    : "360055210114",       // 리스트ID_고객번호
+            re_call_no      : "1500000374822",      // 재통화 연락처
         },
         userField: {
 
