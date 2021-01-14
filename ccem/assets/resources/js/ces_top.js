@@ -11,6 +11,7 @@ var counselMain_directCharge_duesInfo_grid = null; 		// 상담메인	> 직접결
 var counselMain_directCharge_alimSendList_grid = null; 	// 상담메인	> 직접결제 > 알림톡발송이력 grid
 var counselMain_directCharge_cancelCharge_grid = null; 	// 상담메인	> 직접결제 > 결제/취소 grid
 var counselMain_directCharge_bill_grid = null;			// 상담메인	> 직접결제 > 청구서 grid
+var counselMain_directCharge_reciverInfo_grid = null;	// 상담메인	> 직접결제 > 알림톡수신대상자정보 grid
 var counselMain_changeHist_studySpot_grid = null;		// 상담메인	> 변경이력 > 현재 학습장소 grid
 var counselMain_changeHist_changeDetail_grid = null;	// 상담메인	> 변경이력 > 신상변경이력 grid
 var counselMain_infoAgree_infoAgreeList_grid = null;	// 상담메인	> 정보동의 > 개인정보동의 grid
@@ -18,7 +19,7 @@ var counselMain_infoAgree_termsVersion_grid = null;		// 상담메인	> 정보동
 var counselMain_infoAgree_iaRecordList_grid= null;		// 상담메인	> 정보동의 > 개인정보녹취통화이력 grid
 var counselMain_infoAgree_termsRecordList_grid= null;	// 상담메인	> 정보동의 > 약관녹취통화이력 grid
 var counselMain_autoResign_resignDetail_grid = null;	// 상담메인	> 자동퇴회 > 자동퇴회 세부 grid
-var counselMain_directCharge_reciverInfo_grid = null;	// 상담메인	> 자동퇴회 > 퇴회안내발송이력 grid
+var counselMain_autoResign_resignSendList_grid = null;	// 상담메인	> 자동퇴회 > 퇴회안내발송이력 grid
 var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조사 > 고객조사 grid
 var counselMain_researchCust_rschCallHist_grid = null;	// 상담메인	> 고객조사 > 통화이력 grid
 var counselMain_researchCust_smsLmsHist_grid = null;	// 상담메인	> 고객조사 > 설문조사 grid
@@ -426,6 +427,7 @@ function gridReset(){
 		counselMain_directCharge_alimSendList_grid.clear();		// 알림톡발송이력
 		counselMain_directCharge_cancelCharge_grid.clear();		// 결제/취소
 		counselMain_directCharge_bill_grid.clear();				// 청구서
+		counselMain_directCharge_reciverInfo_grid.clear();		// 알림톡수신대상자
 		counselMain_changeHist_studySpot_grid.clear();			// 학습장소 변동이력
 		counselMain_changeHist_changeDetail_grid.clear();		// 신상변경이력
 		counselMain_infoAgree_infoAgreeList_grid.clear();		// 개인정보동의
@@ -433,7 +435,7 @@ function gridReset(){
 		counselMain_infoAgree_iaRecordList_grid.clear(); 		// 개인정보녹취통화이력
 		counselMain_infoAgree_termsRecordList_grid.clear();		// 약관녹취통화이력
 		counselMain_autoResign_resignDetail_grid.clear();		// 자동퇴회 세부
-		counselMain_directCharge_reciverInfo_grid.clear();		// 퇴회안내발송이력
+		counselMain_autoResign_resignSendList_grid.clear();		// 퇴회안내발송이력
 		counselMain_researchCust_rsrchCust_grid.clear();	 	// 고객조사 grid
 		counselMain_researchCust_rschCallHist_grid.clear();		// 통화이력 grid
 		counselMain_researchCust_smsLmsHist_grid.clear();		// 설문조사 grid
@@ -683,15 +685,15 @@ $(function(){
 		case 'autoQuit':
 			if(currentCustInfo.MBR_ID != ""){
 				loadList('getDropDtl', counselMain_autoResign_resignDetail_grid);
-				loadList('getDropMsg', counselMain_directCharge_reciverInfo_grid);
+				loadList('getDropMsg', counselMain_autoResign_resignSendList_grid);
 			}
 			counselMain_autoResign_resignDetail_grid.refreshLayout();
-			counselMain_directCharge_reciverInfo_grid.refreshLayout();
+			counselMain_autoResign_resignSendList_grid.refreshLayout();
 			break;
 		// 고객조사
 		case 'custInv':
 			if(currentCustInfo.CUST_ID != ""){
-				loadList('getDropDtl', counselMain_researchCust_rsrchCust_grid);
+				loadList('getTBLISTbyCUSTID', counselMain_researchCust_rsrchCust_grid);
 			}
 			counselMain_researchCust_rsrchCust_grid.refreshLayout();
 			//counselMain_directCharge_reciverInfo_grid.refreshLayout();
@@ -1389,6 +1391,11 @@ function loadList(id, grid) {
 		case 'getDropMsg' : 	// 자동퇴회 - 퇴회안내발송 이력조회
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getDropMsg.do';
+			break;
+			
+		case 'getTBLISTbyCUSTID' : 	// 고객조사 - 고객조사
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			sendUrl = '/cns.getTBLISTbyCUSTID.do';
 			break;
 		}
 		

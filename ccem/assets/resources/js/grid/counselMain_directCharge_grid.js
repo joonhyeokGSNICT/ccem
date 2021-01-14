@@ -113,15 +113,17 @@ $(function(){
 				],
 		});
 		counselMain_directCharge_duesInfo_grid.on('click', (ev) => {
-			counselMain_directCharge_duesInfo_grid.addSelection(ev);
-			counselMain_directCharge_duesInfo_grid.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_directCharge_duesInfo_grid.addSelection(ev);
+				counselMain_directCharge_duesInfo_grid.clickSort(ev);
+				currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(ev.rowKey);		// 직접결제 자동조회
+				loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);				// 알림톡 이력
+				loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);					// 결제/취소 이력
+				loadList('getCustPayReq', counselMain_directCharge_bill_grid);							// 청구서 이력
+			}
 	    });
 		
 		counselMain_directCharge_duesInfo_grid.on('dblclick', (ev) => {
-			currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(ev.rowKey);		// 직접결제 자동조회
-			loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);				// 알림톡 이력
-			loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);					// 결제/취소 이력
-			loadList('getCustPayReq', counselMain_directCharge_bill_grid);							// 청구서 이력
 	    });
 		// counselMain_directCharge_duesInfo_grid 끝
 		
@@ -233,8 +235,11 @@ $(function(){
 				],
 		});
 		counselMain_directCharge_alimSendList_grid.on('click', (ev) => {
-			counselMain_directCharge_alimSendList_grid.addSelection(ev);
-			counselMain_directCharge_alimSendList_grid.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_directCharge_alimSendList_grid.addSelection(ev);
+				counselMain_directCharge_alimSendList_grid.clickSort(ev);
+				counselMain_directCharge_reciverInfo_grid.resetData([counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey)]);
+			}
 	    });
 		
 		// 알림톡발송이력 끝
@@ -304,17 +309,31 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
+	        	//{Decode(KKO_RLY,"M","모","F","부","L","법정대리인","I","본인","")}
 				{
 					header: '관계',
-					name: 'custNm',
-					width: 50,
+					name: 'KKO_RLY',
+					width: 75,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: function(e){
+						var result = "";
+						if(e.value != "" && e.value != null){
+							switch(e.value){
+							case 'M' : result = '모'; break;
+							case 'F' : result = '부'; break;
+							case 'L' : result = '법정대리인'; break;
+							case 'I' : result = '본인'; break;
+							default  : result = ''; break;
+							}
+						}
+						return result;
+					}
 				},
 				{
 					header: '이름',
-					name: 'custSeq',
+					name: 'KKO_NM',
 					width: 100,
 					align: "center",
 					sortable: true,
@@ -322,7 +341,7 @@ $(function(){
 				},
 				{
 					header: '전화번호',
-					name: 'reserverDtm',
+					name: 'MOBILNO',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
