@@ -5,7 +5,11 @@ var counselMain_counselHist_grid = null;   		// 상담메인 > 상담이력 grid
 var counselMain_studyTab_weeklyStat = null; 	// 상담메인 > 학습이력 > 주간학습현황 grid
 var counselMain_studyTab_changeHist = null; 	// 상담메인 > 학습이력 > 변동이력 grid
 var counselMain_studyTab_asignStuff = null; 	// 상담메인 > 학습이력 > 불출교재 grid
+var counselMain_studyTab_asignStuff2 = null; 	// 상담메인 > 학습이력 > 불출교재2 grid
 var counselMain_studyList_grid = null;  		// 상담메인	> 학습과목정보 grid
+var counselMain_directCharge_duesInfo_grid = null; // 상담메인	> 직접결제 > 회비관리현황 grid
+var counselMain_directCharge_alimSendList_grid = null; // 상담메인	> 직접결제 > 알림톡발송이력 grid
+var counselMain_directCharge_cancelCharge_grid = null; // 상담메인	> 직접결제 > 결제/취소 grid
 var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상담이력 grid
 
 var currentPop = { name : null };
@@ -14,9 +18,119 @@ var currentUnPop = { name : null };
 var codeData;									// 전체 공통코드 정보
 
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
-var currentCustInfo;							// 현재 선택된 고객의 정보
+var currentCustInfo = {
+		CUST_ID			   : "",
+		CUST_MK            : "",
+		CUST_CGNT_NO       : "",
+		MBR_ID             : "",
+		NAME               : "",
+		NAME_ENG           : "",
+		GND                : "",
+		RSDNO              : "",
+		BIRTH_MK           : "",
+		BIRTH_YMD          : "",
+		BLOOD              : "",
+		SCHL_NAME          : "",
+		GRADE_CDE          : "",
+		FNL_EDUHIST_CDE    : "",
+		FAT_RSDNO          : "",
+		FAT_NAME           : "",
+		FAT_REL            : "",
+		EMPCHILD_FLAG      : "",
+		TASTE_CDE          : "",
+		TASTE_CDE2         : "",
+		HOPE               : "",
+		RELIGION_CDE       : "",
+		JOB_CDE            : "",
+		DUTY_NAME          : "",
+		WED_FLAG           : "",
+		WED_DAY            : "",
+		BANK_ID            : "",
+		TRS_ACCT_ID        : "",
+		REP_EMAIL_ADDR     : "",
+		MAIL_RCV_FLAG      : "",
+		DM_RCV_MK          : "",
+		DM_RETURN_DATE     : "",
+		MAIN_NSPAPER1      : "",
+		PCTYPE_CDE         : "",
+		ZIPCDE             : "",
+		ADDR               : "",
+		DDD                : "",
+		TELPNO1            : "",
+		TELPNO2            : "",
+		MOBILNO            : "",
+		DEPT_ID            : "",
+		EDUPIA_NO          : "",
+		EDUPIA_ID          : "",
+		FST_CRS_CDE        : "",
+		MEDIA_CDE          : "",
+		TM_RCV_MK          : "",
+		IVY_FLAG           : "",
+		IVY_POINT          : "",
+		FML_RANK           : "",
+		WEIGHT             : "",
+		MOTTO              : "",
+		CHG_USER_ID        : "",
+		UPDDATE            : "",
+		MIDAS_CHGDATE      : "",
+		CTI_CHGDATE        : "",
+		SMS_FLAG           : "",
+		MOBILNO3           : "",
+		MOBILNO_MBR        : "",
+		MOBILNO_FAT        : "",
+		MOBILNO3_MBR       : "",
+		MOBILNO3_FAT       : "",
+		BANK_NAME          : "",
+		FAT_DEPT_NAME      : "",
+		ZIP_ADDR           : "",
+		BL_BLACK_YN        : "",
+		DEPT_NAME          : "",
+		UP_DEPT_ID         : "",
+		UPDEPTNAME         : "",
+		ZIPCDE_DEPT        : "",
+		ADDR_DEPT          : "",
+		ZIP_ADDR_DEPT      : "",
+		TELPNO_DEPT        : "",
+		FAXNO_DEPT         : "",
+		FAT_CO_DDD         : "",
+		FAT_CO_TELPNO1     : "",
+		FAT_CO_TELPNO2     : "",
+		CASH_NO            : "",
+		STD_PRDT_CNT       : "",
+		STD_TOT_MONTH      : "",
+		VIP_CDE            : "",
+		VIP_CDE_NAME       : "",
+		FAXNO              : "",
+		EMPCHILD_NAME      : "",
+		BLACK_CUST_MK_NAME : "",
+		BL_DEL_YN          : "",
+		DEL_CUST_MK_NAME   : "",
+		INFO_YN_NAME       : "",
+		SMS_YN_NAME        : "",
+		SMS_SAVE_YN_NAME   : "",
+		ZPOST_DT           : "",
+		RDATE              : "",
+		RPHONE             : "",
+		THIRD_YN_NAME      : "",
+		DNC_YN_NAME        : "",
+		DNC_DT             : "",
+		MOBILNO_LAW        : "",
+		MOBILNO3_LAW       : "",
+		CERT_GB            : "",
+		SMS_SEND_DT        : "",
+		SMS_REV_DT         : "",
+		APPRV_GB           : "",
+		APPRV_NAME         : "",
+		LC_ID              : "",
+		TELPNO_NAME        : "",
+		TELPNO_LC          : "",
+		EMAIL              : "",
+		ONLINEID           : ""
+};							// 현재 선택된 고객의 정보
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
+var currentDirectChargeInfo;					// 현재 선택된 회비관리의 정보
+
 var existCustInfo;								// 기존 존재하는 고객의 정보
 var existCustName;								// 기존 존재하는 고객의 이름
 var existCustTelNo;								// 기존 존재하는 고객의 전화번호
@@ -103,9 +217,118 @@ client.on("getCodeData", function(d){
  * @returns
  */
 function initAll() {
-	currentCustInfo = null;						// 현재 선택된 고객의 정보 초기화
+	currentCustInfo = {
+			CUST_ID			   : "",
+			CUST_MK            : "",
+			CUST_CGNT_NO       : "",
+			MBR_ID             : "",
+			NAME               : "",
+			NAME_ENG           : "",
+			GND                : "",
+			RSDNO              : "",
+			BIRTH_MK           : "",
+			BIRTH_YMD          : "",
+			BLOOD              : "",
+			SCHL_NAME          : "",
+			GRADE_CDE          : "",
+			FNL_EDUHIST_CDE    : "",
+			FAT_RSDNO          : "",
+			FAT_NAME           : "",
+			FAT_REL            : "",
+			EMPCHILD_FLAG      : "",
+			TASTE_CDE          : "",
+			TASTE_CDE2         : "",
+			HOPE               : "",
+			RELIGION_CDE       : "",
+			JOB_CDE            : "",
+			DUTY_NAME          : "",
+			WED_FLAG           : "",
+			WED_DAY            : "",
+			BANK_ID            : "",
+			TRS_ACCT_ID        : "",
+			REP_EMAIL_ADDR     : "",
+			MAIL_RCV_FLAG      : "",
+			DM_RCV_MK          : "",
+			DM_RETURN_DATE     : "",
+			MAIN_NSPAPER1      : "",
+			PCTYPE_CDE         : "",
+			ZIPCDE             : "",
+			ADDR               : "",
+			DDD                : "",
+			TELPNO1            : "",
+			TELPNO2            : "",
+			MOBILNO            : "",
+			DEPT_ID            : "",
+			EDUPIA_NO          : "",
+			EDUPIA_ID          : "",
+			FST_CRS_CDE        : "",
+			MEDIA_CDE          : "",
+			TM_RCV_MK          : "",
+			IVY_FLAG           : "",
+			IVY_POINT          : "",
+			FML_RANK           : "",
+			WEIGHT             : "",
+			MOTTO              : "",
+			CHG_USER_ID        : "",
+			UPDDATE            : "",
+			MIDAS_CHGDATE      : "",
+			CTI_CHGDATE        : "",
+			SMS_FLAG           : "",
+			MOBILNO3           : "",
+			MOBILNO_MBR        : "",
+			MOBILNO_FAT        : "",
+			MOBILNO3_MBR       : "",
+			MOBILNO3_FAT       : "",
+			BANK_NAME          : "",
+			FAT_DEPT_NAME      : "",
+			ZIP_ADDR           : "",
+			BL_BLACK_YN        : "",
+			DEPT_NAME          : "",
+			UP_DEPT_ID         : "",
+			UPDEPTNAME         : "",
+			ZIPCDE_DEPT        : "",
+			ADDR_DEPT          : "",
+			ZIP_ADDR_DEPT      : "",
+			TELPNO_DEPT        : "",
+			FAXNO_DEPT         : "",
+			FAT_CO_DDD         : "",
+			FAT_CO_TELPNO1     : "",
+			FAT_CO_TELPNO2     : "",
+			CASH_NO            : "",
+			STD_PRDT_CNT       : "",
+			STD_TOT_MONTH      : "",
+			VIP_CDE            : "",
+			VIP_CDE_NAME       : "",
+			FAXNO              : "",
+			EMPCHILD_NAME      : "",
+			BLACK_CUST_MK_NAME : "",
+			BL_DEL_YN          : "",
+			DEL_CUST_MK_NAME   : "",
+			INFO_YN_NAME       : "",
+			SMS_YN_NAME        : "",
+			SMS_SAVE_YN_NAME   : "",
+			ZPOST_DT           : "",
+			RDATE              : "",
+			RPHONE             : "",
+			THIRD_YN_NAME      : "",
+			DNC_YN_NAME        : "",
+			DNC_DT             : "",
+			MOBILNO_LAW        : "",
+			MOBILNO3_LAW       : "",
+			CERT_GB            : "",
+			SMS_SEND_DT        : "",
+			SMS_REV_DT         : "",
+			APPRV_GB           : "",
+			APPRV_NAME         : "",
+			LC_ID              : "",
+			TELPNO_NAME        : "",
+			TELPNO_LC          : "",
+			EMAIL              : "",
+			ONLINEID           : ""
+	};						// 현재 선택된 고객의 정보 초기화
 	currentCounselInfo = null; 					// 현재 선택된 상담의 정보 초기화
 	currentStudyInfo = null; 					// 현재 선택된 주간학습의 정보 초기화  
+	currentDirectChargeInfo = null;				// 현재 선택된 회비관리 정보 초기화
 	
 	$("#blackAndVipArea").css("display", "none");		// 정성회원 배너 안보이게
 	
@@ -114,8 +337,6 @@ function initAll() {
 	$("#lunar").css('display','none');
 	$("#lunarSolarInput").val("1");
 	
-	// 고객구분 초기세팅
-	$("#custInfo_CUST_MK").val("CM");
 	
 	// input 내용 삭제
 	$("#customerInfoTab").find("input:text").each( function () {
@@ -129,18 +350,80 @@ function initAll() {
 	// 상담이력 탭 이동
 	$("#customerCounselHist").click();
 	
+	// 고객구분 초기세팅
+	$("#custInfo_CUST_MK").val("CM");
+	
+	// 기본 조회 날짜 세팅
+	$(".defaultDate_ed").val(getToday(0));
+	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
+	
 	setStatus(1);								// 신규 상태로 변경
 	
-	counselMain_counselHist_grid.clear();
-	counselMain_studyProgressList_grid .clear();
-	counselMain_studyTab_weeklyStat.clear();
-	counselMain_studyTab_changeHist.clear();
-	counselMain_studyTab_asignStuff.clear();
-	counselMain_studyList_grid.clear();
-	counselMainTeacher_counselHist_grid.clear();
+	try{
+		counselMain_counselHist_grid.clear();
+		counselMain_studyProgressList_grid .clear();
+		counselMain_studyTab_weeklyStat.clear();
+		counselMain_studyTab_changeHist.clear();
+		counselMain_studyTab_asignStuff.clear();
+		counselMain_studyTab_asignStuff2.clear();
+		counselMain_studyList_grid.clear();
+		counselMainTeacher_counselHist_grid.clear();
+		counselMain_directCharge_duesInfo_grid.clear();
+		counselMain_directCharge_alimSendList_grid.clear();
+		counselMain_directCharge_cancelCharge_grid.clear();
+	}catch(e){
+		
+	}
 	
 	
 };
+// 인풋만 초기화
+function initSemi(){
+$("#blackAndVipArea").css("display", "none");		// 정성회원 배너 안보이게
+	
+	// 양력 음력 초기화
+	$("#solar").css('display','');
+	$("#lunar").css('display','none');
+	$("#lunarSolarInput").val("1");
+	
+	
+	// input 내용 삭제
+	$("#customerInfoTab").find("input:text").each( function () {
+        $(this).val('');
+    });
+	// select 첫번째 옵션 선택
+	$("#customerInfoTab").find('select').each(function(){
+		$(this).find('option:first').prop('selected','true');
+	});
+	
+	// 상담이력 탭 이동
+	$("#customerCounselHist").click();
+	
+	// 고객구분 초기세팅
+	$("#custInfo_CUST_MK").val("CM");
+	
+	// 기본 조회 날짜 세팅
+	$(".defaultDate_ed").val(getToday(0));
+	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
+	
+	setStatus(1);								// 신규 상태로 변경
+	
+	try{
+		counselMain_counselHist_grid.clear();
+		counselMain_studyProgressList_grid .clear();
+		counselMain_studyTab_weeklyStat.clear();
+		counselMain_studyTab_changeHist.clear();
+		counselMain_studyTab_asignStuff.clear();
+		counselMain_studyTab_asignStuff2.clear();
+		counselMain_studyList_grid.clear();
+		counselMainTeacher_counselHist_grid.clear();
+		counselMain_directCharge_duesInfo_grid.clear();
+		counselMain_directCharge_alimSendList_grid.clear();
+		counselMain_directCharge_cancelCharge_grid.clear();
+	}catch(e){
+		
+	}
+}
 
 /**
  * 상태에 따른 화면 변경 세팅
@@ -195,12 +478,17 @@ function newCustomerInsert(){
  * 21-01-07 최준혁
  */
 function cancelCustInfo(){
-	loadCustInfoMain();												// 고객 정보 재 조회
+	initSemi();
+	if(currentCustInfo.CUST_ID != ""){
+		loadCustInfoMain();												// 고객 정보 재 조회
+	}else {
+		ModalUtil.modalPop("알림","고객이 존재 하지 않아 조회 할 수 없습니다.");
+	}
 }
 
 $(function(){
-	
 	// === === === === === === === === === === === === === === === === === === === //// INITIALIZING //// === === === === === === === === === === === === === === === === === === === 
+	initAll();
 	
 	// 탑바 클라이언트 저장
 	topBarClient = client;
@@ -298,6 +586,10 @@ $(function(){
 	
 	// 탭 이동시 이벤트
 	$("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
+		if(custInfoStatus == 1) {	// 신규 작성 중일 시
+			cancelCustInfo();
+			ModalUtil.modalPop('알림', '신규 등록이 취소 되었습니다.');
+		}
 		switch($(this).attr('id')){
 		// 고객정보
 		case 'customerInfo':
@@ -327,7 +619,9 @@ $(function(){
 			
 		// 학습이력
 		case 'customerStudyHist':
-			loadList('ifsStudyClass', counselMain_studyTab_weeklyStat);
+			if(currentCustInfo.CUST_ID != ""){
+				loadList('ifsStudyClass', counselMain_studyTab_weeklyStat);
+			}
 			counselMain_studyTab_weeklyStat.refreshLayout();
 			break;
 		// 변동이력
@@ -337,9 +631,14 @@ $(function(){
 		// 불출교재
 		case 'studyTab_asignStuff':
 			counselMain_studyTab_asignStuff.refreshLayout();
+			counselMain_studyTab_asignStuff2.refreshLayout();
 			break;
-			
-			
+		case 'payCheck':
+			if(currentCustInfo.CUST_ID != ""){
+				loadList('getCustPayMst', counselMain_directCharge_duesInfo_grid);
+			}
+			counselMain_directCharge_duesInfo_grid.refreshLayout();
+			break;
 		}
 		
 	});
@@ -399,9 +698,30 @@ $(function(){
 		}
 	});
 	
+	// 관계번호 생성 이벤트
+	$("#custInfo_FAT_RSDNO").keyup(function(e){
+		var keyCode = e.which;
+		if(keyCode === 13){
+			if($("#custInfo_DDD").val().length != 0 && $("#custInfo_TELPNO1").val().length != 0 && $("#custInfo_TELPNO2").val().length == 4){
+				var tempRSDNO = "C" + $.trim($("#custInfo_DDD").val()) + $.trim($("#custInfo_TELPNO1").val()) + $.trim($("#custInfo_TELPNO2").val());
+				if(tempRSDNO.length < 13){
+					var fullLength = tempRSDNO.length;
+					console.log(13 - fullLength);
+					for(var i = 0; i < 13 - fullLength; i++){
+						tempRSDNO += "0";
+					}
+				}
+				$("#custInfo_FAT_RSDNO").val(tempRSDNO.substring(0,6) + "-" + tempRSDNO.substring(6,13));
+			}else {
+				ModalUtil.modalPop('알림', '자택 전화번호를 입력 후 가능합니다.');
+				$("#custInfo_FAT_RSDNO").focus();
+			}
+		}
+	});
+// ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === EVENT  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === 
 });
 
-// ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === EVENT  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === 
+// document.ready 끝
 
 /**
  * 현재 사용자 정보 불러오기
@@ -518,7 +838,7 @@ function customerSearch(currentDiv){
 		        	if(response.recv1.length == "1"){
 		        		initAll(); 													// 기존 정보 초기화
 		        		custInfo = customerSearchList_grid.getRow(0);
-		        		onAutoSearch(custInfo.CUST_ID)
+		        		onAutoSearch(custInfo.CUST_ID);
 		        		
 		        	}
 		        	
@@ -566,32 +886,36 @@ function customerSearch(currentDiv){
  * 21-01-11 최준혁
  */
 function onAutoSearch(sCustId){
-
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"CUST_ID"		:sCustId,				// 회원번호
-		    }]
+	if(sCustId != ""){
+		var param = {
+				senddataids: ["send1"],
+				recvdataids: ["recv1"],
+				send1: [{
+					"CUST_ID"		:sCustId,				// 회원번호
+				}]
 		};
-	$.ajax({
-	    url: API_SERVER + '/cns.getCustInfo.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        if(response.errcode == "0"){
-	        currentCustInfo = response.recv1[0];				// 고객정보 상주
-	        loadCustInfoMain();									// 고객정보 로드 함수
-	        sOrgFAT_RSDNO = currentCustInfo.FAT_RSDNO; 			// 학부모 주민번호 변경여부 체크 변수
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
+		$.ajax({
+			url: API_SERVER + '/cns.getCustInfo.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				if(response.errcode == "0"){
+					currentCustInfo = response.recv1[0];				// 고객정보 상주
+					loadCustInfoMain();									// 고객정보 로드 함수
+					sOrgFAT_RSDNO = currentCustInfo.FAT_RSDNO; 			// 학부모 주민번호 변경여부 체크 변수
+				}else {
+					loading.out();
+					client.invoke("notify", response.errmsg, "error", 60000);
+				}
+			}, error: function (response) {
+			}
+		});
+	}else {
+		ModalUtil.modalPop("알림","고객이 존재 하지 않아 조회 할 수 없습니다.");
+	}
+
 }
 
 function openPop(popName,w,h){
@@ -927,17 +1251,47 @@ function loadList(id, grid) {
 			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
 			sendUrl = '/cns.ifsStudyChgInfo.do';
 			break;
-		case 'getShipSTS':		// 불출교재
+		case 'ifsShipHist':		// 불출교재
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
-			sendUrl = '/cns.getShipSTS.do';
+			if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){		//prdtId 가 PR, QR, QR2 로 시작하는 경우 getShipSTS
+				sendUrl = '/cns.getShipSTS.do';
+				$("#counselMain_studyTab_asignStuff").css("display","");
+				$("#counselMain_studyTab_asignStuff2").css("display","none");
+			}else {
+				sendUrl = '/cns.ifsShipHist.do';
+				$("#counselMain_studyTab_asignStuff2").css("display","");
+				$("#counselMain_studyTab_asignStuff").css("display","none");
+			}
 			break;
 		case 'getCounselSubj':	// 상담과목
 			param.send1[0].CSEL_DATE = currentCounselInfo.CSEL_DATE			// 상담일자
 			param.send1[0].CSEL_NO = currentCounselInfo.CSEL_NO				// 상담번호
 			param.send1[0].CSEL_SEQ = currentCounselInfo.CSEL_SEQ			// 상담순번
 			sendUrl = '/cns.getCounselSubj.do';
+			break;
+		case 'getCustPayMst' : 	// 직접결제 - 회비관리 현황
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
+			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
+			sendUrl = '/cns.getCustPayMst.do';
+			break;
+		case 'getCustPayChgKKO' : 	// 직접결제 - 알림톡 발송이력
+			param.send1[0].CUST_PAY_ID = currentDirectChargeInfo.CUST_PAY_ID// 고객결제 ID
+			sendUrl = '/cns.getCustPayChgKKO.do';
+			break;
+		case 'getPayLedger' : 	// 직접결제 - 결제/취소이력
+			param.send1[0].CUST_PAY_ID = currentDirectChargeInfo.CUST_PAY_ID// 고객결제 ID
+			sendUrl = '/cns.getPayLedger.do';
+			break;
+		case 'getCustPayMst' : 	// 직접결제 - 알림톡 수신자정보
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
+			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
+			sendUrl = '/cns.getCustPayMst.do';
+			break;
 		}
+		
 		
 		$.ajax({
 			url: API_SERVER + sendUrl,
@@ -950,7 +1304,7 @@ function loadList(id, grid) {
 				if(response.errcode == "0"){
 					console.log("DATA ===> :" , response);
 					grid.resetData(response.recv1);
-					grid.refreshLayout()
+					grid.refreshLayout();
 					
 					// 후처리
 					switch(id){
@@ -959,7 +1313,20 @@ function loadList(id, grid) {
 						counselMain_studyTab_weeklyStat.clickSort({rowKey:0});
 						currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(0);		// 변동이력, 불출교재 자동조회
 						loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				
-						loadList('getShipSTS', counselMain_studyTab_asignStuff);	
+						if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){
+							loadList('ifsShipHist', counselMain_studyTab_asignStuff);	
+						}else {
+							loadList('ifsShipHist', counselMain_studyTab_asignStuff2);
+						}
+						break;
+					case 'getCustPayMst':
+						counselMain_directCharge_duesInfo_grid.addSelection({rowKey:0});
+						counselMain_directCharge_duesInfo_grid.clickSort({rowKey:0});
+						currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(0);		// 직접결제 자동조회
+						if(currentDirectChargeInfo != null){
+							loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
+							loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
+						}
 						break;
 					}
 					
@@ -1168,11 +1535,13 @@ function isCustDataChanged() {
 }
 
 function onSaveBtnClick(){
-	//변경된 정보가 존재하는지 체크
-    if(isCustDataChanged() == false){
-    	client.invoke('notify','변경된 정보가 없습니다.', 'alert', 5000);
-        return;
-    }
+	if(custInfoStatus == 2){		// 2 : 고객조회 된 상태
+		//변경된 정보가 존재하는지 체크
+		if(isCustDataChanged() == false){
+			client.invoke('notify','변경된 정보가 없습니다.', 'alert', 5000);
+			return;
+		}
+	}
     
     //유효성 체크
     if(onValueCheck()==false) return;
@@ -1213,7 +1582,7 @@ function onValueCheck(){
         sMsg = "전화번호(뒷4자리)를 입력하세요.";
         sFocusObj = $("#custInfo_TELPNO2");
         
-    //신규 회원일때만 학부모 주민번호를 체크한다.
+    //신규 회원일때만 학부모 관계번호를 체크한다.
     }else if(currentCustInfo.CUST_ID == 0 ) {
         if( $.trim($("#custInfo_FAT_RSDNO").val()) == "" ){
             sMsg = "관계번호를 입력하세요.";
@@ -1313,7 +1682,7 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	    success: function (response) {
         	        if(response.errcode == "0"){
         	        	console.log("DUPLE DATA ===> :" , response);
-        	        	existCustInfo = response.recv1;
+        	        	existCustInfo = response.recv1[0];
         	        	//(저장시:"ONSAVE", 전화번호입력시:"ONTELPNO", 관계회원등록때 이름입력시:"ONNAME")
         	            //저장시:"ONSAVE"
         	            if(sFlag == "ONSAVE"){
@@ -1445,8 +1814,8 @@ function onSave(){
     var chgYn = setCustChangeData();
 	
 	// 세대주 주민번호 없이 주소만 변경하는 경우에 return		
-	if(DS_CUST_CHG.nameValue(1,"ADDR_CHG_FLAG2"     ) == "Y" && gf_trimstr(DS_CUST.NameValue(1,"FAT_RSDNO")).length == 0){
-		alert("세대주 주민번호를 입력후 저장하세요.");
+	if(chgYn.ADDR_CHG_FLAG2 == "Y" && $.trim(currentCustInfo.FAT_RSDNO).length == 0){
+		ModalUtil.modalPop("알림","세대주 주민번호를 입력후 저장하세요.");
 		return;
 	}
 	
@@ -1523,18 +1892,18 @@ function onSave(){
 	param.send1[0].TELPNO2 = 		$("#custInfo_TELPNO2").val();
 	param.send1[0].DEPT_ID = 		$("#custInfo_DEPT_ID").val();
 	param.send1[0].FML_RANK = 		$("#custInfo_FML_RANK").val();
-	param.send1[0].MOBILNO = 		$("#custInfo_MOBILNO").val().replace(/-/gi,"");
-	param.send1[0].MOBILNO_MBR =	$("#custInfo_MOBILNO_MBR").val().replace(/-/gi,"");
-	param.send1[0].MOBILNO_FAT =	$("#custInfo_MOBILNO_FAT").val().replace(/-/gi,"");
+	param.send1[0].MOBILNO = 		$("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val();
+	param.send1[0].MOBILNO_MBR =	$("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val();
+	param.send1[0].MOBILNO_FAT =	"",
 	param.send1[0].MOBILNO3 = 		$("#custInfo_MOBILNO3").val();
-	param.send1[0].MOBILNO3_MBR =	$("#custInfo_MOBILNO3_MBR").val();
-	param.send1[0].MOBILNO3_FAT =	$("#custInfo_MOBILNO3_FAT").val();
+	param.send1[0].MOBILNO3_MBR =	$("#custInfo_MOBILNO_MBR3").val();
+	param.send1[0].MOBILNO3_FAT =	"",
 	param.send1[0].ZIP_ADDR = 		$("#custInfo_ZIP_ADDR").val();
-	param.send1[0].FAT_CO_DDD = 	$("#custInfo_FAT_CO_DDD").val();
-	param.send1[0].FAT_CO_TELPNO1 = $("#custInfo_FAT_CO_TELPNO1").val();
-	param.send1[0].FAT_CO_TELPNO1 = $("#custInfo_FAT_CO_TELPNO2").val();
-	param.send1[0].MOBILNO_LAW = 	$("#custInfo_MOBILNO_LAW").val();
-	param.send1[0].MOBILNO3_LAW = 	$("#custInfo_MOBILNO3_LAW").val();
+	param.send1[0].FAT_CO_DDD = 	"",
+	param.send1[0].FAT_CO_TELPNO1 = "",
+	param.send1[0].FAT_CO_TELPNO2 = "",
+	param.send1[0].MOBILNO_LAW = 	$("#custInfo_MOBILNO_LAW1").val() + $("#custInfo_MOBILNO_LAW2").val() + $("#custInfo_MOBILNO_LAW3").val();
+	param.send1[0].MOBILNO3_LAW = 	$("#custInfo_MOBILNO_LAW3").val();
 	param.send1[0].LC_ID = 			$("#custInfo_LC_ID").val();
 	param.send1[0].CHG_USER_ID = 	currentUserInfo.external_id;
 	
@@ -1545,7 +1914,7 @@ function onSave(){
 	    contentType: "application/json",
 	    data: JSON.stringify(param),
 	    success: function (response) {
-	    	
+	    	console.log(response);
 	    }
 	});
 	
@@ -1569,24 +1938,24 @@ function setCustChangeData(){
     var isMbrMobilChanged = "N"; //회원모핸드폰번호변경여부
 
     //학습장소주소변경여부 판단한다.
-    if(DS_CUST.nameValue(1,"ZIPCDE"         ) != currentCustInfo.ZIPCDE) isCustChanged = "Y";   	/* [34] 우편번호                  */
-    if(DS_CUST.nameValue(1,"ADDR"           ) != currentCustInfo.ADDR) isCustChanged = "Y";   		/* [35] 주소                      */
-    if(DS_CUST.nameValue(1,"DDD"            ) != currentCustInfo.DDD) isCustChanged = "Y";   		/* [36] 지역번호                  */
-    if(DS_CUST.nameValue(1,"TELPNO1"        ) != currentCustInfo.TELPNO1) isCustChanged = "Y";   	/* [37] 전화국번                  */
-    if(DS_CUST.nameValue(1,"TELPNO2"        ) != currentCustInfo.TELPNO2) isCustChanged = "Y";   	/* [38] 전화번호                  */
-    if(DS_CUST.nameValue(1,"MOBILNO"        ) != currentCustInfo.MOBILNO) isCustChanged = "Y";   	/* [39] 핸드폰번호_회원         */
-    if(DS_CUST.nameValue(1,"MOBILNO3"       ) != currentCustInfo.MOBILNO3) isCustChanged = "Y";   	/* [56] 핸드폰번호3_회원        */
+    if($("#custInfo_ZIPCDE").val() != currentCustInfo.ZIPCDE) isCustChanged = "Y";   	/* [34] 우편번호                  */
+    if($("#custInfo_ADDR").val() != currentCustInfo.ADDR) isCustChanged = "Y";   		/* [35] 주소                      */
+    if($("#custInfo_DDD").val() != currentCustInfo.DDD) isCustChanged = "Y";   		/* [36] 지역번호                  */
+    if($("#custInfo_TELPNO1").val() != currentCustInfo.TELPNO1) isCustChanged = "Y";   	/* [37] 전화국번                  */
+    if($("#custInfo_TELPNO2").val() != currentCustInfo.TELPNO2) isCustChanged = "Y";   	/* [38] 전화번호                  */
+    if($("#custInfo_MOBILNO").val() != currentCustInfo.MOBILNO) isCustChanged = "Y";   	/* [39] 핸드폰번호_회원         */
+    if($("#custInfo_MOBILNO3").val() != currentCustInfo.MOBILNO3) isCustChanged = "Y";   	/* [56] 핸드폰번호3_회원        */
 
     //학부모직장주소변경여부 판단한다.
-    if(DS_CUST.nameValue(1,"MOBILNO_FAT"    ) != currentCustInfo.MOBILNO_FAT) isFatAddrChanged = "Y";   /* [58] 핸드폰번호_회원부         */
-    if(DS_CUST.nameValue(1,"MOBILNO3_FAT"   ) != currentCustInfo.MOBILNO3_FAT) isFatAddrChanged = "Y";   /* [60] 핸드폰번호3_회원부        */
-    if(DS_CUST.nameValue(1,"FAT_CO_DDD"     ) != currentCustInfo.FAT_CO_DDD) isFatAddrChanged = "Y";   /* [73] 직장지역번호              */
-    if(DS_CUST.nameValue(1,"FAT_CO_TELPNO1" ) != currentCustInfo.FAT_CO_TELPNO1) isFatAddrChanged = "Y";   /* [74] 직장국번                  */
-    if(DS_CUST.nameValue(1,"FAT_CO_TELPNO2" ) != currentCustInfo.FAT_CO_TELPNO2) isFatAddrChanged = "Y";   /* [75] 직장뒷자리                */
-    if(DS_CUST.nameValue(1,"FAT_RSDNO"      ) != currentCustInfo.FAT_RSDNO) isFatAddrChanged = "Y";   /* 학부모 주민번호 변경시         */
+    if($("#custInfo_MOBILNO_FAT").val() != currentCustInfo.MOBILNO_FAT) isFatAddrChanged = "Y";   /* [58] 핸드폰번호_회원부         */
+    if($("#custInfo_MOBILNO3_FAT").val() != currentCustInfo.MOBILNO3_FAT) isFatAddrChanged = "Y";   /* [60] 핸드폰번호3_회원부        */
+    if($("#custInfo_FAT_CO_DDD").val() != currentCustInfo.FAT_CO_DDD) isFatAddrChanged = "Y";   /* [73] 직장지역번호              */
+    if($("#custInfo_FAT_CO_TELPNO1").val() != currentCustInfo.FAT_CO_TELPNO1) isFatAddrChanged = "Y";   /* [74] 직장국번                  */
+    if($("#custInfo_FAT_CO_TELPNO2").val() != currentCustInfo.FAT_CO_TELPNO2) isFatAddrChanged = "Y";   /* [75] 직장뒷자리                */
+    if($("#custInfo_FAT_RSDNO").val() != currentCustInfo.FAT_RSDNO) isFatAddrChanged = "Y";   /* 학부모 주민번호 변경시         */
 	
 	//회원모핸드폰변경여부 판단한다.
-	if(DS_CUST.nameValue(1,"MOBILNO_MBR"    ) != currentCustInfo.MOBILNO_MBR) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
+	if($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val() != currentCustInfo.MOBILNO_MBR.replace(/-/gi,"")) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
 
     //고객변경정보를 셋팅한다.
 	var returnObject = {

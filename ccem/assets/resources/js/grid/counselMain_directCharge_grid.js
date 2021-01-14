@@ -25,67 +25,90 @@ $(function(){
 	            },*/
 				{
 					header: '청구월',
-					name: 'custNm',
-					width: 200,
+					name: 'REQ_YM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: function(e){
+						var result = e.value;
+						if(e.value != null){
+							result = e.value.substring(0,4) +"-"+ e.value.substring(4,6);
+						}
+						return result;
+					}
 				},
+				//Decode(DEPT_GB,"N","눈높이","S","솔루니","C","차이홍","통신")}</FC>
 				{
 					header: '브랜드',
-					name: 'custSeq',
-					width: 100,
+					name: 'DEPT_GB',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: function(e){
+						var result = e.value;
+						if(e.value != null){
+							switch(e.value){
+							case 'N' :
+								result = '눈높이';
+								break;
+							case 'S' :
+								result = '솔루니';
+								break;
+							case 'C' :
+								result = '차이홍';
+								break;
+							default :
+								result = '통신';
+								break;
+							}
+						}
+						return result;
+					}
 				},
 				{
 					header: '청구구분',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'REQ_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '발송현황',
-					name: 'chprNm',
-					width: 150,
+					name: 'REQ_STATUS_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '회비금액',
-					name: 'consStatNm',
-					width: 100,
+					name: 'REQ_AMT',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
 					header: '결제현황',
-					name: 'consQustCntn',
-					width: 200,
+					name: 'PAY_STATUS_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '결제구분',
-					name: 'consAnsrCntn',
-					width: 200,
+					name: 'APPR_PAY_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '알림톡발송일',
-					name: 'consTyp1Nm',
-					width: 150,
+					name: 'REQ_DT',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.date(columnInfo.value)
 				}
 				],
 		});
@@ -94,13 +117,17 @@ $(function(){
 			counselMain_directCharge_duesInfo_grid.clickSort(ev);
 	    });
 		
+		counselMain_directCharge_duesInfo_grid.on('dblclick', (ev) => {
+			currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(ev.rowKey);		// 직접결제 자동조회
+			loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
+			loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
+	    });
 		// counselMain_directCharge_duesInfo_grid 끝
 		
 		// 상담메인 > 직접결제 > 알림톡발송이력 grid
 		counselMain_directCharge_alimSendList_grid = new Grid({
 			el: document.getElementById('counselMain_directCharge_alimSendList_grid'),
 			bodyHeight: 300,
-			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
 	            header: "NO",
@@ -112,50 +139,92 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
 					header: '구분',
-					name: 'custNm',
-					width: 200,
+					name: 'REQ_NM',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '발송일시',
-					name: 'custSeq',
-					width: 100,
+					name: 'REQ_SEND_DT',
+					width: 130,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value)
 				},
 				{
 					header: '결제확인일시',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'PAGE_CHK_DT',
+					width: 130,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value)
 				},
 				{
 					header: '시스템',
-					name: 'chprNm',
-					width: 150,
+					name: 'REQ_SYS_NM',
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '발송방식',
-					name: 'consStatNm',
-					width: 100,
+					name: 'REQ_KKO_NM',
+					width: 50,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '발송현황',
+					name: 'REQ_STATUS_NM',
+					width: 80,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '실패사유',
+					name: 'SMS_REPLY_NM',
+					width: 80,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '발송자',
+					name: 'REQ_EMP_NM',
+					width: 80,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '선생님구분',
+					name: 'TCHR_MK_NM',
+					width: 80,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '사업국',
+					name: 'DEPT_NM',
+					width: 80,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '센터',
+					name: 'LC_NM',
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -220,7 +289,7 @@ $(function(){
 		// 상담메인 > 직접결제 > 수신대상자 grid
 		counselMain_directCharge_reciverInfo_grid = new Grid({
 			el: document.getElementById('counselMain_directCharge_reciverInfo_grid'),
-			bodyHeight: 100,
+			bodyHeight: 102,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
@@ -281,25 +350,87 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
+	        	//{Decode(GUBUN,"S","결제완료","C","결제취소","파기")}</FC>
 				{
-					header: '관계',
-					name: 'custNm',
-					width: 50,
+					header: '결제현황',
+					name: 'GUBUN',
+					width: 70,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+					formatter: function(e){
+						var result = e.value;
+						if(e.value != null){
+							switch(e.value){
+							case 'S' :
+								result = '결제완료';
+								break;
+							case 'C' :
+								result = '결제취소';
+								break;
+							default :
+								result = '파기';
+								break;
+							}
+						}
+						return result;
+					}
+				},
+				{
+					header: '결제/취소일시',
+					name: 'APPR_DT',
+					width: 130,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value)
+				},
+				{
+					header: '결제금액',
+					name: 'APPR_PRICE',
+					width: 60,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
+				},
+				{
+					header: '결제구분',
+					name: 'APPR_PAY_TYPE',
+					width: 60,
+					align: "center",
+					sortable: true,
+					hidden: true,
+					ellipsis: true,
+				},
+				{
+					header: '결제구분',
+					name: 'APPR_PAY_NM',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
-					header: '이름',
-					name: 'custSeq',
+					header: '은행/카드명',
+					name: 'APPR_ISSUER',
 					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
-					header: '전화번호',
-					name: 'reserverDtm',
+					header: '계좌/카드번호',
+					name: 'APPR_ISSUER_NUM',
+					width: 110,
+					align: "center",
+					sortable: true,
+					ellipsis: true,
+				},
+				{
+					header: '승인번호',
+					name: 'APPR_NUM',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,

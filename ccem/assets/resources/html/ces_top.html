@@ -142,7 +142,7 @@
 											<td><input type="text" class="form-control form-control-sm"></td>
 										</tr> -->
 										<tr>
-											<th>성 명</th>
+											<th>성 명<span style="color:red;">*</span></th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_NAME" autocomplete="off"></td>
 											<th>고객번호</th>
 											<td><input type="text" class="form-control form-control-sm" id="custInfo_CUST_ID" readonly></td>
@@ -203,12 +203,12 @@
 											<th>관계회원</th>
 											<td><select class="form-control form-control-sm" id="custInfo_FAMILY_CMB" disabled>
 											</select></td>
-											<th>학년</th>
+											<th>학년<span style="color:red;">*</span></th>
 											<td><select class="form-control form-control-sm" id="custInfo_GRADE_CDE" name="GRADE_CDE">
 											</select></td>
 										</tr>
 										<tr>
-											<th>자택</th>
+											<th>자택<span style="color:red;">*</span></th>
 											<td>
 												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_DDD" autocomplete="off" maxlength="4">
 												<input type="text" class="form-control form-control-sm" style="width:33%; float:left;" id="custInfo_TELPNO1" autocomplete="off" maxlength="4">
@@ -310,6 +310,7 @@
 											<td>
 												<div class="input-group" style="width:100%; float:left;">
 					   							 	<input type="text" class="form-control form-control-sm LCPop" id="custInfo_LC_NAME" readonly>
+					   							 	<input type="text" id="custInfo_LC_ID" style="display:none;">
 												    <div class="input-group-append">
 														<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
 		                                       				<img src="../img/popBtn.svg" alt="팝업">
@@ -633,6 +634,7 @@
 												</div>
 												<div role="tabpanel" class="tab-pane fade show" id="studyTab_asignStuffTab">
 													<div id="counselMain_studyTab_asignStuff"></div>
+													<div id="counselMain_studyTab_asignStuff2"></div>
 												</div>
 											</div>
 										</div>
@@ -755,7 +757,7 @@
 												<div class="col-6">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 회비관리 현황</span>
 													<div style="float:right; width:70%;" class="mb-2">
-														<input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;">
+														<input type="text" class="form-control form-control-sm defaultDate_bf" readonly style="width:32%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control readonly form-control-sm defaultDate_ed" style="width:32%; float:left;">
 													</div>
 												</div>
 												<div class="col-6">
@@ -806,7 +808,7 @@
 												<div class="col-6">
 													<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 신상변경 이력</span>
 													<div style="float:right; width:70%;" class="mb-2">
-														<input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control-plaintext form-control-sm" style="width:25%; float:left;">
+														<input type="text" class="form-control form-control-sm defaultDate_bf" readonly style="width:32%; float:left;"><span style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control form-control-sm defaultDate_ed" readonly style="width:32%; float:left;">
 													</div>
 												</div>
 												<div class="col-6">
