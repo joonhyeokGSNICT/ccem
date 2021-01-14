@@ -37,7 +37,7 @@ $(function(){
 			data: JSON.stringify({
 				senddataids: ["dsSend"],
 				recvdataids: ["dsRecv"],
-				dsSend: [{ CODE_MK: "" }],
+				dsSend: [{ }],
 			}),
 		}
 	$.ajax(settings).done(data => {
