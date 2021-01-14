@@ -119,8 +119,9 @@ $(function(){
 		
 		counselMain_directCharge_duesInfo_grid.on('dblclick', (ev) => {
 			currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(ev.rowKey);		// 직접결제 자동조회
-			loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
-			loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
+			loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);				// 알림톡 이력
+			loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);					// 결제/취소 이력
+			loadList('getCustPayReq', counselMain_directCharge_bill_grid);							// 청구서 이력
 	    });
 		// counselMain_directCharge_duesInfo_grid 끝
 		
@@ -256,26 +257,27 @@ $(function(){
 	        columns: [
 				{
 					header: '과목',
-					name: 'custNm',
-					width: 50,
+					name: 'PRDT_NM',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '항목',
-					name: 'custSeq',
-					width: 100,
+					name: 'FEE_NM',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '회비',
-					name: 'reserverDtm',
+					name: 'REQ_AMT',
 					align: "center",
+					width: 70,
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				}
 				],
 		});

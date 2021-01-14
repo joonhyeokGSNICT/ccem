@@ -14,49 +14,41 @@ $(function(){
             frozenBorderWidth: 1,
         },
         columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
 					header: 'TASK명',
-					name: 'custNm',
-					width: 200,
+					name: 'TASK_NAME',
+					width: 260,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '통화일',
-					name: 'custSeq',
-					width: 100,
+					name: 'CTI_CHGDATE',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: 'O/B결과',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'CALL_RST_MK_NM',
+					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '상담결과',
-					name: 'chprNm',
-					width: 150,
+					name: 'CSEL_RST_MK_NM',
+					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '고객반응',
-					name: 'consStatNm',
+					name: 'CUST_RESP_MK_NM',
 					width: 100,
 					align: "center",
 					sortable: true,
@@ -87,49 +79,44 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	            },*/
 				{
 					header: '통화결과',
-					name: 'custNm',
-					width: 200,
+					name: 'call_rst_mk_NM',
+					width: 95,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '발신전화번호',
-					name: 'custSeq',
-					width: 100,
+					name: 'telpno',
+					width: 115,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '통화일',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'call_date',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.date(columnInfo.value)
 				},
 				{
 					header: '통화시간',
-					name: 'chprNm',
-					width: 150,
+					name: 'call_time',
+					width: 95,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.time(columnInfo.value)
 				},
 				{
 					header: '발신자',
-					name: 'consStatNm',
-					width: 100,
+					name: 'user_name',
+					width: 85,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -158,14 +145,6 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
 					header: '설문명',
 					name: 'custNm',
@@ -231,14 +210,6 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
 					header: '구분',
 					name: 'custNm',

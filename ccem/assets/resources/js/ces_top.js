@@ -1,15 +1,28 @@
 
 //=== GRID DEFINITION === //
-var counselMain_studyProgressList_grid = null; 	// 상담메인 > 학습진행정보 grid
-var counselMain_counselHist_grid = null;   		// 상담메인 > 상담이력 grid
-var counselMain_studyTab_weeklyStat = null; 	// 상담메인 > 학습이력 > 주간학습현황 grid
-var counselMain_studyTab_changeHist = null; 	// 상담메인 > 학습이력 > 변동이력 grid
-var counselMain_studyTab_asignStuff = null; 	// 상담메인 > 학습이력 > 불출교재 grid
-var counselMain_studyTab_asignStuff2 = null; 	// 상담메인 > 학습이력 > 불출교재2 grid
-var counselMain_studyList_grid = null;  		// 상담메인	> 학습과목정보 grid
-var counselMain_directCharge_duesInfo_grid = null; // 상담메인	> 직접결제 > 회비관리현황 grid
-var counselMain_directCharge_alimSendList_grid = null; // 상담메인	> 직접결제 > 알림톡발송이력 grid
-var counselMain_directCharge_cancelCharge_grid = null; // 상담메인	> 직접결제 > 결제/취소 grid
+var counselMain_studyProgressList_grid = null; 			// 상담메인 > 학습진행정보 grid
+var counselMain_counselHist_grid = null;   				// 상담메인 > 상담이력 grid
+var counselMain_studyTab_weeklyStat = null; 			// 상담메인 > 학습이력 > 주간학습현황 grid
+var counselMain_studyTab_changeHist = null; 			// 상담메인 > 학습이력 > 변동이력 grid
+var counselMain_studyTab_asignStuff = null; 			// 상담메인 > 학습이력 > 불출교재 grid
+var counselMain_studyTab_asignStuff2 = null; 			// 상담메인 > 학습이력 > 불출교재2 grid
+var counselMain_studyList_grid = null;  				// 상담메인	> 학습과목정보 grid
+var counselMain_directCharge_duesInfo_grid = null; 		// 상담메인	> 직접결제 > 회비관리현황 grid
+var counselMain_directCharge_alimSendList_grid = null; 	// 상담메인	> 직접결제 > 알림톡발송이력 grid
+var counselMain_directCharge_cancelCharge_grid = null; 	// 상담메인	> 직접결제 > 결제/취소 grid
+var counselMain_directCharge_bill_grid = null;			// 상담메인	> 직접결제 > 청구서 grid
+var counselMain_changeHist_studySpot_grid = null;		// 상담메인	> 변경이력 > 현재 학습장소 grid
+var counselMain_changeHist_changeDetail_grid = null;	// 상담메인	> 변경이력 > 신상변경이력 grid
+var counselMain_infoAgree_infoAgreeList_grid = null;	// 상담메인	> 정보동의 > 개인정보동의 grid
+var counselMain_infoAgree_termsVersion_grid = null;		// 상담메인	> 정보동의 > 약관버젼 grid
+var counselMain_infoAgree_iaRecordList_grid= null;		// 상담메인	> 정보동의 > 개인정보녹취통화이력 grid
+var counselMain_infoAgree_termsRecordList_grid= null;	// 상담메인	> 정보동의 > 약관녹취통화이력 grid
+var counselMain_autoResign_resignDetail_grid = null;	// 상담메인	> 자동퇴회 > 자동퇴회 세부 grid
+var counselMain_directCharge_reciverInfo_grid = null;	// 상담메인	> 자동퇴회 > 퇴회안내발송이력 grid
+var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조사 > 고객조사 grid
+var counselMain_researchCust_rschCallHist_grid = null;	// 상담메인	> 고객조사 > 통화이력 grid
+var counselMain_researchCust_smsLmsHist_grid = null;	// 상담메인	> 고객조사 > 설문조사 grid
+
 var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상담이력 grid
 
 var currentPop = { name : null };
@@ -144,7 +157,7 @@ var deptData;									// 현재 고객의 사업국 리스트
 var lcData;										// 현재 고객의 센터 리스트
 
 var topBarClient = null;						// 탑바 클라이언트 (ZAF CLIENT // TopBar)
-var sideBarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // SideBar)
+var sidebarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // SideBar)
 var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT // Background)
 
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
@@ -204,8 +217,8 @@ var sTelHPNo_DDD = new Array(
 
 // === === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 //sideBar client 받기
-client.on("getSidebarClient", function(sideBarClient_d) {
-	sideBarClient = client.instance(sideBarClient_d);
+client.on("getsidebarClient", function(sidebarClient_d) {
+	sidebarClient = client.instance(sidebarClient_d);
 });
 client.on("getCodeData", function(d){
 	codeData = d;
@@ -358,23 +371,7 @@ function initAll() {
 	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
 	
 	setStatus(1);								// 신규 상태로 변경
-	
-	try{
-		counselMain_counselHist_grid.clear();
-		counselMain_studyProgressList_grid .clear();
-		counselMain_studyTab_weeklyStat.clear();
-		counselMain_studyTab_changeHist.clear();
-		counselMain_studyTab_asignStuff.clear();
-		counselMain_studyTab_asignStuff2.clear();
-		counselMain_studyList_grid.clear();
-		counselMainTeacher_counselHist_grid.clear();
-		counselMain_directCharge_duesInfo_grid.clear();
-		counselMain_directCharge_alimSendList_grid.clear();
-		counselMain_directCharge_cancelCharge_grid.clear();
-	}catch(e){
-		
-	}
-	
+	gridReset();								// 그리드 리셋
 	
 };
 // 인풋만 초기화
@@ -407,19 +404,39 @@ $("#blackAndVipArea").css("display", "none");		// 정성회원 배너 안보이�
 	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
 	
 	setStatus(1);								// 신규 상태로 변경
-	
+	gridReset();								// 그리드 리셋
+}
+
+/**
+ * 그리드 리셋 func
+ * @returns
+ * 21-01-14 최준혁
+ */
+function gridReset(){
 	try{
-		counselMain_counselHist_grid.clear();
-		counselMain_studyProgressList_grid .clear();
-		counselMain_studyTab_weeklyStat.clear();
-		counselMain_studyTab_changeHist.clear();
-		counselMain_studyTab_asignStuff.clear();
-		counselMain_studyTab_asignStuff2.clear();
-		counselMain_studyList_grid.clear();
-		counselMainTeacher_counselHist_grid.clear();
-		counselMain_directCharge_duesInfo_grid.clear();
-		counselMain_directCharge_alimSendList_grid.clear();
-		counselMain_directCharge_cancelCharge_grid.clear();
+		counselMain_counselHist_grid.clear();					// 상담이력
+		counselMain_studyProgressList_grid .clear();			// 학습진행정보
+		counselMain_studyTab_weeklyStat.clear();				// 주간학습현황
+		counselMain_studyTab_changeHist.clear();				// 변동이력
+		counselMain_studyTab_asignStuff.clear();				// 불출교재1
+		counselMain_studyTab_asignStuff2.clear();				// 불출교재2
+		counselMain_studyList_grid.clear();						// 학습과목
+		counselMainTeacher_counselHist_grid.clear();			// 선생님 리스트
+		counselMain_directCharge_duesInfo_grid.clear();			// 회비관리
+		counselMain_directCharge_alimSendList_grid.clear();		// 알림톡발송이력
+		counselMain_directCharge_cancelCharge_grid.clear();		// 결제/취소
+		counselMain_directCharge_bill_grid.clear();				// 청구서
+		counselMain_changeHist_studySpot_grid.clear();			// 학습장소 변동이력
+		counselMain_changeHist_changeDetail_grid.clear();		// 신상변경이력
+		counselMain_infoAgree_infoAgreeList_grid.clear();		// 개인정보동의
+		counselMain_infoAgree_termsVersion_grid.clear();		// 약관버젼
+		counselMain_infoAgree_iaRecordList_grid.clear(); 		// 개인정보녹취통화이력
+		counselMain_infoAgree_termsRecordList_grid.clear();		// 약관녹취통화이력
+		counselMain_autoResign_resignDetail_grid.clear();		// 자동퇴회 세부
+		counselMain_directCharge_reciverInfo_grid.clear();		// 퇴회안내발송이력
+		counselMain_researchCust_rsrchCust_grid.clear();	 	// 고객조사 grid
+		counselMain_researchCust_rschCallHist_grid.clear();		// 통화이력 grid
+		counselMain_researchCust_smsLmsHist_grid.clear();		// 설문조사 grid
 	}catch(e){
 		
 	}
@@ -502,7 +519,7 @@ $(function(){
 		//console.log('client instances : ', instances);
 		for ( var instanceGuid in instances) {
 			if (instances[instanceGuid].location === 'ticket_sidebar') {
-				sideBarClient = client.instance(instanceGuid);
+				sidebarClient = client.instance(instanceGuid);
 			}else if(instances[instanceGuid].location === 'background'){
 				backgroundClient = client.instance(instanceGuid);
 				backgroundClient.trigger('getCodeList', client._instanceGuid);			// background에서 공통 코드를 가져온다.
@@ -586,9 +603,13 @@ $(function(){
 	
 	// 탭 이동시 이벤트
 	$("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
-		if(custInfoStatus == 1) {	// 신규 작성 중일 시
+		id = $(this).attr('id');
+		if(custInfoStatus == 1 && 
+				(id == 'customerStudyHist' || id == 'membershipDue' || id == 'payCheck' || id == 'changeHist' || id == 'infoAgree' || id == 'autoQuit' || id == 'custInv' || id == 'smsList') && 
+				currentCustInfo.CUST_ID != "") {	// 신규 작성 중일 시
 			cancelCustInfo();
 			ModalUtil.modalPop('알림', '신규 등록이 취소 되었습니다.');
+			return;
 		}
 		switch($(this).attr('id')){
 		// 고객정보
@@ -633,12 +654,54 @@ $(function(){
 			counselMain_studyTab_asignStuff.refreshLayout();
 			counselMain_studyTab_asignStuff2.refreshLayout();
 			break;
+		// 직접결제
 		case 'payCheck':
 			if(currentCustInfo.CUST_ID != ""){
 				loadList('getCustPayMst', counselMain_directCharge_duesInfo_grid);
 			}
 			counselMain_directCharge_duesInfo_grid.refreshLayout();
 			break;
+		// 변경이력
+		case 'changeHist':
+			if(currentCustInfo.CUST_ID != ""){
+				loadList('getDet', counselMain_changeHist_studySpot_grid);
+				loadList('getChgCustInfoHist', counselMain_changeHist_changeDetail_grid);
+			}
+			counselMain_changeHist_studySpot_grid.refreshLayout();
+			counselMain_changeHist_changeDetail_grid.refreshLayout();
+			break;
+		// 개인정보동의
+		case 'infoAgree':
+			if(currentCustInfo.CUST_ID != ""){
+				loadList('getErrNewMBR', counselMain_infoAgree_infoAgreeList_grid);
+				loadList('getErrEntInfo', counselMain_infoAgree_termsVersion_grid);
+			}
+			counselMain_infoAgree_infoAgreeList_grid.refreshLayout();
+			counselMain_infoAgree_termsVersion_grid.refreshLayout();
+			break;
+		// 자동퇴회
+		case 'autoQuit':
+			if(currentCustInfo.MBR_ID != ""){
+				loadList('getDropDtl', counselMain_autoResign_resignDetail_grid);
+				loadList('getDropMsg', counselMain_directCharge_reciverInfo_grid);
+			}
+			counselMain_autoResign_resignDetail_grid.refreshLayout();
+			counselMain_directCharge_reciverInfo_grid.refreshLayout();
+			break;
+		// 고객조사
+		case 'custInv':
+			if(currentCustInfo.CUST_ID != ""){
+				loadList('getDropDtl', counselMain_researchCust_rsrchCust_grid);
+			}
+			counselMain_researchCust_rsrchCust_grid.refreshLayout();
+			//counselMain_directCharge_reciverInfo_grid.refreshLayout();
+			/*var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조사 > 고객조사 grid
+			var counselMain_researchCust_rschCallHist_grid = null;		// 상담메인	> 고객조사 > 통화이력 grid
+			var counselMain_researchCust_smsLmsHist_grid = null;		// 상담메인	> 고객조사 > 설문조사 grid
+			*/
+			break;
+			
+			
 		}
 		
 	});
@@ -1264,13 +1327,14 @@ function loadList(id, grid) {
 				$("#counselMain_studyTab_asignStuff").css("display","none");
 			}
 			break;
-		case 'getCounselSubj':	// 상담과목
+		case 'getCounselSubj':		// 상담과목
 			param.send1[0].CSEL_DATE = currentCounselInfo.CSEL_DATE			// 상담일자
 			param.send1[0].CSEL_NO = currentCounselInfo.CSEL_NO				// 상담번호
 			param.send1[0].CSEL_SEQ = currentCounselInfo.CSEL_SEQ			// 상담순번
 			sendUrl = '/cns.getCounselSubj.do';
 			break;
-		case 'getCustPayMst' : 	// 직접결제 - 회비관리 현황
+			
+		case 'getCustPayMst' : 		// 직접결제 - 회비관리 현황
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
 			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
@@ -1280,18 +1344,53 @@ function loadList(id, grid) {
 			param.send1[0].CUST_PAY_ID = currentDirectChargeInfo.CUST_PAY_ID// 고객결제 ID
 			sendUrl = '/cns.getCustPayChgKKO.do';
 			break;
-		case 'getPayLedger' : 	// 직접결제 - 결제/취소이력
+		case 'getPayLedger' : 		// 직접결제 - 결제/취소이력
 			param.send1[0].CUST_PAY_ID = currentDirectChargeInfo.CUST_PAY_ID// 고객결제 ID
 			sendUrl = '/cns.getPayLedger.do';
 			break;
-		case 'getCustPayMst' : 	// 직접결제 - 알림톡 수신자정보
+		case 'getCustPayReq' : 		// 직접결제 - 청구서 조회
+			param.send1[0].BILL_TX_ID = currentDirectChargeInfo.BILL_TX_ID	// 트랜잭션ID
+			sendUrl = '/cns.getCustPayReq.do';
+			break;
+		case 'temp' : 				// 직접결제 - 알림톡 수신자정보
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
 			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
 			sendUrl = '/cns.getCustPayMst.do';
 			break;
+			
+		case 'getDet' : 			// 변경이력 - 현재학습장소
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			sendUrl = '/cns.getDet.do';
+			break;
+		case 'getChgCustInfoHist' : // 변경이력 - 신상변경이력
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			sendUrl = '/cns.getChgCustInfoHist.do';
+			break;
+			
+		case 'getErrNewMBR' : // 정보동의 - 개인정보동의
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getErrNewMBR.do';
+			break;
+		case 'getErrEntInfo' : // 정보동의 - 개인정보동의
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getErrEntInfo.do';
+			break;
+		case 'getTBCALLRST' : // 정보동의 - 콜리스트 이력조회
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			sendUrl = '/cns.getTBCALLRST.do';
+			break;
+			
+		case 'getDropDtl' : 	// 자동퇴회 - 자동퇴회 세부 이력조회
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getDropDtl.do';
+			break;
+		case 'getDropMsg' : 	// 자동퇴회 - 퇴회안내발송 이력조회
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getDropMsg.do';
+			break;
 		}
-		
 		
 		$.ajax({
 			url: API_SERVER + sendUrl,
@@ -1326,6 +1425,7 @@ function loadList(id, grid) {
 						if(currentDirectChargeInfo != null){
 							loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
 							loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
+							loadList('getCustPayReq', counselMain_directCharge_bill_grid);					// 청구서 이력
 						}
 						break;
 					}
