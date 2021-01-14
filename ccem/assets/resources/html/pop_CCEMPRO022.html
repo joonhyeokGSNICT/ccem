@@ -338,7 +338,7 @@
 										<td id="dmTyTd1" colspan="6"></td>
 										<th id="dmTyTd2" style="display: none;">지급사유</th>
 										<td id="dmTyTd3" style="display: none;">
-											<select class="form-control form-control-sm" name="DM_TYPE_CDE" id="selectbox16">
+											<select class="form-control form-control-sm" name="DM_TYPE_CDE" id="selectbox16" onchange="onDmReceiptChange()">
 												<option value=""></option>
 											</select>
 										</td>
@@ -355,6 +355,8 @@
 					<!-- 센터장(LC_EMP_ID) -->		<input type="hidden" class="form-control form-control-sm" id="hiddenbox4">	
 					<!-- 상담결과(CSEL_RST_MK1) -->	<input type="hidden" class="form-control form-control-sm" id="hiddenbox5">
 					<!-- 고객번호(CUST_ID) -->		<input type="hidden" class="form-control form-control-sm" id="hiddenbox6">
+					<!-- DM매치코드(DM_MATCHCD) --> <input type="hidden" class="form-control form-control-sm" id="hiddenbox7">
+					<!-- DM목록ID(DM_LIST_ID) -->	<input type="hidden" class="form-control form-control-sm" id="hiddenbox8">
 				</div>
 				<!-- 입회등록 -->
 				<div role="tabpanel" class="tab-pane fade" id="entrRgtrTab">

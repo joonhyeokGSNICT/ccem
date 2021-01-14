@@ -1,4 +1,7 @@
+var topbarObject;
+
 var grid1, grid2;	// TOAST UI Grid
+
 let prods = [];		// 과목 리스트
 let users = [];		// 상담원 리스트
 let cselType = {};	// 분류코드
@@ -15,6 +18,7 @@ $(function () {
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
+	topbarObject = opener;
 	createGrids();
 	getCodeList();
 	getProd();

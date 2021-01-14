@@ -1,6 +1,10 @@
+var topbarObject;
+
 var sidebarClient;			// 현재 오픈된 티켓사이드바 client
 var topbarClient;			// 탑바 client
+
 var currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
+
 var codeData = [];			// 전체 공통코드
 var prods	 = [];			// 과목리스트
 
@@ -10,9 +14,10 @@ var grid3;	// 상담등록 > 학습중인과목 grid
 var grid4;	// 입회등록 > 과목 grid
 var grid5;	// 입회등록 > 입회과목 grid
 
-var DS_DROP_TEMP1  = [{}];		// DM 사은품 접수 정보 저장 data
+var DS_DM_RECEIPT  = [{}];		// DM 사은품 접수 정보 저장 data
 var DS_DROP_TEMP2  = [{}];		// 개인정보동의 정보 저장 data
 var DS_DROP_CHG    = [{}];		// 고객직접퇴회 정보 저장 data
+var DS_SCHEDULE	   = [{}];		// 재통화예약 정보 저장 data
 
 $(function () {
 	
@@ -25,6 +30,19 @@ $(function () {
 
 	// insert hash
 	$('.nav-link').on('click', ev => window.location.hash = ev.target.hash);
+
+	// 티켓생성 버튼 
+	$("#button10").on("click", ev => {
+		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		openNewTicket()
+			.then((succ) => { if (succ) alert("티켓생성이 완료되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
 
 	// select tab by hash
 	let hash = window.location.hash;
@@ -47,19 +65,6 @@ $(function () {
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
-
-	// event
-	$("#button10").on("click", ev => {
-		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
-		openNewTicket()
-			.then((succ) => { if (succ) alert("티켓생성이 완료되었습니다."); })
-			.catch((error) => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
 
 	onStart(opener ? opener.name : "");
 
@@ -414,20 +419,23 @@ const setCodeData = () => {
 	const sortKey = "CODE_ID";
 	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
-	// create select option
+	// create select options
 	for(const code of codeList) {
 
-		// filtering
-		if(code.CODE_MK == "DM_TYPE_CDE") { // 지급사유
-			if(code.CODE_ID != "03" && code.CODE_ID != "06" && code.CODE_ID != "07") continue;
-		}
+		const codeType 	= code.CODE_MK;
+		const codeNm 	= code.CODE_NAME;
+		const codeVal 	= code.CODE_ID;
 
-		// custom text
-		const text = code.CODE_NAME;
-		const value = code.CODE_ID;
+		// filtering
+		if(codeType == "DM_TYPE_CDE") { // 지급사유
+			if(codeVal != "03" && codeVal != "06" && codeVal != "07") continue;
+		}
+		if(codeType == "CSEL_RST_MK") { // 상담결과
+			if(codeVal != "01" && codeVal != "06" && codeVal != "07" && codeVal != "12" && codeVal != "19" && codeVal != "20") continue;
+		}
 		
 		// set
-		$(`select[name='${code.CODE_MK}']`).append(new Option(text, value));
+		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
 	}
 }
 
@@ -448,20 +456,20 @@ const onStart = (openerName) => {
 
 	// 탑바 > 고객정보 > 고객 > 상담등록 버튼으로 오픈
 	if(openerName.includes("top_bar")) {	
-		sidebarClient = opener.sideBarClient;
-		topbarClient = opener.client;
-		currentUser = opener.currentUserInfo.user;
+		topbarObject = opener;
+		topbarClient = topbarObject.client;
+		currentUser = topbarObject.currentUserInfo.user;
 
-		const custId = opener.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
-		const custMk = opener.document.getElementById("custInfo_CUST_MK").value;	// 고객구분
+		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
+		const custMk = topbarObject.document.getElementById("custInfo_CUST_MK").value;	// 고객구분
 		const target = (custMk == "PE" || custMk == "TC") ? "T" : "C";
 		getBaseData(target, custId);
 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	}else if(openerName.includes("CCEMPRO035")) {	
-		sidebarClient = opener.opener.sideBarClient;
-		topbarClient = opener.opener.client;
-		currentUser = opener.opener.currentUserInfo.user;
+		topbarObject = opener.topbarObject;
+		topbarClient = topbarObject.client;
+		currentUser = topbarObject.currentUserInfo.user;
 
 		const counselGrid = opener.grid1;	// 상담조회 grid
 		const rowKey = counselGrid.getSelectedRowKey();
@@ -532,9 +540,9 @@ var getBaseData = (target, targetId) => {
 			$("#hiddenbox3").val(row.DEPT_EMP_ID); 	// 사업국장    
 			$("#hiddenbox4").val(row.LC_EMP_ID); 	// 센터장
 			$("#hiddenbox6").val(targetId); 		// 고객번호
-			DS_DROP_TEMP1  = [{}];
-			DS_DROP_TEMP2  = [{}];
-			DS_DROP_CHG    = [{}];
+			
+			setInitCselRstMkDS();	// 상담결과 저장정보 초기화
+			onDmReceiptChange();	// DM 사은품접수 저장정보 세팅
 
 			setLable(target);
 			getStudy(row.ID);
@@ -620,44 +628,56 @@ const getCounsel = (sCselSeq, isFirst) => {
 			const rowIdx = $("#selectbox14 option:selected").index();
 			const rowData 	= counselData[rowIdx];
 			
-			const custMk	= rowData.CUST_MK;			// 고객구분
-			const custId	= rowData.CUST_ID;			// 고객번호
-			const target 	= (custMk == "PE" || custMk == "TC") ? "T" : "C"; // C : 고객, T : 선생님
-			const plProd 	= rowData.PLURAL_PRDT_LIST;	// 병행과목코드리스트
+			const CUST_MK			= rowData.CUST_MK;			// 고객구분
+			const target 			= (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C"; // C : 고객, T : 선생님
+			getBaseData(target, rowData.CUST_ID);		// 기본정보조회
+			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	// 병행과목코드리스트
 			
-			getBaseData(target, custId);
-			setPlProd(grid1, plProd);
-			
-			$("#hiddenbox5").val(rowData.CSEL_RST_MK1);	// 상담결과구분코드
-			$("#textbox29").val(rowData.CSEL_STTIME);	// 상담시간
-			$("#selectbox15").val(rowData.CSEL_CHNL_MK);		                	// 상담채널구분      
-			$("#checkbox1").prop("checked", rowData.LC_MK == "Y" ? true : false);	// 러닝센터(LC)  
-			$("#checkbox2").prop("checked", rowData.YC_MK == "Y" ? true : false);	// YC
-			$("#checkbox3").prop("checked", rowData.HL_MK == "Y" ? true : false);	// HL
-			$("#textbox12").val(rowData.CSEL_TITLE);								// 상담제목
-			$("#textbox13").val(rowData.CSEL_CNTS);									// 상담상세내용    
-			$("#selectbox1").val(rowData.OPEN_GBN);									// 공개여부  (개인정보)    
-			$("#selectbox2").val(rowData.CSEL_MAN_MK);								// 내담자구분      
-			$("#textbox14").val(rowData.CSEL_LTYPE_CDE);							// 상담대분류코드
-			$("#textbox16").val(rowData.CSEL_MTYPE_CDE);			                // 상담중분류코드
-			$("#textbox18").val(rowData.CSEL_STYPE_CDE);							// 상담소분류코드
-			$("#textbox15").val(rowData.CSEL_LTYPE_NAME);							// 분류(대) 명
-			$("#textbox17").val(rowData.CSEL_MTYPE_NAME);							// 분류(중) 명
-			$("#textbox19").val(rowData.CSEL_STYPE_NAME);							// 분류(소) 명
-			$("#selectbox3").val(rowData.CSEL_MK);									// 상담구분
-			$("#selectbox4").val(rowData.PROC_MK);									// 처리구분
-			$("#selectbox5").val(rowData.LIMIT_MK);									// 처리시한구분
-			$("#selectbox6").val(rowData.CUST_RESP_MK);								// 고객반응구분
-			calendarUtil.setImaskValue("calendar2", rowData.PROC_HOPE_DATE);		// 처리희망일자
-			$("#selectbox7").val(rowData.CALL_RST_MK);				                // 통화결과구분      (O/B결과) 
-			$("#selectbox8").val(rowData.CSEL_RST_MK1);				                // 상담결과구분
-			$("#selectbox9").val(rowData.FST_CRS_CDE);								// 첫상담경로
-			$("#selectbox10").val(rowData.PROC_STS_MK);					            // 처리상태구분
-			$("#selectbox11").val(rowData.CSEL_GRD);				                // 상담등급
-			$("#checkbox4").prop("checked", rowData.RE_PROC == "1" ? true : false);	// 재확인여부
-			$("#checkbox5").prop("checked", rowData.VOC_MK == "Y" ? true : false);	// VOC
+			$("#hiddenbox5").val(rowData.CSEL_RST_MK1);										// 상담결과구분코드
+			$("#textbox29").val(rowData.CSEL_STTIME);										// 상담시간
+			$("#selectbox15").val(rowData.CSEL_CHNL_MK);		                			// 상담채널구분      
+			$("#checkbox1").prop("checked", rowData.LC_MK == "Y" ? true : false);			// 러닝센터(LC)  
+			$("#checkbox2").prop("checked", rowData.YC_MK == "Y" ? true : false);			// YC
+			$("#checkbox3").prop("checked", rowData.HL_MK == "Y" ? true : false);			// HL
+			$("#textbox12").val(rowData.CSEL_TITLE);										// 상담제목
+			$("#textbox13").val(rowData.CSEL_CNTS);											// 상담상세내용    
+			$("#selectbox1").val(rowData.OPEN_GBN);											// 공개여부  (개인정보)    
+			$("#selectbox2").val(rowData.CSEL_MAN_MK);										// 내담자구분      
+			$("#textbox14").val(rowData.CSEL_LTYPE_CDE);									// 상담대분류코드
+			$("#textbox16").val(rowData.CSEL_MTYPE_CDE);			                		// 상담중분류코드
+			$("#textbox18").val(rowData.CSEL_STYPE_CDE);									// 상담소분류코드
+			$("#textbox15").val(rowData.CSEL_LTYPE_NAME);									// 분류(대) 명
+			$("#textbox17").val(rowData.CSEL_MTYPE_NAME);									// 분류(중) 명
+			$("#textbox19").val(rowData.CSEL_STYPE_NAME);									// 분류(소) 명
+			$("#selectbox3").val(rowData.CSEL_MK);											// 상담구분
+			$("#selectbox4").val(rowData.PROC_MK);											// 처리구분
+			$("#selectbox5").val(rowData.LIMIT_MK);											// 처리시한구분
+			$("#selectbox6").val(rowData.CUST_RESP_MK);										// 고객반응구분
+			calendarUtil.setImaskValue("calendar2", rowData.PROC_HOPE_DATE);				// 처리희망일자
+			$("#selectbox7").val(rowData.CALL_RST_MK);				                		// 통화결과구분      (O/B결과) 
+			$("#selectbox8").val(rowData.CSEL_RST_MK1);				                		// 상담결과구분
+			$("#selectbox9").val(rowData.FST_CRS_CDE);										// 첫상담경로
+			$("#selectbox10").val(rowData.PROC_STS_MK);					            		// 처리상태구분
+			$("#selectbox11").val(rowData.CSEL_GRD);				                		// 상담등급
+			$("#checkbox4").prop("checked", rowData.RE_PROC == "1" ? true : false);			// 재확인여부
+			$("#checkbox5").prop("checked", rowData.VOC_MK == "Y" ? true : false);			// VOC
 			$("#checkbox6").prop("checked", rowData.RE_CALL_CMPLT == "Y" ? true : false);	// 재통화완료여부
-			// $("#selectbox16").val(rowData.);	// TODO 지급사유
+			$("#hiddenbox7").val(rowData.DM_MATCHCD);										// DM매치코드
+			$("#hiddenbox8").val(rowData.DM_LIST_ID);										// DM목록ID
+			$("#selectbox16").val(rowData.DM_TYPE_CDE);										// DM종류	(지급사유)
+
+			// 상담결과 구분이 DM 사은품접수일 경우.
+			if(rowData.CSEL_RST_MK1 == "12") { 
+				// 지급사유 selectbox 표시
+				$("#dmTyTd1").attr("colspan", "04");
+				$("#dmTyTd2").css("display", "");
+				$("#dmTyTd3").css("display", "");
+			}else {
+				// 지급사유 selectbox 숨김
+				$("#dmTyTd1").attr("colspan", "06");
+				$("#dmTyTd2").css("display", "none");
+				$("#dmTyTd3").css("display", "none");
+			}
 
 			setBtnCtrlAtLoadComp();
 
@@ -881,9 +901,7 @@ const onNewCustInit = () => {
     $("#selectbox9").val("");   	// 상담경로
     $("#textbox11").val("");		// 연계부서코드
 	$("#textbox26").val("");		// 연계부서명  
-	DS_DROP_TEMP1  = [{}];
-	DS_DROP_TEMP2  = [{}];
-	DS_DROP_CHG    = [{}];
+	setInitCselRstMkDS();			// 상담결과 저장정보
 	grid3.clear();			  		// 학습중인 과목
 }
 
@@ -937,6 +955,8 @@ var addCselByFamily = (data) => {
  */
 const saveCounsel = async () => {
 
+	sidebarClient = topbarObject.sidebarClient;
+
 	// TODO 
 	// if(!sidebarClient) {
 	// 	alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
@@ -953,6 +973,8 @@ const saveCounsel = async () => {
 	// 상담정보 value check
 	const counselData = await getCounselCondition(sJobType);
 	if (!counselData) return;
+	const addInfoData = getAddInfoCondition();
+	if (!addInfoData) return;
 
 	const settings = {
 		url: `${API_SERVER}/cns.saveCounsel.do`,
@@ -963,7 +985,7 @@ const saveCounsel = async () => {
 			senddataids	: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
 			recvdataids	: ["dsRecv"],
 			DS_COUNSEL	: [counselData],			// 상담정보
-			DS_ADDINFO	: getAddInfoCondition(), 	// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
+			DS_ADDINFO	: addInfoData, 				// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
 			DS_OB		: [{}],					 	// TODO OB관련 데이터
 		}),
 		errMsg: "상담정보 저장중 오류가 발생하였습니다.",
@@ -979,14 +1001,8 @@ const saveCounsel = async () => {
 			return;
 		}
 
-		// 접수번호 세팅
-		$("#textbox28").val(data.dsRecv[0].CSEL_NO);			
-			
-		// 저장이 완료된 순번의 저장구분 값 변경
-		selectSeq.options[selectSeq.selectedIndex].dataset.jobType = "U"; 
-
-		setBtnCtrlAtLoadComp();
-
+		$("#textbox28").val(data.dsRecv[0].CSEL_NO); // 접수번호 세팅
+		getCounsel(selectSeq.value, true);	// 저장성공후 재조회
 		alert("저장 되었습니다.");
 		
 	});
@@ -1334,7 +1350,7 @@ const getAddInfoCondition = () => {
 	const cselRstMk = $("#selectbox8").val();	// 상담결과 구분
 
 	if (cselRstMk == "12") {		// DM 사은품 접수
-		return DS_DROP_TEMP1;
+		return DS_DM_RECEIPT;
 	} else if (cselRstMk == "19") {	// 개인정보동의
 		return DS_DROP_TEMP2;
 	} else if (cselRstMk == "20") {	// 고객직접퇴회
@@ -1485,14 +1501,14 @@ function openCCEMPRO043(keyCode){
 }
 
 /**
- * 상담결과 selectbox 팝업.
+ * 상담결과 selectbox change 이벤트
  * - as-is : cns5810.onCselRstMkPopUp()
- * @param {string} code 
+ * @param {string} code 상담결과 구분
  */
 const openCselRst = code => {
 
-	const mbrId 	= $("#textbox22").val();	// 회원번호
-	const custId 	= $("#hiddenbox6").val();	// 고객번호
+	const mbrId = $("#textbox22").val();	// 회원번호
+	const custId = $("#hiddenbox6").val();	// 고객번호
 
 	// 고객정보가 있는지 체크
 	if (!custId) {
@@ -1501,45 +1517,106 @@ const openCselRst = code => {
 		return;
 	}
 
-	// 고객제안접수건이었을때는 다른 상담결과를 선택할수 없다.
-	if ($("#hiddenbox5").val() == "14" && code != "14") {
-		alert("고객제안접수가 되어있습니다. \n\n상담결과를 변경할 수 없습니다.");
-		return;
-	}
+	// 저장 data 초기화
+	setInitCselRstMkDS();
 
-	switch (code) {
-		case "01":	// 재통화예약
-			PopupUtil.open("CCEMPRO025", 500, 330);
-			break;
-		case "19":	// 개인정보동의신청
-			PopupUtil.open("CCEMPRO023", 594, 670);
-			break;
-		case "20":	// 고객직접퇴회
-			if (mbrId == "") {
-				alert("회원번호가 없습니다.\n\n고객직접퇴회 신청을 할 수 없습니다.");
-				return;
-			}
-			PopupUtil.open("CCEMPRO024", 670, 800);
-			break;
-		case "확인필요":	// TODO MOS문의답변 code 확인필요
-			PopupUtil.open("CCEMPRO094", 570, 720);
-			break;
-		default:
-			break;
-	}
-
-	// 사은품접수 선택시
+	// 사은품접수
 	if (code == "12") {
 		// 지급사유 selectbox 표시
 		$("#dmTyTd1").attr("colspan", "04");
 		$("#dmTyTd2").css("display", "");
 		$("#dmTyTd3").css("display", "");
+		return;
 	} else {
 		// 지급사유 selectbox 숨김
 		$("#dmTyTd1").attr("colspan", "06");
 		$("#dmTyTd2").css("display", "none");
 		$("#dmTyTd3").css("display", "none");
+		$("#selectbox16").val("");
 	}
+
+	// 재통화예약
+	if (code == "01") {
+		PopupUtil.open("CCEMPRO025", 500, 330);
+		return;
+	}
+
+	// 개인정보동의신청
+	if (code == "19") {
+		PopupUtil.open("CCEMPRO023", 594, 670);
+		return;
+	}
+
+	// 고객직접퇴회
+	if (code == "20") {
+		if (mbrId == "") {
+			alert("회원번호가 없습니다.\n\n고객직접퇴회 신청을 할 수 없습니다.");
+			return;
+		}
+		PopupUtil.open("CCEMPRO024", 670, 800);
+		return;
+	}
+
+	// TODO MOS문의답변
+	if (code == "MOS문의답변") {
+		PopupUtil.open("CCEMPRO094", 570, 720);
+		return;
+	}
+	
+	// TODO MOS(커뮤니티)
+	if (code == "MOS(커뮤니티)") {
+		PopupUtil.open("CCEMPRO094", 570, 720);
+		return;
+	}
+
+	// TODO 상담성공
+	if (code == "06") {
+		return;
+	}
+
+	// TODO 상담실패
+	if (code == "07") {
+		return;
+	}
+
+}
+
+/**
+ * 상담결과 팝업 저장 data를 초기화한다.
+ * - as-is : cns5810.setInitCselRstMkDS()
+ */
+const setInitCselRstMkDS = () => {
+	DS_DM_RECEIPT  = [{}];		// DM 사은품 접수 정보 저장 data
+	DS_DROP_TEMP2  = [{}];		// 개인정보동의 정보 저장 data
+	DS_DROP_CHG    = [{}];		// 고객직접퇴회 정보 저장 data
+}
+
+/**
+ * 지급사유 selectbox change 이벤트
+ */
+const onDmReceiptChange = () => {
+
+	dmTypeText = $("#selectbox16 option:selected").text();
+	dmTypeValue = $("#selectbox16 option:selected").val();
+
+	if(!dmTypeValue) {
+		DS_DM_RECEIPT = [{}];
+		return;
+	}
+
+	DS_DM_RECEIPT[0].CSEL_DATE   =	calendarUtil.getImaskValue("textbox27");	// 상담일자		
+	DS_DM_RECEIPT[0].CSEL_NO     =	$("#textbox28").val();						// 상담번호
+	DS_DM_RECEIPT[0].CSEL_SEQ    =	$("#selectbox14").val();					// 상담순번
+	DS_DM_RECEIPT[0].CUST_ID     =	$("#hiddenbox6").val();						// 고객번호
+	DS_DM_RECEIPT[0].CUST_NAME   =	$("#textbox21").val();						// 고객명
+	DS_DM_RECEIPT[0].DM_MATCHCD  =	$("#hiddenbox7").val();						// DM매치코드
+	DS_DM_RECEIPT[0].DM_LIST_ID  =	$("#hiddenbox8").val();						// DM목록ID
+	DS_DM_RECEIPT[0].DM_TYPE_CDE =	dmTypeValue;								// DM종류코드
+	DS_DM_RECEIPT[0].DMLABEL	 =  dmTypeText;									// DM종류
+	DS_DM_RECEIPT[0].DM_ZIPCDE   =	$("#textbox24").val();						// 우편번호
+	DS_DM_RECEIPT[0].DM_ADDR     =	$("#textbox25").val();						// 주소
+	DS_DM_RECEIPT[0].DM_REQ_DATE =	getDateFormat().replace(/[^0-9]/gi, '');	// 요청일자
+	DS_DM_RECEIPT[0].REQ_USER_ID =	currentUser.external_id;					// 요청자ID	
 
 }
 
@@ -1584,7 +1661,7 @@ const setBtnCtrlAtLoadComp = () => {
 	$("#button5").prop("disabled", false);	// 추가등록
 	$("#button6").prop("disabled", false);	// 관계회원
 
-	//처리구분에 따른 상담연계/결과등록버튼 제어
+	// 처리구분에 따른 상담연계/결과등록버튼 제어
 	switch ($("#selectbox4").val()) {
 		case "2":       //상담원처리 = 고객의견
 			$("#button4").prop("disabled", true);	// 상담연계
