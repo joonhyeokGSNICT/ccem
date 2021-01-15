@@ -546,7 +546,7 @@ $(function(){
 	
 	// selectBox 공통 코드 불러오기
 	getCodeList();
-	
+	$("#custInfo_CUST_MK").val("CM");		// 잠재회원으로 기본설정
 	setTimeout(function(){
 		$('.multiSelect').multipleSelect();
 	}, 5000);
@@ -648,7 +648,7 @@ $(function(){
 			
 		// 학습이력
 		case 'customerStudyHist':
-			if(currentCustInfo.CUST_ID != ""){
+			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
 				loadList('ifsStudyClass', counselMain_studyTab_weeklyStat);
 			}
 			counselMain_studyTab_weeklyStat.refreshLayout();
@@ -664,7 +664,7 @@ $(function(){
 			break;
 		// 직접결제
 		case 'payCheck':
-			if(currentCustInfo.CUST_ID != ""){
+			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
 				loadList('getCustPayMst', counselMain_directCharge_duesInfo_grid);
 			}
 			counselMain_directCharge_duesInfo_grid.refreshLayout();
@@ -680,7 +680,7 @@ $(function(){
 			break;
 		// 개인정보동의
 		case 'infoAgree':
-			if(currentCustInfo.CUST_ID != ""){
+			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
 				loadList('getErrNewMBR', counselMain_infoAgree_infoAgreeList_grid);
 				loadList('getErrEntInfo', counselMain_infoAgree_termsVersion_grid);
 			}
@@ -689,7 +689,7 @@ $(function(){
 			break;
 		// 자동퇴회
 		case 'autoQuit':
-			if(currentCustInfo.MBR_ID != ""){
+			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
 				loadList('getDropDtl', counselMain_autoResign_resignDetail_grid);
 				loadList('getDropMsg', counselMain_autoResign_resignSendList_grid);
 			}
@@ -951,7 +951,7 @@ function customerSearch(currentDiv){
 }
 
 /**\
- * 고객정보 조회
+ * 고객정보 상세 조회
  * @param sCustId
  * @returns
  * 21-01-11 최준혁
@@ -1857,13 +1857,13 @@ function onAutoSearchByTELPNO(sFlag,sName){
     }
 }
 
-//============================================================================
-// 저장 하는 함수
-// 유효성 체크가 끝나면 호출된다.(onSaveBtnClicked() --> onValueCheck() --> onSave())
-//============================================================================
+/**
+ * 저장 하는 함수
+ * 유효성 체크가 끝나면 호출된다.(onSaveBtnClicked() --> onValueCheck() --> onSave())
+ * @returns
+ * 21-01-11 최준혁
+ */
 function onSave(){
-
-
     //custInfoStatus가 2 : 고객조회된 상태// "UPDATE"가 아닌데, 고객이 이미 존재할 경우,
    if(custInfoStatus != 2 && existCustInfo.CUST_ID != "NODATAFOUND"){
 
@@ -1908,10 +1908,6 @@ function onSave(){
         	custInfoStatus = 3;// "RELINSERT";
         }
     }
-
-//alert("sJobKind="+sJobKind+"\nDS_EXISTRECORD.nameValue(1,'CUST_ID')="+DS_EXISTRECORD.nameValue(1,"CUST_ID")+"\nDS_EXISTRECORD.nameValue(1,'FAT_RSDNO')="+DS_EXISTRECORD.nameValue(1,"FAT_RSDNO")+"\nsOrgFAT_RSDNO="+sOrgFAT_RSDNO);
-
-//    alert("sJobKind="+sJobKind+"\nDS_CUST.RowStatus="+DS_CUST.RowStatus(1)+"\nDS_ADDR.RowStatus="+DS_ADDR.RowStatus(1));
     //저장 데이터 설정 : IsUpdated 영향을 끼치는 항목 설정
     //E-mail수신여부 = 0:허용 1:수신거부
     /*
@@ -1933,92 +1929,139 @@ function onSave(){
 	}
 	
     //DS_ADDR.UseChangeInfo = false;
-
-	//alert("sJobKind="+sJobKind+"\nDS_CUST.RowStatus="+DS_CUST.RowStatus(1)+"\nDS_ADDR.RowStatus="+DS_ADDR.RowStatus(1));
 	
 	var param = {
-		    senddataids: ["send1"],
+		    senddataids: ["DS_DATA","DS_CUST","DS_CUST_CHG"],
 		    recvdataids: ["recv1"],
-		    send1: [{}]
+		    DS_DATA: [{}],
+		    DS_CUST: [{}],
+		    DS_CUST_CHG: [{}]
 		};
 	
-	if(custInfoStatus == 1 || custInfoStatus == 3){
-		param.send1[0].ROW_TYPE = "I";
+	if(custInfoStatus == 1 || custInfoStatus == 3 || custInfoStatus == 4){
+		param.DS_DATA[0].ROW_TYPE = "I";
 		switch(custInfoStatus){
 		case 1 :
-			param.send1[0].JOBKIND = 'NEW'; 
+			param.DS_DATA[0].JOBKIND = 'NEW'; 
 			break;
 		case 3 :
-			param.send1[0].JOBKIND = 'REL'; 
+			param.DS_DATA[0].JOBKIND = 'REL'; 
 			break;
 		case 4 :
-			param.send1[0].JOBKIND = 'NUP'; 
+			param.DS_DATA[0].JOBKIND = 'NUP'; 
 			break;
 		default:
-			param.send1[0].JOBKIND = ''; 
+			param.DS_DATA[0].JOBKIND = ''; 
 		break;
 		}
-		param.send1[0].CUST_ID = 		"";
-		param.send1[0].CUST_CGNT_NO = 	"";
-		param.send1[0].MBR_ID = 		"";
+		param.DS_CUST[0].CUST_ID = 		"";
+		param.DS_CUST[0].CUST_MK = 		$("#custInfo_CUST_MK").val();
+		param.DS_CUST[0].CUST_CGNT_NO = 	"";
+		param.DS_CUST[0].MBR_ID = 			"";
+		param.DS_CUST[0].NAME = 			$("#custInfo_NAME").val();
+		param.DS_CUST[0].NAME_ENG = 		"";
+		param.DS_CUST[0].GND = 			$("#custInfo_GND").val();
+		param.DS_CUST[0].BIRTH_MK = 		$("#lunarSolarInput").val();
+		param.DS_CUST[0].BIRTH_YR =		$("#custInfo_BIRTH_YMD").val().split("-")[0];
+		param.DS_CUST[0].BIRTH_MD = 		$("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2];
+		param.DS_CUST[0].GRADE_CDE = 		$("#custInfo_GRADE_CDE").val();
+		param.DS_CUST[0].FAT_RSDNO = 		$("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+		param.DS_CUST[0].FAT_NAME = 		$("#custInfo_FAT_NAME").val();
+		param.DS_CUST[0].FAT_REL = 		$("#custInfo_FAT_REL").val();
+		param.DS_CUST[0].ZIPCDE = 			$("#custInfo_ZIPCDE").val();
+		param.DS_CUST[0].ADDR = 			$("#custInfo_ADDR").val();
+		param.DS_CUST[0].DDD = 			$("#custInfo_DDD").val();
+		param.DS_CUST[0].TELPNO1 = 		$("#custInfo_TELPNO1").val();
+		param.DS_CUST[0].TELPNO2 = 		$("#custInfo_TELPNO2").val();
+		param.DS_CUST[0].DEPT_ID = 		$("#custInfo_DEPT_ID").val();
+		param.DS_CUST[0].FML_RANK = 		$("#custInfo_FML_RANK").val();
+		param.DS_CUST[0].MOBILNO = 		$("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val();
+		param.DS_CUST[0].MOBILNO_MBR =		$("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val();
+		param.DS_CUST[0].MOBILNO_FAT =		"",
+		param.DS_CUST[0].MOBILNO3 = 		$("#custInfo_MOBILNO3").val();
+		param.DS_CUST[0].MOBILNO3_MBR =	$("#custInfo_MOBILNO_MBR3").val();
+		param.DS_CUST[0].MOBILNO3_FAT =	"",
+		param.DS_CUST[0].ZIP_ADDR = 		$("#custInfo_ZIP_ADDR").val();
+		param.DS_CUST[0].FAT_CO_DDD = 		"",
+		param.DS_CUST[0].FAT_CO_TELPNO1 =	"",
+		param.DS_CUST[0].FAT_CO_TELPNO2 = 	"",
+		param.DS_CUST[0].MOBILNO_LAW = 	$("#custInfo_MOBILNO_LAW1").val() + $("#custInfo_MOBILNO_LAW2").val() + $("#custInfo_MOBILNO_LAW3").val();
+		param.DS_CUST[0].MOBILNO3_LAW = 	$("#custInfo_MOBILNO_LAW3").val();
+		param.DS_CUST[0].LC_ID = 			$("#custInfo_LC_ID").val();
+		param.DS_CUST[0].CHG_USER_ID = 	currentUserInfo.external_id;
 		
 	}else {
-		param.send1[0].ROW_TYPE = 		"U";
-		param.send1[0].JOBKIND = 		''; 
-		param.send1[0].CUST_ID = 		currentCustInfo.CUST_ID;
-		param.send1[0].CUST_CGNT_NO = 	currentCustInfo.CUST_CGNT_NO;
-		param.send1[0].MBR_ID = 		currentCustInfo.MBR_ID;
+		param.DS_DATA[0].ROW_TYPE 				= "U";
+		param.DS_DATA[0].JOBKIND 				= 'UPD'; 
 		
-		param.send1[0].NAME_OLD				= currentCustInfo.NAME;
-		param.send1[0].NAME_ENG_OLD			= currentCustInfo.NAME_ENG;
-		param.send1[0].GND_OLD				= currentCustInfo.GND;
-		param.send1[0].RSDNO_OLD			= currentCustInfo.RSDNO;
-		param.send1[0].GRADE_CDE_OLD		= currentCustInfo.GRADE_CDE;	
-		param.send1[0].BIRTH_MK_OLD			= currentCustInfo.BIRTH_MK;
-		param.send1[0].BIRTH_YR_OLD			= currentCustInfo.BIRTH_YMD.substring(0,4);
-		param.send1[0].BIRTH_MD_OLD			= currentCustInfo.BIRTH_YMD.substring(4,8);
-		param.send1[0].FAT_RSDNO_OLD		= currentCustInfo.FAT_RSDNO;	
-		param.send1[0].FAT_NAME_OLD			= currentCustInfo.FAT_NAME;
-		param.send1[0].FAT_REL_OLD			= currentCustInfo.FAT_REL;
-		param.send1[0].REP_EMAIL_ADDR_OLD	= currentCustInfo.REP_EMAIL_ADDR;
-		//param.send1[0].MAIL_RCV_FLAG_OLD
-		param.send1[0].ADDR_CHG_FLAG1		= chgYn.isCustChanged;
-		param.send1[0].ADDR_CHG_FLAG2		= chgYn.isFatAddrChanged;
-		param.send1[0].ADDR_CHG_FLAG3		= chgYn.isMbrMobilChanged;
+		param.DS_CUST[0].CUST_ID = 		"";
+		param.DS_CUST[0].CUST_MK = 		$("#custInfo_CUST_MK").val();
+		param.DS_CUST[0].CUST_CGNT_NO = 	"";
+		param.DS_CUST[0].MBR_ID = 			"";
+		param.DS_CUST[0].NAME = 			$("#custInfo_NAME").val();
+		param.DS_CUST[0].NAME_ENG = 		"";
+		param.DS_CUST[0].GND = 			$("#custInfo_GND").val();
+		param.DS_CUST[0].BIRTH_MK = 		$("#lunarSolarInput").val();
+		param.DS_CUST[0].BIRTH_YR =		$("#custInfo_BIRTH_YMD").val().split("-")[0];
+		param.DS_CUST[0].BIRTH_MD = 		$("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2];
+		param.DS_CUST[0].GRADE_CDE = 		$("#custInfo_GRADE_CDE").val();
+		param.DS_CUST[0].FAT_RSDNO = 		$("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+		param.DS_CUST[0].FAT_NAME = 		$("#custInfo_FAT_NAME").val();
+		param.DS_CUST[0].FAT_REL = 		$("#custInfo_FAT_REL").val();
+		param.DS_CUST[0].ZIPCDE = 			$("#custInfo_ZIPCDE").val();
+		param.DS_CUST[0].ADDR = 			$("#custInfo_ADDR").val();
+		param.DS_CUST[0].DDD = 			$("#custInfo_DDD").val();
+		param.DS_CUST[0].TELPNO1 = 		$("#custInfo_TELPNO1").val();
+		param.DS_CUST[0].TELPNO2 = 		$("#custInfo_TELPNO2").val();
+		param.DS_CUST[0].DEPT_ID = 		$("#custInfo_DEPT_ID").val();
+		param.DS_CUST[0].FML_RANK = 		$("#custInfo_FML_RANK").val();
+		param.DS_CUST[0].MOBILNO = 		$("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val();
+		param.DS_CUST[0].MOBILNO_MBR =		$("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val();
+		param.DS_CUST[0].MOBILNO_FAT =		"",
+		param.DS_CUST[0].MOBILNO3 = 		$("#custInfo_MOBILNO3").val();
+		param.DS_CUST[0].MOBILNO3_MBR =	$("#custInfo_MOBILNO_MBR3").val();
+		param.DS_CUST[0].MOBILNO3_FAT =	"",
+		param.DS_CUST[0].ZIP_ADDR = 		$("#custInfo_ZIP_ADDR").val();
+		param.DS_CUST[0].FAT_CO_DDD = 		"",
+		param.DS_CUST[0].FAT_CO_TELPNO1 =	"",
+		param.DS_CUST[0].FAT_CO_TELPNO2 = 	"",
+		param.DS_CUST[0].MOBILNO_LAW = 	$("#custInfo_MOBILNO_LAW1").val() + $("#custInfo_MOBILNO_LAW2").val() + $("#custInfo_MOBILNO_LAW3").val();
+		param.DS_CUST[0].MOBILNO3_LAW = 	$("#custInfo_MOBILNO_LAW3").val();
+		param.DS_CUST[0].LC_ID = 			$("#custInfo_LC_ID").val();
+		param.DS_CUST[0].CHG_USER_ID = 	currentUserInfo.external_id;
+		
+		param.DS_CUST_CHG[0].CUST_ID 				= $("#custInfo_CUST_ID").val();
+		param.DS_CUST_CHG[0].NAME 					= $("#custInfo_NAME").val();
+		param.DS_CUST_CHG[0].NAME_ENG 				= "";
+		param.DS_CUST_CHG[0].GND 					= $("#custInfo_GND").val();
+		param.DS_CUST_CHG[0].RSDNO 				= "";
+		param.DS_CUST_CHG[0].GRADE_CDE 			= $("#custInfo_GRADE_CDE").val();
+		param.DS_CUST_CHG[0].BIRTH_MK 				= $("#lunarSolarInput").val();
+		param.DS_CUST_CHG[0].BIRTH_YR 				= $("#custInfo_BIRTH_YMD").val().split("-")[0];
+		param.DS_CUST_CHG[0].BIRTH_MD 				= $("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2];
+		param.DS_CUST_CHG[0].FAT_RSDNO 			= $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+		param.DS_CUST_CHG[0].FAT_NAME 				= $("#custInfo_FAT_NAME").val();
+		param.DS_CUST_CHG[0].FAT_REL 				= $("#custInfo_FAT_REL").val();
+		param.DS_CUST_CHG[0].MAIL_RCV_FLAG 		= "";
+		param.DS_CUST_CHG[0].REP_EMAIL_ADDR 		= "";
+		param.DS_CUST_CHG[0].NAME_OLD				= currentCustInfo.NAME;
+		param.DS_CUST_CHG[0].NAME_ENG_OLD			= currentCustInfo.NAME_ENG;
+		param.DS_CUST_CHG[0].GND_OLD				= currentCustInfo.GND;
+		param.DS_CUST_CHG[0].RSDNO_OLD				= currentCustInfo.RSDNO;
+		param.DS_CUST_CHG[0].GRADE_CDE_OLD			= currentCustInfo.GRADE_CDE;	
+		param.DS_CUST_CHG[0].BIRTH_MK_OLD			= currentCustInfo.BIRTH_MK;
+		param.DS_CUST_CHG[0].BIRTH_YR_OLD			= currentCustInfo.BIRTH_YMD.substring(0,4);
+		param.DS_CUST_CHG[0].BIRTH_MD_OLD			= currentCustInfo.BIRTH_YMD.substring(4,8);
+		param.DS_CUST_CHG[0].FAT_RSDNO_OLD			= currentCustInfo.FAT_RSDNO;	
+		param.DS_CUST_CHG[0].FAT_NAME_OLD			= currentCustInfo.FAT_NAME;
+		param.DS_CUST_CHG[0].FAT_REL_OLD			= currentCustInfo.FAT_REL;
+		param.DS_CUST_CHG[0].REP_EMAIL_ADDR_OLD	= currentCustInfo.REP_EMAIL_ADDR;
+		param.DS_CUST_CHG[0].MAIL_RCV_FLAG_OLD		= currentCustInfo.MAIL_RCV_FLAG_OLD;
+		param.DS_CUST_CHG[0].ADDR_CHG_FLAG1		= chgYn.isCustChanged;
+		param.DS_CUST_CHG[0].ADDR_CHG_FLAG2		= chgYn.isFatAddrChanged;
+		param.DS_CUST_CHG[0].ADDR_CHG_FLAG3		= chgYn.isMbrMobilChanged;
+		param.DS_CUST_CHG[0].CHG_USER_ID 			= currentUserInfo.external_id;
 	}
-	
-	param.send1[0].CUST_MK = 		$("#custInfo_CUST_MK").val();
-	param.send1[0].NAME = 			$("#custInfo_NAME").val();
-	param.send1[0].NAME_ENG = 		"";
-	param.send1[0].GND = 			$("#custInfo_GND").val();
-	param.send1[0].BIRTH_MK = 		$("#lunarSolarInput").val();
-	param.send1[0].BIRTH_YR =		$("#custInfo_BIRTH_YMD").val().split("-")[0];
-	param.send1[0].BIRTH_MD = 		$("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2];
-	param.send1[0].GRADE_CDE = 		$("#custInfo_GRADE_CDE").val();
-	param.send1[0].FAT_RSDNO = 		$("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
-	param.send1[0].FAT_NAME = 		$("#custInfo_FAT_NAME").val();
-	param.send1[0].FAT_REL = 		$("#custInfo_FAT_REL").val();
-	param.send1[0].ZIPCDE = 		$("#custInfo_ZIPCDE").val();
-	param.send1[0].ADDR = 			$("#custInfo_ADDR").val();
-	param.send1[0].DDD = 			$("#custInfo_DDD").val();
-	param.send1[0].TELPNO1 = 		$("#custInfo_TELPNO1").val();
-	param.send1[0].TELPNO2 = 		$("#custInfo_TELPNO2").val();
-	param.send1[0].DEPT_ID = 		$("#custInfo_DEPT_ID").val();
-	param.send1[0].FML_RANK = 		$("#custInfo_FML_RANK").val();
-	param.send1[0].MOBILNO = 		$("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val();
-	param.send1[0].MOBILNO_MBR =	$("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val();
-	param.send1[0].MOBILNO_FAT =	"",
-	param.send1[0].MOBILNO3 = 		$("#custInfo_MOBILNO3").val();
-	param.send1[0].MOBILNO3_MBR =	$("#custInfo_MOBILNO_MBR3").val();
-	param.send1[0].MOBILNO3_FAT =	"",
-	param.send1[0].ZIP_ADDR = 		$("#custInfo_ZIP_ADDR").val();
-	param.send1[0].FAT_CO_DDD = 	"",
-	param.send1[0].FAT_CO_TELPNO1 = "",
-	param.send1[0].FAT_CO_TELPNO2 = "",
-	param.send1[0].MOBILNO_LAW = 	$("#custInfo_MOBILNO_LAW1").val() + $("#custInfo_MOBILNO_LAW2").val() + $("#custInfo_MOBILNO_LAW3").val();
-	param.send1[0].MOBILNO3_LAW = 	$("#custInfo_MOBILNO_LAW3").val();
-	param.send1[0].LC_ID = 			$("#custInfo_LC_ID").val();
-	param.send1[0].CHG_USER_ID = 	currentUserInfo.external_id;
 	
 	$.ajax({
 	    url: API_SERVER + '/cns.saveCust.do',
@@ -2028,6 +2071,12 @@ function onSave(){
 	    data: JSON.stringify(param),
 	    success: function (response) {
 	    	console.log(response);
+	    	if(response.errcode == "0"){
+	    		client.invoke("notify", "저장 되었습니다.", "notice", 5000);
+	    		//onAutoSearch()
+	    	}else {
+	    		client.invoke("notify", response.errmsg, "error", 60000);
+	    	}
 	    }
 	});
 	
