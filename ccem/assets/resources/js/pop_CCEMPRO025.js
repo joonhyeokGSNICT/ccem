@@ -109,7 +109,8 @@ const getTelNo = (CUST_ID) => new Promise((resolve, reject) => {
 const onSave = async () => {
     const openerNm = opener ? opener.name : "";
 
-    if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
+    // 상담등록 화면에서 오픈했을때.
+    if (openerNm == "CCEMPRO022") {  
         const tel1 = $("#textbox1").val();
         const tel2 = $("#textbox2").val();
         const tel3 = $("#textbox3").val();
@@ -132,6 +133,7 @@ const onSave = async () => {
 
         opener.DS_SCHEDULE.TELNO = tel1 + tel2 + tel3;
         window.close();
+    // 부모창이 존재하지 않을때.
     } else {
         alert("재통화예약 저장 중 오류가 발생하였습니다. 팝업창을 닫고 다시 실행해 주세요.");
     }

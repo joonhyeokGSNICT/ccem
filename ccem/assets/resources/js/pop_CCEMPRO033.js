@@ -213,13 +213,18 @@ $(function(){
     });
 	
 	customerSearchList_grid.on('dblclick', (ev) => {
-        const openerName = opener ? opener.name : "";
-        // 상담등록 > 고객조회 버튼으로 오픈했을때.
-        if(openerName.includes("CCEMPRO022")) {
-            const custId = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
-            opener.getBaseData("C", custId);
+        const openerNm = opener ? opener.name : "";
+
+        // 상담등록 화면에서 오픈했을때.
+        if (openerNm = "CCEMPRO022") {
+            const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
+            opener.getBaseData("C", CUST_ID);
             window.close();
+        // 부모창이 존재하지 않을때.
+        } else {
+            alert("고객조회 중 오류가 발생하였습니다. 팝업창을 닫고 다시 실행해 주세요.");
         }
+
     });
 	
 	// 고객찾기 고객찾기 GRID 끝

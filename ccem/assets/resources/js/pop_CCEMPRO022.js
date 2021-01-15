@@ -1542,7 +1542,7 @@ const openCCEMPRO042 = (keyCode) => {
  */
 const openCCEMPRO044 = (keyCode) => {
 	if (keyCode == 13) {
-		PopupUtil.open("CCEMPRO044", 852, 443);
+		PopupUtil.open("CCEMPRO044", 1145, 475);
 	}
 }
 
@@ -1553,7 +1553,7 @@ const openCCEMPRO044 = (keyCode) => {
  */
 function openCCEMPRO043(keyCode){
     if(keyCode == 13){
-		PopupUtil.open("CCEMPRO043", 1065, 685);
+		PopupUtil.open("CCEMPRO043", 1100, 700);
     }
 }
 

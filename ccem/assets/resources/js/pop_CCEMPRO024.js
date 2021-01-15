@@ -254,7 +254,8 @@ const openPopup = async (key) => {
 const onSave = () => {
 	const openerNm = opener ? opener.name : "";
 
-	if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
+	// 상담등록 화면에서 오픈했을때.
+	if (openerNm == "CCEMPRO022") {  
 		opener.DS_DROP_CHG.CSEL_DATE    = sCSEL_DATE;	// 상담일자
 		opener.DS_DROP_CHG.CSEL_NO 	  	= sCSEL_NO;		// 상담번호
 		opener.DS_DROP_CHG.CSEL_SEQ 	= sCSEL_SEQ;	// 상담순번
@@ -271,6 +272,7 @@ const onSave = () => {
 		}
 		
 		window.close();
+	// 부모창이 존재하지 않을때.
 	} else {
 		alert("고객직접퇴회 저장 중 오류가 발생하였습니다. 팝업창을 닫고 다시 실행해 주세요.");
 	}
