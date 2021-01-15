@@ -466,6 +466,10 @@ function setStatus(num){
 		if(currentCustInfo){										// 기존 고객정보가 있을때만 취소
 			$("#custInfo_cancelBtn").prop('disabled', '');			// 취소 버튼 		enable
 		}
+		$("#custInfo_DEPT_NAME_study").parent().css("display","none");	// 복수학습 최적화
+		$("#custInfo_LC_NM_study").parent().css("display","none");
+		$("#custInfo_multipleStudy").css("display","none");
+		$("#custInfo_UPDEPTNAME").parent().attr('colspan', '3');
 		break;
 	case 2 :
 		$("#custInfo_refBtn").prop('disabled','');					// 관계회원 버튼 	enable
@@ -546,7 +550,6 @@ $(function(){
 	
 	// selectBox 공통 코드 불러오기
 	getCodeList();
-	$("#custInfo_CUST_MK").val("CM");		// 잠재회원으로 기본설정
 	setTimeout(function(){
 		$('.multiSelect').multipleSelect();
 	}, 5000);
@@ -708,6 +711,13 @@ $(function(){
 			var counselMain_researchCust_smsLmsHist_grid = null;		// 상담메인	> 고객조사 > 설문조사 grid
 			*/
 			break;
+		// SMS/LMS 이력
+		case 'smsList':
+			if(currentCustInfo.CUST_ID != ""){
+				loadList('getTB_SMSDATA', counselMain_researchCust_smsLmsHist_grid);
+			}
+			counselMain_researchCust_smsLmsHist_grid.refreshLayout();
+			break;
 			
 			
 		}
@@ -739,6 +749,11 @@ $(function(){
 			$("#custInfo_LC_NAME").val($(this).find('option:selected').text());
 			$("#custInfo_TELPNO_LC").val($(this).find('option:selected').attr('tel'));
 		}
+	});
+	
+	// 관계회원 콤보 change 이벤트
+	$("#custInfo_FAMILY_CMB").change(function() {
+		relCustChange();
 	});
 	
 	// 팝업 버튼
@@ -950,7 +965,7 @@ function customerSearch(currentDiv){
 	}
 }
 
-/**\
+/**
  * 고객정보 상세 조회
  * @param sCustId
  * @returns
@@ -1033,6 +1048,7 @@ const getCodeList = () => {
 					$(`select[name='${codeName}']`).append(new Option(text, value));
 				});
 			}
+			$("#custInfo_CUST_MK").val("CM");		// 임시 .. 잠재회원으로 기본설정
 		});
 	});
 }
@@ -1189,8 +1205,8 @@ function familyInfoLoad() {
 	        			custName = d.FML_NAME;
 	        			custRel = d.FAT_REL_NAME ? d.FAT_REL_NAME:'&nbsp;';
 	        			custGrade = d.GRADE_NAME;
-	        			custMbr = d.MBR_ID;
-        				$("#custInfo_FAMILY_CMB").prepend(`<option value='${custId}'>${custWhere} ${custName} ${custRel} ${custGrade} ${custMbr} ${custId}</option>`);
+	        			custMbr = d.MBR_ID != null ? d.MBR_ID:"&nbsp;";
+        				$("#custInfo_FAMILY_CMB").prepend(`<option value='${custId}' data-FML_NAME='${custName}'>${custWhere} ${custName} ${custRel} ${custGrade} ${custMbr} ${custId}</option>`);
 	        		}
 	        		$("#custInfo_FAMILY_CMB option:eq(0)").prop("selected", true);
 	        	}
@@ -1201,6 +1217,16 @@ function familyInfoLoad() {
 	    }, error: function (response) {
 	    }
 	});
+}
+
+function relCustChange(){
+    if($("#custInfo_FAMILY_CMB").find("option:selected").data("fml_name").length > 0){
+        onAutoSearch($("#custInfo_FAMILY_CMB").find("option:selected").val());
+    }else{
+        //cust_id가 없을때
+    	//txtNAME.value = DS_FAMILY_CMB.nameValue(DS_FAMILY_CMB.rowPosition,"FML_NAME");
+        onAutoSearchByTELPNO($("#custInfo_FAMILY_CMB").find("option:selected").data("fml_name"));
+    }
 }
 
 /**
@@ -1403,6 +1429,11 @@ function loadList(id, grid) {
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			sendUrl = '/cns.getTBLISTbyCUSTID.do';
 			break;
+			
+		case 'getTB_SMSDATA' : 	// SMS - SMS/LMS 이력
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getTB_SMSDATA.do';
 		}
 		
 		$.ajax({
@@ -1424,6 +1455,30 @@ function loadList(id, grid) {
 						counselMain_studyTab_weeklyStat.addSelection({rowKey:0});
 						counselMain_studyTab_weeklyStat.clickSort({rowKey:0});
 						currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(0);		// 변동이력, 불출교재 자동조회
+						
+						var totalCntParam = {
+								senddataids: ["send1"],
+								recvdataids: ["recv1"],
+								send1: [{'MBR_ID' : currentCustInfo.MBR_ID}]
+						};
+						$.ajax({
+							url: API_SERVER + '/cns.ifsStudyTotalMonth.do',
+							type: 'POST',
+							dataType: 'json',
+							contentType: "application/json",
+							data: JSON.stringify(totalCntParam),
+							success: function (response) {
+								console.log(response);
+								if(response.errcode == "0"){
+									$("#totalStudyCnt").val(response.recv1[0].STD_MONTH);
+								}else {
+									loading.out();
+									client.invoke("notify", response.errmsg, "error", 60000);
+								}
+							}, error: function (response) {
+							}
+						});
+						
 						loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				
 						if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){
 							loadList('ifsShipHist', counselMain_studyTab_asignStuff);	
@@ -1481,9 +1536,9 @@ function onFamilyBtnClick(){
     $("#custInfo_GND").val("1");			/* 성별구분      */
 	$("#custInfo_BIRTH_YMD").val("");		/* 출생년도+일자 */
 	$("#custInfo_GRADE_CDE").val("");		/* 학년코드      */
-	$("#custInfo_MOBILNO1").val("");		/*핸드폰번호_회원1*/
-	$("#custInfo_MOBILNO2").val("");		/*핸드폰번호_회원2*/
-	$("#custInfo_MOBILNO3").val("");		/*핸드폰번호_회원3*/
+	$("#custInfo_MOBILNO_MBR1").val("");	/*핸드폰번호_회원1*/
+	$("#custInfo_MOBILNO_MBR2").val("");		/*핸드폰번호_회원2*/
+	$("#custInfo_MOBILNO_MBR3").val("");		/*핸드폰번호_회원3*/
 	
 	// 양력 음력 초기화
 	$("#solar").css('display','');
@@ -1661,7 +1716,9 @@ function onSaveBtnClick(){
     
     //수정시 확인한다.
     if(custInfoStatus == 2){
-        ModalUtil.confirmPop("확인 메세지", "정말로 수정 하시겠습니까?", onAutoSearchByTELPNO, "ONSAVE");
+        ModalUtil.confirmPop("확인 메세지", "정말로 수정 하시겠습니까?", function(e){
+        	onAutoSearchByTELPNO("ONSAVE");
+        });
     }else {
     	onAutoSearchByTELPNO("ONSAVE");
     }
@@ -2044,19 +2101,19 @@ function onSave(){
 		param.DS_CUST_CHG[0].FAT_REL 				= $("#custInfo_FAT_REL").val();
 		param.DS_CUST_CHG[0].MAIL_RCV_FLAG 		= "";
 		param.DS_CUST_CHG[0].REP_EMAIL_ADDR 		= "";
-		param.DS_CUST_CHG[0].NAME_OLD				= currentCustInfo.NAME;
-		param.DS_CUST_CHG[0].NAME_ENG_OLD			= currentCustInfo.NAME_ENG;
-		param.DS_CUST_CHG[0].GND_OLD				= currentCustInfo.GND;
-		param.DS_CUST_CHG[0].RSDNO_OLD				= currentCustInfo.RSDNO;
-		param.DS_CUST_CHG[0].GRADE_CDE_OLD			= currentCustInfo.GRADE_CDE;	
-		param.DS_CUST_CHG[0].BIRTH_MK_OLD			= currentCustInfo.BIRTH_MK;
-		param.DS_CUST_CHG[0].BIRTH_YR_OLD			= currentCustInfo.BIRTH_YMD.substring(0,4);
-		param.DS_CUST_CHG[0].BIRTH_MD_OLD			= currentCustInfo.BIRTH_YMD.substring(4,8);
-		param.DS_CUST_CHG[0].FAT_RSDNO_OLD			= currentCustInfo.FAT_RSDNO;	
-		param.DS_CUST_CHG[0].FAT_NAME_OLD			= currentCustInfo.FAT_NAME;
-		param.DS_CUST_CHG[0].FAT_REL_OLD			= currentCustInfo.FAT_REL;
-		param.DS_CUST_CHG[0].REP_EMAIL_ADDR_OLD	= currentCustInfo.REP_EMAIL_ADDR;
-		param.DS_CUST_CHG[0].MAIL_RCV_FLAG_OLD		= currentCustInfo.MAIL_RCV_FLAG_OLD;
+		param.DS_CUST_CHG[0].NAME_OLD				= currentCustInfo.NAME != null ? currentCustInfo.NAME:"";
+		param.DS_CUST_CHG[0].NAME_ENG_OLD			= currentCustInfo.NAME_ENG != null ? currentCustInfo.NAME_ENG:"";
+		param.DS_CUST_CHG[0].GND_OLD				= currentCustInfo.GND != null ? currentCustInfo.GND:"";
+		param.DS_CUST_CHG[0].RSDNO_OLD				= currentCustInfo.RSDNO != null ? currentCustInfo.RSDNO:"";
+		param.DS_CUST_CHG[0].GRADE_CDE_OLD			= currentCustInfo.GRADE_CDE != null ? currentCustInfo.GRADE_CDE:"";
+		param.DS_CUST_CHG[0].BIRTH_MK_OLD			= currentCustInfo.BIRTH_MK != null ? currentCustInfo.BIRTH_MK:"";
+		param.DS_CUST_CHG[0].BIRTH_YR_OLD			= currentCustInfo.BIRTH_YMD != null ? currentCustInfo.BIRTH_YMD.substring(0,4):"";
+		param.DS_CUST_CHG[0].BIRTH_MD_OLD			= currentCustInfo.BIRTH_YMD != null ? currentCustInfo.BIRTH_YMD.substring(4,8):"";
+		param.DS_CUST_CHG[0].FAT_RSDNO_OLD			= currentCustInfo.FAT_RSDNO != null ? currentCustInfo.FAT_RSDNO:"";
+		param.DS_CUST_CHG[0].FAT_NAME_OLD			= currentCustInfo.FAT_NAME != null ? currentCustInfo.FAT_NAME:"";
+		param.DS_CUST_CHG[0].FAT_REL_OLD			= currentCustInfo.FAT_REL != null ? currentCustInfo.FAT_REL:"";
+		param.DS_CUST_CHG[0].REP_EMAIL_ADDR_OLD		= currentCustInfo.REP_EMAIL_ADDR != null ? currentCustInfo.REP_EMAIL_ADDR:"";
+		param.DS_CUST_CHG[0].MAIL_RCV_FLAG_OLD		= currentCustInfo.MAIL_RCV_FLAG_OLD != null ? currentCustInfo.MAIL_RCV_FLAG_OLD:"";
 		param.DS_CUST_CHG[0].ADDR_CHG_FLAG1		= chgYn.isCustChanged;
 		param.DS_CUST_CHG[0].ADDR_CHG_FLAG2		= chgYn.isFatAddrChanged;
 		param.DS_CUST_CHG[0].ADDR_CHG_FLAG3		= chgYn.isMbrMobilChanged;
@@ -2073,7 +2130,7 @@ function onSave(){
 	    	console.log(response);
 	    	if(response.errcode == "0"){
 	    		client.invoke("notify", "저장 되었습니다.", "notice", 5000);
-	    		//onAutoSearch()
+	    		onAutoSearch(response.recv1[0].CUST_ID);
 	    	}else {
 	    		client.invoke("notify", response.errmsg, "error", 60000);
 	    	}
