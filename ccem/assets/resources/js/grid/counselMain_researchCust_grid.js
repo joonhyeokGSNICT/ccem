@@ -212,48 +212,62 @@ $(function(){
 	        columns: [
 				{
 					header: '구분',
-					name: 'custNm',
-					width: 50,
+					name: 'KIND_NM',
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '발신일자',
-					name: 'custSeq',
+					name: 'RDATE',
 					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.date(columnInfo.value)
 				},
 				{
 					header: '발신시간',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'RTIME',
+					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.time(columnInfo.value)
 				},
+				//data="2:성공,4:실패"	</C>	
 				{
 					header: '발신결과',
-					name: 'chprNm',
-					width: 150,
+					name: 'RESULT',
+					width: 110,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: function(e){
+						var result = "";
+						switch(e.value){
+						case '2':
+							result = "성공"
+							break;
+						case '4':
+							result = "실패"
+							break;
+						}
+						return result;
+					}
 				},
 				{
 					header: '발신전화번호',
-					name: 'consStatNm',
-					width: 150,
+					name: 'RPHONE',
+					width: 130,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '상담원',
-					name: 'consStatNm',
-					width: 150,
+					name: 'SENDNAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
