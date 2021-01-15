@@ -218,14 +218,14 @@ var sTelHPNo_DDD = new Array(
 
 // === === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 //sideBar client 받기
-client.on("getsidebarClient", function(sidebarClient_d) {
+client.on("getSidebarClient", function(sidebarClient_d) {
 	sidebarClient = client.instance(sidebarClient_d);
 });
 client.on("getCodeData", function(d){
 	codeData = d;
 	console.log(codeData);
 });
-
+//=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 /**
  * 페이지의 모든 요소 초기화
  * @returns
@@ -367,9 +367,15 @@ function initAll() {
 	// 고객구분 초기세팅
 	$("#custInfo_CUST_MK").val("CM");
 	
+	// 날짜 픽커
+	calendarUtil.init('customerSMS_st');
+	calendarUtil.init('customerSMS_ed');
+	
 	// 기본 조회 날짜 세팅
 	$(".defaultDate_ed").val(getToday(0));
 	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
+	
+	
 	
 	setStatus(1);								// 신규 상태로 변경
 	gridReset();								// 그리드 리셋
