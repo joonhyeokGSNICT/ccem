@@ -21,6 +21,14 @@ const checkApi = (response, settings) => {
 }
 
 /**
+ * api 오류 메시지 반환
+ * @param {object} response 
+ * @param {object} settings 
+ * @param {string} customMsg
+ */
+const getApiMsg = (response, settings) => `오류코드 : ${response.errcode}\n오류메시지 : ${response.errmsg}\n호출서비스 : ${settings.url}`;
+
+/**
  * 날짜계산 함수
  * @param {string} type year, month, day
  * @param {number} num 
