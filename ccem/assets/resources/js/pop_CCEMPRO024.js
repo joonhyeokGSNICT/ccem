@@ -9,18 +9,22 @@ $(async function () {
 	
 	createGrids();
 
-	sidebarClient 	= opener.sidebarClient;
-	currentUser 	= opener.currentUser;
+	const openerNm = opener ? opener.name : "";
 
-	const selectSeq = opener.document.getElementById("selectbox14");				// 순번 selectbox
-	sFLAG 			= selectSeq.options[selectSeq.selectedIndex].dataset.jobType;	// 저장구분(I: 신규, U: 수정)
-	sLIST_CUST_ID 	= await getListCustId();										// 리스트ID_고객번호
-	sCUST_ID		= opener.document.getElementById("hiddenbox6").value;			// 고객번호
-	sCSEL_DATE 		= opener.calendarUtil.getImaskValue("textbox27");				// 상담일자
-	sCSEL_NO 		= opener.document.getElementById("textbox28").value;			// 상담번호
-	sCSEL_SEQ 		= selectSeq.options[selectSeq.selectedIndex].value;				// 상담순번
+	if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
+		sidebarClient 	= opener.sidebarClient;
+		currentUser 	= opener.currentUser;
 
-	getRefund(sFLAG, sLIST_CUST_ID, sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
+		const selectSeq = opener.document.getElementById("selectbox14");				// 순번 selectbox
+		sFLAG 			= selectSeq.options[selectSeq.selectedIndex].dataset.jobType;	// 저장구분(I: 신규, U: 수정)
+		sLIST_CUST_ID 	= await getListCustId();										// 리스트ID_고객번호
+		sCUST_ID		= opener.document.getElementById("hiddenbox6").value;			// 고객번호
+		sCSEL_DATE 		= opener.calendarUtil.getImaskValue("textbox27");				// 상담일자
+		sCSEL_NO 		= opener.document.getElementById("textbox28").value;			// 상담번호
+		sCSEL_SEQ 		= selectSeq.options[selectSeq.selectedIndex].value;				// 상담순번
+
+		getRefund(sFLAG, sLIST_CUST_ID, sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
+	}
 	
 });
 
@@ -248,23 +252,30 @@ const openPopup = async (key) => {
  * - as-is : cns4640.onSave()()
  */
 const onSave = () => {
+	const openerNm = opener ? opener.name : "";
 
-	opener.DS_DROP_CHG.CSEL_DATE    = sCSEL_DATE;	// 상담일자
-	opener.DS_DROP_CHG.CSEL_NO 	  	= sCSEL_NO;	// 상담번호
-	opener.DS_DROP_CHG.CSEL_SEQ 	= sCSEL_SEQ;	// 상담순번
-	opener.DS_DROP_CHG.CUST_ID 	  	= sCUST_ID;	// 고객번호
-	opener.DS_DROP_CHG.LIST_ID	  	= sLIST_CUST_ID ? sLIST_CUST_ID.split("_")[0] : "";	// 리스트아이디
-	opener.DS_DROP_CHG.RFD_PROC_MK  = $("input[name='RFD_PROC_MK']:checked").val();		// 퇴회처리구분
-	opener.DS_DROP_CHG.CTI_CHGDATE  = "";			// 변경일
-
-	// 상담등록 > 상담내용 세팅
-	const cselCnts = opener.document.getElementById("textbox13");	// 상담등록 > 상담내용 textarea
-	const addCntsTxt = $("#textbox8").val();						// 상담내역
-	if(addCntsTxt.trim().length > 0) {
-		cselCnts.value = addCntsTxt + "\n" + cselCnts.value;
-	}
+	if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
+		opener.DS_DROP_CHG.CSEL_DATE    = sCSEL_DATE;	// 상담일자
+		opener.DS_DROP_CHG.CSEL_NO 	  	= sCSEL_NO;		// 상담번호
+		opener.DS_DROP_CHG.CSEL_SEQ 	= sCSEL_SEQ;	// 상담순번
+		opener.DS_DROP_CHG.CUST_ID 	  	= sCUST_ID;		// 고객번호
+		opener.DS_DROP_CHG.LIST_ID	  	= sLIST_CUST_ID ? sLIST_CUST_ID.split("_")[0] : "";	// 리스트아이디
+		opener.DS_DROP_CHG.RFD_PROC_MK  = $("input[name='RFD_PROC_MK']:checked").val();		// 퇴회처리구분
+		opener.DS_DROP_CHG.CTI_CHGDATE  = "";			// 변경일
 	
-	window.close();
+		// 상담등록 > 상담내용 세팅
+		const cselCnts = opener.document.getElementById("textbox13");	// 상담등록 > 상담내용 textarea
+		const addCntsTxt = $("#textbox8").val();						// 상담내역
+		if(addCntsTxt.trim().length > 0) {
+			cselCnts.value = addCntsTxt + "\n" + cselCnts.value;
+		}
+		
+		window.close();
+	} else {
+		alert("고객직접퇴회 저장 중 오류가 발생하였습니다. 팝업창을 닫고 다시 실행해 주세요.");
+	}
+
+	
 
 }
 
