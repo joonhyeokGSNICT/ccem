@@ -44,6 +44,19 @@ $(function () {
 			.finally(() => loading.out());
 	});
 
+	// 저장 버튼
+	$("#button8").on("click", ev => {
+		loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
+		saveCounsel()
+			.then((succ) => { if (succ) alert("저장 되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`상담정보 저장중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 	// select tab by hash
 	let hash = window.location.hash;
 	if (hash === "#counselRgtrTab") $("#counselRgtrNav").click();
@@ -708,40 +721,75 @@ const setLable = (target) => {
 
 /**
  * 사용자/티켓생성
+ * @param {object} counselData 상담정보
+ * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
+ * @param {obejct} obData OB관련 데이터
+ * @return {number} Zendesk ticket id
  */
-const openNewTicket = async () => {
+const openNewTicket = async (counselData, addInfoData, obData) => {
 
-	const custId = $("#hiddenbox6").val();
-	const custNm = $("#textbox21").val();
-	const custMk = $("#hiddenbox2").val();	// 고객구분
-	const target = (custMk == "PE" || custMk == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
+	const CUST_ID = $("#hiddenbox6").val();
+	const CUST_NAME = $("#textbox21").val();
+	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
+	const target = (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
 
-	if (!custId || !custNm) {
+	if (!CUST_ID || !CUST_NAME) {
 		alert("조회된 고객이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
 		return false;
 	}
 
 	let sMsg = "";
-	sMsg += "\n * 고객번호 : " + custId;
-	sMsg += "\n * 고객명   : " + custNm;
+	sMsg += "\n * 고객번호 : " + CUST_ID;
+	sMsg += "\n * 고객명   : " + CUST_NAME;
 	sMsg += "\n\n 위 항목으로 티켓을 생성 하시겠습니까?";
 	if (confirm(sMsg) == false) return false;
 
-	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${custId}`);
+	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${CUST_ID}`);
 	let requester = "";
 	
 	// 젠데스크 사용자가 없으면 사용자생성 후 티켓생성
 	if (users.length === 0) {
-		const custInfo = await getCustInfo(target, custId);
+		const custInfo = await getCustInfo(target, CUST_ID);
 		const { user } = await createUser(custInfo);
 		requester = user.id;
 	} else {
 		requester = users[0].id;
 	}
 
-	const { ticket } = await createTicket({ requester });
-	await topbarClient.invoke('routeTo', 'ticket', ticket.id);	// 티켓오픈
-	return true;
+	// by 티켓생성 버튼
+	if(!counselData) {
+
+		const ticketInfo = {
+			subject			: "TEST",	 // 제목
+			ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
+			requester_id	: requester, // 요청자ID
+			tags            : ["AUTO_FROM_APP"],	// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
+			comment: {
+				body		: "이 티켓은 APP에서 자동생성된 것입니다.",
+			},
+		}
+		const { ticket } = await createTicket(ticketInfo);			// 티켓생성
+		await topbarClient.invoke('routeTo', 'ticket', ticket.id);	// 티켓오픈
+		return ticket.id;
+
+	// by 추가등록/관계회원 저장
+	}else {
+
+		const ticketInfo = {
+			subject			: counselData.CSEL_TITLE,	 // 제목
+			ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
+			requester_id	: requester, 				// 요청자ID
+			tags            : ["AUTO_FROM_APP"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
+			comment: {
+				body		: counselData.CSEL_CNTS,	// 상담내용
+			},
+			custom_fields: [
+				{ id: ZDK_INFO[_SPACE]["ticketField"]["AREA_CDENM"], value: "" }, 	// TODO 필요한 항목 입력하기
+			],
+		}
+		const { ticket } = await createTicket(ticketInfo);	// 티켓생성
+		return ticket.id;
+	}
 }
 
 /**
@@ -762,7 +810,7 @@ const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
 	}
 
 	const settings = {
-		global: false,	// 로딩화면 사용안함
+		global: false,
 		url: `${API_SERVER + service}`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -776,12 +824,10 @@ const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
 	}
 	$.ajax(settings)
 		.done(data => {
-			if (data.errcode != "0") return reject(data.errmsg);
+			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
 			return resolve(data.dsRecv[0]);
 		})
-		.fail(error => {
-			return reject(error);
-		});
+		.fail(error => reject(new Error(error)));
 });
 
 /**
@@ -799,7 +845,7 @@ const createUser = async (data) => {
 	const mobilnoFat = data.MOBILNO_FAT ? data.MOBILNO_FAT.replace(/[^0-9]/gi, "") : ""; 	// 휴대폰번호(아빠)
 	const mobilnoLaw = data.MOBILNO_LAW ? data.MOBILNO_LAW.replace(/[^0-9]/gi, "") : "";	// 휴대폰번호(법정대리인)	
 	const telpno = (data.DDD || "") + (data.TELPNO1 || "") + (data.TELPNO2 || "");			// 자택 전화번호
-	const custMk = (data.CUST_MK == "PE" || data.CUST_MK == "TC") ? "선생님" : "고객";		 // 고객구분
+	const custMk = (data.CUST_MK == "PE" || data.CUST_MK == "TC") ? "교사" : "고객";		 // 고객구분
 	const gradeNm = findCodeName("GRADE_CDE", data.GRADE_CDE);
 	const fatRelNm = findCodeName("FAT_REL", data.FAT_REL);
 
@@ -837,30 +883,15 @@ const createUser = async (data) => {
 
 /**
  * 티켓생성
- * @param {object} param0 
+ * @param {object} ticketInfo
  */
-const createTicket = async ({
-	formId = "360005566214",
-	requester = "427612648894",
-	title = "TEST",
-	content = "상담등록 화면에서 생성된 티켓입니다.",
-}) => {
+const createTicket = async (ticketInfo) => {
 
 	const option = {
 		url: '/api/v2/tickets.json',
 		method: 'POST',
 		contentType: "application/json",
-		data: JSON.stringify({
-			ticket: {
-				subject			: title,		// 제목
-				ticket_form_id	: formId,  		// 양식ID
-				requester_id	: requester,	// 요청자ID
-				comment: {
-					public	: false,
-					body	: content,
-				},
-			},
-		}),
+		data: JSON.stringify({ ticket: ticketInfo }),
 	}
 
 	return await topbarClient.request(option);
@@ -955,12 +986,10 @@ var addCselByFamily = (data) => {
 }
 
 /**
- * Zendesk 저장
- * @return {boolean} 성공여부
+ * 저장
+ * - as-is : cns5810.onSave()
  */
-const saveZendesk = async (counselData, addInfoData) => {
-
-	// TODO 상담정보를 젠데스트 티켓필드에 저장한다.
+const saveCounsel = async () => {
 
 	sidebarClient = topbarObject.sidebarClient;
 
@@ -969,101 +998,76 @@ const saveZendesk = async (counselData, addInfoData) => {
 		return false;
 	}
 
-	const { ticket } = await sidebarClient.get("ticket");
-	counselData.ZEN_TICKET_ID = ticket.id;
-	
-	let req = new Object(), res = new Object();
-
-	// 상담결과 구분이 재통화예약일경우
-	if($("#selectbox8").val() == "01")	{
-		req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["re_call_no"]}`] = DS_SCHEDULE.TELNO;
-	}
-
-	if(isEmpty(req)) return true;
-
-	// 티켓필드 입력
-	res = await sidebarClient.set(req);
-	
-	// 티켓이 존재하지 않을때...
-	if(res["code"]) {
-		console.error(res);
-		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-		return false;
-	}
-
-	// 티켓필드 입력 성공여부 체크
-	let succ = false;
-	for(let key in req) {
-		if(res[key] === req[key]) {
-			succ = true;
-		}else {
-			succ = false;
-			break;
-		}
-	}
-
-	// 티켓필드가 존재하지 않을때...
-	if(!succ) {
-		console.error(res);
-		alert("요청한 티켓필드가 없습니다. 관리자에게 문의하시기 바랍니다.");
-		return false;
-	}
-
-	return true;
-	
-}
-
-/**
- * CCEM 저장
- * - as-is : cns5810.onSave()
- */
-const saveCounsel = async () => {
-
 	// 과목군을 전체로 변경하여 filter 처리후에 검색어 검색 처리
 	$("#selectbox12").val("").trigger("change");
 
-	// 저장구분(I: 신규, U: 수정) 구하기
-	const selectSeq = document.getElementById("selectbox14");
-	const sJobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;	
+	// 저장구분(I: 신규, U: 수정)
+	const selectbox = document.getElementById("selectbox14");
+	const selectedSeq = selectbox.value;
+	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
 
 	// 상담정보 value check
 	const counselData = await getCounselCondition(sJobType);
-	if (!counselData) return;
+	if (!counselData) return false;
 	const addInfoData = getAddInfoCondition();
-	if (!addInfoData) return;
-	if (!await saveZendesk(counselData, addInfoData)) return;
+	if (!addInfoData) return false;
+	const obData = {};							// TODO OB관련 데이터
+	if (!obData) return false;
 
-	const settings = {
-		url: `${API_SERVER}/cns.saveCounsel.do`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			senddataids	: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
-			recvdataids	: ["dsRecv"],
-			DS_COUNSEL	: [counselData],			// 상담정보
-			DS_ADDINFO	: [addInfoData], 			// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
-			DS_OB		: [{}],					 	// TODO OB관련 데이터
-		}),
-		errMsg: "상담정보 저장중 오류가 발생하였습니다.",
-	}
-	
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
+	// 신규이면서 순번이 1번째가 아닌경우 -> 추가등록 또는 관계회원 신규 상담등록건.
+	let resSaveCCEM;
+	if (sJobType == "I" && selectedSeq > 1) {
 		
-		const recv = data.dsRecv;
+		const ticketId = await openNewTicket(counselData, addInfoData, obData);
+		if (!ticketId) return false;
 
-		if(recv.length == 0) {
-			alert(settings.errMsg);
-			return;
+		// ccem 저장
+		counselData.ZEN_TICKET_ID = ticketId;
+		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
+	
+		// ticketId로 ticket.external_id 업데이트
+		const ticketExternalId = `${FormatUtil.date(resSaveCCEM.CSEL_DATE)}_${resSaveCCEM.CSEL_NO}_${resSaveCCEM.CSEL_SEQ}`;
+		const option = {
+			url: `/api/v2/tickets/${ticketId}`,
+			method: 'PUT',
+			contentType: "application/json",
+			data: JSON.stringify({ 
+				ticket: { 
+					external_id: ticketExternalId,
+					custom_fields: [
+						{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"], value: ticketExternalId }, 
+					],
+				} 
+			}),
+		}
+		const updateTicketResult = await topbarClient.request(option);
+		console.debug("updateTicketResult: ", updateTicketResult);
+
+	// 추가등록 또는 관계회원 신규 상담등록건이 아닌경우.
+	} else {
+
+		const { ticket } = await sidebarClient.get("ticket");
+		if (!ticket) {
+			alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+			return false;
 		}
 
-		$("#textbox28").val(data.dsRecv[0].CSEL_NO); // 접수번호 세팅
-		getCounsel(selectSeq.value, true);	// 저장성공후 재조회
-		alert("저장 되었습니다.");
-		
-	});
+		// ccem 저장
+		counselData.ZEN_TICKET_ID = ticket.id;
+		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
 
+		// 티켓필드 입력
+		counselData.CSEL_NO = resSaveCCEM.CSEL_NO;
+		const setTicketResult = await setTicket(counselData, addInfoData, obData);
+		if (!setTicketResult) return false;
+	}
+	
+	// 저장성공후
+	$("#textbox28").val(resSaveCCEM.CSEL_NO); 	// 접수번호 세팅
+	loading.out();
+	getCounsel(selectedSeq, true);				// 상담 재조회
+
+	return true;
 
 }
 
@@ -1096,7 +1100,7 @@ const getCounselCondition = async (sJobType) => {
 		PROC_HOPE_DATE   : calendarUtil.getImaskValue("calendar2"),             // 처리희망일자       
 		CSEL_MAN_MK      : $("#selectbox2").val(),             // 내담자구분         
 		CUST_RESP_MK     : $("#selectbox6").val(),             // 고객반응구분       
-		CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 
+		CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 		TODO 삭제예정
 		CSEL_RST_MK1     : $("#selectbox8").val(),             // 상담결과구분       
 		CSEL_RST_MK2     : "",             // 상담결과구분2      
 		PROC_MK          : $("#selectbox4").val(),             // 처리구분           
@@ -1418,6 +1422,98 @@ const getAddInfoCondition = () => {
 }
 
 /**
+ * Zendesk 티켓필드 입력
+ * @param {object} counselData 상담정보
+ * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
+ * @param {obejct} obData OB관련 데이터
+ * @return {boolean} 성공여부
+ */
+const setTicket = async (counselData, addInfoData, obData) => {
+	
+	let req = new Object(), res = new Object();
+	
+	// TODO 상담정보를 젠데스트 티켓필드에 저장한다.
+	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
+	req["ticket.externalId"] = CSEL_DATE_NO_SEQ;
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] = CSEL_DATE_NO_SEQ;
+
+	// 상담결과 구분이 재통화예약일경우
+	if($("#selectbox8").val() == "01")	{
+		req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RECL_CNTCT"]}`] = DS_SCHEDULE.TELNO;
+	}
+
+	if(isEmpty(req)) return true;	// TODO 나중에는 필요없음. 삭제예정
+
+	// 티켓필드 입력
+	res = await sidebarClient.set(req);
+	
+	// 티켓이 존재하지 않을때...
+	if(res["code"]) {
+		console.error(res);
+		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+
+	// 티켓필드 입력 성공여부 체크
+	let succ = false;
+	for(let key in req) {
+		if(res[key] == req[key]) {
+			succ = true;
+		}else {
+			succ = false;
+			break;
+		}
+	}
+
+	// 티켓필드가 존재하지 않을때...
+	if(!succ) {
+		console.error(res);
+		alert("요청한 티켓필드가 없습니다. 관리자에게 문의하시기 바랍니다.");
+		return false;
+	}
+
+	return true;
+	
+}
+
+/**
+ * CCEM 저장
+ * @param {object} counselData 상담정보
+ * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
+ * @param {obejct} obData OB관련 데이터
+ */
+const saveCCEM = async (counselData, addInfoData, obData) => new Promise((resolve, reject) => {
+
+	const settings = {
+		global: false,
+		url: `${API_SERVER}/cns.saveCounsel.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids	: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
+			recvdataids	: ["dsRecv"],
+			DS_COUNSEL	: [counselData],			// 상담정보
+			DS_ADDINFO	: [addInfoData], 			// DM 사은품 접수 정보, 개인정보동의 정보, 고객직접퇴회 정보 저장 data
+			DS_OB		: [obData],					// OB관련 데이터
+		}),
+	}
+	
+	$.ajax(settings)
+		.done(data => {
+			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
+
+			const recv = data.dsRecv;
+			if (recv.length == 0) return reject(new Error("저장 결과 데이터가 존재하지 않습니다."));
+
+			return resolve(data.dsRecv[0]);
+
+		})
+		.fail(error => reject(new Error(error)));
+
+});
+
+/**
  * 병행과목코드의 PLURAL_PRDT_LIST로 grid 체크하는 함수
  * - as-is : comm.js.gf_setPlProd()
  * @param {object} grid TOAST UI Grid
@@ -1473,6 +1569,7 @@ const getPlProd = (grid) => {
  */
 const getSaveChk = (custId) => new Promise((resolve, reject) => {
 	const settings = {
+		global: false,
 		url: `${API_SERVER}/cns.getSaveChk.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -1482,17 +1579,14 @@ const getSaveChk = (custId) => new Promise((resolve, reject) => {
 			recvdataids: ["dsRecv"],
 			dsSend: [{ CUST_ID: custId }],
 		}),
-		errMsg: "상담등록 저장체크정보 조회중 오류가 발생하였습니다.",
 	}
 	$.ajax(settings)
 		.done(data => {
-			if (!checkApi(data, settings)) {
-				return reject(`[apiError] ${settings.errMsg}`);
-			} else {
-				return resolve(data.dsRecv);
-			}
+			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
+
+			return resolve(data.dsRecv);
 		})
-		.fail(error => reject(`[ajaxError] ${settings.errMsg}`));
+		.fail(error => reject(new Error(error)));
 });
 
 /**

@@ -216,7 +216,7 @@ $(function(){
         const openerNm = opener ? opener.name : "";
 
         // 상담등록 화면에서 오픈했을때.
-        if (openerNm = "CCEMPRO022") {
+        if (openerNm == "CCEMPRO022") {
             const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
             opener.getBaseData("C", CUST_ID);
             window.close();

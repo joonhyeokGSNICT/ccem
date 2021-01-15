@@ -114,7 +114,7 @@ const createGrids = () => {
  */
 const getListCustId = async () => {
 	if(!sidebarClient) return "";
-	const ticketFieldPath = `ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["list_cust_id"]}`;
+	const ticketFieldPath = `ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]}`;
 	const res = await sidebarClient.get(ticketFieldPath);
 	return res[ticketFieldPath] ? res[ticketFieldPath] : "";
 }
