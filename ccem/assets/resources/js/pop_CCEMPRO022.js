@@ -483,10 +483,12 @@ const onStart = (openerName) => {
 		currentUser = topbarObject.currentUserInfo.user;
 
 		const counselGrid = opener.grid1;	// 상담조회 grid
-		const rowKey = counselGrid.getSelectedRowKey();
-		const cselDate = counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
-		const cselNo = counselGrid.getValue(rowKey, "CSEL_NO");		// 상담번호
-		const cselSeq = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
+		const rowKey 		= counselGrid.getSelectedRowKey();
+		const cselDate 		= counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
+		const cselNo 		= counselGrid.getValue(rowKey, "CSEL_NO");		// 상담번호
+		const cselSeq 		= counselGrid.getValue(rowKey, "CSEL_SEQ");		// 상담순번
+		const ticket_id		= counselGrid.getValue(rowKey, "TICKET_ID");	// 티켓ID
+		topbarClient.invoke('routeTo', 'ticket', ticket_id);				// 티켓오픈
 		calendarUtil.setImaskValue("textbox27", cselDate);
 		$("#textbox28").val(cselNo);
 		getCounsel(cselSeq, true);
