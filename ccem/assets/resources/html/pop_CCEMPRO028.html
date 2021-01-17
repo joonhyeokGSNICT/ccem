@@ -1,7 +1,7 @@
 <!-- 
 	화면ID : CCEM-PRO-28
-		상담등록 - 상담등록 - 상단버튼 - [팝업] 상담연계대상성택-상담연계
-	AS-IS : [CNS2500] 상담/입회 연계, [CNS2600] 상담연계대상선택
+		상담등록 - 상담등록 - 상단버튼 - [팝업] 상담연계대상선택-상담연계
+	AS-IS : [CNS2600] 상담연계대상선택, [CNS2500] 상담/입회 연계
 		
 	팝업사이즈
 		width: 830, height: 555
@@ -10,22 +10,24 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>[팝업] 상담연계대상성택-상담연계</title>
+	<title>[팝업] 상담연계대상선택-상담연계</title>
 	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css" />
 	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
-	<link rel="stylesheet" href="../css/ces_top.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading-animate.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading.css">
+	<link rel="stylesheet" href="../css/pop_common.css">
 </head>
 <body>
 	<div class="container customBody">
 		<div class="row" style="background: #123f8a; height: 35px;">
 			<div class="col text-right">
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">앱알림</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">SMS</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">팩 스</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="">앱알림</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="">SMS</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="">팩 스</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="">저 장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button5" onclick="window.close()">닫 기</button>
 			</div>
 		</div>
 		<div class="font-weight-bold mt-2"><i class="fas fa-caret-square-right subjectArrow"></i> 고객정보</div>
@@ -44,20 +46,20 @@
 			</colgroup>
 			<tr>
 				<th>전화번호</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox1"></td>
 				<th>핸드폰</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox2"></td>
 				<th>직장전화</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox3"></td>
 			</tr>
 			<tr>
 				<th>학부모명</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox4"></td>
 				<th>주소</th>
 				<td colspan="3">
 					<div class="input-group">
-						<input type="text" class="form-control form-control-sm" style="width: 20%;">
-						<input type="text" class="form-control form-control-sm" style="width: 80%;">
+						<input type="text" class="form-control form-control-sm" id="textbox5" style="width: 20%;">
+						<input type="text" class="form-control form-control-sm" id="textbox6" style="width: 80%;">
 					</div>
 				</td>
 			</tr>
@@ -69,11 +71,11 @@
 			</colgroup>
 			<tr>
 				<th>제목</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox7"></td>
 			</tr>
 			<tr>
 				<th>상담내용<br>및 기타<br>요구사항</th>
-				<td style="height: 100px;"><textarea name="" id="" class="form-control 	w-100 h-100"></textarea></td>
+				<td style="height: 100px;"><textarea class="form-control w-100 h-100" id="textbox8"></textarea></td>
 			</tr>
 		</table>
 		<div class="font-weight-bold mt-2"><i class="fas fa-caret-square-right subjectArrow"></i> 연계정보</div>
@@ -99,37 +101,46 @@
 				<th>처리희망일</th>
 				<td><input type="text" class="form-control form-control-sm calendar" id="calendar3"></td>
 				<th>회신여부</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td>
+					<select class="form-control form-control-sm" id="selectbox1" name="RTN_FLAG">
+						<option value=""></option>
+					</select>
+				</td>
 				<th>전화</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox9"></td>
 			</tr>
 			<tr>
 				<th>연계</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox10"></td>
 				<th>연계구분</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox11"></td>
 				<th>연계방법</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td>
+					<select class="form-control form-control-sm" id="selectbox2" name="TRANS_CHNL_MK">
+						<option value=""></option>
+					</select>
+				</td>
 				<th>FAX</th>
 				<td>
 					<div class="input-group">
-						<input type="text" class="form-control form-control-sm">
-						<input type="text" class="form-control form-control-sm">
-						<input type="text" class="form-control form-control-sm">
+						<input type="text" class="form-control form-control-sm" id="textbox12">
+						<input type="text" class="form-control form-control-sm" id="textbox13">
+						<input type="text" class="form-control form-control-sm" id="textbox14">
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<th>상담원</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox15"></td>
 				<th>처리상태</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><select class="form-control form-control-sm" id="selectbox3" name="PROC_STS_MK"></select></td>
 				<th>FAX양식</th>
-				<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+				<td colspan="3"><input type="text" class="form-control form-control-sm" id="textbox16"></td>
+				<td style="display: none;"><select name="FAX_TYPE_CDE" id="hiddenbox1"></select></td>
 			</tr>
 			<tr>
 				<th>연계대상자</th>
-				<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+				<td colspan="3"><input type="text" class="form-control form-control-sm" id="textbox17"></td>
 				<td colspan="4"></td>
 			</tr>
 		</table>
@@ -142,7 +153,9 @@
     <script src="../lib/moment.min.js"></script>
     <script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
 	<script src="../lib/jquery.inputmask.bundle.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/config.js"></script>
+	<script src="../js/ces_common.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO028.js"></script>
 

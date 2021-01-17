@@ -23,7 +23,6 @@ $(function () {
 	
 	createGrids();
 	getProd();
-	setCodeData();
 
 	// grid refreshLayout
 	$('.nav-link').on('shown.bs.tab', ev => refreshGrid(ev.target.id));
@@ -419,12 +418,6 @@ const setCodeData = () => {
 	];
 
 	// get code
-	const openerName = opener ? opener.name : "";
-	if(openerName.includes("top_bar")) {
-		codeData = opener.codeData;
-	}else if(openerName.includes("CCEMPRO035")) {
-		codeData = opener.opener.codeData;
-	}
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
 
 	// sorting
@@ -469,7 +462,10 @@ const onStart = (openerName) => {
 	if(openerName.includes("top_bar")) {	
 		topbarObject = opener;
 		topbarClient = topbarObject.client;
-		currentUser = topbarObject.currentUserInfo.user;
+		currentUser  = topbarObject.currentUserInfo.user;
+		codeData 	 = topbarObject.codeData;
+
+		setCodeData();
 
 		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
 		const custMk = topbarObject.document.getElementById("custInfo_CUST_MK").value;	// 고객구분
@@ -480,7 +476,10 @@ const onStart = (openerName) => {
 	}else if(openerName.includes("CCEMPRO035")) {	
 		topbarObject = opener.topbarObject;
 		topbarClient = topbarObject.client;
-		currentUser = topbarObject.currentUserInfo.user;
+		currentUser  = topbarObject.currentUserInfo.user;
+		codeData 	 = topbarObject.codeData;
+
+		setCodeData();
 
 		const counselGrid = opener.grid1;	// 상담조회 grid
 		const rowKey 		= counselGrid.getSelectedRowKey();
@@ -681,6 +680,7 @@ const getCounsel = (sCselSeq, isFirst) => {
 			$("#selectbox8").val(rowData.CSEL_RST_MK1);				                		// 상담결과구분
 			$("#selectbox9").val(rowData.FST_CRS_CDE);										// 첫상담경로
 			$("#selectbox10").val(rowData.PROC_STS_MK);					            		// 처리상태구분
+			$("#hiddenbox9").val(rowData.PROC_STS_MK);					            		// 처리상태구분
 			$("#selectbox11").val(rowData.CSEL_GRD);				                		// 상담등급
 			$("#checkbox4").prop("checked", rowData.RE_PROC == "1" ? true : false);			// 재확인여부
 			$("#checkbox5").prop("checked", rowData.VOC_MK == "Y" ? true : false);			// VOC
@@ -1410,14 +1410,14 @@ const getCounselCondition = async (sJobType) => {
         }
 	}
 	
-	// TODO 수정일때,
-    // if (sJobType == "U") {
-    //     //상담연계(3)이고,
-    //     if (data.CSEL_MK == "3" && DS_COUNSEL.orgNameValue(iRowCsel, "PROC_STS_MK") != "01") {
-	// 		alert("결과등록 한 상담이력은 수정할 수 없습니다.");
-	// 		return false;
-    //     }
-	// }
+	// 수정일때,
+    if (sJobType == "U") {
+        //상담연계(3)이고,
+        if (data.CSEL_MK == "3" && $("#hiddenbox9").val() != "01") {
+			alert("결과등록 한 상담이력은 수정할 수 없습니다.");
+			return false;
+        }
+	}
 	
 	// 당월에 시정처리 등록건이 있는지 조회
     // 당월에 시정처리건이 등록되어 있으면, 또 등록할 것인지를 물어본다.
