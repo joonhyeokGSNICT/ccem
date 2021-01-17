@@ -707,6 +707,7 @@ const getCounsel = (sCselSeq, isFirst) => {
 
 /**
  * 고객/선생님에 따른 레이블 설정
+ * - as-is : cns5810.setLable()
  * @param {string} target 대상구분 ( "C" : 고객, "T" : 선생님 )
  */
 const setLable = (target) => {
@@ -720,14 +721,154 @@ const setLable = (target) => {
 }
 
 /**
- * 사용자/티켓생성
+ * 티켓생성
+ * @return {boolean} 성공여부
+ */
+const openNewTicket = async () => {
+
+	const user_id = await checkUser();
+	if(!user_id) return false;
+
+	const option = {
+		url: '/api/v2/tickets.json',
+		method: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({ 
+			ticket: {
+				subject			: "TEST",	 // 제목
+				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
+				requester_id	: user_id,  // 요청자ID
+				tags            : ["AUTO_FROM_APP"],	// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
+				comment: {
+					body		: "이 티켓은 APP에서 자동생성된 것입니다.",
+				},
+			} 
+		}),
+	}
+
+	const { ticket } = await topbarClient.request(option);		// 티켓생성
+	await topbarClient.invoke('routeTo', 'ticket', ticket.id);	// 티켓오픈
+	return true;
+}
+
+/**
+ * 티켓생성 for 추가등록/관계회원
  * @param {object} counselData 상담정보
  * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
  * @param {obejct} obData OB관련 데이터
- * @return {number} Zendesk ticket id
+ * @return {object|boolean} ticket
  */
-const openNewTicket = async (counselData, addInfoData, obData) => {
+const addNewTicket = async (counselData, addInfoData, obData) => {
+	
+	const user_id = await checkUser();
+	if(!user_id) return false;
 
+	const customPrdtList 		= grid2.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()); // 과목리스트(ex. ["11::2k", "11::k","10::m"])
+	const customDeptIdNm 		= $("#textbox6").val();		// 지점부서명(사업국명)
+	const customAeraCdeNm 		= $("#textbox4").val();		// 지역코드명
+	const customProcDeptIdNm 	= $("#textbox26").val();	// 연계부서명
+	const customLcName 			= $("#textbox9").val();		// 러닝센터명(센터명)
+	const customReclCntct 		= $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : ""; // 상담결과 구분이 재통화예약일경우
+
+	const option = {
+		url: '/api/v2/tickets.json',
+		method: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({ 
+			ticket: {
+				subject			: counselData.CSEL_TITLE,	 // 제목
+				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
+				requester_id	: user_id, 					// 요청자ID
+				tags            : ["AUTO_FROM_APP"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
+				comment: {
+					body		: counselData.CSEL_CNTS,	// 상담내용
+				},
+				custom_fields: [
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"],		value: counselData.CSEL_LTYPE_CDE }, 							// 상담분류(대)  
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_MTYPE_CDE"],		value: counselData.CSEL_MTYPE_CDE }, 							// 상담분류(중)  
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_STYPE_CDE"],		value: counselData.CSEL_STYPE_CDE }, 							// 상담분류(소)  
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_MK"],				value: `csel_mk_${counselData.CSEL_MK}` }, 						// 상담구분   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"],			value: `csel_chnl_mk_${counselData.CSEL_CHNL_MK}` }, 			// 상담채널   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"],			value: `cust_resp_mk_${counselData.CUST_RESP_MK}` },			// 고객반응   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"],			value: `call_rst_mk_${counselData.CALL_RST_MK}` },				// 통화결과(O/B결과)
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"],			value: `csel_rst_mk_${counselData.CSEL_RST_MK1}` },				// 상담결과   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"],				value: `proc_mk_${counselData.PROC_MK}` },						// 처리구분   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"],				value: `cust_mk_${counselData.CUST_MK.toLowerCase()}` },		// 고객구분   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],			value: `proc_sts_mk_${counselData.PROC_STS_MK}` },				// 처리상태   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],				value: `std_motive_cde_${counselData.MOTIVE_CDE}` },			// 입회사유   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK_OB"],			value: `call_rst_mk_ob_${?}` },									// OB결과   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: `${?}::${counselData.GRADE_CDE.toLowerCase()}` },		// 학년
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["PRDT"],					value: customPrdtList },										// 과목   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"],				value: customDeptIdNm },										// 지점부서명(사업국명)   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"],				value: `div_cde_${counselData.DIV_CDE}` },						// 지점본부명(본부코드)   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["AREA_CDENM"],			value: customAeraCdeNm },										// 지역코드명  
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["FST_CRS_CDE"],			value: findCodeName("STD_CRS_CDE", counselData.FST_CRS_CDE) },	// 첫상담경로   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["VOC_MK"],				value: counselData.VOC_MK == "Y" ? true : false },				// VOC여부   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_GRD"],				value: `csel_grd_${counselData.CSEL_GRD}` },					// 상담등급   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_DEPT_IDNM"],		value: customProcDeptIdNm },									// 연계부서명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_CHNL_MK"],			value: `trans_chnl_mk_${?}` },									// 현장연계 연계방법   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["RTN_FLAG"],				value: `rtn_flag_${?}` },										// 회신여부   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_MK"],				value: `trans_mk_${?}` },										// 현장연계 연계구분   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_DEPT_IDNM"],		value: "" },													// 현장연계 지점명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["LC_IDNM"],				value: "" },													// 현장연계 러닝센터명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_TIME"],	value: "0일1시간0분0초" },				      					 // 현장연계 지점처리시간   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_MS"],	value: Number },												// 현장연계 지점처리시간(ms) 
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE"],		value: "2018-04-03T05:10:58.000Z" },							// 현장연계 일시   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["PROC_EMP_IDNM"],			value: "" },													// 현장처리 처리자명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE1_TIME1"],		value: "2018-04-03 05:10:58" },									// 1차 해피콜 일시   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS1"],			value: "" },													// 1차 해피콜 내용   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM1"],		value: "" },													// 1차 해피콜 경로   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM1"],		value: "" },													// 1차 해피콜 상담원명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM1"],			value: "" },													// 1차 해피콜 고객만족도   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE2_TIME2"],		value: "" },													// 2차 해피콜 일시   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS2"],			value: "" },													// 2차 해피콜 내용   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM2"],		value: "" },													// 2차 해피콜 경로   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM2"],		value: "" },													// 2차 해피콜 상담원명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM2"],			value: "" },													// 2차 해피콜 고객만족도   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_NAME"],				value: "" },													// 사은품명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_PRICE"],				value: "" },													// 사은품 가격   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["SEND_DATE"],				value: Date },													// 사은품 발송일자   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_CHNL_MKNM"],			value: "" },													// 사은품 발송경로   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["PASS_USER"],				value: "" },													// 사은품 전달자명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["INVOICENUM"],				value: "" },													// 사은품 송장번호   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_DATE"],			value: "" },													// 상담원처리 처리일시   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_USER_NAME"],	value: "" },													// 상담원처리 처리자명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_CNTS"],			value: "" },													// 상담원처리 처리내용   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"],					value: `oblist_cde_${?}` },										// OB구분   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_DATE_TIME"],		value: "" },													// 현장연계 접수일시   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_NAME"],			value: "" },													// 현장연계 접수자명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"],			value: "" },													// 리스트ID_고객번호   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["IS_HPCALL"],				value: Boolean },												// 해피콜 여부   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["FIN_YN"],					value: "fin_yn_${?}" },											// 통화여부   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"],			value: "" },													// 콜백번호   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["LIST_MK"],				value: `list_mk_${?}` },										// 리스트구분   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["LC_NAME"],				value: customLcName },											// 러닝센터명(센터)
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["LC_MK"],					value: counselData.LC_MK == "Y" ? true : false },				// LC여부   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["HL_MK"],					value: counselData.HL_MK == "Y" ? true : false },				// HL여부   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["YC_MK"],					value: counselData.YC_MK == "Y" ? true : false },				// YC여부   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["VISIT_CHNL"],				value: "" },												// 방문채널   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["TCH_NM"],					value: "" },												// 교사명   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["TCH_NO"],					value: "" },												// 교사사번   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["TCH_WRK_MNT"],			value: Number },											// 교사근무개월수   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["RE_PROC"],				value: counselData.RE_PROC == "1" ? true : false },				// 재확인여부   
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["RECL_CNTCT"],			value: customReclCntct },										// 재통화 연락처   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["RECL_CMPLT"],				value: Boolean },											// 재통화 완료   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["OFCL_RSPN"],				value: "" },												// 직책   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["JOB"],					value: "" },												// 직무   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["DIV_KIND_CDE"],			value: `div_kind_cde_${?}` },								// 브랜드   
+				],
+			}
+		}),
+	}
+
+	return await topbarClient.request(option);		// 티켓생성
+}
+
+/**
+ * 티켓생성 전 사용자가 있는지 체크하고 없으면 생성.
+ * @return {number|boolean} Zendesk user id
+ */
+const checkUser = async () => {
 	const CUST_ID = $("#hiddenbox6").val();
 	const CUST_NAME = $("#textbox21").val();
 	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
@@ -745,51 +886,18 @@ const openNewTicket = async (counselData, addInfoData, obData) => {
 	if (confirm(sMsg) == false) return false;
 
 	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${CUST_ID}`);
-	let requester = "";
+	let user_id = "";
 	
-	// 젠데스크 사용자가 없으면 사용자생성 후 티켓생성
+	// 젠데스크 사용자가 없으면 사용자생성
 	if (users.length === 0) {
 		const custInfo = await getCustInfo(target, CUST_ID);
 		const { user } = await createUser(custInfo);
-		requester = user.id;
+		user_id = user.id;
 	} else {
-		requester = users[0].id;
+		user_id = users[0].id;
 	}
 
-	// by 티켓생성 버튼
-	if(!counselData) {
-
-		const ticketInfo = {
-			subject			: "TEST",	 // 제목
-			ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
-			requester_id	: requester, // 요청자ID
-			tags            : ["AUTO_FROM_APP"],	// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
-			comment: {
-				body		: "이 티켓은 APP에서 자동생성된 것입니다.",
-			},
-		}
-		const { ticket } = await createTicket(ticketInfo);			// 티켓생성
-		await topbarClient.invoke('routeTo', 'ticket', ticket.id);	// 티켓오픈
-		return ticket.id;
-
-	// by 추가등록/관계회원 저장
-	}else {
-
-		const ticketInfo = {
-			subject			: counselData.CSEL_TITLE,	 // 제목
-			ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
-			requester_id	: requester, 				// 요청자ID
-			tags            : ["AUTO_FROM_APP"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
-			comment: {
-				body		: counselData.CSEL_CNTS,	// 상담내용
-			},
-			custom_fields: [
-				{ id: ZDK_INFO[_SPACE]["ticketField"]["AREA_CDENM"], value: "" }, 	// TODO 필요한 항목 입력하기
-			],
-		}
-		const { ticket } = await createTicket(ticketInfo);	// 티켓생성
-		return ticket.id;
-	}
+	return user_id;
 }
 
 /**
@@ -878,22 +986,6 @@ const createUser = async (data) => {
 			},
 		}),
 	}
-	return await topbarClient.request(option);
-}
-
-/**
- * 티켓생성
- * @param {object} ticketInfo
- */
-const createTicket = async (ticketInfo) => {
-
-	const option = {
-		url: '/api/v2/tickets.json',
-		method: 'POST',
-		contentType: "application/json",
-		data: JSON.stringify({ ticket: ticketInfo }),
-	}
-
 	return await topbarClient.request(option);
 }
 
@@ -1018,30 +1110,30 @@ const saveCounsel = async () => {
 	let resSaveCCEM;
 	if (sJobType == "I" && selectedSeq > 1) {
 		
-		const ticketId = await openNewTicket(counselData, addInfoData, obData);
-		if (!ticketId) return false;
+		// 티켓생성
+		const { ticket } = await addNewTicket(counselData, addInfoData, obData);
+		if (!ticket) return false;
 
 		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticketId;
+		counselData.ZEN_TICKET_ID = ticket.id;
 		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
 	
-		// ticketId로 ticket.external_id 업데이트
-		const ticketExternalId = `${FormatUtil.date(resSaveCCEM.CSEL_DATE)}_${resSaveCCEM.CSEL_NO}_${resSaveCCEM.CSEL_SEQ}`;
+		// ticket.external_id와 상담번호 업데이트
+		const CSEL_DATE_NO_SEQ = `${FormatUtil.date(resSaveCCEM.CSEL_DATE)}_${resSaveCCEM.CSEL_NO}_${resSaveCCEM.CSEL_SEQ}`;
 		const option = {
-			url: `/api/v2/tickets/${ticketId}`,
+			url: `/api/v2/tickets/${ticket.id}`,
 			method: 'PUT',
 			contentType: "application/json",
 			data: JSON.stringify({ 
 				ticket: { 
-					external_id: ticketExternalId,
+					external_id: CSEL_DATE_NO_SEQ,
 					custom_fields: [
-						{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"], value: ticketExternalId }, 
+						{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"], value: CSEL_DATE_NO_SEQ }, 
 					],
 				} 
 			}),
 		}
-		const updateTicketResult = await topbarClient.request(option);
-		console.debug("updateTicketResult: ", updateTicketResult);
+		await topbarClient.request(option);
 
 	// 추가등록 또는 관계회원 신규 상담등록건이 아닌경우.
 	} else {
@@ -1058,8 +1150,7 @@ const saveCounsel = async () => {
 
 		// 티켓필드 입력
 		counselData.CSEL_NO = resSaveCCEM.CSEL_NO;
-		const setTicketResult = await setTicket(counselData, addInfoData, obData);
-		if (!setTicketResult) return false;
+		setTicket(counselData, addInfoData, obData);
 	}
 	
 	// 저장성공후
@@ -1100,7 +1191,7 @@ const getCounselCondition = async (sJobType) => {
 		PROC_HOPE_DATE   : calendarUtil.getImaskValue("calendar2"),             // 처리희망일자       
 		CSEL_MAN_MK      : $("#selectbox2").val(),             // 내담자구분         
 		CUST_RESP_MK     : $("#selectbox6").val(),             // 고객반응구분       
-		CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 		TODO 삭제예정
+		// CALL_RST_MK      : "",             // 통화결과구분      (O/B결과) 		
 		CSEL_RST_MK1     : $("#selectbox8").val(),             // 상담결과구분       
 		CSEL_RST_MK2     : "",             // 상담결과구분2      
 		PROC_MK          : $("#selectbox4").val(),             // 처리구분           
@@ -1422,57 +1513,105 @@ const getAddInfoCondition = () => {
 }
 
 /**
- * Zendesk 티켓필드 입력
+ * TODO Zendesk 티켓필드 입력
  * @param {object} counselData 상담정보
  * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
  * @param {obejct} obData OB관련 데이터
- * @return {boolean} 성공여부
  */
-const setTicket = async (counselData, addInfoData, obData) => {
+const setTicket = (counselData, addInfoData, obData) => {
+
+	const customPrdtList 		= grid2.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()); // 과목리스트(ex. ["11::2k", "11::k","10::m"])
+	const customDeptIdNm 		= $("#textbox6").val();		// 지점부서명(사업국명)
+	const customAeraCdeNm 		= $("#textbox4").val();		// 지역코드명
+	const customProcDeptIdNm 	= $("#textbox26").val();	// 연계부서명
+	const customLcName 			= $("#textbox9").val();		// 러닝센터명(센터명)
 	
-	let req = new Object(), res = new Object();
-	
-	// TODO 상담정보를 젠데스트 티켓필드에 저장한다.
+	let req = new Object()
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
 	req["ticket.externalId"] = CSEL_DATE_NO_SEQ;
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] = CSEL_DATE_NO_SEQ;
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] 		 = CSEL_DATE_NO_SEQ;										 // 상담번호
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"]}`]          = counselData.CSEL_LTYPE_CDE;                               // 상담분류(대)  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MTYPE_CDE"]}`]          = counselData.CSEL_MTYPE_CDE;                               // 상담분류(중)  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_STYPE_CDE"]}`]          = counselData.CSEL_STYPE_CDE;                               // 상담분류(소)  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MK"]}`]                 = `csel_mk_${counselData.CSEL_MK}`;                         // 상담구분   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"]}`]            = `csel_chnl_mk_${counselData.CSEL_CHNL_MK}`;               // 상담채널   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"]}`]            = `cust_resp_mk_${counselData.CUST_RESP_MK}`;               // 고객반응   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"]}`]             = `call_rst_mk_${counselData.CALL_RST_MK}`;                 // 통화결과(O/B결과)
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"]}`]             = `csel_rst_mk_${counselData.CSEL_RST_MK1}`;                // 상담결과   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"]}`]                 = `proc_mk_${counselData.PROC_MK}`;                         // 처리구분   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"]}`]                 = `cust_mk_${counselData.CUST_MK.toLowerCase()}`;           // 고객구분   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"]}`]             = `proc_sts_mk_${counselData.PROC_STS_MK}`;                 // 처리상태   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"]}`]              = `std_motive_cde_${counselData.MOTIVE_CDE}`;               // 입회사유
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK_OB"]}`]          = `call_rst_mk_ob_${?}`;                                    // OB결과
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"]}`]           = `${?}::${counselData.GRADE_CDE.toLowerCase()}`;           // 학년
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PRDT"]}`]                    = customPrdtList;                                           // 과목   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"]}`]               = customDeptIdNm;                                           // 지점부서명(사업국명)   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"]}`]                 = `div_cde_${counselData.DIV_CDE}`;                         // 지점본부명(본부코드)   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AREA_CDENM"]}`]              = customAeraCdeNm;                                          // 지역코드명  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["FST_CRS_CDE"]}`]             = findCodeName("STD_CRS_CDE", counselData.FST_CRS_CDE);     // 첫상담경로   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["VOC_MK"]}`]                  = counselData.VOC_MK == "Y" ? true : false;                 // VOC여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_GRD"]}`]                = `csel_grd_${counselData.CSEL_GRD}`;                       // 상담등급   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_DEPT_IDNM"]}`]          = customProcDeptIdNm;                                       // 연계부서명   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TRANS_CHNL_MK"]}`]           = `trans_chnl_mk_${?}`;                                     // 현장연계 연계방법
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RTN_FLAG"]}`]                = `rtn_flag_${?}`;                                          // 회신여부
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TRANS_MK"]}`]                = `trans_mk_${?}`;                                          // 현장연계 연계구분
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TRANS_DEPT_IDNM"]}`]         = "";                                                       // 현장연계 지점명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LC_IDNM"]}`]                 = "";                                                       // 현장연계 러닝센터명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_TIME"]}`]   = "0일1시간0분0초";                                          // 현장연계 지점처리시간
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_MS"]}`]     = Number;                                                   // 현장연계 지점처리시간(ms
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE"]}`]        = "2018-04-03T05:10:58.000Z";                               // 현장연계 일시
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_EMP_IDNM"]}`]           = "";                                                       // 현장처리 처리자명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE1_TIME1"]}`]      = "2018-04-03 05:10:58";                                    // 1차 해피콜 일시
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS1"]}`]            = "";                                                       // 1차 해피콜 내용
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM1"]}`]       = "";                                                       // 1차 해피콜 경로
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM1"]}`]       = "";                                                       // 1차 해피콜 상담원명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM1"]}`]            = "";                                                       // 1차 해피콜 고객만족도
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE2_TIME2"]}`]      = "";                                                       // 2차 해피콜 일시
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS2"]}`]            = "";                                                       // 2차 해피콜 내용
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM2"]}`]       = "";                                                       // 2차 해피콜 경로
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM2"]}`]       = "";                                                       // 2차 해피콜 상담원명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM2"]}`]            = "";                                                       // 2차 해피콜 고객만족도
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["GIFT_NAME"]}`]               = "";                                                       // 사은품명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["GIFT_PRICE"]}`]              = "";                                                       // 사은품 가격
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["SEND_DATE"]}`]               = Date;                                                     // 사은품 발송일자
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["GIFT_CHNL_MKNM"]}`]          = "";                                                       // 사은품 발송경로
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PASS_USER"]}`]               = "";                                                       // 사은품 전달자명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["INVOICENUM"]}`]              = "";                                                       // 사은품 송장번호
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_DATE"]}`]          = "";                                                       // 상담원처리 처리일시
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_USER_NAME"]}`]     = "";                                                       // 상담원처리 처리자명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_CNTS"]}`]          = "";                                                       // 상담원처리 처리내용
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]                   = `oblist_cde_${?}`;                                        // OB구분
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_DATE_TIME"]}`]      = "";                                                       // 현장연계 접수일시
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_NAME"]}`]           = "";                                                       // 현장연계 접수자명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]}`]            = "";                                                       // 리스트ID_고객번호
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["IS_HPCALL"]}`]               = Boolean;                                                  // 해피콜 여부
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["FIN_YN"]}`]                  = "fin_yn_${?}";                                            // 통화여부
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]}`]             = "";                                                       // 콜백번호
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LIST_MK"]}`]                 = `list_mk_${?}`;                                           // 리스트구분
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LC_NAME"]}`]                 = customLcName;                                             // 러닝센터명(센터)
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LC_MK"]}`]                   = counselData.LC_MK == "Y" ? true : false;                  // LC여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HL_MK"]}`]                   = counselData.HL_MK == "Y" ? true : false;                  // HL여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["YC_MK"]}`]                   = counselData.YC_MK == "Y" ? true : false;                  // YC여부   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["VISIT_CHNL"]}`]              = "";                                                       // 방문채널
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TCH_NM"]}`]                  = "";                                                       // 교사명
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TCH_NO"]}`]                  = "";                                                       // 교사사번
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TCH_WRK_MNT"]}`]             = Number;                                                   // 교사근무개월수
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RE_PROC"]}`]                 = counselData.RE_PROC == "1" ? true : false;                // 재확인여부   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RECL_CNTCT"]}`]              = "";                                          				// 재통화 연락처   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RECL_CMPLT"]}`]              = Boolean;                                                  // 재통화 완료         
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OFCL_RSPN"]}`]               = "";                                                       // 직책 
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["JOB"]}`]                     = "";                                                       // 직무 
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_KIND_CDE"]}`]            = `div_kind_cde_${?}`;                                      // 브랜드  
 
 	// 상담결과 구분이 재통화예약일경우
 	if($("#selectbox8").val() == "01")	{
 		req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RECL_CNTCT"]}`] = DS_SCHEDULE.TELNO;
 	}
 
-	if(isEmpty(req)) return true;	// TODO 나중에는 필요없음. 삭제예정
-
 	// 티켓필드 입력
-	res = await sidebarClient.set(req);
-	
-	// 티켓이 존재하지 않을때...
-	if(res["code"]) {
-		console.error(res);
-		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-		return false;
-	}
-
-	// 티켓필드 입력 성공여부 체크
-	let succ = false;
-	for(let key in req) {
-		if(res[key] == req[key]) {
-			succ = true;
-		}else {
-			succ = false;
-			break;
-		}
-	}
-
-	// 티켓필드가 존재하지 않을때...
-	if(!succ) {
-		console.error(res);
-		alert("요청한 티켓필드가 없습니다. 관리자에게 문의하시기 바랍니다.");
-		return false;
-	}
-
-	return true;
+	sidebarClient.set(req)
+		.then(d => console.debug("setTicket then: ", d))
+		.catch(e => console.debug("setTicket catch: ", e));
 	
 }
 
@@ -1760,7 +1899,7 @@ const onDmReceiptChange = () => {
 	DS_DM_RECEIPT.DM_MATCHCD  =	$("#hiddenbox7").val();						// DM매치코드
 	DS_DM_RECEIPT.DM_LIST_ID  =	$("#hiddenbox8").val();						// DM목록ID
 	DS_DM_RECEIPT.DM_TYPE_CDE =	dmTypeValue;								// DM종류코드
-	DS_DM_RECEIPT.DMLABEL	  =  dmTypeText;								// DM종류
+	DS_DM_RECEIPT.DMLABEL	  = dmTypeText;									// DM종류
 	DS_DM_RECEIPT.DM_ZIPCDE   =	$("#textbox24").val();						// 우편번호
 	DS_DM_RECEIPT.DM_ADDR     =	$("#textbox25").val();						// 주소
 	DS_DM_RECEIPT.DM_REQ_DATE =	getDateFormat().replace(/[^0-9]/gi, '');	// 요청일자
