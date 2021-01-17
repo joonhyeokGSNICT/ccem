@@ -42,9 +42,10 @@
 					<div class="mt-2" style="border: 1px solid black; border-radius:8px;">
 					<table class="table table-xs table-borderless mt-2">
 						<colgroup>
-							<col span="1" style="width: 28%;">
-							<col span="1" style="width: 67%;">
-							<col span="1" style="width: 5%;">
+							<col span="1" style="width: 23%;">
+							<col span="1" style="width: 57%;">
+							<col span="1" style="width: 1%;">
+							<col span="1" style="width: 19%;">
 						</colgroup>
 						<tr>
 							<td class="" colspan="" style="border-right:1px solid #ececec;">
@@ -84,31 +85,41 @@
 									</div>
 								</div>
 								<div id="memberSearchRadio" style="display:none; margin-left:15px;">
-									<div class="form-check-inline">
+									<div class="form-check-inline" style="margin-right:5px;">
 									  <label class="form-check-label">
-									    <input type="checkbox" class="form-check-input" value="" checked>본부/사업국/센터
+									    <input id="searchEmpOrgNM_chk" type="checkbox" class="form-check-input" value="" checked>본부/사업국/센터
 									  </label>
 									</div>
-									<div class="form-check-inline" style="width:20%;">
-									   <input type="text" class="form-control form-control-sm">
+									<div class="form-check-inline" style="width:18%;">
+									   <input id="searchEmpOrgNM_input" type="text" class="form-control form-control-sm">
 									</div>
-									<div class="form-check-inline">
+									<div class="form-check-inline" style="margin-right:5px;">
 									  <label class="form-check-label">
-									    <input type="checkbox" class="form-check-input" value="">성명
+									    <input id="searchEmpNM_chk" type="checkbox" class="form-check-input" value="">성명
 									  </label>
 									</div>
-									<div class="form-check-inline" style="width:20%;">
-									   <input type="text" class="form-control form-control-sm">
+									<div class="form-check-inline" style="width:18%;">
+									   <input id="searchEmpNM_input" type="text" class="form-control form-control-sm">
 									</div>
-									<div class="form-check-inline">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="">재직구분</label>
+									<div class="form-check-inline" style="margin-right:5px;">
+										<label class="form-check-label"> 
+											<input id="searchEmp_chk" type="checkbox" class="form-check-input" value="">재직구분
+										</label>
+									</div>
+									<div class="form-check-inline" style="padding:0px 5px; width:10%">
+										<select class="mr-sm-2" id="searchEmp_selectbox"  style="border: 1px solid #ced4da; border-radius: .25rem;">
+											<option value="재직">재직</option>
+											<option value="사업">사업</option>
+											<option value="해지">해지</option>
+										</select>
 									</div>
 								</div>
 							</td>
 							<td>
 							</td>
 							<td>
-								<input type="button" class="btn btn-sm popup-btn customerBtn" value="조회" id="searchBtn" onclick="_btn.searchOrg();" style="float:right; margin:0px 1rem;">
+								<input type="button" class="btn btn-sm popup-btn customerBtn" value="조회" id="searchBtn" onclick="_btn.searchOrg();" style="float:right; margin:0px 1rem 0px 0px;">
+								<input type="button" class="btn btn-sm popup-btn customerBtn" value="초기화" id="searchBtn" onclick="_btn.resetTree();" style="float:right; margin:0px 0.5rem 0px 0px;">
 							</td>
 							
 						</tr>
@@ -227,7 +238,7 @@
 	<input type="button" class="btn btn-sm popup-btn customerBtn" value="선택" id="counselSend_btn" onclick="_btn.selectedList()" style="float:right; margin:0px 1rem;">
 	<input type="button" class="btn btn-sm popup-btn customerBtn" value="전체선택" id="counselSel_btn" onclick="_btn.selectAll()" style="float:left; margin:0px 10px 0px 1rem; padding:0px; width:97px;">
 	<input type="button" class="btn btn-sm popup-btn customerBtn" value="선택해제" id="counselDeSel_btn" onclick="_btn.deselectAll()" style="float:left; margin:0px 10px 0px 0px; padding:0px; width:97px;">
-	<input type="button" class="btn btn-sm popup-btn customerBtn" value="초기화" id="counselDeSel_btn" onclick="_btn.deselectAll()" style="float:left; margin:0px; padding:0px; width:97px;">
+	<input type="button" class="btn btn-sm popup-btn customerBtn" value="필터초기화" id="counselDeSel_btn" onclick="_btn.resetFilter()" style="float:left; margin:0px; padding:0px; width:97px;">
 
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/fancytree/jquery.fancytree.ui-deps.js"></script>
