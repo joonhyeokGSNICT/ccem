@@ -34,7 +34,7 @@ $(function () {
 	$("#button10").on("click", ev => {
 		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
 		createTicket()
-			.then((data) => { 
+			.then( async (data) => { 
 				if (data)  {
 					await topbarClient.invoke('routeTo', 'ticket', data.ticket.id);	// 티켓오픈
 					alert("티켓생성이 완료되었습니다."); 
@@ -766,7 +766,7 @@ const createTicket = async () => {
  * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
  * @param {obejct} obData OB관련 데이터
  */
-const updateTicket = async (counselData, addInfoData, obData) => {
+const updateTicket = (counselData, addInfoData, obData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
 
@@ -867,7 +867,9 @@ const updateTicket = async (counselData, addInfoData, obData) => {
 			}
 		}),
 	}
-	await topbarClient.request(option);
+	topbarClient.request(option)
+		.then(d => console.debug("Update ticket then: ", d))
+		.catch(e => console.debug("Update ticket catch: ", e));
 }
 
 /**
