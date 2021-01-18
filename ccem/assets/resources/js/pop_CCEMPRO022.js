@@ -737,12 +737,13 @@ const openNewTicket = async () => {
 		contentType: "application/json",
 		data: JSON.stringify({ 
 			ticket: {
-				subject			: "TEST",	 // 제목
-				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], // 양식 : 상담문의
-				requester_id	: user_id,  // 요청자ID
+				subject			: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",	 // 제목
+				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], 	 // 양식 : 상담문의
+				requester_id	: user_id,  			// 요청자ID
 				tags            : ["AUTO_FROM_APP"],	// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
 				comment: {
-					body		: "이 티켓은 APP에서 자동생성된 것입니다.",
+					public		: false,
+					body		: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",
 				},
 			} 
 		}),
