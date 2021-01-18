@@ -730,7 +730,7 @@ $(this).ajaxStart(function () {
 
 $(this).ajaxError((event, jqxhr, settings, thrownError) => {
     const statusText = jqxhr.statusText;
-    let errMsg = (settings.errMsg || "서버에서 오류가 발생하였습니다.") + "<br><br>";
+    let errMsg = "[CCEM] " + (settings.errMsg || "서버에서 오류가 발생하였습니다.") + "<br><br>";
 
     if (statusText === "timeout") {
         errMsg += "API서버 통신이 원활하지 않습니다. 잠시 후에 다시 시도해 주세요.";
