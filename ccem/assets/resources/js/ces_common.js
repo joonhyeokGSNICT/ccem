@@ -60,7 +60,7 @@ var sTelHPNo_DDD = new Array(
 const checkApi = (response, settings) => {
 	if (response.errcode == "0") return true;
 
-	let errMsg = settings.errMsg || "서버에서 오류가 발생하였습니다.";
+	let errMsg = "[CCEM] " + (settings.errMsg || "서버에서 오류가 발생하였습니다.");
 	errMsg += `<br><br>오류코드 : ${response.errcode}<br>오류메시지 : ${response.errmsg}<br>호출서비스 : ${settings.url}`;
 
 	if(typeof client != 'undefined') {

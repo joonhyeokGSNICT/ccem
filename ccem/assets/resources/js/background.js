@@ -1,7 +1,7 @@
 var codeData;
 
-$(function () {
-	getCommCode();
+$(async function () {
+	codeData = await getCommCode();
 	tobbarPreloadPane();
 });
 
@@ -13,8 +13,9 @@ client.on("getCodeList", function (target_guid) {
 /**
  * 공통코드 조회
  */
-const getCommCode = () => {
-	let settings = {
+const getCommCode = () => new Promise((resolve, reject) => {
+	
+	const settings = {
 		url: `${API_SERVER}/sys.getCommCode.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -25,10 +26,17 @@ const getCommCode = () => {
 			dsSend: [{}],
 		}),
 	}
-	$.ajax(settings).done(data => {
-		codeData = data.dsRecv;
-	});
-}
+
+	$.ajax(settings)
+		.done(data => {
+			if(!checkApi(data, settings)) return reject(data.errmsg);
+			return resolve(data.dsRecv);
+		})
+		.fail(error => {
+			console.error(error);
+			return reject(error);
+		});
+});
 
 /**
  * 탑바를 미리로드함.
