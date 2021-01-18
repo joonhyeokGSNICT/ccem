@@ -164,58 +164,6 @@ var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT 
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
 var custInfoStatus;
 
-//전역변수
-var sTelNo_DDD = new Array(
-                              "02"    // 서울
-                            , "031"   // 경기도
-                            , "032"   // 인천
-                            , "033"   // 강원
-                            , "041"   // 충남
-                            , "042"   // 대전
-                            , "043"   // 충북
-                            , "044"   // 세종시
-                            , "051"   // 부산
-                            , "052"   // 울산
-                            , "053"   // 대구
-                            , "054"   // 경북
-                            , "055"   // 경남
-                            , "061"   // 전남
-                            , "062"   // 광주
-                            , "063"   // 전북
-                            , "064"   // 제주
-
-                            , "010"   // 통합(이동)
-                            , "011"   // SKT
-                            , "016"   // KTF
-                            , "017"   // SKT
-                            , "018"   // KTF
-                            , "019"   // LGT
-
-                            , "0502"   // 평생번호(KT)
-                            , "0504"   // 평생번호(KT)
-                            , "0505"   // 평생번호(데이콤)
-                            , "0506"   // 평생번호(KT)
-                            , "060"   // 서비스/정보이용
-                            , "070"   // 인터넷전화
-                            , "080"   // 수신자부담(크로바서비스)
-
-                            );
-// 전역변수(핸드폰번호)
-var sTelHPNo_DDD = new Array(                            
-                              "010"   // 통합(이동)
-                            , "011"   // SKT
-                            , "016"   // KTF
-                            , "017"   // SKT
-                            , "018"   // KTF
-                            , "019"   // LGT
-
-                            , "0502"   // 평생번호(KT)
-                            , "0504"   // 평생번호(KT)
-                            , "0505"   // 평생번호(데이콤)
-                            , "0506"   // 평생번호(KT)
-                            
-                            );
-
 // === === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 //sideBar client 받기
 client.on("getSidebarClient", function(sidebarClient_d) {
@@ -1776,30 +1724,6 @@ function onValueCheck(){
     }
     return false;
 }
-
-/**
- * 국번번호 체크
- * @param ddd
- * @returns
- * 21-01-08 최준혁
- */
-function gf_chkDDDNumber(ddd){
-    for (i=0 ; i<sTelNo_DDD.length ;i++){
-        if (sTelNo_DDD[i] == ddd) return true;
-    }
-    return false;
-}
-/**
- * 휴대폰 앞자리 체크
- * @param ddd
- * @returns
- */
-function chkHPDDDNumber(ddd){
-    for (i=0 ; i<sTelHPNo_DDD.length ;i++){
-        if (sTelHPNo_DDD[i] == ddd) return true;
-    }
-    return false;
-}
 /**
  * 중복 고객, 중복 부모 존재 여부 조회
 // (성명, 학습장소 전화번호로 판단한다.)
@@ -2051,7 +1975,7 @@ function onSave(){
 		param.DS_DATA[0].ROW_TYPE 				= "U";
 		param.DS_DATA[0].JOBKIND 				= 'UPD'; 
 		
-		param.DS_CUST[0].CUST_ID = 		"";
+		param.DS_CUST[0].CUST_ID = 		$("#custInfo_CUST_ID").val();
 		param.DS_CUST[0].CUST_MK = 		$("#custInfo_CUST_MK").val();
 		param.DS_CUST[0].CUST_CGNT_NO = 	"";
 		param.DS_CUST[0].MBR_ID = 			"";
