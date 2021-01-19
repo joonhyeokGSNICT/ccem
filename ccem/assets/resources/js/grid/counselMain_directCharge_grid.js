@@ -238,7 +238,9 @@ $(function(){
 			if(ev.targetType == 'cell'){
 				counselMain_directCharge_alimSendList_grid.addSelection(ev);
 				counselMain_directCharge_alimSendList_grid.clickSort(ev);
+				console.log(counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey));
 				counselMain_directCharge_reciverInfo_grid.resetData([counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey)]);
+				counselMain_directCharge_reciverInfo_grid.refreshLayout();
 			}
 	    });
 		
@@ -320,6 +322,7 @@ $(function(){
 					formatter: function(e){
 						var result = "";
 						if(e.value != "" && e.value != null){
+							console.log(e.value);
 							switch(e.value){
 							case 'M' : result = '모'; break;
 							case 'F' : result = '부'; break;
@@ -328,6 +331,7 @@ $(function(){
 							default  : result = ''; break;
 							}
 						}
+						console.log(result);
 						return result;
 					}
 				},

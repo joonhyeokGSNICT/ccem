@@ -140,7 +140,7 @@ $(function(){
 				{
 					header: '월',
 					name: 'ZRCD_YM',
-					width: 80,
+					width: 120,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -155,15 +155,16 @@ $(function(){
 				{
 					header: '발신번호',
 					name: 'MOBILE',
-					width: 130,
+					width: 160,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.tel(columnInfo.value)
 				},
 				{
 					header: '발송일',
 					name: 'SEND_DATE',
-					width: 100,
+					width: 130,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -172,7 +173,6 @@ $(function(){
 				{
 					header: '수신여부',
 					name: 'SMS_STATUS',
-					width: 150,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -189,11 +189,13 @@ $(function(){
 				],
 		});
 		counselMain_autoResign_resignSendList_grid.on('click', (ev) => {
-			counselMain_autoResign_resignSendList_grid.addSelection(ev);
-			counselMain_autoResign_resignSendList_grid.clickSort(ev);
-			if(ev.targetType == 'cell'){
-				var currentData = counselMain_autoResign_resignSendList_grid.getRow(ev.rowKey);
-				$("#autoResign_MSG").val(currentData.MSG);
+			if(ev.targetType =='cell'){
+				counselMain_autoResign_resignSendList_grid.addSelection(ev);
+				counselMain_autoResign_resignSendList_grid.clickSort(ev);
+				if(ev.targetType == 'cell'){
+					var currentData = counselMain_autoResign_resignSendList_grid.getRow(ev.rowKey);
+					$("#autoResign_MSG").val(currentData.MSG);
+				}
 			}
 	    });
 		

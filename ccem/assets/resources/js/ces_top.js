@@ -292,6 +292,12 @@ function initAll() {
 	currentStudyInfo = null; 					// 현재 선택된 주간학습의 정보 초기화  
 	currentDirectChargeInfo = null;				// 현재 선택된 회비관리 정보 초기화
 	
+	initSemi();	// 인풋 초기화
+	
+};
+// 인풋만 초기화
+function initSemi(){
+	
 	$("#blackAndVipArea").css("display", "none");		// 정성회원 배너 안보이게
 	
 	// 양력 음력 초기화
@@ -315,48 +321,14 @@ function initAll() {
 	// 고객구분 초기세팅
 	$("#custInfo_CUST_MK").val("CM");
 	
-	// 날짜 픽커
-	calendarUtil.init('customerSMS_st');
-	calendarUtil.init('customerSMS_ed');
-	
 	// 기본 조회 날짜 세팅
 	$(".defaultDate_ed").val(getToday(0));
 	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
 	
-	
-	
-	setStatus(1);								// 신규 상태로 변경
-	gridReset();								// 그리드 리셋
-	
-};
-// 인풋만 초기화
-function initSemi(){
-$("#blackAndVipArea").css("display", "none");		// 정성회원 배너 안보이게
-	
-	// 양력 음력 초기화
-	$("#solar").css('display','');
-	$("#lunar").css('display','none');
-	$("#lunarSolarInput").val("1");
-	
-	
-	// input 내용 삭제
-	$("#customerInfoTab").find("input:text").each( function () {
-        $(this).val('');
-    });
-	// select 첫번째 옵션 선택
-	$("#customerInfoTab").find('select').each(function(){
-		$(this).find('option:first').prop('selected','true');
-	});
-	
-	// 상담이력 탭 이동
-	$("#customerCounselHist").click();
-	
-	// 고객구분 초기세팅
-	$("#custInfo_CUST_MK").val("CM");
-	
-	// 기본 조회 날짜 세팅
-	$(".defaultDate_ed").val(getToday(0));
-	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
+	// disabled false
+	$("#custInfo_FAT_RSDNO").attr('disabled',false);
+	$("#custInfo_FAT_NAME").attr('disabled',false);
+	$("#custInfo_FAT_REL").attr('disabled',false);
 	
 	setStatus(1);								// 신규 상태로 변경
 	gridReset();								// 그리드 리셋
@@ -510,6 +482,20 @@ $(function(){
 			PopupUtil.open('CCEMPRO043', 1100, 700);
 		}
 	});
+	// 사업국 팝업 EVENT INPUT ENTER KEY BIND
+	$(".deptPop").keyup(function(e){
+		var keyCode = e.which;
+		if(keyCode === 13){
+			PopupUtil.open('CCEMPRO044', 1145, 475);
+		}
+	});
+	// 센터 팝업 EVENT INPUT ENTER KEY BIND
+	$(".LCPop").keyup(function(e){
+		var keyCode = e.which;
+		if(keyCode === 13){
+			PopupUtil.open('CCEMPRO044', 1145, 475);
+		}
+	});
 	
 	// 음력,양력 전환
 	$(".birthLunar").click(function(){
@@ -588,6 +574,7 @@ $(function(){
 		// 고객찾기
 		case 'customerSearch':
 			customerSearchList_grid.refreshLayout();
+			teacherSearchList_grid.refreshLayout();
 			$("#customerName").focus();
 			break;
 			
@@ -619,6 +606,7 @@ $(function(){
 				loadList('getCustPayMst', counselMain_directCharge_duesInfo_grid);
 			}
 			counselMain_directCharge_duesInfo_grid.refreshLayout();
+			counselMain_directCharge_reciverInfo_grid.refreshLayout();
 			break;
 		// 변경이력
 		case 'changeHist':
@@ -667,6 +655,14 @@ $(function(){
 			counselMain_researchCust_smsLmsHist_grid.refreshLayout();
 			break;
 			
+		// 고객찾기
+		case 'customerSearchTab' :
+			customerSearchList_grid.refreshLayout();
+			break;
+		// 선생님찾기
+		case 'teacherSearchTab' :
+			teacherSearchList_grid.refreshLayout();
+			break;
 			
 		}
 		
@@ -790,6 +786,7 @@ function customerSearch(currentDiv){
 		    	"CHK_PROD"		:"",				// 과목 여부
 		    	"CHK_DEPT"		:"",				// 지점 검색 여부 (Y면 조회)
 		    	"CHK_UP_DEPT"	:"",				// 본부 검색 여부 (Y면 조회)
+		    	"CHL_LCID"		:"",				// 센터검색 여부(Y면 조회)
 		    	"CHK_EDUPIA"	:"",
 		    	"CHK_EMAIL"		:"",				// 이메일 여부
 		    	"CHK_MACADAMIA"	:"",
@@ -816,7 +813,7 @@ function customerSearch(currentDiv){
 		    }]
 		};
 		
-		if($("#customerNameCheck").is(":checked")){			// 고객명
+		if($("#customerNameCheck").is(":checked")){				// 고객명
 			param.send1[0].CHK_NAME = "Y";
 			param.send1[0].NAME = $("#customerName").val();
 		}
@@ -832,7 +829,7 @@ function customerSearch(currentDiv){
 			param.send1[0].CHK_GRADE = "Y";
 			param.send1[0].GRADE_CDE = $("#customerGrade").val();
 		}
-		if($("#customerMNumCheck").is(":checked")){			// 회원번호
+		if($("#customerMNumCheck").is(":checked")){				// 회원번호
 			param.send1[0].CHK_CUSTID = "Y";
 			param.send1[0].MBR_ID = $("#customerMNum").val();
 		}
@@ -840,7 +837,7 @@ function customerSearch(currentDiv){
 			param.send1[0].CHK_RSDNO = "Y";
 			param.send1[0].RSDNO = $("#customerBirth").val();
 		}
-		if($("#customerAddrCheck").is(":checked")){			// 주소
+		if($("#customerAddrCheck").is(":checked")){				// 주소
 			param.send1[0].CHK_ADDR = "Y";
 			param.send1[0].ADDR = $("#customerAddr").val();
 		}
@@ -848,13 +845,17 @@ function customerSearch(currentDiv){
 			param.send1[0].CHK_PROD = "Y";
 			param.send1[0].PRDT_ID = $("#customerSubject").val();
 		}
-		if($("#customerSpotCheck").is(":checked")){			// 지점
+		if($("#customerSpotCheck").is(":checked")){				// 사업국
 			param.send1[0].CHK_DEPT = "Y";
 			param.send1[0].DEPT_NAME = $("#customerSpot").val();
 		}
-		if($("#customerDeptCheck").is(":checked")){			// 본부
+		if($("#customerDeptCheck").is(":checked")){				// 본부
 			param.send1[0].CHK_UP_DEPT = "Y";
 			param.send1[0].UPDEPTID = $("#customerDept").val();
+		}
+		if($("#customerLCCheck").is(":checked")){				// LC 센터
+			param.send1[0].CHL_LCID = "Y";
+			param.send1[0].LC_NM = $("#customerLC").val();
 		}
 		
 		$.ajax({
@@ -869,12 +870,12 @@ function customerSearch(currentDiv){
 		        	customerSearchList_grid.resetData(response.recv1);
 		        	
 		        	// 조회된 수가 1명 일 경우 자동 조회
-		        	if(response.recv1.length == "1"){
+		        	/*if(response.recv1.length == "1"){
 		        		initAll(); 													// 기존 정보 초기화
 		        		custInfo = customerSearchList_grid.getRow(0);
 		        		onAutoSearch(custInfo.CUST_ID);
 		        		
-		        	}
+		        	}*/
 		        	
 		        }else {
 		        	loading.out();
@@ -890,10 +891,53 @@ function customerSearch(currentDiv){
 		var param = {
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
-		    send1: [{"TCHR_NAME": "김소라"}]
+		    send1: 	[
+		    			{
+		    				"TCHR_NAME": 	"김소라",
+		    				"EMP_ID":		"",
+		    				"EMP_MK":		"",
+		    				"DEPT_NAME":	"",
+		    				"DIV_CDE":		"",
+		    				"STS_CDE":		"",
+		    				"LC_NM":		"",
+		    				"CHK_TCHR_NAME":"",
+		    				"CHK_EMP_ID":	"",
+		    				"CHK_EMP_MK":	"",
+		    				"CHK_DEPT_NAME":"",
+		    				"CHK_DIV_CDE":	"",
+		    				"CHK_STS_CDE":	"",
+		    				"CHK_LC_NM":	""
+		    			}
+		    		]
 		};
+		
+		if($("#teacherNameCheck").is(":checked")){			// 선생님명
+			param.send1[0].CHK_TCHR_NAME = "Y";
+			param.send1[0].TCHR_NAME = $("#teacherName").val();
+		}
+		if($("#teacherDNumCheck").is(":checked")){			// 사원번호
+			param.send1[0].CHK_EMP_ID = "Y";
+			param.send1[0].EMP_ID = $("#teacherDNum").val();
+		}
+		if($("#teacherStatCheck").is(":checked")){			// 재직구분
+			param.send1[0].CHK_STS_CDE = "Y";
+			param.send1[0].STS_CDE = $("#teacherStat").val();
+		}
+		if($("#teacherLCNameCheck").is(":checked")){		// 센터
+			param.send1[0].CHK_LC_NM = "Y";
+			param.send1[0].LC_NM = $("#teacherLCName").val();
+		}
+		if($("#teacherDeptNameCheck").is(":checked")){		// 사업국
+			param.send1[0].CHK_DEPT_NAME = "Y";
+			param.send1[0].DEPT_NAME = $("#teacherDeptName").val();
+		}
+		if($("#teacherUpDeptNameCheck").is(":checked")){	// 본부
+			param.send1[0].CHK_DIV_CDE = "Y";
+			param.send1[0].DIV_CDE = $("#teacherUpDeptName").val();
+		}
+		
 		$.ajax({
-		    url: API_SERVER + '/cns.getTchrPdaInfo.do',
+		    url: API_SERVER + '/cns.getTchrSearchInfo.do',
 		    type: 'POST',
 		    dataType: 'json',
 		    contentType: "application/json",
@@ -902,6 +946,7 @@ function customerSearch(currentDiv){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	teacherSearchList_grid.resetData(response.recv1);
+		        	teacherSearchList_grid.refreshLayout();
 		        }else {
 		        	loading.out();
 		        	client.invoke("notify", response.errmsg, "error", 60000);
@@ -949,9 +994,45 @@ function onAutoSearch(sCustId){
 	}else {
 		ModalUtil.modalPop("알림","고객이 존재 하지 않아 조회 할 수 없습니다.");
 	}
-
 }
 
+/**
+ * 선생님정보 상세 조회
+ * @param tchrId
+ * @returns
+ * 21-01-19 최준혁
+ */
+function onAutoSearchTeacher(sEmpId){
+	if(sEmpId != ""){
+		var param = {
+				senddataids: ["send1"],
+				recvdataids: ["recv1"],
+				send1: [{
+					"EMP_ID"		:sEmpId,				// 회원번호
+				}]
+		};
+		$.ajax({
+			url: API_SERVER + '/cns.getTchrInfoDtl.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				if(response.errcode == "0"){
+					currentTchrInfo = response.recv1[0];				// 선생님정보 상주
+					console.log(currentTchrInfo);
+					//loadCustInfoMain();									// 선생님정보 로드 함수
+				}else {
+					loading.out();
+					client.invoke("notify", response.errmsg, "error", 60000);
+				}
+			}, error: function (response) {
+			}
+		});
+	}else {
+		ModalUtil.modalPop("알림","사원번호가 존재 하지 않아 조회 할 수 없습니다.");
+	}
+}
 function openPop(popName,w,h){
 	console.log(popName);
 	currentPop = window.open('pop_'+popName+'.html',popName,'width='+w+', height='+h+', toolbar=no, menubar=no, scrollbars=no, resizable=no');
@@ -1269,7 +1350,7 @@ function studyInfoLoad() {
  * @returns
  * 21-01-04 최준혁
  */
-function loadList(id, grid) {
+function loadList(id, grid, listID) {
 	if(currentCustInfo) {
 		var param = {
 				senddataids: ["send1"],
@@ -1343,7 +1424,9 @@ function loadList(id, grid) {
 			
 		case 'getDet' : 			// 변경이력 - 현재학습장소
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
-			sendUrl = '/cns.getDet.do';
+			param.send1[0].PERSON_MK = currentCustInfo.CUST_MK				// 고객구분
+			param.send1[0].ADDR_MK = "1";									// 주소구분 (1로고정);
+			sendUrl = '/cns.getDetDtl.do';
 			break;
 		case 'getChgCustInfoHist' : // 변경이력 - 신상변경이력
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
@@ -1358,10 +1441,6 @@ function loadList(id, grid) {
 		case 'getErrEntInfo' : // 정보동의 - 개인정보동의
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getErrEntInfo.do';
-			break;
-		case 'getTBCALLRST' : // 정보동의 - 콜리스트 이력조회
-			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
-			sendUrl = '/cns.getTBCALLRST.do';
 			break;
 			
 		case 'getDropDtl' : 	// 자동퇴회 - 자동퇴회 세부 이력조회
@@ -1382,6 +1461,14 @@ function loadList(id, grid) {
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getTB_SMSDATA.do';
+			
+			// 콜리스트 공통
+		case 'getTBCALLRST' : // 콜리스트 이력조회
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			param.send1[0].LIST_ID = listID;								// 콜리스트ID
+			sendUrl = '/cns.getTBCALLRST.do';
+			break;
+			
 		}
 		
 		$.ajax({
@@ -1470,7 +1557,7 @@ function onFamilyBtnClick(){
 	}
 	
 	 //변경된 정보가 존재하는지 체크
-    if(isCustDataChanged()) {
+    if(isCustDataChanged() == true) {
     	client.invoke('notify',"고객정보를 변경하셨습니다. <br>먼저 저장을 하시고 관계회원 등록을<br> 하시기 바랍니다.", 'alert', 5000);
         return;
     }
@@ -1605,11 +1692,9 @@ function isCustDataChanged() {
 			return true;
 		}
 	}
-	if(currentCustInfo.FAT_RSDNO != null){
-		if($("#custInfo_FAT_RSDNO").val().replace(/-/gi, "") != currentCustInfo.FAT_RSDNO){		// 관계번호
-			console.log(currentCustInfo.FAT_RSDNO);
-			return true;
-		}
+	if($("#custInfo_FAT_RSDNO").val().replace(/-/gi, "") != currentCustInfo.FAT_RSDNO){		// 관계번호
+		console.log(currentCustInfo.FAT_RSDNO);
+		return true;
 	}
 	if(currentCustInfo.UPDEPTNAME != null){
 		if($("#custInfo_UPDEPTNAME").val() != currentCustInfo.UPDEPTNAME){						// 본부
@@ -1645,7 +1730,6 @@ function isCustDataChanged() {
 			return true;
 		}
 	}
-	
 	
 	return false;
 }
@@ -1760,10 +1844,10 @@ function onAutoSearchByTELPNO(sFlag,sName){
         		    senddataids: ["send1"],
         		    recvdataids: ["recv1"],
         		    send1: [{
-        		    	"TELPNO2"		: currentCustInfo.TELPNO2,				// 학습장소 전화 뒷자리
-        		    	"TELPNO1"		: currentCustInfo.TELPNO1,				// 학습장소 전화 국번
-        		    	"NAME"			: custName_dp,							// 고객명
-        		    	"FAT_RSDNO"		: currentCustInfo.FAT_RSDNO,			// 학부모 관계번호
+        		    	"TELPNO2"		: $("#custInfo_TELPNO2").val(),				// 학습장소 전화 뒷자리
+        		    	"TELPNO1"		: $("#custInfo_TELPNO1").val(),				// 학습장소 전화 국번
+        		    	"NAME"			: custName_dp,								// 고객명
+        		    	"FAT_RSDNO"		: $("#custInfo_FAT_RSDNO").val(),			// 학부모 관계번호
         		    }]
         		};
         	
@@ -1781,57 +1865,57 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	            //저장시:"ONSAVE"
         	            if(sFlag == "ONSAVE"){
         	                onSave();
-        	            }//전화번호입력시:"ONTELPNO",관계회원등록때 이름입력시:"ONNAME"
-        	        }else if(sFlag == "ONTELPNO" || sFlag == "ONNAME"){
-        	            if (existCustInfo.CUST_ID == "MOREDATAFOUND"){
-        	                var sConfMsg = "해당 성명,전화번호와 동일한 고객이 이미 존재합니다.<br>고객찾기로 조회하시겠습니까?";
-        	                var tempName = $("#custInfo_NAME").val();
-        	                var tempTelNum = $("#custInfo_MOBILNO3").val();
-        	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
-        	                	function d(tempName, tempTelNum){
-        	                		$("#customerSearch").click();
-        	                		$("#customerName").val(tempName);
-        	                		$("#customerNameCheck").prop('checked',true);
-        	                		$("#customerPhone").val(tempTelNum);
-        	                		$("#customerPhoneCheck").prop('checked',true);
-        	                	}
-        	                	d(tempName,tempTelNum);
-        	                	
-        	                }, function() {
-        	                	ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
-        	                });
-        	                
-        	            }else if(existCustInfo.CUST_ID != "NODATAFOUND"){
-        	                var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.<br>위 고객으로 조회하시겠습니까?";
-        	                
-        	                ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
-        	                	//관계회원이면, 학부모정보를 저장해 둔다.
-        	                    if(custInfoStatus == 3){
-        	                        sFAT_NAME  = $("#custInfo_FAT_NAME").val();
-        	                        sFAT_RSDNO = $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
-        	                        sFAT_REL   = $("#custInfo_FAT_REL").val();
-        	                    }
-        	                    onAutoSearch(existCustInfo.CUST_ID);
-        	                }, function() {
-        	                	ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
-        	                })
+        	            }else if(sFlag == "ONTELPNO" || sFlag == "ONNAME"){	//전화번호입력시:"ONTELPNO",관계회원등록때 이름입력시:"ONNAME"
+        	            	if (existCustInfo.CUST_ID == "MOREDATAFOUND"){
+        	            		var sConfMsg = "해당 성명,전화번호와 동일한 고객이 이미 존재합니다.<br>고객찾기로 조회 하시겠습니까?";
+        	            		var tempName = $("#custInfo_NAME").val();
+        	            		var tempTelNum = $("#custInfo_TELPNO2").val();
+        	            		ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
+        	            			function d(tempName, tempTelNum){
+        	            				$("#customerSearch").click();
+        	            				$("#customerName").val(tempName);
+        	            				$("#customerNameCheck").prop('checked',true);
+        	            				$("#customerPhone").val(tempTelNum);
+        	            				$("#customerPhoneCheck").prop('checked',true);
+        	            			}
+        	            			d(tempName,tempTelNum);
+        	            			$("#custSearchDivBtn").click();
+        	            		}, function() {
+        	            			ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
+        	            		});
+        	            		
+        	            	}else if(existCustInfo.CUST_ID != "NODATAFOUND"){
+        	            		var sConfMsg = "고객번호 ["+ existCustInfo.CUST_ID +"]인 고객이 이미 존재합니다.<br>위 고객으로 조회하시겠습니까?";
+        	            		
+        	            		ModalUtil.confirmPop("확인 메세지", sConfMsg, function() {
+        	            			//관계회원이면, 학부모정보를 저장해 둔다.
+        	            			if(custInfoStatus == 3){
+        	            				sFAT_NAME  = $("#custInfo_FAT_NAME").val();
+        	            				sFAT_RSDNO = $("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
+        	            				sFAT_REL   = $("#custInfo_FAT_REL").val();
+        	            			}
+        	            			onAutoSearch(existCustInfo.CUST_ID);
+        	            		}, function() {
+        	            			ModalUtil.modalPop("알림","성명, 전화번호 중 한 가지가 달라야 <br>새로운 고객으로 등록됩니다.");
+        	            		})
+        	            	}
+        	            	
+        	            	//관계회원콤보선택시 비회원일때:"ONRELCMB"
+        	            }else if(sFlag == "ONRELCMB"){
+        	            	if(existCustInfo.CUST_ID == "MOREDATAFOUND") {
+        	            		//고객번호가 여러개일때, 고객찾기로 넘기자.
+        	            		$("#customerSearch").click();
+        	            		$("#customerName").val(existCustName);
+        	            		$("#customerNameCheck").prop('checked',true);
+        	            		$("#customerPhone").val(existCustTelNo);
+        	            		$("#customerPhoneCheck").prop('checked',true);
+        	            	}else if(existCustInfo.CUST_ID == "NODATAFOUND"){
+        	            		ModalUtil.modalPop("알림","학부모이거나 고객번호가 없어<br> 조회 할수 없는 관계회원입니다.");
+        	            	}else{
+        	            		onAutoSearch(existCustInfo.CUST_ID);
+        	            	}
         	            }
-
-        	        //관계회원콤보선택시 비회원일때:"ONRELCMB"
-        	        }else if(sFlag == "ONRELCMB"){
-        	            if(existCustInfo.CUST_ID == "MOREDATAFOUND") {
-        	                //고객번호가 여러개일때, 고객찾기로 넘기자.
-        	            	$("#customerSearch").click();
-	                		$("#customerName").val(existCustName);
-	                		$("#customerNameCheck").prop('checked',true);
-	                		$("#customerPhone").val(existCustTelNo);
-	                		$("#customerPhoneCheck").prop('checked',true);
-        	            }else if(existCustInfo.CUST_ID == "NODATAFOUND"){
-        	            	ModalUtil.modalPop("알림","학부모이거나 고객번호가 없어<br> 조회 할수 없는 관계회원입니다.");
-        	            }else{
-        	                onAutoSearch(existCustInfo.CUST_ID);
-        	            }
-        	        }
+    	            }
         	    }
         	});
         }
@@ -1869,7 +1953,7 @@ function onSave(){
     if(custInfoStatus != 3 &&
     		existCustInfo.FAT_RSDNO != "NODATAFOUND" &&
 //             DS_CUST.nameValue(1,"FAT_RSDNO") != DS_CUST.OrgNameValue(1,"FAT_RSDNO")){
-    		existCustInfo.FAT_RSDNO != sOrgFAT_RSDNO){
+    		existCustInfo.FAT_RSDNO != currentCustInfo.FAT_RSDNO){
 
         //학부모가 존재하는데 관계회원 등록안하면, [C+전화번호]일 경우에는 사용자에게 물어보고 등록한다.
         if(existCustInfo.FAT_RSDNO.substring(0,1).toUpperCase() == "C"){
@@ -2053,8 +2137,51 @@ function onSave(){
 	    success: function (response) {
 	    	console.log(response);
 	    	if(response.errcode == "0"){
-	    		client.invoke("notify", "저장 되었습니다.", "notice", 5000);
-	    		onAutoSearch(response.recv1[0].CUST_ID);
+	    		
+	    		// 젠데스크에 사용자 정보 저장
+	    		var option = {
+	    				url: '/api/v2/users/create_or_update.json',
+	    				method: 'POST',
+	    				contentType: "application/json",
+	    				data: JSON.stringify({
+	    					  "user": {
+	    						  	"external_id": response.recv1[0].CUST_ID,
+	    						    "email": $("#custInfo_EMAIL").val(),
+	    						    "phone": $("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val(),
+	    						    "user_fields": 
+								    {
+								      "bonbu": $("#custInfo_UPDEPTNAME").val(),
+								      "dept" : $("#custInfo_DEPT_NAME").val(),
+								      "center" : $("#custInfo_LC_NAME").val(),
+								      "grade" : $("#custInfo_GRADE_CDE").find("option:selected").text(),
+								      "mobilno_mother" : $("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val(),
+								      "mobilno_father" : "",
+								      "mobile_legal" : $("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val(),
+								      "home_tel" : $("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val(),
+								      "custom_no" : $("#custInfo_CUST_ID").val(),
+								      "fml_connt_cde" : $("#custInfo_FAT_REL").val(),
+								      "fml_seq" : $("#custInfo_FAT_RSDNO").val().replace(/-/gi,""),
+								      "cust_mk" : $("#custInfo_CUST_MK").find("option:selected").text(),
+								      "tchr_mk_cde" : "",
+								      "sts_cde" : "",
+								    },
+/*	    						    "identities": [
+	    						      {
+	    						    	  "type": "phone_number",
+	    						    	  "value": $("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val()
+	    						    		  
+	    						      }
+	    						    ],
+*/	    						    "name": $("#custInfo_NAME").val(),
+	    						    "role": "end-user"
+	    						  }
+	    						}),
+	    			}
+	    			client.request(option).then(function() {
+	    				client.invoke("notify", "저장 되었습니다.", "notice", 5000);
+	    				onAutoSearch(response.recv1[0].CUST_ID);
+	    			});		// 사용자 생성
+  		
 	    	}else {
 	    		client.invoke("notify", response.errmsg, "error", 60000);
 	    	}
@@ -2113,4 +2240,3 @@ function setCustChangeData(){
     DS_CUST_CHG.nameValue(1,"MAIL_RCV_FLAG_OLD"  ) = (DS_CUST.OrgNameValue(1, "MAIL_RCV_FLAG"  )== "0" ? "Y" : "N");*/
     return returnObject;
 }
-

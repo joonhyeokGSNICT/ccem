@@ -1,0 +1,169 @@
+<!-- 
+	화면ID : CCEM-PRO-039
+		조회 - [팝업] SMS조회
+	AS-IS : [DBM3500] SMS 수신 리스트 조회
+
+	팝업사이즈
+		width: 1110, height: 710 
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[팝업] SMS조회</title>
+	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
+	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link rel="stylesheet" href="../css/ces_top.css">
+</head>
+<body>
+	<div class="container customBody mt-1">
+		<!-- navs -->
+		<div class="row">
+			<div class="col">
+				<ul class="nav nav-tabs">
+					<li class="nav-item"><a class="nav-link active" id="receive" data-toggle="tab" href="#recieveTab">수신</a></li>
+                    <li class="nav-item"><a class="nav-link" id="send" data-toggle="tab" href="#sendTab">발신</a></li>
+					<li class="nav-item"><a class="nav-link" id="personal" data-toggle="tab" href="#personalTab">개인별발신목록</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- tabs -->
+		<div class="container customBody rounded-lg border">
+			<div class="tab-content">
+				<!-- 수신 탭 -->
+				<div role="tabpanel" class="tab-pane fade active show" id="recieveTab">
+					<div class="row" style="background: #123f8a; height: 35px;">
+						<div class="col text-right">
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn" >조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn" onclick="">엑셀저장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
+						</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col-12">
+							<table class="table" style="background:#f1f5ff;">
+								<tr>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSCheck">수신일자
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+									</td>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">핸드폰
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
+									</td>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSNameCheck">메세지
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="4" autocomplete="off">
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane fade show" id="sendTab">
+					<div class="row" style="background: #123f8a; height: 35px;">
+						<div class="col text-right">
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn_send" >조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_send" onclick="">엑셀저장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
+						</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col-12">
+							<table class="table" style="background:#f1f5ff;">
+								<tr>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSCheck">발송일자
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+									</td>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">전화번호
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
+									</td>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSNameCheck">수신자
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="4" autocomplete="off">
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane fade show" id="personalTab">
+					<div class="row" style="background: #123f8a; height: 35px;">
+						<div class="col text-right">
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn_per" >조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_per" onclick="">엑셀저장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
+						</div>
+					</div>
+					<div class="row mt-1">
+						<div class="col-12">
+							<table class="table" style="background:#f1f5ff;">
+								<tr>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSCheck">발송일자
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+									</td>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">전화번호
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
+									</td>
+									<th class="tdCheck thCheck" colspan="">
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSNameCheck">수신자
+										</label>
+									</th>
+									<td colspan="">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="4" autocomplete="off">
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+					
+
+	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
+	<script src="../lib/toast-grid/js/tui-pagination.js"></script>
+	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/imask.js"></script>
+    <script src="../lib/moment.min.js"></script>
+	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../js/config.js"></script>
+	<script src="../js/ces_util.js"></script>
+	<script src="../js/pop_CCEMPRO039.js"></script>
+
+</body>
+</html>

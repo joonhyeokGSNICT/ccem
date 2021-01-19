@@ -111,8 +111,12 @@ $(function(){
 				],
 		});
 		counselMain_infoAgree_infoAgreeList_grid.on('click', (ev) => {
-			counselMain_infoAgree_infoAgreeList_grid.addSelection(ev);
-			counselMain_infoAgree_infoAgreeList_grid.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_infoAgree_infoAgreeList_grid.addSelection(ev);
+				counselMain_infoAgree_infoAgreeList_grid.clickSort(ev);
+				loadList('getTBCALLRST',counselMain_infoAgree_iaRecordList_grid, counselMain_infoAgree_infoAgreeList_grid.getRow(ev.rowKey).LIST_ID);
+			}
+			
 	    });
 		
 		// 개인정보동의 끝
@@ -135,7 +139,7 @@ $(function(){
 	        columns: [
 				{
 					header: '통화결과',
-					name: 'call_rst_mk_NM',
+					name: 'CALL_RST_MK_NM',
 					width: 95,
 					align: "center",
 					sortable: true,
@@ -143,7 +147,7 @@ $(function(){
 				},
 				{
 					header: '발신전화번호',
-					name: 'telpno',
+					name: 'TELPNO',
 					width: 115,
 					align: "center",
 					sortable: true,
@@ -151,8 +155,8 @@ $(function(){
 				},
 				{
 					header: '통화일',
-					name: 'call_date',
-					width: 90,
+					name: 'CALL_DATE',
+					width: 140,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -160,7 +164,7 @@ $(function(){
 				},
 				{
 					header: '통화시간',
-					name: 'call_time',
+					name: 'CALL_TIME',
 					width: 95,
 					align: "center",
 					sortable: true,
@@ -169,8 +173,7 @@ $(function(){
 				},
 				{
 					header: '발신자',
-					name: 'user_name',
-					width: 85,
+					name: 'USER_NAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -288,8 +291,11 @@ $(function(){
 				],
 		});
 		counselMain_infoAgree_termsVersion_grid.on('click', (ev) => {
-			counselMain_infoAgree_termsVersion_grid.addSelection(ev);
-			counselMain_infoAgree_termsVersion_grid.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_infoAgree_termsVersion_grid.addSelection(ev);
+				counselMain_infoAgree_termsVersion_grid.clickSort(ev);
+				loadList('getTBCALLRST',counselMain_infoAgree_termsRecordList_grid, counselMain_infoAgree_termsVersion_grid.getRow(ev.rowKey).LIST_ID);
+			}
 	    });
 		
 		// 약관버전 끝
@@ -310,9 +316,9 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				{
+	        	{
 					header: '통화결과',
-					name: 'call_rst_mk_NM',
+					name: 'CALL_RST_MK_NM',
 					width: 95,
 					align: "center",
 					sortable: true,
@@ -320,7 +326,7 @@ $(function(){
 				},
 				{
 					header: '발신전화번호',
-					name: 'telpno',
+					name: 'TELPNO',
 					width: 115,
 					align: "center",
 					sortable: true,
@@ -328,8 +334,8 @@ $(function(){
 				},
 				{
 					header: '통화일',
-					name: 'call_date',
-					width: 90,
+					name: 'CALL_DATE',
+					width: 140,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -337,7 +343,7 @@ $(function(){
 				},
 				{
 					header: '통화시간',
-					name: 'call_time',
+					name: 'CALL_TIME',
 					width: 95,
 					align: "center",
 					sortable: true,
@@ -346,8 +352,7 @@ $(function(){
 				},
 				{
 					header: '발신자',
-					name: 'user_name',
-					width: 85,
+					name: 'USER_NAME',
 					align: "center",
 					sortable: true,
 					ellipsis: true,
