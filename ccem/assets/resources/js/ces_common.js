@@ -196,3 +196,40 @@ function chkHPDDDNumber(ddd){
     }
     return false;
 }
+
+/**
+ * 기준값 조회
+ * @param {string} key
+ * @param {boolean} isGlobal Global Ajax Event Handlers 사용여부
+ */
+const getBasicList = (key, isGlobal = true) => new Promise((resolve, reject) => {
+	const settings = {
+		global: isGlobal,
+		url: `${API_SERVER}/sys.getBasicList.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}],
+		}),
+	}
+
+	$.ajax(settings)
+		.done(data => {
+			if(data.errcode != "0") return reject(new Error(data.errmsg));
+
+			const basicList = data.dsRecv;
+			if(basicList.length === 0) return reject(new Error("검색 결과가 없습니다."));
+
+			const basic = basicList.find(el => el.BSC_SCT == key);
+			if (!basic) return reject(new Error("검색 결과가 없습니다."));
+
+			return resolve(basic.BSC_VAL);
+		})
+		.fail(error => {
+			console.error(error);
+			return reject(isGlobal ? false : error);
+		});
+});

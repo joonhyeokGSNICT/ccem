@@ -186,48 +186,6 @@ const getRefundPrdt = (REFUND_SEQ) => {
 }
 
 /**
- * 기준값 조회 for DREAMS
- * @param {string} key
- */
-const getBasicList = (key) => new Promise((resolve, reject) => {
-	const settings = {
-		url: `${API_SERVER}/sys.getBasicList.do`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-			dsSend: [{}],
-		}),
-		errMsg: "기준값 조회 중 오류가 발생하였습니다.",
-	}
-
-	$.ajax(settings)
-		.done(data => {
-			if (!checkApi(data, settings)) return reject(settings.errMsg);
-
-			const basicList = data.dsRecv;
-			if(basicList.length === 0) {
-				alert(settings.errMsg);
-				return reject(settings.errMsg);
-			}
-
-			const basic = basicList.find(el => el.BSC_SCT == key);
-			if (!basic) {
-				alert(settings.errMsg);
-				return reject(settings.errMsg);
-			}
-
-			return resolve(basic.BSC_VAL);
-		})
-		.fail(error => {
-			console.error(error);
-			return reject(settings.errMsg);
-		});
-});
-
-/**
  * key에 따라 해당하는 팝업 띄우기
  * @param {string} key 
  */
@@ -237,10 +195,16 @@ const openPopup = async (key) => {
 			PopupUtil.open("CCEMPRO046", 980, 600);
 			break;
 		case "DREAMS":
-			const sId 		= currentUser.external_id;
-			const basUrl 	= await getBasicList("7");
-			const sUrl 		= `${basUrl}?zsite=ES&zlogin_id=${sId}&zpasswd=${sId}&move=drop`;
-			window.open(sUrl,'Refund');	// IE Tab 사용을 위해 새탭에서 실행
+			getBasicList("7")
+				.then(data => {
+					const basUrl = data;
+					const sId 	 = currentUser.external_id;
+					const sUrl   = `${basUrl}?zsite=ES&zlogin_id=${sId}&zpasswd=${sId}&move=drop`;
+					window.open(sUrl, 'Refund');	// IE Tab 사용을 위해 팝업이 아닌 새탭에서 실행
+				})
+				.catch(error => {
+					if(error) alert(`기준값 조회 중 오류가 발생하였습니다.\n\n${error}`);
+				});
 			break;
 		default:
 			break;
