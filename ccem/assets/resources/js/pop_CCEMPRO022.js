@@ -751,7 +751,7 @@ const createTicket = async () => {
 				subject			: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",	 // 제목
 				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], 	 // 양식 : 상담문의 고정
 				requester_id	: user_id,  				// 젠데스크 고객번호
-				assignee_id		: currentUser.external_id,	// 젠데스크 상담원번호
+				assignee_id		: currentUser.id,	// 젠데스크 상담원번호
 				status			: "open",					// 젠데스크 티켓 상태
 				tags            : ["AUTO_FROM_CCEM"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
 				comment: {
@@ -771,7 +771,7 @@ const createTicket = async () => {
  * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
  * @param {obejct} obData OB관련 데이터
  */
-const updateTicket = (counselData, addInfoData, obData) => {
+const updateTicket = async (counselData, addInfoData, obData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
 
@@ -872,9 +872,7 @@ const updateTicket = (counselData, addInfoData, obData) => {
 			}
 		}),
 	}
-	topbarClient.request(option)
-		.then(d => console.debug("Update ticket then: ", d))
-		.catch(e => console.error("Update ticket catch: ", e));
+	await topbarClient.request(option);
 }
 
 /**
@@ -883,7 +881,7 @@ const updateTicket = (counselData, addInfoData, obData) => {
  * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
  * @param {obejct} obData OB관련 데이터
  */
-const setTicket = (counselData, addInfoData, obData) => {
+const setTicket = async (counselData, addInfoData, obData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
 
@@ -976,12 +974,8 @@ const setTicket = (counselData, addInfoData, obData) => {
 	}
 	
 	// 티켓필드 입력
-	sidebarClient.set(req)
-		.then(d => console.debug("sidebarClient.set(req) then: ", d))
-		.catch(e => console.error("sidebarClient.set(req) catch: ", e));
-	sidebarClient.invoke('comment.appendText', counselData.CSEL_CNTS)
-		.then(d => console.debug("setTisidebarClient.invoke('comment.appendText') then: ", d))
-		.catch(e => console.error("sidebarClient.invoke('comment.appendText') catch: ", e));
+	await sidebarClient.set(req);
+	await sidebarClient.invoke('comment.appendText', counselData.CSEL_CNTS);
 	
 }
 
@@ -1056,7 +1050,7 @@ const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
 			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
 			return resolve(data.dsRecv[0]);
 		})
-		.fail(error => reject(new Error(error)));
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
 
 /**
@@ -1275,7 +1269,7 @@ const saveCounsel = async () => {
 	
 		// 티켓 업데이트
 		counselData.CSEL_NO = resSaveCCEM.CSEL_NO;
-		updateTicket(counselData, addInfoData, obData);
+		await updateTicket(counselData, addInfoData, obData);
 
 	////////////////////////////////////////// 추가등록 또는 관계회원 수정 ////////////////////////////////////////
 	} else if (sJobType == "U" && selectedSeq > 1) {
@@ -1284,7 +1278,7 @@ const saveCounsel = async () => {
 		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
 
 		// 티켓 업데이트
-		updateTicket(counselData, addInfoData, obData);
+		await updateTicket(counselData, addInfoData, obData);
 		
 	///////////////////////////////////////////////////// 수정 //////////////////////////////////////////////////
 	} else if (sJobType == "U") {
@@ -1311,7 +1305,7 @@ const saveCounsel = async () => {
 		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
 
 		// 티켓필드 입력
-		setTicket(counselData, addInfoData, obData);
+		await setTicket(counselData, addInfoData, obData);
 	
 	///////////////////////////////////////////////////// 신규 //////////////////////////////////////////////////
 	} else if (sJobType == "I") {	
@@ -1334,7 +1328,7 @@ const saveCounsel = async () => {
 
 		// 티켓필드 입력
 		counselData.CSEL_NO = resSaveCCEM.CSEL_NO;
-		setTicket(counselData, addInfoData, obData);
+		await setTicket(counselData, addInfoData, obData);
 
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
@@ -1733,7 +1727,7 @@ const saveCCEM = async (counselData, addInfoData, obData) => new Promise((resolv
 			return resolve(data.dsRecv[0]);
 
 		})
-		.fail(error => reject(new Error(error)));
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 
 });
 
@@ -1810,7 +1804,7 @@ const getSaveChk = (custId) => new Promise((resolve, reject) => {
 
 			return resolve(data.dsRecv);
 		})
-		.fail(error => reject(new Error(error)));
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
 
 /**
