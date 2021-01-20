@@ -38,7 +38,7 @@
 </head>
 <body>
 	<!-- #1 주소찾기 왼쪽 -->
-	<div class="leftSide" style="width:57%;padding:16px 8px 16px 16px;">
+	<div class="leftSide" style="width:57%;padding:16px 8px 16px 16px;" id="leftSide">
 		<div style="width:100%; height:41%">
 			<div class="input-group input-group-sm" style="width:100%;">
 				<div class="input-group-prepend">
@@ -80,7 +80,7 @@
 		</div>
 	</div>
 	<!-- #2 주소찾기 오른쪽-->
-	<div class="rightSide" style="width:43%;padding:16px 16px 16px 8px; height: 100%">
+	<div class="rightSide" style="width:43%;padding:16px 16px 16px 8px; height: 100%" id="rightSide">
 		<div style="width:100%;">
 			<div class="input-group input-group-sm" style="width:100%;">
 				<div class="input-group-prepend">
@@ -203,10 +203,17 @@
 				<div id="chooseAddrGrid" style="float:left;margin-top: -9px; width:100%;"></div>
 			</div>
 			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; float:right" value="닫기"  onclick="window.close()">
-			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; float:right; margin-right: 5px;" value="선택" id="">
+			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; float:right; margin-right: 5px;" value="선택" onclick="sendAddr();">
 		</div>
 	</div>
 
+	<input type="hidden" id="AREA_CDE_input">
+	<input type="hidden" id="AREA_NAME_input">
+	<input type="hidden" id="DEPT_ID_input">
+	<input type="hidden" id="DIV_CDE_input">
+	<input type="hidden" id="LC_ID_input">
+	<input type="hidden" id="TELNO_input">
+	<input type="hidden" id="TELNO_LC_input">
 	
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>

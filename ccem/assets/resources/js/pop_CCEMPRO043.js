@@ -7,6 +7,17 @@
  */
 
 
+/**
+ * Mode설정
+ * @param _mode 
+ * 		  = customer        : 고객 주소 찾기 팝업시 / 고객의 정보를 업데이트 해주는 기능 / 사업국 및 센터를 선택하지 않은 경우 주소만 보내준다.
+ *        = org             : 상담등록 주소 팝업시  / 사업국의 정보를 찾아주는 기능 / 더블클릭으로 해당 정보 전송
+ */
+var _mode = "customer";
+
+if ( opener.name == 'CCEMPRO022' ) _mode ="org";
+else if ( opener.name == 'app_CCEM_top_bar_38e2ab2c-665c-4ac5-be58-65f649da8317') _mode="customer";
+
 var _addrGrid;
 var _orgBcdGrid;
 var _orgCenterGrid;
@@ -14,6 +25,18 @@ var _chooseAddrGrid;
 
 function init(){
 	
+	// 모드에 따른 화면 제거
+	switch (_mode){
+		case "customer" :
+			
+			break;
+		case "org" : 
+			$('#rightSide').addClass('d-none');
+			$("#leftSide").attr("style","width:100%;padding:16px;");
+			window.resizeTo(700,700);
+			break;
+	}
+
 	// 우편번호 LIST
 	_addrGrid = new Grid({
 		el: document.getElementById('addrGrid'),
@@ -117,9 +140,38 @@ function init(){
 				sortable: true,
 				ellipsis: true,
 				width: 500
-			}
+			},
+			{
+				header: '지역구분',
+				name: 'AREA_CDE',
+			},
+			{
+				header: '지역명',
+				name: 'AREA_NAME',
+			},
+			{
+				header: '사업국ID',
+				name: 'DEPT_ID',
+			},
+			{
+				header: '본부ID',
+				name: 'DIV_CDE',
+			},
+			{
+				header: '전화번호',
+				name: 'TELNO',
+			},
 		],
+		
 	});
+
+	// 숨김 처리할 컬럼들
+	_orgBcdGrid.hideColumn("AREA_CDE"); 
+	_orgBcdGrid.hideColumn("AREA_NAME"); 
+	_orgBcdGrid.hideColumn("DEPT_ID"); 
+	_orgBcdGrid.hideColumn("DIV_CDE"); 
+	_orgBcdGrid.hideColumn("TELNO"); 
+
 	_orgBcdGrid.on('click', (ev) => {
 		_orgBcdGrid.addSelection(ev);
 		_orgBcdGrid.clickSort(ev);
@@ -128,7 +180,34 @@ function init(){
 		$('#orgBcd_NAME').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DIV_NAME"));
 		$('#orgCenter_NAME').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
 		$('#orgDetail_NAME').val("");
+
+		$('#AREA_CDE_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "AREA_CDE"));
+		$('#AREA_NAME_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "AREA_NAME"));
+		$('#DEPT_ID_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DEPT_ID"));
+		$('#DIV_CDE_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DIV_CDE"));
+		$('#LC_ID_input').val("");
+		$('#TELNO_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "TELNO"));
+		$('#TELNO_LC_input').val("");
 	});
+
+	if ( _mode == "org"){
+		_orgBcdGrid.on("dblclick", (ev) => {
+			const rowData = _orgBcdGrid.getRow(ev.rowKey);
+			console.log(rowData);
+			/**
+				AREA_CDE : 	지역구분,
+				AREA_NAME : 지역명,
+				DIV_NAME : 	본부명,
+				DIV_CDE : 	본부ID,
+				DEPT_NAME : 사업국명,
+				DEPT_ID : 사업국ID,
+				TELNO : 사업국전화번호
+				ZIP_CNTS : 관할지역내용,
+			 */
+			// window.close();
+		});
+	}
+	
 	
 	// 센터목록 LIST
 	_orgCenterGrid = new Grid({
@@ -174,10 +253,49 @@ function init(){
 				sortable: true,
 				ellipsis: true,
 				width: 500
-			}
+			},
+			
+			{
+				header: '지역구분',
+				name: 'AREA_CDE',
+			},
+			{
+				header: '지역명',
+				name: 'AREA_NAME',
+			},
+			{
+				header: '사업국ID',
+				name: 'DEPT_ID',
+			},
+			{
+				header: '본부ID',
+				name: 'DIV_CDE',
+			},
+			{
+				header: '지점ID',
+				name: 'LC_ID',
+			},
+			{
+				header: '지점전화번호',
+				name: 'TELNO',
+			},
+			{
+				header: 'LC전화번호',
+				name: 'TELNO_LC',
+			},
 			
 		],
 	});
+
+	// 숨김 처리할 컬럼들
+	_orgCenterGrid.hideColumn("AREA_CDE"); 
+	_orgCenterGrid.hideColumn("AREA_NAME"); 
+	_orgCenterGrid.hideColumn("DEPT_ID"); 
+	_orgCenterGrid.hideColumn("DIV_CDE"); 
+	_orgCenterGrid.hideColumn("LC_ID"); 
+	_orgCenterGrid.hideColumn("TELNO"); 
+	_orgCenterGrid.hideColumn("TELNO_LC"); 
+
 	_orgCenterGrid.on('click', (ev) => {
 		_orgCenterGrid.addSelection(ev);
 		_orgCenterGrid.clickSort(ev);
@@ -186,7 +304,36 @@ function init(){
 		$('#orgBcd_NAME').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DIV_NAME"));
 		$('#orgCenter_NAME').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
 		$('#orgDetail_NAME').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "LC_NAME"));
+		$('#AREA_CDE_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "AREA_CDE"));
+		$('#AREA_NAME_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "AREA_NAME"));
+		$('#DEPT_ID_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DEPT_ID"));
+		$('#DIV_CDE_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DIV_CDE"));
+		$('#LC_ID_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "LC_ID"));
+		$('#TELNO_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "TELNO"));
+		$('#TELNO_LC_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "TELNO_LC"));
     });
+	
+	if ( _mode == "org"){
+		_orgCenterGrid.on("dblclick", (ev) => {
+			const rowData = _orgCenterGrid.getRow(ev.rowKey);
+			console.log(rowData);
+			/**
+			 * 	AREA_CDE : 	지역구분,
+				AREA_NAME : 지역명,
+				DIV_NAME : 	본부명,
+				DIV_CDE : 	본부ID,
+				DEPT_NAME : 사업국명,
+				DEPT_ID : 사업국ID,
+				TELNO : 사업국전화번호
+				LC_NAME : 센터명,
+				LC_ID : 센터ID,
+				TELNO_LC : 센터전화번호,
+				ZIP_CNTS : 관할지역내용
+			 */
+			// window.close();
+		});
+	}
+	
 
 	// 선택할 주소
 	_chooseAddrGrid = new Grid({
@@ -391,13 +538,18 @@ const _getAddrList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				// console.log("branchAddrList값",response.dsRecv);
+				console.log("branchAddrList값",response.dsRecv);
 				var temp = response.dsRecv;
 				temp = temp.map(el => {
 					return {
 						DIV_NAME : 	el.DIV_NAME,
 						DEPT_NAME : el.DEPT_NAME,
-						ZIP_CNTS : el.ZIP_CNTS
+						ZIP_CNTS : el.ZIP_CNTS,
+						AREA_CDE : 	el.AREA_CDE,
+						AREA_NAME : el.AREA_NAME,
+						DEPT_ID : el.DEPT_ID,
+						DIV_CDE : 	el.DIV_CDE,
+						TELNO : el.TELNO
 					};
 				});
 				_orgBcdGrid.resetData(temp);
@@ -425,14 +577,21 @@ const _getAddrList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				// console.log("centerAddrList값",response.dsRecv);
+				console.log("centerAddrList값",response.dsRecv);
 				var temp = response.dsRecv;
 				temp = temp.map(el => {
 					return {
 						DIV_NAME : 	el.DIV_NAME,
 						DEPT_NAME : el.DEPT_NAME,
 						LC_NAME : el.LC_NAME,
-						ZIP_CNTS : el.ZIP_CNTS
+						ZIP_CNTS : el.ZIP_CNTS,
+						AREA_CDE : 	el.AREA_CDE,
+						AREA_NAME : el.AREA_NAME,
+						DEPT_ID : el.DEPT_ID,
+						DIV_CDE : 	el.DIV_CDE,
+						LC_ID : 	el.LC_ID,
+						TELNO : el.TELNO,
+						TELNO_LC : el.TELNO_LC
 					};
 				});
 				_orgCenterGrid.resetData(temp);
@@ -547,6 +706,47 @@ $('#addrZipAddr2_input').keyup(function(){
 function isEmpty(data) {
 	if (!data || data == "" || data == undefined || Object.keys(data).length === 0 ) return true;
 	else return false;
+}
+
+/**
+ * sendAddr()
+ */
+function sendAddr() {
+	var temp = {};
+	var responseData = {};
+	if ( $('#flexRadioDefault1').prop("checked")==true ) {
+		temp.POST_NO = $('#typedPostNo').val();
+		temp.ADDR_MAIN = $('#typedAddr1').val();
+		temp.ADDR_SUB = $('#typedAddr2').val();
+	} else if ( $('#flexRadioDefault2').prop("checked")==true ) {
+		temp.POST_NO = $('#jibunPostNo').val();
+		temp.ADDR_MAIN = $('#jibunAddr1').val();
+		temp.ADDR_SUB = $('#jibunAddr2').val();
+	} else if ( $('#flexRadioDefault3').prop("checked")==true ) {
+		temp.POST_NO = $('#doroPostNo').val();
+		temp.ADDR_MAIN = $('#doroAddr1').val();
+		temp.ADDR_SUB = $('#doroAddr2').val();
+	}
+	responseData.ADDR = temp;
+	temp = {};
+	temp.DIV_NAME =	$('#orgBcd_NAME').val();
+	temp.DEPT_NAME = $('#orgCenter_NAME').val();
+	temp.LC_NAME = $('#orgDetail_NAME').val();
+	temp.AREA_CDE = $('#AREA_CDE_input').val();
+	temp.AREA_NAME = $('#AREA_NAME_input').val();
+	temp.DEPT_ID = $('#DEPT_ID_input').val();
+	temp.DIV_CDE = $('#DIV_CDE_input').val();
+	temp.LC_ID = $('#LC_ID_input').val();
+	temp.TELNO = $('#TELNO_input').val();
+	temp.TELNO_LC =	$('#TELNO_LC_input').val();
+	responseData.org = temp;
+
+	/**
+	 * 전송할 데이터
+	 * @param org    : 선택한 본부/사업국/지점 정보
+	 * @param member : 선택된 구성원(직원) 정보 
+	 */
+	console.log("CCEMPRO043 전송 데이터 >> ",responseData);
 }
 
 init();
