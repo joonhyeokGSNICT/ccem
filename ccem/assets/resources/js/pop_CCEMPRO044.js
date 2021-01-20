@@ -20,12 +20,19 @@ var _isEmpSearch; 		// 구성원 검색 시 (Ajax통신 사용)
 /**
  * Mode설정
  * @param _mode 
- * 		  = chkTree        : 트리구조 체크 / 구성원 검색 X / 구성원 체크 X / 선택시 조직  리스트 전송 / 웹설문 페이지에서 활용
- *        = plainTree      : 트리구조 일반 / 구성원 검색 O / 구성원 체크 O / 선택시 구성원리스트 전달 / 현장, 상담, 소개연계 페이지에서 활용
- *        = plainTreeNoEmp : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 없음          / 조직관할구역 페이지 활용
- *        = search         : 트리구조 일반 / 구성원 검색 O / 구성원 체크 X / 선택 버튼 없음          /
+ * 		  = chkTree         : 트리구조 체크 / 구성원 검색 X / 구성원 체크 X / 선택시 조직  리스트 전송 / 웹설문 페이지에서 활용
+ *        = plainTree       : 트리구조 일반 / 구성원 검색 O / 구성원 체크 O / 선택시 구성원리스트 전달 / 현장, 상담, 소개연계 페이지에서 활용
+ *        = plainTreeNoEmp  : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 X             / 조직관할구역 페이지 활용
+ *        = plainTreeSelOrg : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 O             / 본부/사업국/센터 선택시
+ *        = search          : 트리구조 일반 / 구성원 검색 O / 구성원 체크 X / 선택 버튼 X             / 탑바에서 본부/사업국/센터 페이지
  */
-var _mode = "plainTree"
+var _mode = "plainTree";
+
+if ( opener.name == 'CCEMPRO022' ) _mode ="plainTreeSelOrg";
+else if ( opener.name == 'CCEMPRO028' ) _mode ="plainTree";
+// else if ( opener.name == 'app_CCEM_top_bar_38e2ab2c-665c-4ac5-be58-65f649da8317') _mode="search";
+
+
 var _modeSelect = {
 	chkTree : {
 		treeCheckBox : true,
@@ -36,6 +43,10 @@ var _modeSelect = {
 		rowHeaders : [{ type: 'checkbox', header: "", minWidth: 30, },{ type: 'rowNum', header: "NO", }],
 	},
 	plainTreeNoEmp : {
+		treeCheckBox : false,
+		rowHeaders : [{ type: 'rowNum', header: "NO", }],
+	},
+	plainTreeSelOrg : {
 		treeCheckBox : false,
 		rowHeaders : [{ type: 'rowNum', header: "NO", }],
 	},
@@ -167,9 +178,8 @@ function init(){
 		activate: function(event, data) {
 			// $("#statusLine").text(event.type + ": " + data.node);
 			// console.log(event, data, ", targetType=" + data.targetType);
-			_selectedNode = data.node.data;
+			_selectedNode = data.node;
 			console.log("_selectedNode >> ", _selectedNode)
-			console.log("_selectedNode >> ", data)
 			// console.log("data.node >> ", data.node)
 
 			// 본부/사업국/센터 정보창 변경
@@ -324,6 +334,22 @@ function init(){
 			$("#searchBox").children().eq(2).attr("style","width:61%")
 			$("#searchBox").children().eq(3).attr("style","width:14%")
 			break;
+		case "plainTreeSelOrg" :
+			$("#counselSel_btn").addClass('invisible');
+			$("#counselDeSel_btn").addClass('invisible');
+			$("#counselSave_btn").addClass('d-none');
+			// $("#counselSend_btn").attr("style","float:right; margin:0px 1rem 0px 0px;");
+			$("#memSearch").closest('div').addClass('d-none');
+			$("#employee").closest('li').addClass('d-none');
+			$("#searchEmp_chk").closest('div').addClass('d-none');
+			$("#searchEmp_selectbox").closest('div').addClass('d-none');
+
+			// 상단 검색 UI변경
+			$("#searchBox").children().eq(0).attr("style","width:14%")
+			$("#searchBox").children().eq(1).attr("style","width:11%")
+			$("#searchBox").children().eq(2).attr("style","width:61%")
+			$("#searchBox").children().eq(3).attr("style","width:14%")
+			break;
 		case "search" :
 			$("#counselSel_btn").addClass('invisible');
 			$("#counselDeSel_btn").addClass('invisible');
@@ -356,7 +382,7 @@ const _getList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("orgList값 >> ",response.dsRecv);
+				// console.log("orgList값 >> ",response.dsRecv);
 				var templist = response.dsRecv;
 				for(index in templist) {
 					templist[index].title = templist[index].DEPT_NAME;
@@ -381,7 +407,7 @@ const _getList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("orgList값 >> ",response.dsRecv);
+				// console.log("orgList값 >> ",response.dsRecv);
 				var templist = response.dsRecv;
 				for(index in templist) {
 					templist[index].title = templist[index].DEPT_NAME;
@@ -429,7 +455,7 @@ const _getList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("tchrMkCDEList >> ",response.dsRecv);
+				// console.log("tchrMkCDEList >> ",response.dsRecv);
 				_tchrMkCDEList = response.dsRecv;
 			}, error: function (response) {
 			}
@@ -457,7 +483,7 @@ const _getList = {
 				contentType: "application/json",
 				data: JSON.stringify(param),
 				success: function (response) {
-					console.log("boundAddrList >> ",response.dsRecv);
+					// console.log("boundAddrList >> ",response.dsRecv);
 					resolve(response.dsRecv);
 				}, error: function (response) {
 				}
@@ -480,7 +506,7 @@ const _getList = {
 				contentType: "application/json",
 				data: JSON.stringify(param),
 				success: function (response) {
-					console.log("saveZIPCNTS >> ");
+					// console.log("saveZIPCNTS >> ");
 					resolve();
 				}, error: function (response) {
 				}
@@ -656,7 +682,7 @@ const _sortList = {
 		// 구성원 검색 시 : 트리구조 필터 적용
 		if (_isEmpSearch) {
 			var nameTempList = removeDuplicates(temp, "ORG_NAME");
-			console.log(nameTempList);
+			// console.log(nameTempList);
 			var code = '';
 			for ( index in nameTempList ) {
 				if ( nameTempList[index].LV == "1" ){
@@ -674,7 +700,7 @@ const _sortList = {
 			
 			_openOrgList.filter(data => data.DEPT_NAME == '3' );
 
-			console.log(code);
+			// console.log(code);
 			tree.filterNodes( 
 				function(node) {
 					if ( !isEmpty(node.data.DEPT_NAME) ) {
@@ -738,9 +764,9 @@ const _btn = {
 				sendLv3.push(lv3List[index].DEPT_ID);
 			} 
 				
-			console.log("lv1 List >> ",sendLv1);
-			console.log("lv2 List >> ",sendLv2);
-			console.log("lv3 List >> ",sendLv3);
+			// console.log("lv1 List >> ",sendLv1);
+			// console.log("lv2 List >> ",sendLv2);
+			// console.log("lv3 List >> ",sendLv3);
 
 			
 
@@ -766,13 +792,58 @@ const _btn = {
 				};
 			});
 
+			var orgList = {};
+			if ( _selectedNode.data.LV =="3" ) {
+				orgList.UP_DEPT = _selectedNode.parent.parent.data;
+				orgList.PARE_DEPT = _selectedNode.parent.data;
+				orgList.LC_DEPT = _selectedNode.data;
+				orgList.LV = _selectedNode.data.LV;
+			} else if ( _selectedNode.data.LV =="2" ) {
+				orgList.UP_DEPT = _selectedNode.parent.data;
+				orgList.PARE_DEPT = _selectedNode.data;
+				orgList.LC_DEPT = "";
+				orgList.LV = _selectedNode.data.LV;
+			} else {
+				orgList.UP_DEPT = _selectedNode.data;
+				orgList.PARE_DEPT = "";
+				orgList.LC_DEPT = "";
+				orgList.LV = _selectedNode.data.LV;
+			}
+
 			/**
 			 * 전송할 데이터
 			 * @param org    : 선택한 본부/사업국/지점 정보
 			 * @param member : 선택된 구성원(직원) 정보 
 			 */
-			var responseData = [{ org : _selectedNode , member : tempGrid }]
-			console.log(responseData);
+			var responseData = [{ org : orgList , member : tempGrid }]
+			console.log("CCEMPRO044 전송 데이터 >> ",responseData);
+		} else if ( _mode =="plainTreeSelOrg") {
+			
+			var orgList = {};
+			if ( _selectedNode.data.LV =="3" ) {
+				orgList.UP_DEPT = _selectedNode.parent.parent.data;
+				orgList.PARE_DEPT = _selectedNode.parent.data;
+				orgList.LC_DEPT = _selectedNode.data;
+				orgList.LV = _selectedNode.data.LV;
+			} else if ( _selectedNode.data.LV =="2" ) {
+				orgList.UP_DEPT = _selectedNode.parent.data;
+				orgList.PARE_DEPT = _selectedNode.data;
+				orgList.LC_DEPT = "";
+				orgList.LV = _selectedNode.data.LV;
+			} else {
+				orgList.UP_DEPT = _selectedNode.data;
+				orgList.PARE_DEPT = "";
+				orgList.LC_DEPT = "";
+				orgList.LV = _selectedNode.data.LV;
+			}
+
+			/**
+			 * 전송할 데이터
+			 * @param org    : 선택한 본부/사업국/지점 정보
+			 * @param member : 선택된 구성원(직원) 정보 
+			 */
+			var responseData = [{ org : orgList }]
+			console.log("CCEMPRO044 전송 데이터 >> ",responseData);
 		}
 	},
 
@@ -827,7 +898,7 @@ const _btn = {
 						if ( index == resolvedData.length-1 ) code += 'node.data.DEPT_ID.indexOf(\''+resolvedData[index].DEPT_ID+'\') > -1'
 						else code += 'node.data.DEPT_ID.indexOf(\''+resolvedData[index].DEPT_ID+'\') > -1 || '
 					}
-					console.log(code);
+					// console.log(code);
 					tree.filterNodes( 
 						function(node) {
 							if ( !isEmpty(node.data.DEPT_ID) ) {
@@ -879,7 +950,7 @@ const _btn = {
 			if ( $('#includeClosed').prop("checked")==true ) param[0].ACTIVE_FLAG = "N";
 			else param[0].ACTIVE_FLAG = "Y";
 
-			console.log(param);
+			// console.log(param);
 			if ( $('#searchEmpOrgNM_chk').prop("checked")==false && $('#searchEmpNM_chk').prop("checked")==false  ) {
 				alert("항목을 체크하고 검색값을 입력해주세요.");
 				if  ( isEmpty($('#searchEmpOrgNM_input').val())) $('#searchEmpOrgNM_input').focus();
@@ -933,8 +1004,8 @@ const _btn = {
 			return false;
 		}
 		var node = tree.getActiveNode();
-		console.log(param);
-		console.log(node.key);
+		// console.log(param);
+		// console.log(node.key);
 		_getList.saveZIPCNTS(param).then(function() {
 			_getList.orgList();
 			tree.activateKey(node.key);
