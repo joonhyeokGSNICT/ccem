@@ -719,6 +719,18 @@ function getLoadingSet(title) {
 	}
 }
 
+const getErrMsg = (statusText) => {
+    let errMsg = "";
+    if (statusText === "timeout") {
+        errMsg = "API서버 통신이 원활하지 않습니다. 잠시 후에 다시 시도해 주세요.";
+    } else if (statusText === "error") {
+        errMsg = "API서버에 연결할 수 없습니다. 사용자 네트워크 연결이 불안정 하거나, 방화벽 등에 의해 API사용이 차단된 환경일 수 있습니다. 이 오류가 반복되면 네트워크 관리자에게 문의하세요.";
+    } else {
+        errMsg = statusText;
+    }
+    return errMsg;
+}
+
 // Global Ajax Event Handlers
 $(this).ajaxStart(function () {
 	loading = new Loading(getLoadingSet());
@@ -731,15 +743,7 @@ $(this).ajaxStart(function () {
 $(this).ajaxError((event, jqxhr, settings, thrownError) => {
     const statusText = jqxhr.statusText;
     let errMsg = "[CCEM] " + (settings.errMsg || "서버에서 오류가 발생하였습니다.") + "<br><br>";
-
-    if (statusText === "timeout") {
-        errMsg += "API서버 통신이 원활하지 않습니다. 잠시 후에 다시 시도해 주세요.";
-    } else if (statusText === "error") {
-        errMsg += "API서버에 연결할 수 없습니다. 사용자 네트워크 연결이 불안정 하거나, 방화벽 등에 의해 API사용이 차단된 환경일 수 있습니다. 이 오류가 반복되면 네트워크 관리자에게 문의하세요.";
-    } else {
-        errMsg += statusText;
-    }
-
+    errMsg += getErrMsg(statusText);
     errMsg += "<br><br>" + settings.url;
 
     if (typeof client != "undefined") {
