@@ -1078,36 +1078,76 @@ const createUser = async (data) => {
 	const gradeNm = findCodeName("GRADE_CDE", data.GRADE_CDE);
 	const fatRelNm = findCodeName("FAT_REL", data.FAT_REL);
 
-	// create user field
-	const user_fields = {
-		bonbu				: data.UPDEPTNAME,	// 본부
-		dept				: data.DEPT_NAME,	// 사업국	
-		center				: data.LC_NAME,		// 센터
-		grade				: gradeNm,			// 학년	
-		mobilno_mother		: mobilnoMbr,		// 휴대폰번호(엄마)	
-		mobilno_father		: mobilnoFat,		// 휴대폰번호(아빠)
-		mobile_legal		: mobilnoLaw,		// 휴대폰번호(법정대리인)	
-		home_tel			: telpno,			// 자택 전화번호
-		custom_no			: data.MBR_ID,		// 회원번호	
-		fml_connt_cde		: fatRelNm,			// 가족관계
-		fml_seq				: data.FAT_RSDNO,	// 관계번호
-		cust_mk				: custMk,			// 고객구분
-	}
+	// get organization_id
+	const orgId = await checkOrg(telpno, data.FAT_RSDNO);
 	
-	// request create user
+	// create user
     const option = {
 		url: '/api/v2/users',
 		method: 'POST',
 		contentType: "application/json",
 		data: JSON.stringify({
 			user: {
-				name		: data.NAME,	// 고객명
-				external_id	: data.CUST_ID,	// 고객번호
-				user_fields,				// 사용자필드
+				name				: data.NAME,			// 고객명
+				external_id			: data.CUST_ID,			// 고객번호
+				organization_id		: orgId,				// 조직ID
+				role				: "end-user",			// 최종 사용자로 통일
+				email				: data.EMAIL,			// 이메일
+				phone				: data.MOBILNO,			// 핸드폰번호
+				user_fields	: {
+					bonbu				: data.UPDEPTNAME,	// 본부
+					dept				: data.DEPT_NAME,	// 사업국	
+					center				: data.LC_NAME,		// 센터
+					grade				: gradeNm,			// 학년	
+					mobilno_mother		: mobilnoMbr,		// 휴대폰번호(엄마)	
+					mobilno_father		: mobilnoFat,		// 휴대폰번호(아빠)
+					mobile_legal		: mobilnoLaw,		// 휴대폰번호(법정대리인)	
+					home_tel			: telpno,			// 자택 전화번호
+					custom_no			: data.MBR_ID,		// 회원번호	
+					fml_connt_cde		: fatRelNm,			// 가족관계
+					fml_seq				: data.FAT_RSDNO,	// 관계번호
+					cust_mk				: custMk,			// 고객구분
+				}
 			},
 		}),
 	}
 	return await topbarClient.request(option);
+}
+
+/**
+ * 사용자생성 전 조직이 있는지 체크하고 없으면 생성.
+ * @param {string} TELNO 	 자택번호
+ * @param {string} FAT_RSDNO 관계번호
+ * @return {number} organization_id
+ */
+const checkOrg = async (TELNO, FAT_RSDNO) => {
+
+	let orgId = "";
+
+	// get organization_id
+	if (FAT_RSDNO) {
+		const { organizations } = await topbarClient.request(`/api/v2/organizations/search?external_id=${FAT_RSDNO}`);
+		orgId = (organizations.length > 0) ? organizations[0].id : "";
+	}
+
+	// create organization
+	if (!orgId && TELNO && FAT_RSDNO) {
+		const option = {
+			url: '/api/v2/organizations/create_or_update',
+			method: 'POST',
+			contentType: "application/json",
+			data: JSON.stringify({
+				organization: {
+					name		: `${TELNO}_${FAT_RSDNO}`,	// 자택번호_관계번호
+					external_id : FAT_RSDNO,				// 관계번호
+				},
+			}),
+		}
+		const { organization } = await topbarClient.request(option);
+		orgId = organization.id;
+	}
+
+	return orgId;
 }
 
 /**
