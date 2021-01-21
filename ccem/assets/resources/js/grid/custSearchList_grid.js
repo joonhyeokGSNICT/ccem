@@ -327,6 +327,7 @@ $(function(){
 		if(ev.targetType == "cell"){
 			teacherSearchList_grid.addSelection(ev);
 			teacherSearchList_grid.clickSort(ev);
+			initAll();	// 기존 정보 초기화
 			onAutoSearchTeacher(teacherSearchList_grid.getRow(ev.rowKey).EMP_ID);
 		}
     });

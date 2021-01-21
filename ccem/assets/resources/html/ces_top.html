@@ -1067,47 +1067,37 @@
 										<tr>
 											<th>성 명</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" autocomplete='off'>
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_NAME" readonly>
 											</td>
 											<th>사번</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_EMP_ID" readonly>
 											</td>
 										</tr>
 										<tr>
 											<th>주민번호</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_RSDNO" readonly>
 											</td>
 											<th>생년월일</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_BIRTH_DATE" readonly>
 											</td>
 										</tr>
 										<tr>
 											<th>결혼일자</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_WED_DATE" readonly>
 											</td>
-											<th>종교</th>
+											<th>휴대폰</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_MOBILNO" readonly>
 											</td>
 										</tr>
 										<tr>
 											<th>자택</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
-											</td>
-											<th>휴대폰</th>
-											<td>
-												<input type="text" class="form-control form-control-sm">
-											</td>
-										</tr>
-										<tr style="width: 50%;">
-											<th>최종학력</th>
-											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_HOME_TEL" readonly>
 											</td>
 										</tr>
 									</table>
@@ -1123,98 +1113,88 @@
 												선생님<br>구분/직급
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_TCHR_RANK_NM" readonly>
 											</td>
 											<th class="dblineth">
 												선생님<br>자격/직책
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_DUTY_NM" readonly>
 											</td>
 										</tr>
 										<tr>
 											<th>입사일자</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_WORK_STDATE" readonly>
 											</td>
 											<th class="dblineth">
 												해지/<br>퇴직일자
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_WORK_EDDATE" readonly>
 											</td>
 										</tr>
 										<tr>
-											<th>복지일자</th>
+											<th>복직일자</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
-											</td>
-											<th class="dblineth">해지회사사유</th>
-											<td>
-												<input type="text" class="form-control form-control-sm">
-											</td>
-										</tr>
-										<tr>
-											<th>전직장명</th>
-											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_WORK_REDATE" readonly>
 											</td>
 											<th class="dblineth">해지개인사유</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_RESIGN_NM" readonly>
 											</td>
 										</tr>
 										<tr>
-											<th>근무개월</th>
-											<td>
-												<input type="text" class="form-control form-control-sm">
-											</td>
 											<th>상태</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_STS_NM" readonly>
 											</td>
 										</tr>
 									</table>
 									<table class="table table-sm table-bordered">
 										<colgroup>
 											<col span="1" style="width: 18%;">
-											<col span="1" style="width: 32%;">
-											<col span="1" style="width: 18%;">
-											<col span="1" style="width: 32%;">
+											<col span="1" style="width: 41%;">
+											<col span="1" style="width: 16%;">
+											<col span="1" style="width: 25%;">
 										</colgroup>
 										<tr>
-											<th>소속</th>
-											<td colspan="3">
-												<input type="text" class="form-control form-control-sm">
+											<th>본부</th>
+											<td colspan="1">
+												<input type="text" class="form-control form-control-sm w-25" style="float:left;" autocomplete='off' id="tchrInfo_DIV_ID" readonly>
+												<input type="text" class="form-control form-control-sm w-75" style="float:left;" autocomplete='off' id="tchrInfo_DIV_NM" readonly>
+											</td>
+											<th>본부장</th>
+											<td colspan="1">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_DIV_EMP_NM" readonly>
 											</td>
 										</tr>
 										<tr>
-											<th class="dblineth">팀장/센터장</th>
+											<th class="">사업국</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm w-25" style="float:left;" autocomplete='off' id="tchrInfo_DEPT_ID" readonly>
+												<input type="text" class="form-control form-control-sm w-75" style="float:left;" autocomplete='off' id="tchrInfo_DEPT_NM" readonly>
 											</td>
 											<th>사업국장</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_DEPT_EMP_NM" readonly>
 											</td>
 										</tr>
 										<tr>
-											<th></th>
-											<td></td>
-											<th>주기</th>
+											<th class="">센터</th>
 											<td>
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm" style="float:left;" autocomplete='off' id="tchrInfo_LC_NM" readonly>
+											</td>
+											<th>센터장</th>
+											<td>
+												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_LC_EMP_NM" readonly>
 											</td>
 										</tr>
 										<tr>
-											<th rowspan="2">주소</th>
+											<th rowspan="1">주소</th>
 											<td colspan="3">
-												<input type="text" class="form-control form-control-sm">
-											</td>
-										</tr>
-										<tr>
-											<td colspan="3">
-												<input type="text" class="form-control form-control-sm">
+												<input type="text" class="form-control form-control-sm w-25" style="float:left;" autocomplete='off' id="tchrInfo_ZIPCDE" readonly>
+												<input type="text" class="form-control form-control-sm w-75" style="float:left;" autocomplete='off' id="tchrInfo_ADDR" readonly>
 											</td>
 										</tr>
 									</table>
@@ -1246,64 +1226,65 @@
 													<table class="table table-sm table-bordered mt-2" style="">
 														<colgroup>
 															<col span="1" style="width: 22%;">
-															<col span="1" style="width: 28%;">
+															<col span="1" style="width: 33%;">
 															<col span="1" style="width: 20%;">
-															<col span="1" style="width: 30%;">
+															<col span="1" style="width: 25%;">
 														</colgroup>
 														<tr>
 															<th>처리완료일</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_PROC_DATE" class="dateForm"></span>
 															</td>
 															<th>연계일자</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_TRANS_DATE" class="dateForm"></span>
 															</td>
 														</tr>
 														<tr>
 															<th>상담채널</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_CSEL_CHNL"></span>
 															</td>
 															<th>연계방법</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_TRANS_CHNL"></span>
 															</td>
 														</tr>
 														<tr>
 															<th>상담결과</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_CSEL_RST1"></span>
 															</td>
 															<th>접수자</th>
 															<td>
-																<span></span>
-															</td>
-														</tr>
-														<tr>
-															<th>본부</th>
-															<td colspan="3">
-																<span></span>
+																<span id="counselTchrInfo_DEPT_ACP_NAME"></span>
 															</td>
 														</tr>
 														<tr>
 															<th>사업국</th>
+															<td colspan="3">
+																<input type="text" class="form-control form-control-sm w-25" id="counselTchrInfo_DEPT_ID" style="float:left;" readonly>
+																<input type="text" class="form-control form-control-sm w-75" id="counselTchrInfo_DEPT_NAME" style="float:left;" readonly>
+															</td>
+														</tr>
+														<tr>
+															<th>본부</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_DIV_NAME"></span>
 															</td>
 															<th>사업국장</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_DEPT_EMP_NAME"></span>
 															</td>
 														</tr>
 														<tr>
 															<th>센터</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_LC_NAME"></span>
 															</td>
 															<th>센터장</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_LC_EMP_NAME"></span>
 															</td>
 														</tr>
 													</table>
@@ -1318,19 +1299,19 @@
 														<tr>
 															<th>상담제목</th>
 															<td>
-																<span></span>
+																<span id="counselTchrInfo_CSEL_TITLE"></span>
 															</td>
 														</tr>
 														<tr>
 															<th style="height: 100px;">상담내용</th>
 															<td>
-																<span></span>
+																<textarea class="form-control p-0" rows="5"  id="counselTchrInfo_CSEL_CNTS" readonly></textarea>
 															</td>
 														</tr>
 														<tr>
 															<th style="height: 100px;">처리내용</th>
 															<td>
-																<span></span>
+																<textarea class="form-control p-0" rows="5"  id="counselTchrInfo_PROC_CNTS" readonly></textarea>
 															</td>
 														</tr>
 													</table>

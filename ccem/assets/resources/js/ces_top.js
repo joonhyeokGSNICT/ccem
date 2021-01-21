@@ -24,7 +24,9 @@ var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조
 var counselMain_researchCust_rschCallHist_grid = null;	// 상담메인	> 고객조사 > 통화이력 grid
 var counselMain_researchCust_smsLmsHist_grid = null;	// 상담메인	> 고객조사 > 설문조사 grid
 
-var counselMainTeacher_counselHist_grid = null; // 상담메인 선생님 > 상담이력 grid
+var counselMainTeacher_counselHist_grid = null; 	// 상담메인 선생님 > 상담이력 grid
+var counselMainTeacher_asignClassGrid = null; 		// 상담메인 선생님 > 교실정보 > 선생님 수업목록 grid
+var counselMainTeacher_classMemberGrid = null; 		// 상담메인 선생님 > 교실정보 > 교실별 회원정보 grid
 
 var currentPop = { name : null };
 var currentUnPop = { name : null };
@@ -144,6 +146,7 @@ var currentCustInfo = {
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
 var currentDirectChargeInfo;					// 현재 선택된 회비관리의 정보
+var currentTchrInfo;							// 현재 선택된 선생님의 정보
 
 var existCustInfo;								// 기존 존재하는 고객의 정보
 var existCustName;								// 기존 존재하는 고객의 이름
@@ -288,9 +291,11 @@ function initAll() {
 			EMAIL              : "",
 			ONLINEID           : ""
 	};						// 현재 선택된 고객의 정보 초기화
+	
 	currentCounselInfo = null; 					// 현재 선택된 상담의 정보 초기화
 	currentStudyInfo = null; 					// 현재 선택된 주간학습의 정보 초기화  
 	currentDirectChargeInfo = null;				// 현재 선택된 회비관리 정보 초기화
+	currentTchrInfo = null;						// 현재 선택된 선생님 정보 초기화
 	
 	initSemi();	// 인풋 초기화
 	
@@ -317,6 +322,7 @@ function initSemi(){
 	
 	// 상담이력 탭 이동
 	$("#customerCounselHist").click();
+	$("#teacher_counselHist").click();
 	
 	// 고객구분 초기세팅
 	$("#custInfo_CUST_MK").val("CM");
@@ -348,7 +354,6 @@ function gridReset(){
 		counselMain_studyTab_asignStuff.clear();				// 불출교재1
 		counselMain_studyTab_asignStuff2.clear();				// 불출교재2
 		counselMain_studyList_grid.clear();						// 학습과목
-		counselMainTeacher_counselHist_grid.clear();			// 선생님 리스트
 		counselMain_directCharge_duesInfo_grid.clear();			// 회비관리
 		counselMain_directCharge_alimSendList_grid.clear();		// 알림톡발송이력
 		counselMain_directCharge_cancelCharge_grid.clear();		// 결제/취소
@@ -365,6 +370,10 @@ function gridReset(){
 		counselMain_researchCust_rsrchCust_grid.clear();	 	// 고객조사 grid
 		counselMain_researchCust_rschCallHist_grid.clear();		// 통화이력 grid
 		counselMain_researchCust_smsLmsHist_grid.clear();		// 설문조사 grid
+		
+		counselMainTeacher_counselHist_grid.clear();			// 선생님 상담이력 리스트
+		counselMainTeacher_asignClassGrid.clear();				// 상담메인 선생님 > 교실정보 > 선생님 수업목록 grid
+		counselMainTeacher_classMemberGrid.clear();				// 상담메인 선생님 > 교실정보 > 교실별 회원정보 grid
 	}catch(e){
 		
 	}
@@ -561,6 +570,7 @@ $(function(){
 		case 'customerInfo':
 			counselMain_counselHist_grid.refreshLayout();
 			counselMain_studyProgressList_grid.refreshLayout();
+			counselMainTeacher_counselHist_grid.refreshLayout();
 			break;
 		// 고객정보 - 고객, 선생님
 		case 'customerTab':
@@ -570,6 +580,7 @@ $(function(){
 		case 'teacherTab':
 			$("#assignMemberbtn").css("display","none");
 			$("#transferCallbtn").css("display","");
+			counselMainTeacher_counselHist_grid.refreshLayout();
 			break;
 		// 고객찾기
 		case 'customerSearch':
@@ -662,9 +673,16 @@ $(function(){
 		// 선생님찾기
 		case 'teacherSearchTab' :
 			teacherSearchList_grid.refreshLayout();
+			$("#teacherName").focus();
 			break;
-			
+		// 교실정보
+		case 'teacher_class' :
+			counselMainTeacher_asignClassGrid.refreshLayout();
+			counselMainTeacher_classMemberGrid.refreshLayout();
+			loadList('ifsClassInfo',counselMainTeacher_asignClassGrid);
+			break;
 		}
+		
 		
 	});
 	
@@ -1021,7 +1039,7 @@ function onAutoSearchTeacher(sEmpId){
 				if(response.errcode == "0"){
 					currentTchrInfo = response.recv1[0];				// 선생님정보 상주
 					console.log(currentTchrInfo);
-					//loadCustInfoMain();									// 선생님정보 로드 함수
+					loadTeacherInfoMain();									// 선생님정보 로드 함수
 				}else {
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);
@@ -1469,6 +1487,23 @@ function loadList(id, grid, listID) {
 			sendUrl = '/cns.getTBCALLRST.do';
 			break;
 			
+			//=== === === === === === === === === === === === === === 고객 끝 선생님 시작
+			
+		case 'getCselHistList' : // 선생님 상담이력 상세 조회
+			param.send1[0].EMP_ID = currentTchrInfo.EMP_ID					// 선생님사번
+			sendUrl = '/cns.getCselHistList.do';
+			break;
+		case 'getTchrCselHistInfo' : // 선생님 상담이력 상세 조회
+			param.send1[0].CUST_ID = currentTchrInfo.EMP_ID					// 선생님사번 	// CUST_ID 에 EMP_ID 를 보낸다.
+			sendUrl = '/cns.getTchrCselHistInfo.do';
+			break;
+		case 'ifsClassInfo': 	// 선생님 수업목록
+			param.send1[0].EMP_ID = currentTchrInfo.EMP_ID					// 선생님사번
+			sendUrl = '/cns.ifsClassInfo.do';
+			break;
+		case 'ifsStudentInfoByClass' : // 교실별 회원정보
+			param.send1[0].CLS_ID = currentTchrClassInfo.CLS_ID					// 교실 ID
+			sendUrl = '/cns.ifsStudentInfoByClass.do';
 		}
 		
 		$.ajax({
@@ -2240,3 +2275,35 @@ function setCustChangeData(){
     DS_CUST_CHG.nameValue(1,"MAIL_RCV_FLAG_OLD"  ) = (DS_CUST.OrgNameValue(1, "MAIL_RCV_FLAG"  )== "0" ? "Y" : "N");*/
     return returnObject;
 }
+
+/**
+ * 선생님정보 상세조회
+ * @returns
+ * 21-01-21
+ */
+function loadTeacherInfoMain() {
+	$("#customerInfo").click();	// 탭 이동
+	$("#teacherTab").click();	// 탭 이동
+	for(key in currentTchrInfo){												// input 자동 기입
+		if($("#tchrInfo_" + key).length != 0){
+			switch($("#tchrInfo_" + key)[0].localName){
+			case "select" :
+				$("#tchrInfo_" + key).val(currentTchrInfo[key]);
+				break;
+			case "input" :
+				$("#tchrInfo_" + key).val(currentTchrInfo[key]);
+				break;
+			case "span" :
+				$("#tchrInfo_" + key).text(currentTchrInfo[key]);
+				break;
+			}
+		}
+	}
+	
+	$("#tchrInfo_BIRTH_DATE").val(FormatUtil.date(currentTchrInfo.BIRTH_DATE));	// 생일 포멧 
+	$("#tchrInfo_WORK_STDATE").val(FormatUtil.date(currentTchrInfo.WORK_STDATE));	// 입사일 포멧 
+	$("#tchrInfo_WORK_EDDATE").val(FormatUtil.date(currentTchrInfo.WORK_EDDATE));	// 퇴직일 포멧 
+	
+	loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 상담이력 조회
+}
+
