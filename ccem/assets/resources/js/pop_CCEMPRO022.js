@@ -2049,9 +2049,10 @@ const checkTextLengh = () => {
 }
 
 /**
- * 지역/사업국/센터/연계부서 선택시 호출.
+ * 지역/사업국/센터 선택시 호출.
+ * @param {object} data 
  */
-var setDisPlay = (data) => {
+var setDisPlayUp = (data) => {
 	$("#hiddenbox1").val(data.LC_ID);			// 센터코드
 	$("#hiddenbox4").val(data.LC_EMP_ID);		// 센터장
 	$("#textbox1").val(data.DIV_CDE);			// 본부코드
@@ -2063,6 +2064,13 @@ var setDisPlay = (data) => {
 	$("#textbox7").val(data.TELPNO_DEPT);		// 사업국전화번호
 	$("#textbox9").val(data.LC_NAME);			// 센터이름
 	$("#textbox10").val(data.TELPNO_LC);		// 센터전화번호
+}
+
+/**
+ * 연계부서 선택시 호출.
+ * @param {object} data 
+ */
+var setDisPlayDn = (data) => {
 	$("#textbox11").val(data.PROC_DEPT_ID);		// 연계부서코드
 	$("#textbox26").val(data.PROC_DEPT_NAME);	// 연계부서이름
 }
