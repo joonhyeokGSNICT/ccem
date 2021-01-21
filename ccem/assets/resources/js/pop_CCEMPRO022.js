@@ -1850,13 +1850,24 @@ const openCCEMPRO042 = (keyCode) => {
 }
 
 /**
- * 사업국/센터/연계부서 팝업
+ * 사업국/센터 팝업
  * - as-is : cns5810.openCOM1300(), openCOM1620(), openCOM1030()
  * @param {number} keyCode 
  */
 const openCCEMPRO044 = (keyCode) => {
 	if (keyCode == 13) {
-		PopupUtil.open("CCEMPRO044", 1145, 475);
+		PopupUtil.open("CCEMPRO044", 1145, 475, "#disPlayUp");
+	}
+}
+
+/**
+ * 연계부서 팝업
+ * - as-is : cns5810.openCOM1300(), openCOM1620(), openCOM1030()
+ * @param {number} keyCode 
+ */
+const openCCEMPRO044Dn = (keyCode) => {
+	if (keyCode == 13) {
+		PopupUtil.open("CCEMPRO044", 1145, 475, "#disPlayDn");
 	}
 }
 
