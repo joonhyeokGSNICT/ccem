@@ -192,9 +192,6 @@ const createGrids = () => {
 		$("#time1").val(grid1.getValue(0, "TRANS_TIME"));								// 일시2
 		calendarUtil.setImaskValue("calendar3",  grid1.getValue(0, "PROC_HOPE_DATE") || "");	// 처리희망일
 
-		// 상담과목 조회
-		getCselProd(grid1.getData());
-
 	});
 
 	grid2 = new Grid({
@@ -312,6 +309,8 @@ var setTransDisPlay = (data) => {
 	$("#hiddenbox4").val(data.DEPT_EMP_ID);		// 지점장ID	 	
 	$("#hiddenbox5").val(data.LC_ID);			// 센터ID		 
 	$("#hiddenbox6").val(data.LC_EMP_ID);		// 센터장ID	
+	$("#hiddenbox8").val(data.EMP_ID_LIST);		// 연계대상자ID
+	$("#textbox17").val(data.EMP_ID_NAME);		// 연계대상자이름
 
 }
 
@@ -338,6 +337,7 @@ const getCselTrans = () => {
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
 		grid1.resetData(data.dsRecv);
+		getCselProd(data.dsRecv);	// 상담과목 조회
 	});
 }
 
@@ -348,8 +348,7 @@ const getCselTrans = () => {
  */
 const getCselProd = (CselTransData) => {
 
-	CselTransData.forEach(el => {
-
+	for (const trans of CselTransData) {
 		const settings = {
 			url: `${API_SERVER}/cns.getCselProd.do`,
 			method: 'POST',
@@ -359,9 +358,9 @@ const getCselProd = (CselTransData) => {
 				senddataids: ["dsSend"],
 				recvdataids: ["dsRecv"],
 				dsSend: [{ 
-					CSEL_DATE	: el.CSEL_DATE, 	// 상담일자
-					CSEL_NO		: el.CSEL_NO,		// 상담번호
-					CSEL_SEQ 	: el.CSEL_SEQ,		// 상담순번
+					CSEL_DATE	: trans.CSEL_DATE, 	// 상담일자
+					CSEL_NO		: trans.CSEL_NO,	// 상담번호
+					CSEL_SEQ 	: trans.CSEL_SEQ,	// 상담순번
 				}],
 			}),
 		}
@@ -371,15 +370,13 @@ const getCselProd = (CselTransData) => {
 			// 중복체크
 			const prdt_ids = grid2.getData().map(el => el.PRDT_ID);
 			const addData = data.dsRecv;
-			for(const row of addData) {
-				if(prdt_ids.includes(row.PRDT_ID)) continue;
+			for (const row of addData) {
+				if (prdt_ids.includes(row.PRDT_ID)) continue;
 				grid2.appendRow(row);
 			}
 
 		});
-
-	});
-
+	}
 	
 }
 
@@ -415,8 +412,6 @@ const onAppSend = async () => {
 	// 저장API 호출
 	const saveResult = await saveTrans(transData);
 	if (!saveResult) return false;
-
-	getCselTrans();	// 저장성공후 상담/연계 재조회
 
 	// 앱알림API 호출
 	return await setFollower(followerData);
@@ -464,14 +459,14 @@ const getTransCondition = (row) => {
 		$("#textbox10").focus();
 		return false;
 	}
-	if (!$("#textbox17").val()) {
+	if (!$("#hiddenbox8").val()) {
 		alert("연계 대상자를 선택하여 주십시요.");
 		$("#textbox17").focus();
 		return false;
 	}
 
 	// 연계대상자사번 세팅
-	const EMP_ID_LIST = $("#textbox17").val().split(",");
+	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
 	for(let TRANS_EMP_ID of EMP_ID_LIST) {
 		TRANS_EMP_ID = TRANS_EMP_ID.trim();
 		if(!TRANS_EMP_ID) continue;
@@ -524,14 +519,15 @@ const getFollowerCondition = async (row) => {
 		alert("젠데스크 티켓ID가 존재하지 않습니다.");
 		return false;
 	}
-	if (!$("#textbox17").val()) {
+	if (!$("#hiddenbox8").val()) {
 		alert("연계 대상자를 선택하여 주십시요.");
+		$("#textbox17").focus();
 		return false;
 	}
 
 	// 팔로워 대상자 세팅
 	const followers = new Array();
-	const EMP_ID_LIST = $("#textbox17").val().split(",");
+	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
 	for (let EMP_ID of EMP_ID_LIST) {
 		EMP_ID = EMP_ID.trim();
 		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID}`);
@@ -571,6 +567,7 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 	$.ajax(settings)
 		.done(data => {
 			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
+			getCselTrans();	// 저장성공후 상담/연계 재조회
 			return resolve(true);
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
@@ -582,7 +579,7 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
  */
 const setFollower = async (followerData) => {
 
-	for(const el of followerData) {
+	for (const el of followerData) {
 
 		await topbarClient.request({
 			url: `/api/v2/tickets/${el.ticket_id}`,
@@ -802,9 +799,6 @@ const onFAXSend = async () => {
 	// 저장API 호출
 	const saveResult = await saveTrans(transData);
 	if (!saveResult) return false;
-
-	// 저장성공후 상담/연계 재조회
-	getCselTrans();
 
 	// 팩스발송API 호출
 	return await addTransSendFax(faxData);	

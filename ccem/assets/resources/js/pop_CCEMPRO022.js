@@ -430,20 +430,20 @@ const setCodeData = () => {
 	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
 	// create select options
-	for(const code of codeList) {
+	for (const code of codeList) {
 
-		const codeType 	= code.CODE_MK;
-		const codeNm 	= code.CODE_NAME;
-		const codeVal 	= code.CODE_ID;
+		const codeType = code.CODE_MK;
+		const codeNm = code.CODE_NAME;
+		const codeVal = code.CODE_ID;
 
 		// filtering
-		if(codeType == "DM_TYPE_CDE") { // 지급사유
-			if(codeVal != "03" && codeVal != "06" && codeVal != "07") continue;
+		if (codeType == "DM_TYPE_CDE") { // 지급사유
+			if (codeVal == "01" || codeVal == "02" || codeVal == "04" || codeVal == "05") continue;
 		}
-		if(codeType == "CSEL_RST_MK") { // 상담결과
-			if(codeVal != "01" && codeVal != "06" && codeVal != "07" && codeVal != "12" && codeVal != "19" && codeVal != "20") continue;
+		if (codeType == "PROC_MK") { // 처리구분
+			if (codeVal == "5" || codeVal == "6") continue;
 		}
-		
+
 		// set
 		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
 	}
@@ -1681,14 +1681,21 @@ const getCounselCondition = async (sJobType) => {
 const getAddInfoCondition = () => {
 
 	const cselRstMk = $("#selectbox8").val();	// 상담결과 구분
-
-	if (cselRstMk == "12") {		// DM 사은품 접수
+	
+	// DM 사은품 접수
+	if (cselRstMk == "12") {		
 		return DS_DM_RECEIPT;
-	} else if (cselRstMk == "19") {	// 개인정보동의
+	} 
+	// 개인정보동의
+	else if (cselRstMk == "19") {	
 		return DS_DROP_TEMP2;
-	} else if (cselRstMk == "20") {	// 고객직접퇴회
+	} 
+	// 고객직접퇴회
+	else if (cselRstMk == "20") {	
 		return DS_DROP_CHG;
-	} else {
+	} 
+	// 기타
+	else {
 		return {};
 	}
 }
@@ -1720,11 +1727,9 @@ const saveCCEM = async (counselData, addInfoData, obData) => new Promise((resolv
 		.done(data => {
 			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
 
-			const recv = data.dsRecv;
-			if (recv.length == 0) return reject(new Error("저장 결과 데이터가 존재하지 않습니다."));
+			if (data.dsRecv.length == 0) return reject(new Error("저장 결과 데이터가 존재하지 않습니다."));
 
 			return resolve(data.dsRecv[0]);
-
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 
@@ -1767,13 +1772,10 @@ const getPlProd = (grid) => {
 	const data = grid.getData();
 
 	// sort
-	data.sort((a, b) => {
-		return a.PRDT_ID < b.PRDT_ID ? -1 : a.PRDT_ID > b.PRDT_ID ? 1 : 0;
-	});
+	data.sort((a, b) => a.PRDT_ID < b.PRDT_ID ? -1 : a.PRDT_ID > b.PRDT_ID ? 1 : 0);
 
-	// check USE
 	data.forEach(el => {
-		ids.push(el.PRDT_ID);	 // 제품id
+		ids.push(el.PRDT_ID);	  // 제품id
 		names.push(el.PRDT_NAME); //제품명
 	});
 
@@ -1819,10 +1821,9 @@ const openPopup = (key) => {
 			PopupUtil.open(key, 728, 410);
 			break;
 		case "CCEMPRO030":	// 결과등록
-			if ($("#selectbox4").val() === "2")
-				PopupUtil.open("CCEMPRO095", 1110, 603);
-			else
-				PopupUtil.open(key, 1098, 810);
+			const PROC_MK = $("#selectbox4").val();
+			if (PROC_MK == "3" || PROC_MK == "4") PopupUtil.open(key, 1098, 810);
+			else if (PROC_MK == "2") PopupUtil.open("CCEMPRO095", 1110, 603);
 			break;
 		case "CCEMPRO033":	// 고객조회
 			PopupUtil.open(key, 1184, 650);
@@ -1888,61 +1889,42 @@ const openCselRst = code => {
 	// 저장 data 초기화
 	setInitCselRstMkDS();
 
-	// 사은품접수
-	if (code == "12") {
-		// 지급사유 selectbox 활성화
-		$("#selectbox16").prop("disabled", false);
-		return;
-	} else {
-		// 지급사유 selectbox 비활성화
-		$("#selectbox16").prop("disabled", true);
-		$("#selectbox16").val("");
-	}
+	// 지급사유 selectbox 비활성화
+	$("#selectbox16").prop("disabled", true);
+	$("#selectbox16").val("");
 
-	// 재통화예약
-	if (code == "01") {
-		PopupUtil.open("CCEMPRO025", 500, 330);
-		return;
+	switch (code) {
+		case "01":	// 재통화예약
+			PopupUtil.open("CCEMPRO025", 500, 330);
+			break;
+		case "06":	// TODO 상담성공
+			
+			break;
+		case "07":	// TODO 상담실패
+			
+			break;
+		case "12":	// 사은품접수
+			$("#selectbox16").prop("disabled", false); // 지급사유 selectbox 활성화
+			break;
+		case "19":	// 개인정보동의신청
+			PopupUtil.open("CCEMPRO023", 594, 670);
+			break;
+		case "20":	// 고객직접퇴회
+			if (mbrId == "") {
+				alert("회원번호가 없습니다.\n\n고객직접퇴회 신청을 할 수 없습니다.");
+				return;
+			}
+			PopupUtil.open("CCEMPRO024", 670, 800);
+			break;
+		case "MOS문의답변":		// TODO MOS문의답변
+			PopupUtil.open("CCEMPRO094", 570, 720);
+			break;
+		case "MOS(커뮤니티)":	// TODO MOS커뮤니티
+			
+			break;
+		default:
+			break;
 	}
-
-	// 개인정보동의신청
-	if (code == "19") {
-		PopupUtil.open("CCEMPRO023", 594, 670);
-		return;
-	}
-
-	// 고객직접퇴회
-	if (code == "20") {
-		if (mbrId == "") {
-			alert("회원번호가 없습니다.\n\n고객직접퇴회 신청을 할 수 없습니다.");
-			return;
-		}
-		PopupUtil.open("CCEMPRO024", 670, 800);
-		return;
-	}
-
-	// TODO MOS문의답변
-	if (code == "MOS문의답변") {
-		PopupUtil.open("CCEMPRO094", 570, 720);
-		return;
-	}
-	
-	// TODO MOS(커뮤니티)
-	if (code == "MOS(커뮤니티)") {
-		PopupUtil.open("CCEMPRO094", 570, 720);
-		return;
-	}
-
-	// TODO 상담성공
-	if (code == "06") {
-		return;
-	}
-
-	// TODO 상담실패
-	if (code == "07") {
-		return;
-	}
-
 }
 
 /**
@@ -1964,7 +1946,7 @@ const onDmReceiptChange = () => {
 	dmTypeText = $("#selectbox16 option:selected").text();
 	dmTypeValue = $("#selectbox16 option:selected").val();
 
-	if(!dmTypeValue) {
+	if (!dmTypeValue) {
 		DS_DM_RECEIPT = {};
 		return;
 	}
@@ -2000,22 +1982,22 @@ const changeCselType =() => {
 	$("#textbox19").val("");
 
     //상담구분이 문의(1)일 경우
-    if ($("#selectbox3").val() == "1"){
-        $("#selectbox5").val("");						// 처리시한
-        calendarUtil.setImaskValue("calendar2", "");	// 처리희망일
-        $("#selectbox6").val("2");						// 고객반응 (보통)
-        $("#selectbox2").focus();
-    }else{        	
-        $("#selectbox5").val("");	// 처리시한           
-        $("#selectbox6").val("");	// 고객반응                  
-    }
+	if ($("#selectbox3").val() == "1") {
+		$("#selectbox5").val("");						// 처리시한
+		calendarUtil.setImaskValue("calendar2", "");	// 처리희망일
+		$("#selectbox6").val("2");						// 고객반응 (보통)
+		$("#selectbox2").focus();
+	} else {
+		$("#selectbox5").val("");	// 처리시한           
+		$("#selectbox6").val("");	// 고객반응                  
+	}
     
     //처리구분이 변경되면,
 	//신규(I)일때 처리상태를 접수(01)로 선택한다.
-	const sJobType = $("#selectbox14 option:selected").data("jopType"); // 저장구분(I/U/D) - 접수번호가 없으면 신규
-    if(sJobType == "I"){
-        $("#selectbox10").val("01")	// 처리상태
-    }
+	const selectSeq = document.getElementById("selectbox14")
+	const jobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;
+	if (jobType == "I") $("#selectbox10").val("01");
+
 }
 
 /**
@@ -2053,13 +2035,13 @@ const setBtnCtrlAtLoadComp = () => {
  * - as-is : cns5810.onTextAreaKeyUp()
  */
 const checkTextLengh = () => {
-	
+
 	const el = $("#textbox13");
 	const value = el.val();
-	const sCnt = value.length + (escape(value) + "%u").match(/%u/g).length - 1;              
-    if(sCnt > 4000){
-        alert("상담 내용은 4000Byte이상 저장할 수 없습니다.\n\n다시 입력해 주십시요.");
-        el.focus();
+	const sCnt = value.length + (escape(value) + "%u").match(/%u/g).length - 1;
+	if (sCnt > 4000) {
+		alert("상담 내용은 4000Byte이상 저장할 수 없습니다.\n\n다시 입력해 주십시요.");
+		el.focus();
 	}
-	
+
 }
