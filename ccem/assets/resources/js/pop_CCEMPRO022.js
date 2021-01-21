@@ -1337,7 +1337,6 @@ const saveCounsel = async () => {
 	
 	// 저장성공후
 	$("#textbox28").val(resSaveCCEM.CSEL_NO); 	// 접수번호 세팅
-	loading.out();
 	getCounsel(selectedSeq, true);				// 상담 재조회
 
 	return true;

@@ -289,7 +289,7 @@ const setDisPlay = () => {
  * 연계정보세팅
  * - as-is : cns2510.setTransDisPlay()
  */
-const setTransDisPlay = (data) => {
+var setTransDisPlay = (data) => {
 
 	if (!data.LC_ID) {
 		// 사업국 정보 설정
@@ -306,7 +306,7 @@ const setTransDisPlay = (data) => {
 		$("#textbox13").val(data.LC_FAX_NO1); 	// 센터팩스1(FAX2)
 		$("#textbox14").val(data.LC_FAX_NO2); 	// 센터팩스2(FAX3)
 	}  
-	$("#hiddenbox1").val(data.DEPT_ID);			// 관할지점코드
+	$("#hiddenbox7").val(data.DEPT_ID);			// 관할지점코드
 	$("#hiddenbox2").val(data.DIV_CDE);			// 관할본부코드
 	$("#hiddenbox3").val(data.AREA_CDE);		// 관할지역코드	
 	$("#hiddenbox4").val(data.DEPT_EMP_ID);		// 지점장ID	 	
@@ -407,7 +407,7 @@ const onAppSend = async () => {
 		if (!transCondition) return false;
 		transData.push(transCondition);
 
-		const followerCondition = getFollowerCondition(row);
+		const followerCondition = await getFollowerCondition(row);
 		if (!followerCondition) return false;
 		followerData.push(followerCondition);
 	}
@@ -416,7 +416,6 @@ const onAppSend = async () => {
 	const saveResult = await saveTrans(transData);
 	if (!saveResult) return false;
 
-	loading.out();
 	getCselTrans();	// 저장성공후 상담/연계 재조회
 
 	// 앱알림API 호출
@@ -447,7 +446,7 @@ const getTransCondition = (row) => {
 		CSEL_DATE		: row.CSEL_DATE, 								// 상담일자		
 		CSEL_NO			: row.CSEL_NO, 									// 상담번호	
 		CSEL_SEQ		: row.CSEL_SEQ,									// 상담순번		
-		DEPT_ID			: $("#hiddenbox1").val(),						// 관할지점코드		
+		DEPT_ID			: $("#hiddenbox7").val(),						// 관할지점코드		
 		DIV_CDE			: $("#hiddenbox2").val(),						// 관할본부코드		
 		AREA_CDE		: $("#hiddenbox3").val(),						// 관할지역코드			
 		DEPT_EMP_ID		: $("#hiddenbox4").val(),						// 지점장ID			
@@ -519,9 +518,9 @@ const getTransCondition = (row) => {
  * 팔로워 정보 value check
  * @param {object} row grid row
  */
-const getFollowerCondition = (row) => {
+const getFollowerCondition = async (row) => {
 
-	if(!row.ZEN_TICKET_ID) {
+	if (!row.ZEN_TICKET_ID) {
 		alert("젠데스크 티켓ID가 존재하지 않습니다.");
 		return false;
 	}
@@ -530,12 +529,23 @@ const getFollowerCondition = (row) => {
 		return false;
 	}
 
-	const EMP_ID_LIST = $("#textbox17").val().split(",").map(el => el.trim());
-	const followers = EMP_ID_LIST.map(el => new Object({ user_id: el, action: "put" }));
-	
+	// 팔로워 대상자 세팅
+	const followers = new Array();
+	const EMP_ID_LIST = $("#textbox17").val().split(",");
+	for (let EMP_ID of EMP_ID_LIST) {
+		EMP_ID = EMP_ID.trim();
+		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID}`);
+		if (users.length > 0) followers.push({ user_id: users[0].id, action: "put" });
+	}
+
+	if (followers.length === 0) {
+		alert("연계 대상자를 선택하여 주십시요.");
+		return false;
+	}
+
 	return {
-		ticket_id	: row.ZEN_TICKET_ID,
-		followers	: followers
+		ticket_id: row.ZEN_TICKET_ID,
+		followers: followers
 	}
 
 }
@@ -794,7 +804,6 @@ const onFAXSend = async () => {
 	if (!saveResult) return false;
 
 	// 저장성공후 상담/연계 재조회
-	loading.out();
 	getCselTrans();
 
 	// 팩스발송API 호출
@@ -822,7 +831,7 @@ const getFaxCondition = (row) => {
 		FAX_NO1			: $("#textbox13").val(), 	// 팩스번호앞번호	
 		FAX_NO2			: $("#textbox14").val(), 	// 팩스번호뒷번호	
 		OPEN_GBN		: row.OPEN_GBN, 			// 회원신상 공개여부		
-		DEPT_ID			: $("#hiddenbox1").val(), 	// 관할지점코드
+		DEPT_ID			: $("#hiddenbox7").val(), 	// 관할지점코드
 		LC_ID			: $("#hiddenbox5").val(), 	// 센터ID
 		LC_EMP_ID		: $("#hiddenbox6").val(), 	// 센터장ID
 		CUST_MK			: row.CUST_MK, 				// 고객구분	
