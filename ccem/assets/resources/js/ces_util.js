@@ -733,6 +733,7 @@ const getErrMsg = (statusText) => {
 
 // Global Ajax Event Handlers
 $(this).ajaxStart(function () {
+    if(loading) loading.out();
 	loading = new Loading(getLoadingSet());
 });
 
