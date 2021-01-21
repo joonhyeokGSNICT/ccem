@@ -535,7 +535,7 @@ const getFollowerCondition = async (row) => {
 	}
 
 	if (followers.length === 0) {
-		alert("연계 대상자를 선택하여 주십시요.");
+		alert("연계대상자의 젠데스트 사용자정보가 존재하지 않습니다. 다시 선택해 주세요.");
 		return false;
 	}
 

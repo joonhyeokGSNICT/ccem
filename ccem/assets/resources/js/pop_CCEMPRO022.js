@@ -666,9 +666,10 @@ const getCounsel = (sCselSeq, isFirst) => {
 			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	// 상담과목 선택
 			
 			// 상담정보 세팅
-			$("#hiddenbox5").val(rowData.CSEL_RST_MK1);										// 상담결과구분코드
 			$("#textbox29").val(rowData.CSEL_STTIME);										// 상담시간
-			$("#selectbox15").val(rowData.CSEL_CHNL_MK);		                			// 상담채널구분      
+			$("#selectbox15").val(rowData.CSEL_CHNL_MK);		                			// 상담채널구분
+			$("#textbox11").val(rowData.PROC_DEPT_ID);										// 직원상담처리지점 (연계부서코드)
+			$("#textbox26").val(rowData.PROC_DEPT_NAME);									// 직원상담처리지점명 (연계부서이름)      
 			$("#checkbox1").prop("checked", rowData.LC_MK == "Y" ? true : false);			// 러닝센터(LC)  
 			$("#checkbox2").prop("checked", rowData.YC_MK == "Y" ? true : false);			// YC
 			$("#checkbox3").prop("checked", rowData.HL_MK == "Y" ? true : false);			// HL
@@ -690,15 +691,16 @@ const getCounsel = (sCselSeq, isFirst) => {
 			$("#selectbox8").val(rowData.CSEL_RST_MK1);				                		// 상담결과구분
 			$("#selectbox9").val(rowData.FST_CRS_CDE);										// 첫상담경로
 			$("#selectbox10").val(rowData.PROC_STS_MK);					            		// 처리상태구분
-			$("#hiddenbox9").val(rowData.PROC_STS_MK);					            		// 처리상태구분
 			$("#selectbox11").val(rowData.CSEL_GRD);				                		// 상담등급
 			$("#checkbox4").prop("checked", rowData.RE_PROC == "1" ? true : false);			// 재확인여부
 			$("#checkbox5").prop("checked", rowData.VOC_MK == "Y" ? true : false);			// VOC
 			$("#checkbox6").prop("checked", rowData.RE_CALL_CMPLT == "Y" ? true : false);	// 재통화완료여부
-			$("#hiddenbox7").val(rowData.DM_MATCHCD);										// DM매치코드
-			$("#hiddenbox8").val(rowData.DM_LIST_ID);										// DM목록ID
 			$("#selectbox16").val(rowData.DM_TYPE_CDE);										// DM종류	(지급사유)
 			$("#hiddenbox10").val(rowData.ZEN_TICKET_ID);									// 티켓ID
+			$("#hiddenbox5").val(rowData.CSEL_RST_MK1);										// 상담결과구분코드
+			$("#hiddenbox9").val(rowData.PROC_STS_MK);					            		// 처리상태구분
+			$("#hiddenbox7").val(rowData.DM_MATCHCD);										// DM매치코드
+			$("#hiddenbox8").val(rowData.DM_LIST_ID);										// DM목록ID
 
 			// 상담결과 구분이 DM 사은품접수일 경우.
 			if(rowData.CSEL_RST_MK1 == "12") { 
@@ -2044,4 +2046,23 @@ const checkTextLengh = () => {
 		el.focus();
 	}
 
+}
+
+/**
+ * 지역/사업국/센터/연계부서 선택시 호출.
+ */
+var setDisPlay = (data) => {
+	$("#hiddenbox1").val(data.LC_ID);			// 센터코드
+	$("#hiddenbox4").val(data.LC_EMP_ID);		// 센터장
+	$("#textbox1").val(data.DIV_CDE);			// 본부코드
+	$("#textbox2").val(data.UPDEPTNAME);		// 본부이름
+	$("#textbox3").val(data.AREA_CDE);			// 지역코드
+	$("#textbox4").val(data.AREA_NAME);			// 지역이름
+	$("#textbox5").val(data.DEPT_ID);			// 사업국코드
+	$("#textbox6").val(data.DEPT_NAME);			// 사업국이름
+	$("#textbox7").val(data.TELPNO_DEPT);		// 사업국전화번호
+	$("#textbox9").val(data.LC_NAME);			// 센터이름
+	$("#textbox10").val(data.TELPNO_LC);		// 센터전화번호
+	$("#textbox11").val(data.PROC_DEPT_ID);		// 연계부서코드
+	$("#textbox26").val(data.PROC_DEPT_NAME);	// 연계부서이름
 }
