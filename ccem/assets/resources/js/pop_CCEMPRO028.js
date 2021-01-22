@@ -221,7 +221,6 @@ const onStart = async (openerNm) => {
 		currentUser = opener.currentUser;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
-		SEND_PHONE 	= (await getBasicList("13")).replace(/[^0-9]/gi, "");	// SMS발신번호(기준값 13, '-'없이)
 		sPROC_MK 	= opener.document.getElementById("selectbox4").value;
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("textbox27");
 		sCSEL_NO    = opener.document.getElementById("textbox28").value;
@@ -614,7 +613,7 @@ const onSMSSend = async () => {
 	for (const row of checkedRows) {
 
 		// check send data
-		const condition = getSmsCondition(row);
+		const condition = await getSmsCondition(row);
 		if (!condition) return false;
 		sendData.push(condition);
 
@@ -635,7 +634,9 @@ const onSMSSend = async () => {
  * SMS 발송 정보 value check
  * @param {object} row grid row
  */
-const getSmsCondition = (row) => {
+const getSmsCondition = async (row) => {
+
+	SEND_PHONE 	= SEND_PHONE ? SEND_PHONE : (await getBasicList("13", "SMS발신번호 조회")).replace(/[^0-9]/gi, "");	// SMS발신번호(기준값 13, '-'없이)
 
 	var sDeptMobilNoStr = "";
 	var sDeptMobilNo = new Array();

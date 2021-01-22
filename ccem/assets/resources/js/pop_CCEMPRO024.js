@@ -195,16 +195,10 @@ const openPopup = async (key) => {
 			PopupUtil.open("CCEMPRO046", 980, 600);
 			break;
 		case "DREAMS":
-			getBasicList("7")
-				.then(data => {
-					const basUrl = data;
-					const sId 	 = currentUser.external_id;
-					const sUrl   = `${basUrl}?zsite=ES&zlogin_id=${sId}&zpasswd=${sId}&move=drop`;
-					window.open(sUrl, 'Refund');	// IE Tab 사용을 위해 팝업이 아닌 새탭에서 실행
-				})
-				.catch(error => {
-					if(error) alert(`기준값 조회 중 오류가 발생하였습니다.\n\n${error}`);
-				});
+			const basUrl = await getBasicList("7");
+			const sId 	 = currentUser.external_id;
+			const sUrl   = `${basUrl}?zsite=ES&zlogin_id=${sId}&zpasswd=${sId}&move=drop`;
+			window.open(sUrl, 'Refund');	// IE Tab 사용을 위해 팝업이 아닌 새탭에서 실행
 			break;
 		default:
 			break;

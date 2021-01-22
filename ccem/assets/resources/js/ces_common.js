@@ -200,11 +200,12 @@ function chkHPDDDNumber(ddd){
 /**
  * 기준값 조회
  * @param {string} key
- * @param {boolean} isGlobal Global Ajax Event Handlers 사용여부
+ * @param {string} customMsg
  */
-const getBasicList = (key, isGlobal = true) => new Promise((resolve, reject) => {
+const getBasicList = (key, customMsg) => new Promise((resolve, reject) => {
+	customMsg = (customMsg || "기준값 조회") + "중 오류가 발생하였습니다.";
+
 	const settings = {
-		global: isGlobal,
 		url: `${API_SERVER}/sys.getBasicList.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -218,18 +219,21 @@ const getBasicList = (key, isGlobal = true) => new Promise((resolve, reject) => 
 
 	$.ajax(settings)
 		.done(data => {
-			if(data.errcode != "0") return reject(new Error(data.errmsg));
+			if(!checkApi(data, settings)) return reject(new Error(getApiMsg(data, settings)));
 
 			const basicList = data.dsRecv;
-			if(basicList.length === 0) return reject(new Error("검색 결과가 없습니다."));
+			if(basicList.length === 0) {
+				alert(customMsg);
+				return reject(new Error("검색 결과가 없습니다."));
+			}
 
 			const basic = basicList.find(el => el.BSC_SCT == key);
-			if (!basic) return reject(new Error("검색 결과가 없습니다."));
+			if (!basic) {
+				alert(customMsg);
+				return reject(new Error("검색 결과가 없습니다."));
+			}
 
 			return resolve(basic.BSC_VAL);
 		})
-		.fail(error => {
-			console.error(error);
-			return reject(isGlobal ? false : error);
-		});
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
