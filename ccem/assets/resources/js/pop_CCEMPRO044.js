@@ -786,12 +786,10 @@ const _btn = {
 				sendLv3.push(lv3List[index].DEPT_ID);
 			} 
 				
-			// console.log("lv1 List >> ",sendLv1);
-			// console.log("lv2 List >> ",sendLv2);
-			// console.log("lv3 List >> ",sendLv3);
-
+			console.log("lv1 List >> ",sendLv1);
+			console.log("lv2 List >> ",sendLv2);
+			console.log("lv3 List >> ",sendLv3);
 			
-
 			/**
 			 * 전송할 데이터
 			 * @param org    : 선택한 본부/사업국/지점 정보

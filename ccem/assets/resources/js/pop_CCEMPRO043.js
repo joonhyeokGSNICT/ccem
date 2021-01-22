@@ -172,6 +172,7 @@ function init(){
 	_orgBcdGrid.hideColumn("DIV_CDE"); 
 	_orgBcdGrid.hideColumn("TELNO"); 
 
+
 	_orgBcdGrid.on('click', (ev) => {
 		_orgBcdGrid.addSelection(ev);
 		_orgBcdGrid.clickSort(ev);
@@ -181,12 +182,12 @@ function init(){
 		$('#orgCenter_NAME').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
 		$('#orgDetail_NAME').val("");
 
-		$('#AREA_CDE_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "AREA_CDE"));
-		$('#AREA_NAME_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "AREA_NAME"));
-		$('#DEPT_ID_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DEPT_ID"));
-		$('#DIV_CDE_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "DIV_CDE"));
+		$('#AREA_CDE_input').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "AREA_CDE"));
+		$('#AREA_NAME_input').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "AREA_NAME"));
+		$('#DEPT_ID_input').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DEPT_ID"));
+		$('#DIV_CDE_input').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "DIV_CDE"));
 		$('#LC_ID_input').val("");
-		$('#TELNO_input').val(_orgCenterGrid.getFormattedValue(ev.rowKey, "TELNO"));
+		$('#TELNO_input').val(_orgBcdGrid.getFormattedValue(ev.rowKey, "TELNO"));
 		$('#TELNO_LC_input').val("");
 	});
 
@@ -204,7 +205,23 @@ function init(){
 				TELNO : 사업국전화번호
 				ZIP_CNTS : 관할지역내용,
 			 */
-			// window.close();
+
+			var sendRow = {};
+			sendRow.LC_ID = "";
+			sendRow.LC_EMP_ID = "";
+			sendRow.DIV_CDE = rowData.DIV_CDE;
+			sendRow.UPDEPTNAME = rowData.DIV_NAME;
+			sendRow.AREA_CDE = rowData.AREA_CDE;
+			sendRow.AREA_NAME = rowData.AREA_NAME;
+			sendRow.DEPT_ID = rowData.DEPT_ID;
+			sendRow.DEPT_NAME = rowData.DEPT_NAME;
+			sendRow.TELPNO_DEPT = rowData.TELNO;
+			sendRow.LC_NAME = "";
+			sendRow.TELNO_LC = "";
+			
+			console.log(sendRow);
+			opener.setDisPlayUp(sendRow);
+			window.close();
 		});
 	}
 	
@@ -318,19 +335,36 @@ function init(){
 			const rowData = _orgCenterGrid.getRow(ev.rowKey);
 			console.log(rowData);
 			/**
-			 * 	AREA_CDE : 	지역구분,
-				AREA_NAME : 지역명,
-				DIV_NAME : 	본부명,
+			 * 	
+				LC_ID : 센터ID,
+
 				DIV_CDE : 	본부ID,
-				DEPT_NAME : 사업국명,
+				DIV_NAME : 	본부명,
+				AREA_CDE : 	지역구분,
+				AREA_NAME : 지역명,
 				DEPT_ID : 사업국ID,
+				DEPT_NAME : 사업국명,
 				TELNO : 사업국전화번호
 				LC_NAME : 센터명,
-				LC_ID : 센터ID,
 				TELNO_LC : 센터전화번호,
-				ZIP_CNTS : 관할지역내용
 			 */
-			// window.close();
+
+			var sendRow = {};
+			sendRow.LC_ID = rowData.LC_ID;
+			sendRow.LC_EMP_ID = "";
+			sendRow.DIV_CDE = rowData.DIV_CDE;
+			sendRow.UPDEPTNAME = rowData.DIV_NAME;
+			sendRow.AREA_CDE = rowData.AREA_CDE;
+			sendRow.AREA_NAME = rowData.AREA_NAME;
+			sendRow.DEPT_ID = rowData.DEPT_ID;
+			sendRow.DEPT_NAME = rowData.DEPT_NAME;
+			sendRow.TELPNO_DEPT = rowData.TELNO;
+			sendRow.LC_NAME = rowData.LC_NAME;
+			sendRow.TELPNO_LC = rowData.TELNO_LC;
+
+			console.log(sendRow);
+			opener.setDisPlayUp(sendRow);
+			window.close();
 		});
 	}
 	
@@ -744,9 +778,24 @@ function sendAddr() {
 	/**
 	 * 전송할 데이터
 	 * @param org    : 선택한 본부/사업국/지점 정보
-	 * @param member : 선택된 구성원(직원) 정보 
+	 * @param ADDR : 선택한 주소 정보 
 	 */
 	console.log("CCEMPRO043 전송 데이터 >> ",responseData);
+	
+	// 주소정보 업데이트
+	opener.document.getElementById("custInfo_ZIPCDE").value = responseData.ADDR.POST_NO;
+	opener.document.getElementById("custInfo_ZIP_ADDR").value = responseData.ADDR.ADDR_MAIN;
+	opener.document.getElementById("custInfo_ADDR").value = responseData.ADDR.ADDR_SUB;
+
+	opener.document.getElementById("custInfo_UPDEPTNAME").value = responseData.org.DIV_NAME
+	opener.document.getElementById("custInfo_DEPT_ID").value = responseData.org.DEPT_ID
+	opener.document.getElementById("custInfo_DEPT_NAME").value = responseData.org.DEPT_NAME
+	opener.document.getElementById("custInfo_TELPNO_DEPT").value = responseData.org.TELNO
+	opener.document.getElementById("custInfo_LC_NAME").value = responseData.org.LC_NAME
+	opener.document.getElementById("custInfo_TELPNO_LC").value = responseData.org.TELNO_LC
+	opener.document.getElementById("custInfo_LC_ID").value = responseData.org.LC_ID
+
+	window.close();
 }
 
 init();
