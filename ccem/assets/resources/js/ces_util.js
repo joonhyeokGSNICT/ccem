@@ -523,6 +523,19 @@ var calendarUtil = {
         return imask;
     },
     /**
+     * ex. 1,000,000
+     * @param {string} id element id
+     */
+    currency(id) {
+        let imask = IMask(document.getElementById(id), {
+            mask: Number,
+            signed: true,   // 음수허용
+            thousandsSeparator: ','
+        });
+        calendarUtil.imasks[id] = imask;
+        return imask;
+    },
+    /**
      * time mask : hh:mm:ss
      * @param {string} id element id
      * @param {string} format 
