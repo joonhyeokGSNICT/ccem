@@ -37,7 +37,7 @@
 				<div role="tabpanel" class="tab-pane fade active show" id="recieveTab">
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn" >조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn">조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn" onclick="">엑셀저장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 						</div>
@@ -47,11 +47,11 @@
 							<table class="table" style="background:#f1f5ff;">
 								<tr>
 									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSCheck">수신일자
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSDateCheck">수신일자
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
 									</td>
 									<th class="tdCheck thCheck" colspan="">
 										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">핸드폰
@@ -71,6 +71,7 @@
 							</table>
 						</div>
 					</div>
+					<div id="smsRecvListGrid"></div>
 				</div>
 				<div role="tabpanel" class="tab-pane fade show" id="sendTab">
 					<div class="row" style="background: #123f8a; height: 35px;">
@@ -109,6 +110,7 @@
 							</table>
 						</div>
 					</div>
+					<div id="smsSendListGrid"></div>
 				</div>
 				<div role="tabpanel" class="tab-pane fade show" id="personalTab">
 					<div class="row" style="background: #123f8a; height: 35px;">
@@ -147,6 +149,7 @@
 							</table>
 						</div>
 					</div>
+					<div id="smsPerSendListGrid"></div>
 				</div>
 			</div>
 		</div>

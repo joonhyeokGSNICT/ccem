@@ -175,6 +175,11 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 client.on("getCodeData", function(d){
 	codeData = d;
 	console.log(codeData);
+	
+	// selectBox 공통 코드 불러오기
+	getCodeList();
+	getProd();
+	$("#custInfo_CUST_MK").val("CM");
 });
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 /**
@@ -477,8 +482,6 @@ $(function(){
 	};
 	var mask = IMask(document.getElementById('custInfo_FAT_RSDNO'), maskOptions);
 	
-	// selectBox 공통 코드 불러오기
-	getCodeList();
 	setTimeout(function(){
 		$('.multiSelect').multipleSelect();
 	}, 5000);
@@ -791,6 +794,8 @@ function customerSearch(currentDiv){
 	switch(currentDiv){
 	case 'custSearchDiv' : 															// 고객 조회
 		var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '고객찾기(고객)',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
 		    send1: [{
@@ -907,6 +912,8 @@ function customerSearch(currentDiv){
 		
 	case 'teacherSearchDiv' :														// 선생님 조회					
 		var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '고객찾기(선생님)',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
 		    send1: 	[
@@ -985,6 +992,8 @@ function customerSearch(currentDiv){
 function onAutoSearch(sCustId){
 	if(sCustId != ""){
 		var param = {
+				userid: currentUserInfo.user.external_id,
+			    menuname: '고객정보(고객)',
 				senddataids: ["send1"],
 				recvdataids: ["recv1"],
 				send1: [{
@@ -1023,6 +1032,8 @@ function onAutoSearch(sCustId){
 function onAutoSearchTeacher(sEmpId){
 	if(sEmpId != ""){
 		var param = {
+				userid: currentUserInfo.user.external_id,
+			    menuname: '고객정보(선생님)',
 				senddataids: ["send1"],
 				recvdataids: ["recv1"],
 				send1: [{
@@ -1072,8 +1083,32 @@ const getCodeList = () => {
 			CODE_MK_LIST.push(dataObj["name"]);
 		}
 	}
-	console.log(CODE_MK_LIST);
-	CODE_MK_LIST.forEach(codeName => {
+	// get code
+	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+
+	// sorting
+	const sortKey = "CODE_ID";
+	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+
+	// create select options
+	for (const code of codeList) {
+
+		const codeType = code.CODE_MK;
+		const codeNm = code.CODE_NAME;
+		const codeVal = code.CODE_ID;
+
+		// filtering
+		if (codeType == "DM_TYPE_CDE") { // 지급사유
+			if (codeVal == "01" || codeVal == "02" || codeVal == "04" || codeVal == "05") continue;
+		}
+		if (codeType == "PROC_MK") { // 처리구분
+			if (codeVal == "5" || codeVal == "6") continue;
+		}
+
+		// set
+		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
+	}
+	/*CODE_MK_LIST.forEach(codeName => {
 		let settings = {
 			url: `${API_SERVER}/sys.getCommCode.do`,
 			method: 'POST',
@@ -1097,6 +1132,33 @@ const getCodeList = () => {
 			}
 			$("#custInfo_CUST_MK").val("CM");		// 임시 .. 잠재회원으로 기본설정
 		});
+	});*/
+}
+
+/**
+ * 상담 과목 리스트 조회
+ */
+const getProd = () => {
+	const settings = {
+		url: `${API_SERVER}/cns.getProd.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}],
+		}),
+	}
+	$.ajax(settings).done(data => {
+		if (!checkApi(data, settings)) return;
+		prods = data.dsRecv;
+		console.log(prods);
+		for(p of prods){
+			codeNm = p.PRDT_NAME;
+			codeVal = p.PRDT_ID;
+			$(`select[name='PRDT_ID']`).append(new Option(codeNm, codeVal));
+		}
 	});
 }
 
@@ -1205,7 +1267,9 @@ function loadCustInfoMain() {
 	
 	if(currentCustInfo.BL_BLACK_YN == "Y"){
 		$("#blackAndVipArea").css("display","");
+		$("#blackAndVipDT").text(currentCustInfo.BLACK_CUST_MK_NAME);
 	}
+	
 		
 	familyInfoLoad();												// 관계회원정보 불러오기
 	studyInfoLoad();												// 복수학습정보 불러오기
@@ -1215,6 +1279,43 @@ function loadCustInfoMain() {
 	loadList('currentStudy', counselMain_studyProgressList_grid);	// 학습진행정보 목록 불러오기			//OLD >> currentStudyLoad();	// 학습진행정보 목록 불러오기
 
 	setStatus(2);													// 조회 상태로 변경
+	
+	// === === === ZENDESK
+	// 젠데스크에 사용자 정보 저장 ccem과의 데이터 무결성을 위해 조회시마다 젠데스크 user Update.
+	var option = {
+			url: '/api/v2/users/create_or_update.json',
+			method: 'POST',
+			contentType: "application/json",
+			data: JSON.stringify({
+				"user": {
+					"external_id": currentCustInfo.CUST_ID,
+					//"email": $("#custInfo_EMAIL").val(),
+					"phone": currentCustInfo.MOBILNO,
+					"user_fields": 
+					{
+						"bonbu": currentCustInfo.UPDEPTNAME,
+						"dept" : currentCustInfo.DEPT_NAME,
+						"center" : currentCustInfo.LC_NAME,
+						"grade" : $("#custInfo_GRADE_CDE").find("option[value="+ currentCustInfo.GRADE_CDE +"]").text(),
+						"mobilno_mother" : currentCustInfo.MOBILNO_MBR,
+						"mobilno_father" : "",
+						"mobile_legal" : currentCustInfo.MOBILNO_LAW.replace(/-/gi,""),
+						"home_tel" : currentCustInfo.DDD+currentCustInfo.TELPNO1+currentCustInfo.TELPNO2,
+						"custom_no" : currentCustInfo.MBR_ID,
+						"fml_connt_cde" : $("#custInfo_FAT_REL").find("option[value="+ currentCustInfo.FAT_REL +"]").text(),
+						"fml_seq" : currentCustInfo.FAT_RSDNO,
+						"cust_mk" : $("#custInfo_CUST_MK").find("option[value="+ currentCustInfo.CUST_MK +"]").text(),
+						"tchr_mk_cde" : "",
+						"sts_cde" : "",
+					},
+					"name": currentCustInfo.NAME,
+					 "role": "end-user"
+				}
+			}),
+	}
+	client.request(option).then(function() {
+		client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
+	});		// 사용자 생성
 }
 
 /**
@@ -1227,6 +1328,8 @@ function familyInfoLoad() {
 	$("#custInfo_FAMILY_CMB").empty();
 	
 	var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '고객정보(가족관계회원 조회)',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
 		    send1: [{
@@ -1287,6 +1390,8 @@ function studyInfoLoad() {
 	$("#custInfo_LC_NM_study").empty();
 	
 	var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '고객정보(학습중인 사업국/센터)',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
 		    send1: [{
@@ -1371,6 +1476,8 @@ function studyInfoLoad() {
 function loadList(id, grid, listID) {
 	if(currentCustInfo) {
 		var param = {
+				userid: currentUserInfo.user.external_id,
+			    menuname: '',
 				senddataids: ["send1"],
 				recvdataids: ["recv1"],
 				send1: [{}]
@@ -1379,23 +1486,28 @@ function loadList(id, grid, listID) {
 		
 		switch(id){
 		case 'counselHist':		// 상담이력 
+			param.menuname = "상담이력";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID;				// 고객번호
 			sendUrl = '/cns.getCounselHist.do';
 			break;
 		case 'currentStudy':	// 학습진행정보
+			param.menuname = "상담이력";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getStudyData.do';
 			break;
 		case 'ifsStudyClass':	// 주간학습현황
+			param.menuname = "학습이력";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.ifsStudyClass.do';
 			break;
 		case 'ifsStudyChgInfo':	// 변동이력
+			param.menuname = "학습이력";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
 			sendUrl = '/cns.ifsStudyChgInfo.do';
 			break;
 		case 'ifsShipHist':		// 불출교재
+			param.menuname = "학습이력";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
 			if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){		//prdtId 가 PR, QR, QR2 로 시작하는 경우 getShipSTS
@@ -1409,6 +1521,7 @@ function loadList(id, grid, listID) {
 			}
 			break;
 		case 'getCounselSubj':		// 상담과목
+			param.menuname = "상담이력";
 			param.send1[0].CSEL_DATE = currentCounselInfo.CSEL_DATE			// 상담일자
 			param.send1[0].CSEL_NO = currentCounselInfo.CSEL_NO				// 상담번호
 			param.send1[0].CSEL_SEQ = currentCounselInfo.CSEL_SEQ			// 상담순번
@@ -1416,24 +1529,29 @@ function loadList(id, grid, listID) {
 			break;
 			
 		case 'getCustPayMst' : 		// 직접결제 - 회비관리 현황
+			param.menuname = "직접결제";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
 			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
 			sendUrl = '/cns.getCustPayMst.do';
 			break;
 		case 'getCustPayChgKKO' : 	// 직접결제 - 알림톡 발송이력
+			param.menuname = "직접결제";
 			param.send1[0].CUST_PAY_ID = currentDirectChargeInfo.CUST_PAY_ID// 고객결제 ID
 			sendUrl = '/cns.getCustPayChgKKO.do';
 			break;
 		case 'getPayLedger' : 		// 직접결제 - 결제/취소이력
+			param.menuname = "직접결제";
 			param.send1[0].CUST_PAY_ID = currentDirectChargeInfo.CUST_PAY_ID// 고객결제 ID
 			sendUrl = '/cns.getPayLedger.do';
 			break;
 		case 'getCustPayReq' : 		// 직접결제 - 청구서 조회
+			param.menuname = "직접결제";
 			param.send1[0].BILL_TX_ID = currentDirectChargeInfo.BILL_TX_ID	// 트랜잭션ID
 			sendUrl = '/cns.getCustPayReq.do';
 			break;
 		case 'temp' : 				// 직접결제 - 알림톡 수신자정보
+			param.menuname = "직접결제";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
 			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
@@ -1441,47 +1559,57 @@ function loadList(id, grid, listID) {
 			break;
 			
 		case 'getDet' : 			// 변경이력 - 현재학습장소
+			param.menuname = "변경이력";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			param.send1[0].PERSON_MK = currentCustInfo.CUST_MK				// 고객구분
 			param.send1[0].ADDR_MK = "1";									// 주소구분 (1로고정);
 			sendUrl = '/cns.getDetDtl.do';
 			break;
 		case 'getChgCustInfoHist' : // 변경이력 - 신상변경이력
+			param.menuname = "변경이력";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			sendUrl = '/cns.getChgCustInfoHist.do';
 			break;
 			
 		case 'getErrNewMBR' : // 정보동의 - 개인정보동의
+			param.menuname = "정보동의";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getErrNewMBR.do';
 			break;
 		case 'getErrEntInfo' : // 정보동의 - 개인정보동의
+			param.menuname = "정보동의";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getErrEntInfo.do';
 			break;
 			
 		case 'getDropDtl' : 	// 자동퇴회 - 자동퇴회 세부 이력조회
+			param.menuname = "자동퇴회";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getDropDtl.do';
 			break;
 		case 'getDropMsg' : 	// 자동퇴회 - 퇴회안내발송 이력조회
+			param.menuname = "자동퇴회";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getDropMsg.do';
 			break;
 			
 		case 'getTBLISTbyCUSTID' : 	// 고객조사 - 고객조사
+			param.menuname = "고객조사";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			sendUrl = '/cns.getTBLISTbyCUSTID.do';
 			break;
 			
 		case 'getTB_SMSDATA' : 	// SMS - SMS/LMS 이력
+			param.menuname = "SMS이력";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
 			sendUrl = '/cns.getTB_SMSDATA.do';
+			break;
 			
 			// 콜리스트 공통
 		case 'getTBCALLRST' : // 콜리스트 이력조회
+			param.menuname = "콜 리스트 조회";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
 			param.send1[0].LIST_ID = listID;								// 콜리스트ID
 			sendUrl = '/cns.getTBCALLRST.do';
@@ -1490,18 +1618,22 @@ function loadList(id, grid, listID) {
 			//=== === === === === === === === === === === === === === 고객 끝 선생님 시작
 			
 		case 'getCselHistList' : // 선생님 상담이력 상세 조회
+			param.menuname = "선생님 상담이력";
 			param.send1[0].EMP_ID = currentTchrInfo.EMP_ID					// 선생님사번
 			sendUrl = '/cns.getCselHistList.do';
 			break;
 		case 'getTchrCselHistInfo' : // 선생님 상담이력 상세 조회
+			param.menuname = "선생님 상담이력";
 			param.send1[0].CUST_ID = currentTchrInfo.EMP_ID					// 선생님사번 	// CUST_ID 에 EMP_ID 를 보낸다.
 			sendUrl = '/cns.getTchrCselHistInfo.do';
 			break;
 		case 'ifsClassInfo': 	// 선생님 수업목록
+			param.menuname = "선생님 교실정보";
 			param.send1[0].EMP_ID = currentTchrInfo.EMP_ID					// 선생님사번
 			sendUrl = '/cns.ifsClassInfo.do';
 			break;
 		case 'ifsStudentInfoByClass' : // 교실별 회원정보
+			param.menuname = "선생님 교실정보";
 			param.send1[0].CLS_ID = currentTchrClassInfo.CLS_ID					// 교실 ID
 			sendUrl = '/cns.ifsStudentInfoByClass.do';
 		}
@@ -1527,6 +1659,8 @@ function loadList(id, grid, listID) {
 						currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(0);		// 변동이력, 불출교재 자동조회
 						
 						var totalCntParam = {
+								userid: currentUserInfo.user.external_id,
+							    menuname: '학습이력',
 								senddataids: ["send1"],
 								recvdataids: ["recv1"],
 								send1: [{'MBR_ID' : currentCustInfo.MBR_ID}]
@@ -1876,6 +2010,8 @@ function onAutoSearchByTELPNO(sFlag,sName){
         	existCustTelNo = $("#custInfo_TELPNO2").val();
         	
         	var param = {
+        			userid: currentUserInfo.user.external_id,
+    			    menuname: '고객정보(중복고객조회)',
         		    senddataids: ["send1"],
         		    recvdataids: ["recv1"],
         		    send1: [{
@@ -2031,6 +2167,8 @@ function onSave(){
     //DS_ADDR.UseChangeInfo = false;
 	
 	var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '고객정보 등록/수정',
 		    senddataids: ["DS_DATA","DS_CUST","DS_CUST_CHG"],
 		    recvdataids: ["recv1"],
 		    DS_DATA: [{}],
@@ -2306,4 +2444,3 @@ function loadTeacherInfoMain() {
 	
 	loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 상담이력 조회
 }
-
