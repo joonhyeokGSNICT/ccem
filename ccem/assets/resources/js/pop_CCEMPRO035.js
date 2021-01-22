@@ -8,6 +8,7 @@ let users = [];		// 상담원 리스트
 let cselType = {};	// 분류코드
 
 $(function () {
+
 	// init date
 	$(".calendar").val(getDateFormat());
 
@@ -19,13 +20,23 @@ $(function () {
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
+	onStart();
+
+});
+
+const onStart = () => {
 	topbarObject = opener;
 	currentUser = topbarObject.currentUserInfo.user;
 	createGrids();
 	setCodeData(topbarObject.codeData);
 	getProd();
 	getUser();
-});
+
+	// 상담원그룹과 상담원 세팅
+	$("#selectbox8").val(currentUser.user_fields.user_grp_cde);
+	filterUser(currentUser.user_fields.user_grp_cde);
+	$("#selectbox2").val(currentUser.external_id);
+}
 
 const createGrids = () => {
 	// 상담조회 grid
@@ -156,10 +167,10 @@ const createGrids = () => {
 
 		const selCselUserId = ev.instance.getValue(ev.rowKey, "CSEL_USER_ID");
 		const currentUserLvl = currentUser.user_fields.user_lvl_mk
+		const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false;
 
 		// 녹취매핑 버튼/상담/입회수정 버튼 - 자신의 상담건 or 사용자레벨 3이하 가능
-		if (currentUser.external_id == selCselUserId ||
-			currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") {
+		if (currentUser.external_id == selCselUserId || isAdmin) {
 			$("#button4").prop("disabled", false);
 			$("#button7").prop("disabled", false);
 		} else {
@@ -168,9 +179,7 @@ const createGrids = () => {
 		}
 
 		// 녹취청취 버튼 - 녹취키가 있고, 자신의 상담건 or 사용자레벨 3이하 가능
-		if (ev.instance.getValue(ev.rowKey, "RECORD_ID") &&
-			(currentUser.external_id == selCselUserId ||
-				currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3")) {
+		if (ev.instance.getValue(ev.rowKey, "RECORD_ID") && (currentUser.external_id == selCselUserId || isAdmin)) {
 			$("#button5").prop("disabled", false);
 		} else {
 			$("#button5").prop("disabled", true);
@@ -185,11 +194,8 @@ const createGrids = () => {
 		}
 
 		// 삭제 버튼 - 사용자레벨 3이하 가능
-		if (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") {
-			$("#button8").prop("disabled", false);
-		} else {
-			$("#button8").prop("disabled", true);
-		}
+		if (isAdmin) $("#button8").prop("disabled", false);
+		else $("#button8").prop("disabled", true);
 
 		setCselDetail(ev.instance.getRow(ev.rowKey));
 	});
