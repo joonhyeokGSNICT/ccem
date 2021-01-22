@@ -189,7 +189,8 @@ const createGrids = () => {
 	});
 
 	grid1.on("dblclick", ev => {
-		// TODO 해당 고객정보로 탑바 전체 재조회
+		// 해당 고객정보로 탑바 고객정보 재조회
+		topbarObject.onAutoSearch(grid1.getValue(ev.rowKey, "CUST_ID"));
 	});
 
 	grid1.on("onGridUpdated", () => {
