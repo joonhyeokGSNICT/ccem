@@ -20,10 +20,9 @@ $(function () {
 
 	topbarObject = opener;
 	createGrids();
-	getCodeList();
+	setCodeData(topbarObject.codeData);
 	getProd();
 	getUser();
-	getCselType();
 });
 
 const createGrids = () => {
@@ -303,11 +302,11 @@ const checkDate = () => {
 }
 
 /**
- * 공통코드 조회
+ * 콤보박스 세팅
  */
-const getCodeList = () => {
+const setCodeData = (codeData) => {
 
-	let CODE_MK_LIST = [
+	const CODE_MK_LIST = [
 		"TRANS_MK", 		// 연계여부
 		"PRDT_GRP", 		// 과목군
 		"USER_GRP_CDE", 	// 상담원그룹
@@ -322,33 +321,35 @@ const getCodeList = () => {
 		"CSEL_MAN_GRP_CDE",	// 내담자
 		"STD_MON_CDE",		// 학습개월
 		"RENEW_POTN", 		// 복습가능성
+		"CSEL_LTYPE_CDE",	// 대분류
+		"CSEL_MTYPE_CDE",	// 중분류
+		"CSEL_STYPE_CDE",	// 소분류
 	];
 
-	CODE_MK_LIST.forEach(codeName => {
-		const settings = {
-			url: `${API_SERVER}/sys.getCommCode.do`,
-			method: 'POST',
-			contentType: "application/json; charset=UTF-8",
-			dataType: "json",
-			data: JSON.stringify({
-				senddataids: ["dsSend"],
-				recvdataids: ["dsRecv"],
-				dsSend: [{ CODE_MK: codeName }],
-			}),
-		}
-		$.ajax(settings).done(data => {
-			if (checkApi(data, settings)) {
-				let codeList = data.dsRecv;
-				codeList.forEach(code => {
-					let text = (codeName == "STD_MON_CDE" || codeName == "RENEW_POTN" || codeName == "USER_GRP_CDE") ? 
-									`[${code.CODE_ID}] ${code.CODE_NAME}` : code.CODE_NAME;
-					let value = code.CODE_ID;
-					$(`select[name='${codeName}']`).append(new Option(text, value));
-				});
-			}
-		});
-	});
+	// get code
+	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
 
+	// create select options
+	for (const code of codeList) {
+		let codeMk = code.CODE_MK;
+		let codeNm = code.CODE_NAME;
+		let codeId = code.CODE_ID;
+
+		// 상담분류 세팅
+		if (codeMk == "CSEL_LTYPE_CDE" || codeMk == "CSEL_MTYPE_CDE" || codeMk == "CSEL_STYPE_CDE") {
+			if (cselType[codeMk]) {
+				cselType[codeMk].push(code);
+			} else {
+				cselType[codeMk] = new Array();
+			}
+			continue;
+		}
+
+		// append option
+		codeNm = (codeMk == "STD_MON_CDE" || codeMk == "RENEW_POTN" || codeMk == "USER_GRP_CDE") ?
+			`[${codeId}] ${codeNm}` : codeNm;
+		$(`select[name='${codeMk}']`).append(new Option(codeNm, codeId));
+	}
 }
 
 /**
@@ -394,38 +395,6 @@ const getUser = () => {
 		users = data.dsRecv;
 		users.forEach(el => $("#selectbox2").append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 	});
-}
-
-/**
- * 분류코드 조회
- */
-const getCselType = () => {
-
-	let code_mk_list = [
-		"CSEL_LTYPE_CDE",	// 대분류
-		"CSEL_MTYPE_CDE",	// 중분류
-		"CSEL_STYPE_CDE",	// 소분류
-	];
-
-	code_mk_list.forEach(codeName => {
-		const settings = {
-			url: `${API_SERVER}/sys.getCommCode.do`,
-			method: 'POST',
-			contentType: "application/json; charset=UTF-8",
-			dataType: "json",
-			data: JSON.stringify({
-				senddataids: ["dsSend"],
-				recvdataids: ["dsRecv"],
-				dsSend: [{ CODE_MK: codeName }],
-			}),
-		}
-		$.ajax(settings).done(data => {
-			if (checkApi(data, settings)) {
-				cselType[codeName] = data.dsRecv;
-			}
-		});
-	});
-
 }
 
 /**
