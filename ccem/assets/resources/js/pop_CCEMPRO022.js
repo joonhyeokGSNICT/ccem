@@ -2084,4 +2084,6 @@ var setDisPlayUp = (data) => {
 var setDisPlayDn = (data) => {
 	$("#textbox11").val(data.PROC_DEPT_ID);		// 연계부서코드
 	$("#textbox26").val(data.PROC_DEPT_NAME);	// 연계부서이름
+	$("#hiddenbox11").val(data.EMP_ID_LIST);	// 연계담당자ID
+	$("#hiddenbox12").val(data.EMP_NAME_LIST);	// 연계담당자이름
 }
