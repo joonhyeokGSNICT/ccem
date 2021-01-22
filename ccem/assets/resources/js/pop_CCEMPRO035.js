@@ -1,4 +1,5 @@
-var topbarObject;
+var topbarObject;			// topbar window
+var currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
 
 var grid1, grid2;	// TOAST UI Grid
 
@@ -19,6 +20,7 @@ $(function () {
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
 	topbarObject = opener;
+	currentUser = topbarObject.currentUserInfo.user;
 	createGrids();
 	setCodeData(topbarObject.codeData);
 	getProd();
@@ -150,37 +152,46 @@ const createGrids = () => {
 	});
 
 	grid1.on("focusChange", ev => {
-		grid1.addSelection(ev);
+		ev.instance.addSelection(ev);
 
-		// 녹취매핑 버튼 disabled 여부
-		// TODO 자신의 상담건 가능 and 사용자레벨 3이하 가능
-		$("#button4").prop("disabled", false);
+		const selCselUserId = ev.instance.getValue(ev.rowKey, "CSEL_USER_ID");
+		const currentUserLvl = currentUser.user_fields.user_lvl_mk
 
-		// 녹취청취 버튼 disabled 여부
-		// TODO 자신의 상담건 가능 and 사용자레벨 3이하 가능
-		if (grid1.getValue(ev.rowKey, "RECORD_ID")) {
+		// 녹취매핑 버튼/상담/입회수정 버튼 - 자신의 상담건 or 사용자레벨 3이하 가능
+		if (currentUser.external_id == selCselUserId ||
+			currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") {
+			$("#button4").prop("disabled", false);
+			$("#button7").prop("disabled", false);
+		} else {
+			$("#button4").prop("disabled", true);
+			$("#button7").prop("disabled", true);
+		}
+
+		// 녹취청취 버튼 - 녹취키가 있고, 자신의 상담건 or 사용자레벨 3이하 가능
+		if (ev.instance.getValue(ev.rowKey, "RECORD_ID") &&
+			(currentUser.external_id == selCselUserId ||
+				currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3")) {
 			$("#button5").prop("disabled", false);
 		} else {
 			$("#button5").prop("disabled", true);
 		}
 
 		// 결과 버튼 disabled 여부
-		const proc = grid1.getValue(ev.rowKey, "PROC_MK");
-		if(proc == "2" || proc == "3" || proc == "4") {	// 2: 상담원처리, 3: 상담연계, 4: 시정처리
+		const proc = ev.instance.getValue(ev.rowKey, "PROC_MK");
+		if (proc == "2" || proc == "3" || proc == "4") {	// 2: 상담원처리, 3: 상담연계, 4: 시정처리
 			$("#button6").prop("disabled", false);
-		}else {
+		} else {
 			$("#button6").prop("disabled", true);
 		}
 
-		// 상담/입회수정 버튼 disabled 여부
-		// TODO 자신의 상담건 가능 and 사용자레벨 3이하 가능
-		$("#button7").prop("disabled", false);
+		// 삭제 버튼 - 사용자레벨 3이하 가능
+		if (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") {
+			$("#button8").prop("disabled", false);
+		} else {
+			$("#button8").prop("disabled", true);
+		}
 
-		// 삭제 버튼 disabled 여부
-		// TODO 사용자레벨 3이하 가능
-		$("#button8").prop("disabled", false);
-
-		setCselDetail(grid1.getRow(ev.rowKey));
+		setCselDetail(ev.instance.getRow(ev.rowKey));
 	});
 
 	grid1.on("click", ev => {
