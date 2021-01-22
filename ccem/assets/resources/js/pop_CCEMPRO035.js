@@ -33,9 +33,36 @@ const onStart = () => {
 	getUser();
 
 	// 상담원그룹과 상담원 세팅
-	$("#selectbox8").val(currentUser.user_fields.user_grp_cde);
-	filterUser(currentUser.user_fields.user_grp_cde);
+	const currentUserGrp = currentUser.user_fields.user_grp_cde
+	const currentUserLvl = currentUser.user_fields.user_lvl_mk
+	const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false;
+	const isLowLvl = (currentUserLvl != "user_lvl_mk_1" || currentUserLvl != "user_lvl_mk_2" || currentUserLvl != "user_lvl_mk_3" || currentUserLvl != "user_lvl_mk_4") ? true : false;
+	$("#selectbox8").val(currentUserGrp);
+	filterUser(currentUserGrp);
 	$("#selectbox2").val(currentUser.external_id);
+	$("#checkbox4").prop("checked", true);
+	$("#checkbox8").prop("checked", true);
+
+	// 권한이 낮은 사용자
+	if (isLowLvl) {
+		$("#selectbox8").prop("disabled", true);
+		$("#checkbox4").prop("disabled", true);
+	}
+	// 권한이 높은 사용자
+	else if (isAdmin) {
+		$("#checkbox8").prop("checked", false);
+	}
+	// 7100 ESL사업부 - 그룹변경 안되게 수정
+	if (currentUserGrp == "7100") {
+		$("#selectbox8").prop("disabled", true);
+		$("#checkbox4").prop("disabled", true);
+	}
+	// 엑셀버튼 - 사용자레벨이 3이하 가능
+	if (isAdmin) {
+		$("#button3").prop("disabled", false);
+	} else {
+		$("#button3").prop("disabled", true);
+	}
 }
 
 const createGrids = () => {
