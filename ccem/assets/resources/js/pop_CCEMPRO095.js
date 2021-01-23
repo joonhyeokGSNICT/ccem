@@ -8,9 +8,6 @@ let sCselNo   = "";
 let sCselSeq  = "";
 let sCustId   = "";
 let sCustMk   = "";
-let isCallUpdate = false;     // 닫기시 해피콜 전화여부 여부 판단 변수
-
-let objSys1100 = ""; //콜처리 페이지(top:sys1100.jsp) 객체
 
 $(function () {
 
@@ -36,7 +33,6 @@ const onStart = async (openerNm) => {
 
     // TODO 상담조회에서 팝업 되었을때,
     if (openerNm.includes("CCEMPRO000")) {
-        objSys1100  = "";
         sCselDate   = ""  // 상담일자
         sCselNo     = ""  // 상담번호
         sCselSeq    = ""  // 상담순번
@@ -47,7 +43,6 @@ const onStart = async (openerNm) => {
     } else if (openerNm.includes("CCEMPRO022")) {
         currentUser = opener.currentUser;
 
-        objSys1100  = "";
         sCselDate   = opener.calendarUtil.getImaskValue("textbox27");   // 상담일자
         sCselNo     = $("#textbox28", opener.document).val();           // 상담번호
         sCselSeq    = $("#selectbox14", opener.document).val();         // 상담순번
@@ -59,7 +54,6 @@ const onStart = async (openerNm) => {
 
     // TODO I/B해피콜 리스트에서 팝업되었을때,
     } else if (openerNm.includes("CCEMPRO000")) {
-        objSys1100  = "";
         sCselDate   = "";  // 상담일자
         sCselNo     = "";  // 상담번호
         sCselSeq    = "";  // 상담순번

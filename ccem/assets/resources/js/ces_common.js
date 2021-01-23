@@ -237,3 +237,13 @@ const getBasicList = (key, customMsg) => new Promise((resolve, reject) => {
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
+
+/**
+ * 로젠택배 배송정보 창
+ * @param {string} invoiceNum 송장번호
+ */
+const openLogen = (invoiceNum) => {   
+	// invoiceNum = "90318348201"; // TEST 
+    const baseUrl = "http://www.ilogen.com/d2d/delivery/invoice_search_popup.jsp?viewType=type2&invoiceNum=";
+    window.open(baseUrl + invoiceNum, "logen", "width=730, height=600");
+}
