@@ -24,7 +24,7 @@
 		<div class="row" style="background: #123f8a; height: 35px;">
 			<div class="col text-right">
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="onSMSSend()">SMS</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="">완 료</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="" disabled>완 료</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="">저 장</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="window.close()">닫 기</button>
 			</div>
@@ -199,7 +199,7 @@
 						<th>접수일시</th>
 						<td>
 							<div class="input-group">
-								<input type="text" class="form-control form-control-sm imask-date" id="datebox8">
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar2">
 								<input type="text" class="form-control form-control-sm imask-time" id="timebox1">
 							</div>
 						</td>
@@ -256,7 +256,7 @@
 						<th>해피콜일시</th>
 						<td>
 							<div class="input-group">
-								<input type="text" class="form-control form-control-sm imask-date" id="datebox5">
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar3">
 								<input type="text" class="form-control form-control-sm imask-time" id="timebox2">
 							</div>
 						</td>
@@ -298,7 +298,7 @@
 						<th>해피콜일시</th>
 						<td>
 							<div class="input-group">
-								<input type="text" class="form-control form-control-sm imask-date" id="datebox6">
+								<input type="text" class="form-control form-control-sm imask-date" id="calendar4">
 								<input type="text" class="form-control form-control-sm imask-time" id="timebox3">
 							</div>
 						</td>
@@ -369,7 +369,7 @@
 					<tr>
 						<th>내역</th>
 						<td>
-							<select class="form-control form-control-sm" id="selectbox5" name="GIFT_TYPE_CDE" onchange="onChangeGiftType(this.value)">
+							<select class="form-control form-control-sm" id="selectbox5" name="GIFT_TYPE_CDE" onchange="onChangeGiftType()">
 								<option value=""></option>
 							</select>
 						</td>

@@ -25,6 +25,9 @@ $(function () {
 
     // create calendar
     calendarUtil.init("calendar1", { drops: "up", opens: "left" });
+    calendarUtil.init("calendar2");
+    calendarUtil.init("calendar3");
+    calendarUtil.init("calendar4");
     
     // input mask
     calendarUtil.currency("textbox30");
@@ -32,7 +35,6 @@ $(function () {
     $(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
     onStart(opener ? opener.name : "");
-    getGiftList();
 
 });
 
@@ -80,7 +82,6 @@ const onStart = async (openerNm) => {
     // TODO 상담등록에서 팝업되었을때,
     else if (openerNm.includes("CCEMPRO022")) {
         currentUser = opener.currentUser;
-        codeData    = opener.codeData;
 
         sCSEL_DATE = opener.calendarUtil.getImaskValue("textbox27");    //상담일자
         sCSEL_NO   = $("#textbox28", opener.document).val();            //상담번호
@@ -89,6 +90,7 @@ const onStart = async (openerNm) => {
 
         sCallPage = "4";
 
+        await setCodeData(opener.codeData);
         getCounselRst(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
         getCharge(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
         getDeptProcVoc(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
@@ -98,7 +100,6 @@ const onStart = async (openerNm) => {
         
     }
 
-    setCodeData(codeData);
 
 }
 
@@ -107,7 +108,7 @@ const onStart = async (openerNm) => {
  * - as-is : cns2700.setCombo()
  * @param {object} data codeData
  */
-const setCodeData = (data) => {
+const setCodeData = async (data) => {
 
 	const CODE_MK_LIST = [
         "SATIS_CDE",        // 상담원만족도
@@ -117,37 +118,71 @@ const setCodeData = (data) => {
 	];
 
 	// get code
-	const codeList = data.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+    const codeList = data.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+    giftList = await getGiftList();
 
 	// create select options
 	for (const code of codeList) {
 		$(`select[name='${code.CODE_MK}']`).append(new Option(code.CODE_NAME, code.CODE_ID));
     }
+    giftList.forEach(el =>  $("#selectbox6").append(new Option(el.GIFT_NAME, el.GIFT_CDE)));
     
 }
 
 /**
  * 사은품내역2 코드 조회
  */
-const getGiftList = () => {
-    
+const getGiftList = () => new Promise((resolve, reject) => {
+
     const settings = {
-		url: `${API_SERVER}/sys.getGiftList.do`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-            dsSend: [{ }],
-		}),
-		errMsg: "사은품내역 코드 조회중 오류가 발생하였습니다.",
-	}
-	$.ajax(settings).done(data => {
-        if (!checkApi(data, settings)) return;
-        giftList = data.dsRecv;
-        giftList.forEach(el =>  $("#selectbox6").append(new Option(el.GIFT_NAME, el.GIFT_CDE)));
-	});
+        url: `${API_SERVER}/sys.getGiftList.do`,
+        method: 'POST',
+        contentType: "application/json; charset=UTF-8",
+        dataType: "json",
+        data: JSON.stringify({
+            senddataids: ["dsSend"],
+            recvdataids: ["dsRecv"],
+            dsSend: [{}],
+        }),
+        errMsg: "사은품내역 코드 조회중 오류가 발생하였습니다.",
+    }
+    $.ajax(settings)
+        .done(data => {
+            if (!checkApi(data, settings)) return reject(new Error(getApiMsg(data, settings)));
+            return resolve(data.dsRecv);
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
+
+/**
+ * 사은품내역1 change event
+ * - as-is : cns2700.CBO_GiftTypeCode.OnCloseUp()
+ * @param {string} GIFT_CDE 사은품코드
+ * @param {string} GIFT_PRICE 사은품가격
+ */
+const onChangeGiftType = (GIFT_CDE, GIFT_PRICE) => {
+    // 내역2 초기화
+    const value = $("#selectbox5").val();
+    if (!value) $("#selectbox6").prop("disabled", true);
+    else $("#selectbox6").prop("disabled", false);
+    $("#selectbox6").empty().append(new Option("", ""));
+    const newGifList = giftList.filter(el => el.GIFT_TYPE_CDE == value);
+    newGifList.forEach(el => $("#selectbox6").append(new Option(el.GIFT_NAME, el.GIFT_CDE)));
+    $("#selectbox6").val(GIFT_CDE);
+    // 가격 초기화
+    GIFT_PRICE = GIFT_PRICE ? String(GIFT_PRICE) : "0";
+    calendarUtil.setImaskValue("textbox30", GIFT_PRICE);
+}
+
+/**
+ * 사은품내역2 change event
+ * - as-is : cns2700.CBO_GiftCode.OnCloseUp()
+ * @param {string} value 사은품코드
+ */
+const onChangeGift = (value) => {
+    const gif = giftList.find(el => el.GIFT_CDE == value);
+    const price = gif ? String(gif.GIFT_PRICE) : "0";
+    calendarUtil.setImaskValue("textbox30", price);
 }
 
 /**
@@ -334,8 +369,8 @@ const getGift = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
             // DS_GIFT.DTL_MK          // 내역구분
             // DS_GIFT.CUST_ID         // 고객번호
             $("#selectbox5").val(DS_GIFT.GIFT_TYPE_CDE);   // 사은품분류코드  (내역1) 
-            $("#selectbox6").val(DS_GIFT.GIFT_CDE);        // 사은품코드     (내역2)
-            calendarUtil.setImaskValue("textbox30", String(DS_GIFT.GIFT_PRICE));    // 사은품가격    
+            // DS_GIFT.GIFT_CDE        // 사은품코드     (내역2)
+            // DS_GIFT.GIFT_PRICE      // 사은품가격    
             calendarUtil.setImaskValue("calendar1", DS_GIFT.SEND_DATE || "");       // 발송일자    
             $("#selectbox7").val(DS_GIFT.GIFT_CHNL_MK);    // 전달경로구분        
             $("#textbox31").val(DS_GIFT.PASS_USER);        // 전달자    
@@ -347,8 +382,8 @@ const getGift = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
             calendarUtil.setImaskValue("calendar1", getDateFormat());           // 발송일자  
         }
 
-        // 사은품분류(내역1)이 없으면 사은품코드(내역2) 비활성화
-        onChangeGiftType();
+        // 사은품코드와 가격 세팅
+        onChangeGiftType(DS_GIFT.GIFT_CDE, DS_GIFT.GIFT_PRICE);
         
 	});
 }
@@ -380,7 +415,7 @@ const getHappy1 = (CSEL_DATE, CSEL_NO) => {
             DS_HPCALL1 = data.dsRecv[0];
             // DS_HPCALL1.CSEL_DATE        // 상담일자       
             // DS_HPCALL1.CSEL_NO          // 상담번호   
-            calendarUtil.setImaskValue("datebox5", DS_HPCALL1.HPCALL_DATE || ""); // 해피콜일자       
+            calendarUtil.setImaskValue("calendar3", DS_HPCALL1.HPCALL_DATE || ""); // 해피콜일자       
             $("#timebox2").val(DS_HPCALL1.HPCALL_TIME);        // 해피콜시간       
             $("#textbox26").val(DS_HPCALL1.HPCALL_TITLE);      // 해피콜제목           
             $("#textbox35").val(DS_HPCALL1.HPCALL_CNTS);       // 해피콜내용       
@@ -397,7 +432,7 @@ const getHappy1 = (CSEL_DATE, CSEL_NO) => {
         } 
         // 처음 저장인 경우
         else {
-            calendarUtil.setImaskValue("datebox5", getDateFormat()); // 해피콜일자 초기화
+            calendarUtil.setImaskValue("calendar3", getDateFormat()); // 해피콜일자 초기화
             $("#timebox2").val(getTimeFormat());                     // 해피콜시간 초기화
             $("#textbox25").val(currentUser.name);                   // 해피콜담당자명 초기화
             getHappy2(sCSEL_DATE, sCSEL_NO, false);
@@ -437,7 +472,7 @@ const getHappy2 = (CSEL_DATE, CSEL_NO, isHappy1) => {
             DS_HPCALL2 = data.dsRecv[0];
             // DS_HPCALL2.CSEL_DATE          // 상담일자
             // DS_HPCALL2.CSEL_NO            // 상담번호
-            calendarUtil.setImaskValue("datebox6", DS_HPCALL2.HPCALL_DATE || ""); // 해피콜일자    
+            calendarUtil.setImaskValue("calendar4", DS_HPCALL2.HPCALL_DATE || ""); // 해피콜일자    
             $("#timebox3").val(DS_HPCALL2.HPCALL_TIME);                           // 해피콜시간    
             $("#textbox28").val(DS_HPCALL2.HPCALL_TITLE);                         // 해피콜제목    
             $("#textbox36").val(DS_HPCALL2.HPCALL_CNTS);                          // 해피콜내용    
@@ -449,7 +484,7 @@ const getHappy2 = (CSEL_DATE, CSEL_NO, isHappy1) => {
         } 
         // 검색결과가 없고, 1차해피콜 결과도 없을때.
         else if (!isHappy1) {
-            calendarUtil.setImaskValue("datebox6", getDateFormat());    // 해피콜일자 초기화
+            calendarUtil.setImaskValue("calendar4", getDateFormat());    // 해피콜일자 초기화
             $("#timebox3").val(getTimeFormat());                        // 해피콜시간 초기화
             $("#textbox27").val(currentUser.name);                      // 해피콜담당자명 초기화
         }
@@ -535,7 +570,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
             // DS_DEPT_PROC.PROC_HOPE_DATE    // 처리희망일자    
             // DS_DEPT_PROC.DEPT_ACP_ID       // 지점접수자사번
             $("#textbox18").val(DS_DEPT_PROC.DEPT_ACP_NAME);    // 지점접수자성명   
-            calendarUtil.setImaskValue("datebox8", DS_DEPT_PROC.DEPT_ACP_DATE || "");     // 지점접수일자(접수일자)
+            calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE || "");     // 지점접수일자(접수일자)
             $("#timebox1").val(DS_DEPT_PROC.DEPT_ACP_TIME);     // 지점접수시간(접수시간)
             // DS_DEPT_PROC.PROC_STS_MK       // 처리상태구분
             // DS_DEPT_PROC.RTN_FLAG          // 회신여부구분
@@ -550,7 +585,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
         }
         // 처음 저장인 경우
         else {
-            calendarUtil.setImaskValue("datebox8", getDateFormat());    // 접수일자 초기화
+            calendarUtil.setImaskValue("calendar2", getDateFormat());    // 접수일자 초기화
             $("#timebox1").val(getTimeFormat());                        // 접수시간 초기화
             DS_DEPT_PROC.TRANS_DATE     =   getDateFormat();            // 연계일자
             DS_DEPT_PROC.TRANS_MK       =   DS_COUNSEL.PROC_MK-2;       // 연계구분
@@ -561,8 +596,8 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
             DS_DEPT_PROC.PROC_TIME      =   "";                         // 처리시간                        
         }
         // 접수일자 체크
-        if (calendarUtil.getImaskValue("datebox8").length < 8) {
-            calendarUtil.setImaskValue("datebox8", getDateFormat());
+        if (calendarUtil.getImaskValue("calendar2").length < 8) {
+            calendarUtil.setImaskValue("calendar2", getDateFormat());
         }
         // 접수시간 체크
         if ($("#timebox1").val().length < 6) {
@@ -863,13 +898,13 @@ const setDisplay = (PROC_STS_MK, CSEL_RST_MK) => {
  */
 const setDeptEorD = (bWrite) => {
     if (bWrite){
-        $("#datebox8").prop("readonly", false);
+        $("#calendar2").prop("disabled", false);
         $("#timebox1").prop("readonly", false);
         $("#textbox18").prop("readonly", false);
         $("#textbox19").prop("readonly", false);
         $("#textbox34").prop("readonly", false);
     } else {
-        $("#datebox8").prop("readonly", true);
+        $("#calendar2").prop("disabled", true);
         $("#timebox1").prop("readonly", true);
         $("#textbox18").prop("readonly", true);
         $("#textbox19").prop("readonly", true);
@@ -889,14 +924,14 @@ const setDeptEorD = (bWrite) => {
  */
 const setHpCall1EorD = (bWrite) => {
     if (bWrite) {
-        $("#datebox5").prop("readonly", false);
+        $("#calendar3").prop("disabled", false);
         $("#timebox2").prop("readonly", false);
         $("#textbox25").prop("readonly", false);
         $("#textbox35").prop("readonly", false);
         $("#selectbox1").prop("disabled", true);
         $("#selectbox2").prop("disabled", true);
     } else {
-        $("#datebox5").prop("readonly", true);
+        $("#calendar3").prop("disabled", true);
         $("#timebox2").prop("readonly", true);
         $("#textbox25").prop("readonly", true);
         $("#textbox35").prop("readonly", true);
@@ -912,14 +947,14 @@ const setHpCall1EorD = (bWrite) => {
  */ 
 const setHpCall2EorD = (bWrite) => {
     if (bWrite) {
-        $("#datebox6").prop("readonly", false);
+        $("#calendar4").prop("disabled", false);
         $("#timebox3").prop("readonly", false);
         $("#textbox28").prop("readonly", false);
         $("#textbox36").prop("readonly", false);
         $("#selectbox3").prop("disabled", true);
         $("#selectbox4").prop("disabled", true);
     } else {
-        $("#datebox6").prop("readonly", true);
+        $("#calendar4").prop("disabled", true);
         $("#timebox3").prop("readonly", true);
         $("#textbox28").prop("readonly", true);
         $("#textbox36").prop("readonly", true);
@@ -1061,34 +1096,6 @@ const gf_getIntervalTime = (fromDay, fromTime, toDay, totime) => {
 
         return `${resultday}:${resulthour}:${resultmin}:${resultsec}`;
     }
-}
-
-/**
- * 사은품내역1 change event
- * - as-is : cns2700.CBO_GiftTypeCode.OnCloseUp()
- * @param {string} value 
- */
-const onChangeGiftType = (value) => {
-    if (!value) {
-        $("#selectbox6").prop("disabled", true);
-    } else {
-        $("#selectbox6").prop("disabled", false);
-    }
-    calendarUtil.setImaskValue("textbox30", "0");
-    $("#selectbox6").empty().append(new Option("", ""));
-    const newGifList = giftList.filter(el => el.GIFT_TYPE_CDE == value);
-    newGifList.forEach(el => $("#selectbox6").append(new Option(el.GIFT_NAME, el.GIFT_CDE)));
-}
-
-/**
- * 사은품내역2 change event
- * - as-is : cns2700.CBO_GiftCode.OnCloseUp()
- * @param {string} value 
- */
-const onChangeGift = (value) => {
-    const gif = giftList.find(el => el.GIFT_CDE == value);
-    const price = gif ? String(gif.GIFT_PRICE) : "0";
-    calendarUtil.setImaskValue("textbox30", price);
 }
 
 /**
