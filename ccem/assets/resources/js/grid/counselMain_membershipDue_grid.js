@@ -3,7 +3,6 @@ $(function(){
 	counselMain_membershipDueTab_dueList = new Grid({
 		el: document.getElementById('counselMain_membershipDueTab_dueList'),
 		bodyHeight: 300,
-		scrollX: false,
 		rowHeaders: [{
             type: 'rowNum',
             header: "NO",
@@ -14,155 +13,169 @@ $(function(){
             frozenCount: 0,
             frozenBorderWidth: 1,
         },
+        summary: {
+            height: 28,
+            position: 'bottom',
+            columnContent: {
+            	PRDT_NAME: { template: valueMap => "합   계"},
+            	TOTAL_FEE: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_1: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_2: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_3: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_4: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_5: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_6: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_7: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_8: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_9: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_10: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_11: { template: valueMap => valueMap.sum.format() },
+            	FEE_YM_12: { template: valueMap => valueMap.sum.format() },
+            },
+        },
         columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
 					header: '제품',
-					name: 'custNm',
-					width: 200,
+					name: 'PRDT_NAME',
+					width: 130,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '학습상태',
-					name: 'custSeq',
-					width: 100,
+					name: 'STD_STS_NAME',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '계',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'TOTAL_FEE',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '통화시각',
-					name: 'chprNm',
-					width: 150,
+					header: '',
+					name: 'FEE_YM_1',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '상담시각',
-					name: 'consStatNm',
-					width: 100,
+					header: '',
+					name: 'FEE_YM_2',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '상담시간',
-					name: 'consQustCntn',
-					width: 200,
+					header: '',
+					name: 'FEE_YM_3',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '상담구분',
-					name: 'consAnsrCntn',
-					width: 200,
+					header: '',
+					name: 'FEE_YM_4',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '처리구분',
-					name: 'consTyp1Nm',
-					width: 150,
+					header: '',
+					name: 'FEE_YM_5',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '상담교사',
-					name: 'consTyp2Nm',
-					width: 150,
+					header: '',
+					name: 'FEE_YM_6',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '소분류',
-					name: 'consTyp3Nm',
-					width: 150,
+					header: '',
+					name: 'FEE_YM_7',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '세분류',
-					name: 'consTyp4Nm',
-					width: 150,
+					header: '',
+					name: 'FEE_YM_8',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '연락처',
-					name: 'custInfo',
-					width: 100,
+					header: '',
+					name: 'FEE_YM_9',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '접수채널',
-					name: 'acpgChnlNm',
-					width: 100,
+					header: '',
+					name: 'FEE_YM_10',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '발신번호',
-					name: 'incoTlno',
-					width: 100,
+					header: '',
+					name: 'FEE_YM_11',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
-				},
-				/*{
-	                header: '상세이력',
-	                name: 'DETAILCONT',
-	                align: "center",
-	                sortable: true,
-	                ellipsis: true,
-	            },*/
-				{
-					header: '처리방법',
-					name: 'consStatNm',
-					width: 100,
-					align: "center",
-					sortable: true,
-					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '처리일시',
-					name: 'consDspsDttm',
-					width: 150,
+					header: '',
+					name: 'FEE_YM_12',
+					width: 65,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				}
 				],
 		});
 		counselMain_membershipDueTab_dueList.on('click', (ev) => {
-			counselMain_membershipDueTab_dueList.addSelection(ev);
-			counselMain_membershipDueTab_dueList.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_membershipDueTab_dueList.addSelection(ev);
+				counselMain_membershipDueTab_dueList.clickSort(ev);
+				currentDueInfo = counselMain_membershipDueTab_dueList.getRow(ev.rowKey);
+				loadList('getCreditPrdt',counselMain_membershipDueTab_subChargeList);
+			}
 	    });
 		
 		// 회비리스트 끝
@@ -171,7 +184,6 @@ $(function(){
 		counselMain_membershipDueTab_subChargeList = new Grid({
 			el: document.getElementById('counselMain_membershipDueTab_subChargeList'),
 			bodyHeight: 300,
-			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
 	            header: "NO",
@@ -183,49 +195,51 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	            },*/
 				{
 					header: '입금일자',
-					name: 'custNm',
-					width: 200,
+					name: 'RCPT_DATE',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.date(columnInfo.value)
 				},
 				{
 					header: '대상년월',
-					name: 'custSeq',
-					width: 100,
+					name: 'FEE_YM',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: function(e){
+						var result = e.value;
+						if(e.value != null){
+							result = e.value.substring(0,4) +"-"+ e.value.substring(4,6);
+						}
+						return result;
+					}
 				},
 				{
 					header: '구분',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'RCPT_NAME',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '입금액',
-					name: 'chprNm',
-					width: 150,
+					name: 'FEE_YM_RCPT_AMT',
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
 					header: '상담시각',
-					name: 'consStatNm',
-					width: 100,
+					name: 'NAME',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -233,8 +247,12 @@ $(function(){
 				],
 		});
 		counselMain_membershipDueTab_subChargeList.on('click', (ev) => {
-			counselMain_membershipDueTab_subChargeList.addSelection(ev);
-			counselMain_membershipDueTab_subChargeList.clickSort(ev);
+			if(ev.targetType == 'cell'){
+				counselMain_membershipDueTab_subChargeList.addSelection(ev);
+				counselMain_membershipDueTab_subChargeList.clickSort(ev);
+				currentSubDueInfo = counselMain_membershipDueTab_subChargeList.getRow(ev.rowKey);
+				loadList('getTransHist',counselMain_membershipDueTab_chargeList);
+			}
 	    });
 		
 		// 과목별입금내역 끝
@@ -243,7 +261,6 @@ $(function(){
 		counselMain_membershipDueTab_chargeList = new Grid({
 			el: document.getElementById('counselMain_membershipDueTab_chargeList'),
 			bodyHeight: 300,
-			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
 	            header: "NO",
@@ -255,58 +272,60 @@ $(function(){
 	            frozenBorderWidth: 1,
 	        },
 	        columns: [
-				/* {
-	                header: 'NO',
-	                name: 'NO',
-	                minWidth: 40,
-	                width: 40,
-	                align: "center",
-	                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-	            },*/
 				{
 					header: '이체일자',
-					name: 'custNm',
-					width: 200,
+					name: 'A1',
+					width: 88,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.date(columnInfo.value)
 				},
 				{
 					header: '과목',
-					name: 'custSeq',
-					width: 100,
+					name: 'A2',
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
 				},
 				{
 					header: '대상년월',
-					name: 'reserverDtm',
-					width: 150,
+					name: 'A3',
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: function(e){
+						var result = e.value;
+						if(e.value != null){
+							result = e.value.substring(0,4) +"-"+ e.value.substring(4,6);
+						}
+						return result;
+					}
 				},
 				{
 					header: '입금액',
-					name: 'chprNm',
-					width: 150,
+					name: 'A4',
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
 					header: '할인액',
-					name: 'consStatNm',
-					width: 100,
+					name: 'A5',
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
 					header: '상담시간',
-					name: 'consQustCntn',
-					width: 200,
+					name: 'A6',
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,

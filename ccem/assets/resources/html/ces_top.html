@@ -47,7 +47,7 @@
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO038', 1100, 710);" href="#">입회조회(성과)</a> 
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO039', 1145, 700);" href="#">SMS 송/수신 리스트 조회</a>
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO044', 1145, 475);" href="#">사업국/센터/구성원찾기</a> 
-								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO042', 1000, 600);" href="#">상담등록/분류(TEST)</a> 
+								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO042', 1222, 600);" href="#">상담등록/분류(TEST)</a> 
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO033', 1200, 640);" href="#">고객조회/선생님(TEST)</a> 
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO094', 600, 700);" href="#">MOS(커뮤니티)(TEST)</a>
 							</div></li>
@@ -101,7 +101,7 @@
 							</div>
 							<div class="col-4" style="margin-top: -44px;">
 								<div style="float: right;">
-									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1175, 655, '#counselRgtrTab');" value="상담등록" id=""> <input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1154, 630, '#entrRgtrTab');" value="입회등록" id="assignMemberbtn"> <input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1154, 630, '#tchrIntrdTab');" value="선생님소개" id=""> <input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO041', 500, 700);" value="호전환" id="transferCallbtn" style="background: #6fd899; display: none;">
+									<input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1222, 655, '#counselRgtrTab');" value="상담등록" id=""> <input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1222, 655, '#entrRgtrTab');" value="입회등록" id="assignMemberbtn"> <input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO022', 1222, 655, '#tchrIntrdTab');" value="선생님소개" id=""> <input type="button" class="btn btn-sm popup-btn counselMainBtn" onclick="PopupUtil.open('CCEMPRO041', 500, 700);" value="호전환" id="transferCallbtn" style="background: #6fd899; display: none;">
 								</div>
 							</div>
 						</div>
@@ -775,6 +775,9 @@
 													<div class="col">
 														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 과목별 입금내역</span>
 													</div>
+													<div style="float: right; width: 60%;" class="mb-2">
+														<input type="text" class="form-control form-control-sm defaultDate_bf" readonly style="width: 32%; float: left;"><span style="float: left;">&nbsp;&nbsp;-&nbsp;&nbsp; </span><input type="text" class="form-control form-control-sm defaultDate_ed" readonly style="width: 32%; float: left;">
+													</div>
 												</div>
 												<div id="counselMain_membershipDueTab_subChargeList"></div>
 												<div class="row mt-2">
@@ -794,37 +797,37 @@
 													<tr>
 														<th>계좌</th>
 														<td colspan="2">
-															<span></span>
+															<span id="memDue_accountNum"></span>
 														</td>
 														<th>이체일자</th>
 														<td>
-															<span></span>
+															<span id="memDue_ACCT_DAY"></span>
 														</td>
 													</tr>
 													<tr>
 														<th>은행</th>
 														<td colspan="2">
-															<span></span>
+															<span id="memDue_BANK_NAME"></span>
 														</td>
 														<th>이체신청일자</th>
 														<td>
-															<span></span>
+															<span id="memDue_ACCT_STDATE"></span>
 														</td>
 													</tr>
 													<tr>
 														<th>예금주</th>
 														<td colspan="2">
-															<span></span>
+															<span id="memDue_ACCT_NAME"></span>
 														</td>
 														<th>이체해지일자</th>
 														<td>
-															<span></span>
+															<span id="memDue_ACCT_EDDATE"></span>
 														</td>
 													</tr>
 													<tr>
 														<th colspan="2">현금영수증증빙번호</th>
 														<td colspan="3">
-															<span></span>
+															<span id="memDue_cashNo"></span>
 														</td>
 													</tr>
 												</table>
@@ -838,7 +841,7 @@
 														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 입금내역</span>
 													</div>
 												</div>
-												<div id="counselMain_membershipDueTab_chargeList"></div>
+												<div id="counselMain_membershipDueTab_chargeList" class="mt-2"></div>
 												<div class="row mt-2">
 													<div class="col">
 														<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 과목별 회비현황</span>

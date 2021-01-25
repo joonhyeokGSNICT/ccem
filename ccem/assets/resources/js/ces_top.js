@@ -23,6 +23,10 @@ var counselMain_autoResign_resignSendList_grid = null;	// 상담메인	> 자동�
 var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조사 > 고객조사 grid
 var counselMain_researchCust_rschCallHist_grid = null;	// 상담메인	> 고객조사 > 통화이력 grid
 var counselMain_researchCust_smsLmsHist_grid = null;	// 상담메인	> 고객조사 > 설문조사 grid
+var counselMain_membershipDueTab_dueList = null;		// 상담메인 > 회비	   > 회비정보 grid
+var counselMain_membershipDueTab_subChargeList = null;	// 상담메인 > 회비	   > 과목별 입금내역 grid
+var counselMain_membershipDueTab_chargeList = null;		// 상담메인 > 회비	   > 입금내역 grid
+
 
 var counselMainTeacher_counselHist_grid = null; 	// 상담메인 선생님 > 상담이력 grid
 var counselMainTeacher_asignClassGrid = null; 		// 상담메인 선생님 > 교실정보 > 선생님 수업목록 grid
@@ -146,6 +150,8 @@ var currentCustInfo = {
 var currentCounselInfo; 						// 현재 선택된 상담의 정보
 var currentStudyInfo; 							// 현재 선택된 주간학습의 정보
 var currentDirectChargeInfo;					// 현재 선택된 회비관리의 정보
+var currentDueInfo;								// 현재 선택된 회비정보
+var currentSubDueInfo;							// 현재 선택된 과목별입금내역 정보
 var currentTchrInfo;							// 현재 선택된 선생님의 정보
 
 var existCustInfo;								// 기존 존재하는 고객의 정보
@@ -299,6 +305,7 @@ function initAll() {
 	
 	currentCounselInfo = null; 					// 현재 선택된 상담의 정보 초기화
 	currentStudyInfo = null; 					// 현재 선택된 주간학습의 정보 초기화  
+	currentDueInfo = null;
 	currentDirectChargeInfo = null;				// 현재 선택된 회비관리 정보 초기화
 	currentTchrInfo = null;						// 현재 선택된 선생님 정보 초기화
 	
@@ -375,6 +382,9 @@ function gridReset(){
 		counselMain_researchCust_rsrchCust_grid.clear();	 	// 고객조사 grid
 		counselMain_researchCust_rschCallHist_grid.clear();		// 통화이력 grid
 		counselMain_researchCust_smsLmsHist_grid.clear();		// 설문조사 grid
+		counselMain_membershipDueTab_dueList.clear();			// 상담메인 > 회비	   > 회비정보 grid
+		counselMain_membershipDueTab_subChargeList.clear();		// 상담메인 > 회비	   > 과목별 입금내역 grid
+		counselMain_membershipDueTab_chargeList.clear();		// 상담메인 > 회비	   > 입금내역 grid
 		
 		counselMainTeacher_counselHist_grid.clear();			// 선생님 상담이력 리스트
 		counselMainTeacher_asignClassGrid.clear();				// 상담메인 선생님 > 교실정보 > 선생님 수업목록 grid
@@ -614,6 +624,85 @@ $(function(){
 			counselMain_studyTab_asignStuff.refreshLayout();
 			counselMain_studyTab_asignStuff2.refreshLayout();
 			break;
+		// 회비
+		case 'membershipDue':
+			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
+				loadList('getFeeInfo',counselMain_membershipDueTab_dueList);
+				var param = {
+						userid: currentUserInfo.user.external_id,
+					    menuname: '회비',
+					    senddataids: ["send1"],
+					    recvdataids: ["recv1"],
+					    send1: 	[
+					    			{
+					    				"MBR_ID": 	currentCustInfo.MBR_ID,
+					    			}
+					    		]
+					};
+				// 현금영수증 증빙번호 조회
+				$.ajax({
+					url: API_SERVER + '/cns.getCashNo.do',
+					type: 'POST',
+					dataType: 'json',
+					contentType: "application/json",
+					data: JSON.stringify(param),
+					success: function (response) {
+						console.log(response);
+						if(response.errcode == "0"){
+							$("#memDue_cashNo").text(response.recv1[0].BILL_NUM);
+						}
+					}
+				});
+				// 계좌번호 조회
+				$.ajax({
+					url: API_SERVER + '/cns.getAcctTrans.do',
+					type: 'POST',
+					dataType: 'json',
+					contentType: "application/json",
+					data: JSON.stringify(param),
+					success: function (response) {
+						if(response.errcode == "0"){
+							$("#memDue_accountNum").text(response.recv1[0].TRS_ACCT_ID.substring(0,4) + "**********");	// 계좌번호
+							$.ajax({
+								url: API_SERVER + '/cns.getAcctTransInfo.do',
+								type: 'POST',
+								dataType: 'json',
+								contentType: "application/json",
+								data: JSON.stringify({
+									userid: currentUserInfo.user.external_id,
+								    menuname: '회비',
+								    senddataids: ["send1"],
+								    recvdataids: ["recv1"],
+								    send1: 	[
+								    			{
+								    				"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
+								    				"TRS_ACCT_ID":	response.recv1[0].TRS_ACCT_ID,		// 계좌번호
+								    				"BANK_ID":		response.recv1[0].BANK_ID,			// 은행코드
+								    				"RCPT_MK":		response.recv1[0].RCPT_MK,			// 입금제품구분
+								    			}
+								    		]
+								}),
+								success: function (response) {
+									console.log(response);
+									if(response.errcode == "0"){
+										$("#memDue_ACCT_DAY").text(response.recv1[0].TRS_ACCT_DAY + "일");			// 이체일자
+										$("#memDue_BANK_NAME").text(response.recv1[0].BANK_NAME);			// 은행명
+										$("#memDue_ACCT_STDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));	// 이체신청일자
+										$("#memDue_ACCT_EDDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));	// 이체해지일자
+										$("#memDue_ACCT_NAME").text(response.recv1[0].TRS_ACCT_NAME);		// 예금주
+									}
+								}
+							});
+						}else {
+							client.invoke("notify", "계좌번호를 불러오지 못했습니다.", "error", 60000);
+						}
+					}
+				});
+			}
+			
+			counselMain_membershipDueTab_dueList.refreshLayout();			// 상담메인 > 회비	   > 회비정보 grid
+			counselMain_membershipDueTab_subChargeList.refreshLayout();		// 상담메인 > 회비	   > 과목별 입금내역 grid
+			counselMain_membershipDueTab_chargeList.refreshLayout();
 		// 직접결제
 		case 'payCheck':
 			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
@@ -786,7 +875,7 @@ function getCurrentUserInfo(){
 
 /**
  * 고객,선생님 조회 func
- * @param String
+ * @param Stringd
  * @returns
  * 20-12-17 최준혁
  */
@@ -1299,7 +1388,7 @@ function loadCustInfoMain() {
 						"grade" : $("#custInfo_GRADE_CDE").find("option[value="+ currentCustInfo.GRADE_CDE +"]").text(),
 						"mobilno_mother" : currentCustInfo.MOBILNO_MBR,
 						"mobilno_father" : "",
-						"mobile_legal" : currentCustInfo.MOBILNO_LAW.replace(/-/gi,""),
+						"mobile_legal" : currentCustInfo.MOBILNO_LAW?currentCustInfo.MOBILNO_LAW.replace(/-/gi,""):"",
 						"home_tel" : currentCustInfo.DDD+currentCustInfo.TELPNO1+currentCustInfo.TELPNO2,
 						"custom_no" : currentCustInfo.MBR_ID,
 						"fml_connt_cde" : $("#custInfo_FAT_REL").find("option[value="+ currentCustInfo.FAT_REL +"]").text(),
@@ -1527,7 +1616,23 @@ function loadList(id, grid, listID) {
 			param.send1[0].CSEL_SEQ = currentCounselInfo.CSEL_SEQ			// 상담순번
 			sendUrl = '/cns.getCounselSubj.do';
 			break;
-			
+		case 'getFeeInfo':			// 회비정보
+			param.menuname = "회비";
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getFeeInfo.do';
+			break;
+		case 'getCreditPrdt':		// 과목별 입금내역
+			param.menuname = "회비";
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].PRDT_ID = currentDueInfo.PRDT_ID					// 제품코드
+			sendUrl = '/cns.getCreditPrdt.do';
+			break;
+		case 'getTransHist': 		// 입금내역
+			param.menuname = "회비";
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].RCPT_DATE = currentSubDueInfo.RCPT_DATE			// 제품코드
+			sendUrl = '/cns.getTransHist.do';
+			break;
 		case 'getCustPayMst' : 		// 직접결제 - 회비관리 현황
 			param.menuname = "직접결제";
 			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
@@ -1698,6 +1803,22 @@ function loadList(id, grid, listID) {
 							loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
 							loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
 							loadList('getCustPayReq', counselMain_directCharge_bill_grid);					// 청구서 이력
+						}
+						break;
+					case 'getFeeInfo':
+						counselMain_membershipDueTab_dueList.addSelection({rowKey:0});
+						counselMain_membershipDueTab_dueList.clickSort({rowKey:0});
+						currentDueInfo = counselMain_membershipDueTab_dueList.getRow(0);				// 과목별 입금내역 자동조회
+						if(currentDueInfo != null){
+							loadList('getCreditPrdt', counselMain_membershipDueTab_subChargeList);		// 과목별 입금내역 이력
+						}
+						break;
+					case 'getCreditPrdt':
+						counselMain_membershipDueTab_subChargeList.addSelection({rowKey:0});
+						counselMain_membershipDueTab_subChargeList.clickSort({rowKey:0});
+						currentSubDueInfo = counselMain_membershipDueTab_subChargeList.getRow(0);			// 입금내역 자동조회
+						if(currentSubDueInfo != null){
+							loadList('getTransHist',counselMain_membershipDueTab_chargeList);				//  입금내역 이력
 						}
 						break;
 					}

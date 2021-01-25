@@ -16,6 +16,8 @@
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
 	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
 	<link rel="stylesheet" href="../css/ces_top.css">
 </head>
 <body>
@@ -37,7 +39,7 @@
 				<div role="tabpanel" class="tab-pane fade active show" id="recieveTab">
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn">조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="recieveTabBtn">조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn" onclick="">엑셀저장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 						</div>
@@ -51,21 +53,21 @@
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMS_st" name="customerSMS" style="width: 28%; float: left;" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMS_ed" style="width: 28%; float: left;"  name="customerSMS" autocomplete="off">
 									</td>
 									<th class="tdCheck thCheck" colspan="">
 										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">핸드폰
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="" autocomplete="off">
 									</td>
 									<th class="tdCheck thCheck" colspan="">
 										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSNameCheck">메세지
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="4" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="" autocomplete="off">
 									</td>
 								</tr>
 							</table>
@@ -76,7 +78,7 @@
 				<div role="tabpanel" class="tab-pane fade show" id="sendTab">
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsSearchBtn_send" >조회</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="sendTabBtn" >조회</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_send" onclick="">엑셀저장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 						</div>
@@ -86,25 +88,18 @@
 							<table class="table" style="background:#f1f5ff;">
 								<tr>
 									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSCheck">발송일자
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSSendDateCheck">발송일자
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMSSend_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck_dt" id="customerSMSSend_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
 									</td>
 									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">전화번호
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSSendPhoneCheck">주제명
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
-									</td>
-									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSNameCheck">수신자
-										</label>
-									</th>
-									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="4" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSSendPhone" name="searchInputCheck" maxlength="" autocomplete="off">
 									</td>
 								</tr>
 							</table>
@@ -125,25 +120,25 @@
 							<table class="table" style="background:#f1f5ff;">
 								<tr>
 									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSCheck">발송일자
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPerDateCheck">발송일자
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMS_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPer_st" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off"> <span style="float: left;">~</span> <input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPer_ed" style="width: 28%; float: left;" name="searchInputCheck" autocomplete="off">
 									</td>
 									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPhoneCheck">전화번호
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPerPhoneCheck">전화번호
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPerPhone" name="searchInputCheck" maxlength="4" autocomplete="off">
 									</td>
 									<th class="tdCheck thCheck" colspan="">
-										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSNameCheck">수신자
+										<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="customerSMSPerNameCheck">수신자
 										</label>
 									</th>
 									<td colspan="">
-										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSName" name="searchInputCheck" maxlength="4" autocomplete="off">
+										<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSMSPerName" name="searchInputCheck" maxlength="4" autocomplete="off">
 									</td>
 								</tr>
 							</table>
@@ -161,6 +156,7 @@
 	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
 	<script src="../lib/toast-grid/js/tui-pagination.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../lib/imask.js"></script>
     <script src="../lib/moment.min.js"></script>
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
