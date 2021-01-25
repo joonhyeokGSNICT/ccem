@@ -759,42 +759,128 @@ const _btn = {
 	// selectedList() : 트리에서 선택된 본부/사업국/센터를 팝업이전 화면으로 보내는 버튼
 	selectedList(){
 		if ( _mode == "chkTree" ) {
-			var node = tree.getSelectedNodes();
+			var nodes = tree.getSelectedNodes();
 			var tempList = [];
-			for ( index in node ) {
-				tempList.push(node[index].data);
+			for ( index in nodes ) {
+				var orgList = {};
+				if ( nodes[index].data.LV =="3" ) {
+					orgList.BRAND_ID = nodes[index].data.BRAND_ID;
+					orgList.BRAND_NAME = nodes[index].data.BRAND_NAME;
+					orgList.UP_DEPT_ID = nodes[index].parent.parent.data.UP_DEPT;
+					orgList.UP_DEPT_NAME = nodes[index].parent.parent.data.DEPT_NAME;
+					orgList.UP_DEPT_TEL = nodes[index].parent.parent.data.TELPNO;
+					orgList.PARE_DEPT_ID = nodes[index].parent.data.PARE_DEPT_ID;
+					orgList.PARE_DEPT_NAME = nodes[index].parent.data.DEPT_NAME;
+					orgList.PARE_DEPT_TEL = nodes[index].parent.data.TELPNO;
+					orgList.LC_DEPT_ID = nodes[index].data.DEPT_ID;
+					orgList.LC_DEPT_NAME = nodes[index].data.DEPT_NAME;
+					orgList.LC_DEPT_TEL = nodes[index].data.TELPNO;
+					orgList.LV = nodes[index].data.LV;
+					orgList.AREA_CDE = nodes[index].data.AREA_CDE;
+					orgList.AREA_NAME = nodes[index].data.AREA_NAME;
+					orgList.REP_EMP_ID = nodes[index].data.REP_EMP_ID;
+					orgList.REP_EMP_NAME = nodes[index].data.REP_EMP_NAME;
+				} else if ( nodes[index].data.LV =="2" ) {
+					orgList.BRAND_ID = nodes[index].data.BRAND_ID;
+					orgList.BRAND_NAME = nodes[index].data.BRAND_NAME;
+					orgList.UP_DEPT_ID = nodes[index].parent.data.UP_DEPT;
+					orgList.UP_DEPT_NAME = nodes[index].parent.data.DEPT_NAME;
+					orgList.UP_DEPT_TEL = nodes[index].parent.data.TELPNO;
+					orgList.PARE_DEPT_ID = nodes[index].data.PARE_DEPT_ID;
+					orgList.PARE_DEPT_NAME = nodes[index].data.DEPT_NAME;
+					orgList.PARE_DEPT_TEL = nodes[index].data.TELPNO;
+					orgList.LC_DEPT_ID = "";
+					orgList.LC_DEPT_NAME = "";
+					orgList.LC_DEPT_TEL = ""
+					orgList.LV = nodes[index].data.LV;
+					orgList.AREA_CDE = nodes[index].data.AREA_CDE;
+					orgList.AREA_NAME = nodes[index].data.AREA_NAME;
+					orgList.REP_EMP_ID = nodes[index].data.REP_EMP_ID;
+					orgList.REP_EMP_NAME = nodes[index].data.REP_EMP_NAME;
+				} else {
+					orgList.BRAND_ID = nodes[index].data.BRAND_ID;
+					orgList.BRAND_NAME = nodes[index].data.BRAND_NAME;
+					orgList.UP_DEPT_ID = nodes[index].data.UP_DEPT;
+					orgList.UP_DEPT_NAME = nodes[index].data.DEPT_NAME;
+					orgList.UP_DEPT_TEL = nodes[index].data.TELPNO;
+					orgList.PARE_DEPT_ID = "";
+					orgList.PARE_DEPT_NAME = "";
+					orgList.PARE_DEPT_TEL = "";
+					orgList.LC_DEPT_ID = "";
+					orgList.LC_DEPT_NAME = "";
+					orgList.LC_DEPT_TEL = ""
+					orgList.LV = nodes[index].data.LV;
+					orgList.AREA_CDE = nodes[index].data.AREA_CDE;
+					orgList.AREA_NAME = nodes[index].data.AREA_NAME;
+					orgList.REP_EMP_ID = nodes[index].data.REP_EMP_ID;
+					orgList.REP_EMP_NAME = nodes[index].data.REP_EMP_NAME;
+				}
+				tempList.push(orgList);
 			}
-	
-			var lv1List = removeDuplicates(tempList, 'UP_DEPT') // 본부리스트
+			console.log(tempList);
+			
+			var brandList = removeDuplicates(tempList, 'BRAND_ID') // 브랜드리스트
+			var sendBrand = [];
+			var sendBrandName = [];
+			for ( index in brandList ) {
+				sendBrand.push(brandList[index].BRAND_ID);
+				sendBrandName.push(brandList[index].BRAND_NAME);
+			}
+			
+			var lv1List = removeDuplicates(tempList,'UP_DEPT_ID') // 본부리스트 
 			var sendLv1 = [];
+			var sendLv1Name = [];
 			for ( index in lv1List ) {
-				sendLv1.push(lv1List[index].UP_DEPT);
+				sendLv1.push(lv1List[index].UP_DEPT_ID);
+				sendLv1Name.push(lv1List[index].UP_DEPT_NAME);
 			}
 	
 			var lv2List = tempList.filter(data => data.LV == "2" ); // 사업국리스트
 				lv2List = lv2List.concat(tempList.filter(data => data.LV == "3" )); 
 				lv2List = removeDuplicates(lv2List, 'PARE_DEPT_ID');
 			var sendLv2 = [];
+			var sendLv2Name = [];
 			for ( index in lv2List ) {
 				sendLv2.push(lv2List[index].PARE_DEPT_ID);
+				if (lv2List[index].LV != "3") sendLv2Name.push(lv2List[index].PARE_DEPT_NAME);
 			}
 	
 			var lv3List = tempList.filter(data => data.LV == "3" ); // 센터리스트
-				lv3List = removeDuplicates(lv3List, 'DEPT_ID')
+				lv3List = removeDuplicates(lv3List, 'LC_DEPT_ID')
 			var sendLv3 = [];
+			var sendLv3Name = [];
 			for ( index in lv3List ) {
-				sendLv3.push(lv3List[index].DEPT_ID);
+				sendLv3.push(lv3List[index].LC_DEPT_ID);
+				sendLv3Name.push(lv3List[index].LC_DEPT_NAME);
 			} 
 				
-			console.log("lv1 List >> ",sendLv1);
-			console.log("lv2 List >> ",sendLv2);
-			console.log("lv3 List >> ",sendLv3);
-			
+			var temp = [];
+			temp.brand = sendBrand;
+			temp.brandName = sendBrandName.join(', ');
+			temp.lv1 = sendLv1;
+			temp.lv1name = sendLv1Name.join(', ');
+			temp.lv2 = sendLv2;
+			temp.lv2name = sendLv2Name.join(', ');
+			temp.lv3 = sendLv3;
+			temp.lv3name = sendLv3Name.join(', ');
+
+			var rootkeys = tree.getSelectedNodes(true);
+			var selRootKeys = $.map(rootkeys, function(node){
+				return node.key;
+			});
+			console.log(selRootKeys.length);
+			console.log(nodes.length);
+
+			if ( nodes.length != selRootKeys.length ) temp.isYN = "Y";
+			else temp.isYN = "N";
 			/**
 			 * 전송할 데이터
 			 * @param org    : 선택한 본부/사업국/지점 정보
 			 * @param member : 선택된 구성원(직원) 정보 
 			 */
+			 opener.setTransDisPlay(temp);
+			 console.log(temp);
+			 // window.close();
 
 		} else if ( _mode == "plainTree") { //사업국 연계에 전송할 데이터
 			var tempGrid = employeeListGrid.getCheckedRows().map(el => {
