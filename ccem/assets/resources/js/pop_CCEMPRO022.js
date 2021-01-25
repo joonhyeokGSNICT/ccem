@@ -555,6 +555,8 @@ var getBaseData = (target, targetId) => {
 			$("#hiddenbox3").val(row.DEPT_EMP_ID); 	// 사업국장    
 			$("#hiddenbox4").val(row.LC_EMP_ID); 	// 센터장
 			$("#hiddenbox6").val(targetId); 		// 고객번호
+			$("#hiddenbox11").val("");				// 연계담당자ID
+			$("#hiddenbox12").val("");				// 연계담당자이름
 			
 			setInitCselRstMkDS();	// 상담결과 저장정보 초기화
 			onDmReceiptChange();	// DM 사은품접수 저장정보 세팅
@@ -777,12 +779,22 @@ const updateTicket = async (counselData, addInfoData, obData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
 
+	// 커스텀필드 세팅
 	const customPrdtList 		= grid2.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()); // 과목리스트(ex. ["11::2k", "11::k","10::m"])
 	const customDeptIdNm 		= $("#textbox6").val();		// 지점부서명(사업국명)
 	const customAeraCdeNm 		= $("#textbox4").val();		// 지역코드명
 	const customProcDeptIdNm 	= $("#textbox26").val();	// 연계부서명
 	const customLcName 			= $("#textbox9").val();		// 러닝센터명(센터명)
 	const customReclCntct 		= $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : ""; // 상담결과 구분이 재통화예약일경우
+	
+	// 팔로워 대상자 세팅
+	const followerData = new Array();
+	const EMP_ID_LIST = $("#hiddenbox11").val().split(",");
+	for (let EMP_ID of EMP_ID_LIST) {
+		EMP_ID = EMP_ID.trim();
+		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID}`);
+		if (users.length > 0) followerData.push({ user_id: users[0].id, action: "put" });
+	}
 
 	const option = {
 		url: `/api/v2/tickets/${counselData.ZEN_TICKET_ID}`,
@@ -793,9 +805,10 @@ const updateTicket = async (counselData, addInfoData, obData) => {
 				external_id		: CSEL_DATE_NO_SEQ,
 				subject			: counselData.CSEL_TITLE,	 // 제목
 				comment: {
-					public		: false,	// 내부메모
+					public		: false,					// 내부메모
 					body		: counselData.CSEL_CNTS,	// 상담내용
 				},
+				followers		: followerData,				// 팔로워
 				custom_fields: [
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"], 		value: CSEL_DATE_NO_SEQ }, 										// 상담번호
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"],		value: counselData.CSEL_LTYPE_CDE }, 							// 상담분류(대)  
@@ -887,11 +900,21 @@ const setTicket = async (counselData, addInfoData, obData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
 
+	// 커스텀필드 세팅
 	const customPrdtList 		= grid2.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()); // 과목리스트(ex. ["11::2k", "11::k","10::m"])
 	const customDeptIdNm 		= $("#textbox6").val();		// 지점부서명(사업국명)
 	const customAeraCdeNm 		= $("#textbox4").val();		// 지역코드명
 	const customProcDeptIdNm 	= $("#textbox26").val();	// 연계부서명
 	const customLcName 			= $("#textbox9").val();		// 러닝센터명(센터명)
+
+	// 팔로워 대상자 세팅
+	const followerData = new Array();
+	const EMP_ID_LIST = $("#hiddenbox11").val().split(",");
+	for (let EMP_ID of EMP_ID_LIST) {
+		EMP_ID = EMP_ID.trim();
+		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID}`);
+		if (users.length > 0) followerData.push({ id: users[0].id});
+	}
 	
 	let req = new Object()
 	req["ticket.subject"] = counselData.CSEL_TITLE;
@@ -978,6 +1001,9 @@ const setTicket = async (counselData, addInfoData, obData) => {
 	// 티켓필드 입력
 	await sidebarClient.set(req);
 	await sidebarClient.invoke('comment.appendText', counselData.CSEL_CNTS);
+	for(follower of followerData) {
+		await sidebarClient.invoke('ticket.collaborators.add', follower);
+	}
 	
 }
 
@@ -1187,6 +1213,8 @@ const onNewCustInit = () => {
     $("#selectbox9").val("");   	// 상담경로
     $("#textbox11").val("");		// 연계부서코드
 	$("#textbox26").val("");		// 연계부서명  
+	$("#hiddenbox11").val("");		// 연계담당자ID
+	$("#hiddenbox12").val("");		// 연계담당자이름
 	setInitCselRstMkDS();			// 상담결과 저장정보
 	grid3.clear();			  		// 학습중인 과목
 }

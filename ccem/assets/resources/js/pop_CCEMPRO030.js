@@ -935,15 +935,15 @@ const setHpCall1EorD = (bWrite) => {
         $("#timebox2").prop("readonly", false);
         $("#textbox25").prop("readonly", false);
         $("#textbox35").prop("readonly", false);
-        $("#selectbox1").prop("disabled", true);
-        $("#selectbox2").prop("disabled", true);
+        $("#selectbox1").prop("disabled", false);
+        $("#selectbox2").prop("disabled", false);
     } else {
         $("#calendar3").prop("disabled", true);
         $("#timebox2").prop("readonly", true);
         $("#textbox25").prop("readonly", true);
         $("#textbox35").prop("readonly", true);
-        $("#selectbox1").prop("disabled", false);
-        $("#selectbox2").prop("disabled", false);
+        $("#selectbox1").prop("disabled", true);
+        $("#selectbox2").prop("disabled", true);
     }
 }
 
@@ -958,15 +958,15 @@ const setHpCall2EorD = (bWrite) => {
         $("#timebox3").prop("readonly", false);
         $("#textbox28").prop("readonly", false);
         $("#textbox36").prop("readonly", false);
-        $("#selectbox3").prop("disabled", true);
-        $("#selectbox4").prop("disabled", true);
+        $("#selectbox3").prop("disabled", false);
+        $("#selectbox4").prop("disabled", false);
     } else {
         $("#calendar4").prop("disabled", true);
         $("#timebox3").prop("readonly", true);
         $("#textbox28").prop("readonly", true);
         $("#textbox36").prop("readonly", true);
-        $("#selectbox3").prop("disabled", false);
-        $("#selectbox4").prop("disabled", false);
+        $("#selectbox3").prop("disabled", true);
+        $("#selectbox4").prop("disabled", true);
     }
 }
 
@@ -978,18 +978,18 @@ const setHpCall2EorD = (bWrite) => {
 const setGiftEorD = (bWrite) => {
     if (bWrite) {
         $("#calendar1").prop("disabled", false);
-        $("#selectbox5").prop("disabled", true);
-        $("#selectbox6").prop("disabled", true);
+        $("#selectbox5").prop("disabled", false);
+        $("#selectbox6").prop("disabled", false);
         $("#textbox30").prop("readonly", false);
-        $("#selectbox7").prop("disabled", true);
+        $("#selectbox7").prop("disabled", false);
         $("#textbox31").prop("readonly", false);
         $("#textbox32").prop("readonly", false);
     } else {
         $("#calendar1").prop("disabled", true);
-        $("#selectbox5").prop("disabled", false);
-        $("#selectbox6").prop("disabled", false);
+        $("#selectbox5").prop("disabled", true);
+        $("#selectbox6").prop("disabled", true);
         $("#textbox30").prop("readonly", true);
-        $("#selectbox7").prop("disabled", false);
+        $("#selectbox7").prop("disabled", true);
         $("#textbox31").prop("readonly", true);
         $("#textbox32").prop("readonly", true);
     }
