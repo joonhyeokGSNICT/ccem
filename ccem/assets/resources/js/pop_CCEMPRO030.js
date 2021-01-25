@@ -1215,21 +1215,21 @@ const onSMSSend = async () => {
     const smsSendData = new Array();
     // 회원 전화번호 점검    	
     if (chkMbrSMSYN == "Y") {
-        const smsCondition = getSmsCondition('1', recevier);
+        const smsCondition = await getSmsCondition('1', recevier);
         if (!smsCondition) return;
         smsSendData.push(smsCondition);
     }
     // 지점장 전화번호 점검    	
     if (chkEmpSMSYN == "Y") {
         recevier = $("#textbox11").val().trim();
-        const smsCondition = getSmsCondition('2', recevier);
+        const smsCondition = await getSmsCondition('2', recevier);
         if (!smsCondition) return;
         smsSendData.push(smsCondition);
     }
     // 센터장 전화번호 점검    	
     if (chkLCEmpSMSYN == "Y") {
         recevier = $("#textbox13").val().trim();
-        const smsCondition = getSmsCondition('3', recevier);
+        const smsCondition = await getSmsCondition('3', recevier);
         if (!smsCondition) return;
         smsSendData.push(smsCondition);
     }	    	
@@ -1325,7 +1325,7 @@ const getSmsCondition = async (sType, recevier) => {
         DS_SMSDATA.MBR_ID       = DS_COUNSEL.LC_REP_EMPID;// 지점장 사번
     }
 
-    const DS_SMSDATA_NEW = {
+    return {
         MSG_TYPE    : "0",                  // 메시지 타입(0:SMS,5:LMS)      
         DEST_PHONE  : tel.join(""),         // 수신번호      
         DEST_NAME   : DS_SMSDATA.RECVNAME,  // 수신자      
@@ -1342,8 +1342,6 @@ const getSmsCondition = async (sType, recevier) => {
         SMS_FIX_ID  : "",                   // 구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)      
     }
 
-    return DS_SMSDATA_NEW;
-    
 }
 
 /**
