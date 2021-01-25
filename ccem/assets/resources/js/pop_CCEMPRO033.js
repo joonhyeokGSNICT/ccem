@@ -3,6 +3,10 @@ let teacherSearchList_grid;
 
 $(function(){
     
+	getCodeList();
+	getProd();
+	
+	
     // select tab
     let hash = window.location.hash;
     if (hash === "#counselMain_customerSearchTab") $("#customerTab").click();
@@ -232,11 +236,11 @@ $(function(){
 	// 고객찾기 > 선생님조회 grid
 	teacherSearchList_grid = new Grid({
 		el: document.getElementById('teacherSearchList_grid'),
-		bodyHeight: 420,
+		bodyHeight: 500,
 		pageOptions: {
 			perPage: 20,
+			useClient: true
 		},
-		scrollX: false,
 		rowHeaders: [{
             type: 'rowNum',
             header: "NO",
@@ -248,146 +252,116 @@ $(function(){
             frozenBorderWidth: 1,
         },
         columns: [
-           /* {
-                header: 'NO',
-                name: 'NO',
-                minWidth: 40,
-                width: 40,
-                align: "center",
-                formatter: function (obj) {return obj.row.__storage__.sortKey + 1 },
-            },*/
             {
                 header: '구분',
-                name: 'CUST_MK',
-                width: 200,
+                name: 'EMP_MK_NAME',
+                width: 70,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '선생님명',
-                name: 'custSeq',
-                width: 100,
+                name: 'TCHR_NAME',
+                width: 90,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '사원번호',
-                name: 'reserverDtm',
-                width: 150,
+                name: 'EMP_ID',
+                width: 90,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                formatter: function(e){
+                	result = "";
+                	if(e.value != null){
+                		result = e.value.substring(0,1);
+                		for(var i = 0; i< e.value.length-1; i++){
+                			result += "*";
+                		}
+                	}
+                	return result;
+                }
             },
             {
                 header: '주민번호',
-                name: 'chprNm',
-                width: 150,
+                name: 'RSDNO',
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                formatter: columnInfo => FormatUtil.birth(columnInfo.value)
             },
             {
                 header: '본부',
-                name: 'consStatNm',
-                width: 100,
+                name: 'DIV_NAME',
+                width: 110,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '사업국',
-                name: 'consQustCntn',
-                width: 200,
+                name: 'DEPT_NAME',
+                width: 120,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '센터',
-                name: 'consAnsrCntn',
-                width: 200,
+                name: 'LC_NAME',
+                width: 120,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '전화번호',
-                name: 'consTyp1Nm',
-                width: 150,
+                name: 'DEPT_TEL',
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                formatter: columnInfo => {
+                	result = "";
+                	if(columnInfo.value != null){
+                		result = FormatUtil.tel(columnInfo.value.replace(/ /gi,""));
+                		}
+                	return result;
+                	}
             },
             {
                 header: '직책',
-                name: 'consTyp2Nm',
-                width: 150,
+                name: 'DUTY_NAME',
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '선생님구분',
-                name: 'consTyp3Nm',
-                width: 150,
+                name: 'TCHR_MK_NAME',
+                width: 100,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
                 header: '소속팀',
-                name: 'consTyp4Nm',
-                width: 150,
+                name: 'PART_NAME',
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
             },
             {
-                header: '연락처',
-                name: 'custInfo',
-                width: 100,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            {
-                header: '접수채널',
-                name: 'acpgChnlNm',
-                width: 100,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            {
-                header: '발신번호',
-                name: 'incoTlno',
-                width: 100,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            /*{
-                header: '상세이력',
-                name: 'DETAILCONT',
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-                renderer: CustomColumn,
-            },*/
-            {
-                header: '처리방법',
-                name: 'consStatNm',
-                width: 100,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            {
-                header: '처리일시',
-                name: 'consDspsDttm',
-                width: 150,
+                header: '재직',
+                name: 'STS_NAME',
+                width: 70,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -395,9 +369,16 @@ $(function(){
         ],
     });
 	teacherSearchList_grid.on('click', (ev) => {
-		teacherSearchList_grid.addSelection(ev);
-		teacherSearchList_grid.clickSort(ev);
+		if(ev.targetType == "cell"){
+			teacherSearchList_grid.addSelection(ev);
+			teacherSearchList_grid.clickSort(ev);
+		}
     });
+	teacherSearchList_grid.on('dblclick', (ev) => {
+		if(ev.targetType == "cell"){
+		}
+    });
+	
 	// 선생님조회 끝
 	
 	
@@ -507,7 +488,7 @@ function customerSearch(currentDiv){
 		        	customerSearchList_grid.resetData(response.recv1);
 		        	
 		        	// 조회된 수가 1명 일 경우 자동 조회
-		        	if(response.recv1.length == "1"){
+		        	/*if(response.recv1.length == "1"){
 		        		initAll(); 													// 기존 정보 초기화
 		        		custInfo = customerSearchList_grid.getRow(0);
 		        		var param = {
@@ -534,7 +515,7 @@ function customerSearch(currentDiv){
 		        		    }, error: function (response) {
 		        		    }
 		        		});
-		        	}
+		        	}*/
 		        	
 		        }else {
 		        	loading.out();
@@ -548,12 +529,57 @@ function customerSearch(currentDiv){
 		
 	case 'teacherSearchDiv' :														// 선생님 조회					
 		var param = {
+			userid: opener.opener.currentUserInfo.user.external_id,
+		    menuname: '고객찾기(선생님)',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
-		    send1: [{"TCHR_NAME": "김소라"}]
+		    send1: 	[
+		    			{
+		    				"TCHR_NAME": 	"김소라",
+		    				"EMP_ID":		"",
+		    				"EMP_MK":		"",
+		    				"DEPT_NAME":	"",
+		    				"DIV_CDE":		"",
+		    				"STS_CDE":		"",
+		    				"LC_NM":		"",
+		    				"CHK_TCHR_NAME":"",
+		    				"CHK_EMP_ID":	"",
+		    				"CHK_EMP_MK":	"",
+		    				"CHK_DEPT_NAME":"",
+		    				"CHK_DIV_CDE":	"",
+		    				"CHK_STS_CDE":	"",
+		    				"CHK_LC_NM":	""
+		    			}
+		    		]
 		};
+		
+		if($("#teacherNameCheck").is(":checked")){			// 선생님명
+			param.send1[0].CHK_TCHR_NAME = "Y";
+			param.send1[0].TCHR_NAME = $("#teacherName").val();
+		}
+		if($("#teacherDNumCheck").is(":checked")){			// 사원번호
+			param.send1[0].CHK_EMP_ID = "Y";
+			param.send1[0].EMP_ID = $("#teacherDNum").val();
+		}
+		if($("#teacherStatCheck").is(":checked")){			// 재직구분
+			param.send1[0].CHK_STS_CDE = "Y";
+			param.send1[0].STS_CDE = $("#teacherStat").val();
+		}
+		if($("#teacherLCNameCheck").is(":checked")){		// 센터
+			param.send1[0].CHK_LC_NM = "Y";
+			param.send1[0].LC_NM = $("#teacherLCName").val();
+		}
+		if($("#teacherDeptNameCheck").is(":checked")){		// 사업국
+			param.send1[0].CHK_DEPT_NAME = "Y";
+			param.send1[0].DEPT_NAME = $("#teacherDeptName").val();
+		}
+		if($("#teacherUpDeptNameCheck").is(":checked")){	// 본부
+			param.send1[0].CHK_DIV_CDE = "Y";
+			param.send1[0].DIV_CDE = $("#teacherUpDeptName").val();
+		}
+		
 		$.ajax({
-		    url: API_SERVER + '/cns.getTchrPdaInfo.do',
+		    url: API_SERVER + '/cns.getTchrSearchInfo.do',
 		    type: 'POST',
 		    dataType: 'json',
 		    contentType: "application/json",
@@ -562,6 +588,7 @@ function customerSearch(currentDiv){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	teacherSearchList_grid.resetData(response.recv1);
+		        	teacherSearchList_grid.refreshLayout();
 		        }else {
 		        	loading.out();
 		        	client.invoke("notify", response.errmsg, "error", 60000);
@@ -571,4 +598,69 @@ function customerSearch(currentDiv){
 		});
 		break;
 	}
+}
+
+/** 
+ * 공통코드 조회
+ */
+const getCodeList = () => {
+	
+	var jb = $( 'select' ).get();
+	var CODE_MK_LIST = [];
+	for(dataObj of jb){
+		if(dataObj["name"] != "" && dataObj["name"] != null){
+			CODE_MK_LIST.push(dataObj["name"]);
+		}
+	}
+	// get code
+	const codeList = opener.codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+
+	// sorting
+	const sortKey = "CODE_ID";
+	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+
+	// create select options
+	for (const code of codeList) {
+
+		const codeType = code.CODE_MK;
+		const codeNm = code.CODE_NAME;
+		const codeVal = code.CODE_ID;
+
+		// filtering
+		if (codeType == "DM_TYPE_CDE") { // 지급사유
+			if (codeVal == "01" || codeVal == "02" || codeVal == "04" || codeVal == "05") continue;
+		}
+		if (codeType == "PROC_MK") { // 처리구분
+			if (codeVal == "5" || codeVal == "6") continue;
+		}
+
+		// set
+		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
+	}
+}
+
+/**
+ * 상담 과목 리스트 조회
+ */
+const getProd = () => {
+	const settings = {
+		url: `${API_SERVER}/cns.getProd.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{}],
+		}),
+	}
+	$.ajax(settings).done(data => {
+		prods = data.dsRecv;
+		console.log(prods);
+		for(p of prods){
+			codeNm = p.PRDT_NAME;
+			codeVal = p.PRDT_ID;
+			$(`select[name='PRDT_ID']`).append(new Option(codeNm, codeVal));
+		}
+	});
 }
