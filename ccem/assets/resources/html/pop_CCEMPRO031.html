@@ -20,12 +20,12 @@
 <body>
 	<div style="background: #123f8a; height: 35px;">
 		<div class="text-right">
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn"onclick="openPopup('CCEMPRO033')">고객조회</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">입회연계</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">추가등록</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="openPopup('CCEMPRO029')">관계회원</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="parent.close()">닫 기</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="">저 장</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="openPopup('CCEMPRO033')">고객조회</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="">입회연계</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="">추가등록</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button5" onclick="openPopup('CCEMPRO029')">관계회원</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button6" onclick="parent.close()">닫 기</button>&nbsp;
 		</div>
 	</div>
 	<!-- 입회등록 왼쪽 -->
@@ -37,12 +37,12 @@
 			</colgroup>
 			<tr>
 				<th>과목검색</th>
-				<td><input type="text" class="form-control form-control-sm" oninput="searchProd(grid4, 'PRDT_NAME', this.value)"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox1" oninput="searchProd(grid4, 'PRDT_NAME', this.value)"></td>
 			</tr>
 			<tr>
 				<th>과목군</th>
 				<td>
-					<select class="form-control form-control-sm" name="PRDT_GRP" onchange="searchProd(grid4, 'PRDT_GRP', this.value)">
+					<select class="form-control form-control-sm" name="PRDT_GRP" id="selectbox1" onchange="searchProd(grid4, 'PRDT_GRP', this.value)">
 						<option value="">전체</option>
 					</select>
 				</td>
@@ -65,20 +65,20 @@
 				</colgroup>
 				<tr>
 					<th>회원명</th>
-					<td><input type="text" class="form-control form-control-sm"></td>
+					<td><input type="text" class="form-control form-control-sm" id="textbox2"></td>
 					<th>회원번호</th>
-					<td><input type="text" class="form-control form-control-sm"></td>
+					<td><input type="text" class="form-control form-control-sm" id="textbox3"></td>
 					<th>전화번호</th>
-					<td><input type="text" class="form-control form-control-sm"></td>
+					<td><input type="text" class="form-control form-control-sm" id="textbox4"></td>
 				</tr>
 				<tr>
 					<th>학년</th>
-					<td><select class="form-control form-control-sm"></select></td>
+					<td><select class="form-control form-control-sm" id="selectbox2"></select></td>
 					<th>주소</th>
 					<td colspan="3">
 						<div class="input-group">
-							<input type="text" class="form-control form-control-sm" style="width: 30%;">
-							<input type="text" class="form-control form-control-sm" style="width: 70%;">
+							<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox5">
+							<input type="text" class="form-control form-control-sm" style="width: 70%;" id="textbox6">
 						</div>
 					</td>
 				</tr>
@@ -98,15 +98,15 @@
 					<th>상담일자</th>
 					<td><input type="text" class="form-control form-control-sm calendar" id="calendar3"></td>
 					<th>접수번호</th>
-					<td><input type="text" class="form-control form-control-sm"></td>
+					<td><input type="text" class="form-control form-control-sm" id="textbox7"></td>
 					<th>순번</th>
-					<td><select class="form-control form-control-sm"></select></td>
+					<td><select class="form-control form-control-sm" id="selectbox3"></select></td>
 				</tr>
 				<tr>
 					<th>상담시간</th>
-					<td><input class="form-control form-control-sm imask-time" id="time2"></td>
+					<td><input class="form-control form-control-sm imask-time" id="timebox2"></td>
 					<th>상담채널</th>
-					<td colspan="3"><select class="form-control form-control-sm"></select></td>
+					<td colspan="3"><select class="form-control form-control-sm" id="selectbox4" name="CSEL_CHNL_MK"></select></td>
 				</tr>
 			</table>
 		</div>
@@ -123,43 +123,47 @@
 				<th>연계본부</th>
 				<td>
 					<div class="input-group">
-						<input type="text" class="form-control form-control-sm" style="width: 40%;">
-						<input type="text" class="form-control form-control-sm" style="width: 60%;">
+						<input type="text" class="form-control form-control-sm" style="width: 40%;" id="textbox8">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox9">
 					</div>
 				</td>
 				<th>전화번호</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox10"></td>
 				<th>연계대상자</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox11"></td>
 			</tr>
 			<tr>
 				<th>연계사업국</th>
 				<td>
 					<div class="input-group">
-						<input type="text" class="form-control form-control-sm" style="width: 40%;">
-						<input type="text" class="form-control form-control-sm" style="width: 60%;">
+						<input type="text" class="form-control form-control-sm" style="width: 40%;" id="textbox12">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox13">
 					</div>
 				</td>
 				<th>연계방법</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td>
+					<select class="form-control form-control-sm" id="selectbox5" name="TRANS_CHNL_MK">
+						<option value=""></option>
+					</select>
+				</td>
 				<th>접수자</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox14"></td>
 			</tr>
 			<tr>
 				<th>연계센터</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox15"></td>
 				<th>연계일시</th>
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm calendar" id="calendar4">
-						<input type="text" class="form-control form-control-sm imask-time" id="time3">
+						<input type="text" class="form-control form-control-sm imask-time" id="timebox3">
 					</div>
 				</td>
 				<th>접수일시</th>
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm calendar" id="calendar5">
-						<input type="text" class="form-control form-control-sm imask-time" id="time4">
+						<input type="text" class="form-control form-control-sm imask-time" id="timebox4">
 					</div>
 				</td>
 			</tr>
@@ -180,21 +184,23 @@
 			</colgroup>
 			<tr>
 				<th>안내문구</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td>
+					<select class="form-control form-control-sm" id="selectbox6" name="CSEL_PREFACE">
+						<option value=""></option>
+					</select>
+				</td>
 				<th>학부모명</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox16"></td>
 				<th>연락처</th>
-				<td><input type="text" class="form-control form-control-sm"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox17"></td>
 			</tr>
-		</table>
-		<table class="table table-sm table-bordered">
-			<colgroup>
-				<col span="1" style="width:10%;">
-				<col span="1" style="width:90%;">
-			</colgroup>
+			<tr>
+				<th>이벤트명</th>
+				<td colspan="5"><input type="text" class="form-control form-control-sm" id="textbox18"></td>
+			</tr>
 			<tr>
 				<th>기타<br>요구사항</th>
-				<td style="height: 202px;"><textarea class="form-control w-100 h-100"></textarea></td>
+				<td colspan="5" style="height: 208px;"><textarea class="form-control w-100 h-100" id="textbox25"></textarea></td>
 			</tr>
 		</table>
 		<table class="table table-sm table-bordered">
@@ -206,34 +212,42 @@
 			</colgroup>
 			<tr>
 				<th>입회사유</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td>
+					<select class="form-control form-control-sm" id="selectbox7" name="STD_MOTIVE_CDE">
+						<option value=""></option>
+					</select>
+				</td>
 				<th>분류(대)</th>
 				<td>
 					<div class="input-group" onclick="openPopup('CCEMPRO042')">
-						<input type="text" class="form-control form-control-sm" style="width: 30%;">
-						<input type="text" class="form-control form-control-sm" style="width: 70%;">
+						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox19">
+						<input type="text" class="form-control form-control-sm" style="width: 70%;" id="textbox20">
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<th>입회경로</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td>
+					<select class="form-control form-control-sm" id="selectbox8" name="STD_CRS_CDE">
+						<option value=""></option>
+					</select>
+				</td>
 				<th>분류(중)</th>
 				<td>
 					<div class="input-group" onclick="openPopup('CCEMPRO042')">
-						<input type="text" class="form-control form-control-sm" style="width: 30%;">
-						<input type="text" class="form-control form-control-sm" style="width: 70%;">
+						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox21">
+						<input type="text" class="form-control form-control-sm" style="width: 70%;" id="textbox22">
 					</div>
 				</td>
 			</tr>
 			<tr>
 				<th>내담자</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><select class="form-control form-control-sm" id="selectbox9" name="CSEL_MAN_MK"></select></td>
 				<th>분류(소)</th>
 				<td>
 					<div class="input-group" onclick="openPopup('CCEMPRO042')">
-						<input type="text" class="form-control form-control-sm" style="width: 30%;">
-						<input type="text" class="form-control form-control-sm" style="width: 70%;">
+						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox23">
+						<input type="text" class="form-control form-control-sm" style="width: 70%;" id="textbox24">
 					</div>
 				</td>
 			</tr>

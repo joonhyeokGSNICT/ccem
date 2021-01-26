@@ -841,13 +841,13 @@ const onModify = () => {
 
 	switch (proc) {
 		case "6":
-			PopupUtil.open("CCEMPRO022", 1175, 655, "#tchrIntrdTab");	// 선생님소개 탭
+			PopupUtil.open("CCEMPRO022", 1220, 605, "#tchrIntrdTab");	// 선생님소개 탭
 			break;
 		case "5":
-			PopupUtil.open("CCEMPRO022", 1175, 655, "#entrRgtrTab");	// 입회등록 탭
+			PopupUtil.open("CCEMPRO022", 1220, 605, "#entrRgtrTab");	// 입회등록 탭
 			break;
 		default:
-			PopupUtil.open("CCEMPRO022", 1175, 655, "#counselRgtrTab");	// 상담등록 탭
+			PopupUtil.open("CCEMPRO022", 1220, 605, "#counselRgtrTab");	// 상담등록 탭
 			break;
 	}
 
