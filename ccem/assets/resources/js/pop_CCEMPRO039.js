@@ -1,6 +1,8 @@
 let grid
 var smsRecvListGrid;
 
+var currentSendInfo;
+
 $(function(){
 
 	// 날짜 픽커
@@ -213,6 +215,14 @@ $(function(){
     	if(ev.targetType="cell"){
     		smsSendListGrid.addSelection(ev);
     		smsSendListGrid.clickSort(ev);
+    	}
+    });
+    smsSendListGrid.on("dblclick", ev => {
+    	if(ev.targetType="cell"){
+    		currentSendInfo = smsSendListGrid.getRow(ev.rowKey);
+    		PopupUtil.open('CCEMPRO086', 1145, 700);
+    		
+    		
     	}
     });
     
@@ -495,4 +505,68 @@ function loadList(id, grid, listID, sort) {
 		}, error: function (response) {
 		}
 	});
+}
+
+//엑셀 다운로드 excelExport(그리드객체, 파일이름, 테이블id) {
+function excelExport(gridId, excelfile, tableId){
+	var gridAllData = gridId.getData();
+	var gridData = gridId.getColumns();
+	$("#"+tableId).empty();
+	//헤더
+	$("#"+tableId).append("<thead><tr></tr></thead>");
+	for(dataObj of gridData){
+		if(dataObj["hidden"] == false){
+			$("#"+tableId+">thead>tr").append("<th>"+dataObj["header"]+"</th>");
+		}
+	}
+	//내용
+	$("#"+tableId).append("<tbody>");
+	for(gridRow of gridAllData){
+		var appendStr ="";
+		appendStr += "<tr>";
+		for(dataObj of gridData){
+			if(dataObj["hidden"] == false){
+				appendStr += `<td style="mso-number-format:'\@'">${gridRow[dataObj["name"]]}</td>`;
+			}
+		}
+		appendStr += "</tr>";
+		$("#"+tableId+">tbody").append(appendStr);
+	}
+	$("#"+tableId).append("</tbody>");
+	console.log(gridData);
+		var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+		tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+		tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+		tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+		tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+		tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
+		tab_text = tab_text + "<table border='1px'>";
+		var exportTable = $("#"+tableId).clone();
+		exportTable.find('input').each(function (index, elem) { $(elem).remove(); });
+		tab_text = tab_text + exportTable.html();
+		tab_text = tab_text + '</table></body></html>';
+		var data_type = 'data:application/vnd.ms-excel';
+		var ua = window.navigator.userAgent;
+		var msie = ua.indexOf("MSIE ");
+	   var fileName = excelfile + '.xls';
+	   //Explorer 환경에서 다운로드
+	   if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
+	      if (window.navigator.msSaveBlob) {
+	         var blob = new Blob([tab_text], {
+	            type: "application/csv;charset=utf-8;"
+	         });
+	         navigator.msSaveBlob(blob, fileName);
+	      }
+	   } else {
+	      var blob2 = new Blob([tab_text], {
+	         type: "application/csv;charset=utf-8;"
+	      });
+	      var filename = fileName;
+	      var elem = window.document.createElement('a');
+	      elem.href = window.URL.createObjectURL(blob2);
+	      elem.download = filename;
+	      document.body.appendChild(elem);
+	      elem.click();
+	      document.body.removeChild(elem);
+	   }
 }
