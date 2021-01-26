@@ -1607,6 +1607,170 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- OB통화결과Modal -->
+	<div class="modal fade" id="obResultModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h6 class="modal-title" id="exampleModalLabel">OB결과등록</h6>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+			  <section class="call_rst border p-2 mb-2">
+				<h6>통화결과</h6>
+				<table class="table table-sm table-borderless w-100 m-0">
+				  <colgroup>
+					<col width="50%"></col>
+					<col width="50%"></col>
+				  </colgroup>
+				  <tbody>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op1" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op1">통화</label>
+						</div>
+					  </td>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op2" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op2">통화중</label>
+						</div>
+					  </td>
+					</tr>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op3" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op3">무응답</label>
+						</div>
+					  </td>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op4" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op4">조사거부</label>
+						</div>
+					  </td>
+					</tr>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op5" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op5">오번호</label>
+						</div>
+					  </td>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op6" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op6">재통화예약</label>
+						</div>
+					  </td>
+					</tr>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op7" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op7">부재1회</label>
+						</div>
+					  </td>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op8" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op8">부재2회</label>
+						</div>
+					  </td>
+					</tr>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio custom-control-inline">
+						  <input id="call_rst_op9" name="call_rst" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="call_rst_op9">기타</label>
+						</div>
+					  </td>
+					  <td>
+			  
+					  </td>
+					</tr>
+				  </tbody>
+				</table>
+			  </section>
+		  
+			  <section class="cust_resp border p-2 mb-2">
+				<h6>고객반응</h6>
+				<table class="table table-sm table-borderless w-100 m-0">
+				  <colgroup>
+					<col width="50%"></col>
+					<col width="50%"></col>
+				  </colgroup>
+				  <tbody>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio">
+						  <input id="cust_resp_op1" name="cust_resp" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="cust_resp_op1">긍정</label>
+						</div>
+					  </td>
+					  <td>
+						<div class="custom-control custom-radio">
+						  <input id="cust_resp_op2" name="cust_resp" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="cust_resp_op2">보통</label>
+						</div>
+					  </td>
+					</tr>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio">
+						  <input id="cust_resp_op3" name="cust_resp" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="cust_resp_op3">부정</label>
+						</div>
+					  </td>
+					  <td>
+						<div class="custom-control custom-radio">
+						  <input id="cust_resp_op4" name="cust_resp" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="cust_resp_op4">무반응</label>
+						</div>
+					  </td>
+					</tr>
+					<tr>
+					  <td>
+						<div class="custom-control custom-radio">
+						  <input id="cust_resp_op5" name="cust_resp" type="radio" class="custom-control-input">
+						  <label class="custom-control-label" for="cust_resp_op5">기타</label>
+						</div>
+					  </td>
+					  <td>
+					  </td>
+					</tr>
+				  </tbody>
+				</table>
+			  </section>
+		  
+			  <section class="csel_rst border p-2">
+				<h6>상담결과</h6>
+				<div class="custom-control custom-radio custom-control-inline">
+				  <input id="csel_rst_op1" name="csel_rst" type="radio" class="custom-control-input">
+				  <label class="custom-control-label" for="csel_rst_op1">통화성공</label>
+				</div>
+				<div class="custom-control custom-radio custom-control-inline">
+				  <input id="csel_rst_op2" name="csel_rst" type="radio" class="custom-control-input">
+				  <label class="custom-control-label" for="csel_rst_op2">통화실패</label>
+				</div>
+				<div class="custom-control custom-radio custom-control-inline">
+				  <input id="csel_rst_op3" name="csel_rst" type="radio" class="custom-control-input">
+				  <label class="custom-control-label" for="csel_rst_op3">입회연계</label>
+				</div>
+			  </section>
+			</div>
+			<div class="modal-footer">
+			  <input type="button" class="btn btn-sm btn-dark w-100" value="저장" onclick="save_call_rst()">
+			</div>
+		  </div>
+		</div>
+	</div>
+
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
@@ -1642,5 +1806,7 @@
 	<script src="../js/grid/custSearchList_grid.js"></script>
 	<!-- 고객찾기 grid -->
 
+	<!-- OB결과등록 modal -->
+	<script src="../js/pop_CCEMPRO071.js"></script>
 </body>
 </html>

@@ -534,7 +534,30 @@ const _getList = {
 				}
 			});
 		});
-	}
+	},
+
+	// check() {
+	// 	var param = {
+	// 		senddataids: ['dsSend'],
+	// 		recvdataids: ['dsRecv'],
+	// 		dsSend: [{
+	// 			EXTERNAL_ID : '20210125_10_1',
+	// 			DEPT_ACP_ID : 'nw008'
+	// 		}]
+	// 	};
+	// 	console.log(JSON.stringify(param));
+	// 	$.ajax({
+	// 		url: API_SERVER + '/cns.addTransInfo.do',
+	// 		type: 'POST',
+	// 		dataType: 'json',
+	// 		contentType: "application/json",
+	// 		data: JSON.stringify(param),
+	// 		success: function (response) {
+	// 			console.log("check >> ",response);
+	// 		}, error: function (response) {
+	// 		}
+	// 	});
+	// }
 
 }
 
