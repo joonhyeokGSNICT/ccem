@@ -539,7 +539,7 @@ function customerSearch(currentDiv){
 		
 	case 'teacherSearchDiv' :														// 선생님 조회					
 		var param = {
-			userid: opener.opener.currentUserInfo.user.external_id,
+			userid: opener.currentUser.external_id,
 		    menuname: '고객찾기(선생님)',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
