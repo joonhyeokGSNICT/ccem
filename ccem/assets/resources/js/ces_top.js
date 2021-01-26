@@ -340,8 +340,8 @@ function initSemi(){
 	$("#custInfo_CUST_MK").val("CM");
 	
 	// 기본 조회 날짜 세팅
-	$(".defaultDate_ed").val(getToday(0));
-	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)));
+	$(".defaultDate_ed").val(getToday(0).substring(0,7));
+	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)).substring(0,7));
 	
 	// disabled false
 	$("#custInfo_FAT_RSDNO").attr('disabled',false);
@@ -653,8 +653,7 @@ $(function(){
 						}
 					}
 				});
-				// 계좌번호 조회
-				$.ajax({
+				/*$.ajax({
 					url: API_SERVER + '/cns.getAcctTrans.do',
 					type: 'POST',
 					dataType: 'json',
@@ -662,42 +661,44 @@ $(function(){
 					data: JSON.stringify(param),
 					success: function (response) {
 						if(response.errcode == "0"){
-							$("#memDue_accountNum").text(response.recv1[0].TRS_ACCT_ID.substring(0,4) + "**********");	// 계좌번호
-							$.ajax({
-								url: API_SERVER + '/cns.getAcctTransInfo.do',
-								type: 'POST',
-								dataType: 'json',
-								contentType: "application/json",
-								data: JSON.stringify({
-									userid: currentUserInfo.user.external_id,
-								    menuname: '회비',
-								    senddataids: ["send1"],
-								    recvdataids: ["recv1"],
-								    send1: 	[
-								    			{
-								    				"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
-								    				"TRS_ACCT_ID":	response.recv1[0].TRS_ACCT_ID,		// 계좌번호
-								    				"BANK_ID":		response.recv1[0].BANK_ID,			// 은행코드
-								    				"RCPT_MK":		response.recv1[0].RCPT_MK,			// 입금제품구분
-								    			}
-								    		]
-								}),
-								success: function (response) {
-									console.log(response);
-									if(response.errcode == "0"){
-										$("#memDue_ACCT_DAY").text(response.recv1[0].TRS_ACCT_DAY + "일");			// 이체일자
-										$("#memDue_BANK_NAME").text(response.recv1[0].BANK_NAME);			// 은행명
-										$("#memDue_ACCT_STDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));	// 이체신청일자
-										$("#memDue_ACCT_EDDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));	// 이체해지일자
-										$("#memDue_ACCT_NAME").text(response.recv1[0].TRS_ACCT_NAME);		// 예금주
+							if(response.recv1.length != 0){
+								$("#memDue_accountNum").text(response.recv1[0].TRS_ACCT_ID.substring(0,4) + "**********");	// 계좌번호
+								$.ajax({
+									url: API_SERVER + '/cns.getAcctTransInfo.do',
+									type: 'POST',
+									dataType: 'json',
+									contentType: "application/json",
+									data: JSON.stringify({
+										userid: currentUserInfo.user.external_id,
+										menuname: '회비',
+										senddataids: ["send1"],
+										recvdataids: ["recv1"],
+										send1: 	[
+											{
+												"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
+												"TRS_ACCT_ID":	response.recv1[0].TRS_ACCT_ID,		// 계좌번호
+												"BANK_ID":		response.recv1[0].BANK_ID,			// 은행코드
+												"RCPT_MK":		currentDueInfo.RCPT_MK,				// 입금제품구분
+											}
+											]
+									}),
+									success: function (response) {
+										console.log(response);
+										if(response.errcode == "0"){
+											$("#memDue_ACCT_DAY").text(response.recv1[0].TRS_ACCT_DAY + "일");					// 이체일자
+											$("#memDue_BANK_NAME").text(response.recv1[0].BANK_NAME);							// 은행명
+											$("#memDue_ACCT_STDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));	// 이체신청일자
+											$("#memDue_ACCT_EDDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));	// 이체해지일자
+											$("#memDue_ACCT_NAME").text(response.recv1[0].TRS_ACCT_NAME);						// 예금주
+										}
 									}
-								}
-							});
+								});
+							}
 						}else {
 							client.invoke("notify", "계좌번호를 불러오지 못했습니다.", "error", 60000);
 						}
 					}
-				});
+				});*/
 			}
 			
 			counselMain_membershipDueTab_dueList.refreshLayout();			// 상담메인 > 회비	   > 회비정보 grid
@@ -1820,6 +1821,83 @@ function loadList(id, grid, listID) {
 						if(currentSubDueInfo != null){
 							loadList('getTransHist',counselMain_membershipDueTab_chargeList);				//  입금내역 이력
 						}
+
+						// 계좌번호 조회
+						$.ajax({
+							url: API_SERVER + '/cns.getAccountInfo.do',
+							type: 'POST',
+							dataType: 'json',
+							contentType: "application/json",
+							data: JSON.stringify({
+								userid: currentUserInfo.user.external_id,
+								menuname: '회비',
+								senddataids: ["send1"],
+								recvdataids: ["recv1"],
+								send1: 	[
+									{
+										"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
+										"RCPT_MK":		currentDueInfo.RCPT_MK,				// 입금제품구분
+									}
+									]
+							}),
+							success: function (response) {
+								if(response.errcode == "0"){
+									if(response.recv1.length != 0){
+										$("#memDue_accountNum").text(response.recv1[0].ACCT_ID.substring(0,4) + "**********");	// 계좌번호
+										$("#memDue_ACCT_DAY").text(response.recv1[0].TRS_ACCT_DAY + "일");						// 이체일자
+										$("#memDue_BANK_NAME").text(response.recv1[0].BANK_NAME);								// 은행명
+										$("#memDue_ACCT_STDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));		// 이체신청일자
+										$("#memDue_ACCT_EDDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));		// 이체해지일자
+										$("#memDue_ACCT_NAME").text(response.recv1[0].TRS_ACCT_NAME);							// 예금주
+									}
+								}else {
+									client.invoke("notify", "계좌번호를 불러오지 못했습니다.", "error", 60000);
+								}
+							}
+						});
+						
+						// 과목별 회비현황 조회
+						$.ajax({
+							url: API_SERVER + '/cns.getFeeInfoPrdt.do',
+							type: 'POST',
+							dataType: 'json',
+							contentType: "application/json",
+							data: JSON.stringify({
+								userid: currentUserInfo.user.external_id,
+								menuname: '회비',
+								senddataids: ["send1"],
+								recvdataids: ["recv1"],
+								send1: 	[
+									{
+										"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
+										"PRDT_ID":		currentDueInfo.PRDT_ID,				// 제품(과목)코드
+									}
+									]
+							}),
+							success: function (response) {
+								if(response.errcode == "0"){
+									if(response.recv1.length != 0){
+										$("#finalDue_LASTFEE_YM").text(response.recv1[0].LASTFEE_YM.substring(0,4)+"-"+response.recv1[0].LASTFEE_YM.substring(4,6));
+										$("#finalDue_LASTFEE_DATE").text(FormatUtil.date(response.recv1[0].LASTFEE_DATE));
+										$("#finalDue_LASTFEE_OVERAMT").text(response.recv1[0].LASTFEE_OVERAMT.format());
+										$("#finalDue_NEW_TXTQTY").text(response.recv1[0].NEW_TXTQTY);
+										$("#finalDue_END_TXTQTY").text(response.recv1[0].END_TXTQTY);
+										if(response.recv1[0].NEWFEE_PAY_FLAG == "Y"){
+											$("#finalDue_NEWFEE_PAY_FLAG").text(response.recv1[0].NEWFEE_PAY_FLAG);
+										}else {
+											$("#finalDue_NEWFEE_PAY_FLAG").text("N");
+										}
+										if(response.recv1[0].NEWFEE_FLAG == "Y"){
+											$("#finalDue_NEWFEE_FLAG").text(response.recv1[0].NEWFEE_FLAG);
+										}else {
+											$("#finalDue_NEWFEE_FLAG").text("N");
+										}
+										
+									}
+								}else {
+								}
+							}
+						});
 						break;
 					}
 					

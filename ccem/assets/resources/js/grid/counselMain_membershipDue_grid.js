@@ -1,4 +1,17 @@
 $(function(){
+	var FEE_YM_1 = dateFormatWithBar(addMonth(new Date(), 0)).substring(0,7);
+	var FEE_YM_2 = dateFormatWithBar(addMonth(new Date(), -1)).substring(0,7);
+	var FEE_YM_3 = dateFormatWithBar(addMonth(new Date(), -2)).substring(0,7);
+	var FEE_YM_4 = dateFormatWithBar(addMonth(new Date(), -3)).substring(0,7);
+	var FEE_YM_5 = dateFormatWithBar(addMonth(new Date(), -4)).substring(0,7);
+	var FEE_YM_6 = dateFormatWithBar(addMonth(new Date(), -5)).substring(0,7);
+	var FEE_YM_7 = dateFormatWithBar(addMonth(new Date(), -6)).substring(0,7);
+	var FEE_YM_8 = dateFormatWithBar(addMonth(new Date(), -7)).substring(0,7);
+	var FEE_YM_9 = dateFormatWithBar(addMonth(new Date(), -8)).substring(0,7);
+	var FEE_YM_10 = dateFormatWithBar(addMonth(new Date(), -9)).substring(0,7);
+	var FEE_YM_11 = dateFormatWithBar(addMonth(new Date(), -10)).substring(0,7);
+	var FEE_YM_12 = dateFormatWithBar(addMonth(new Date(), -11)).substring(0,7);
+	
 	// 상담메인 > 회비 탭 > 회비목록 grid
 	counselMain_membershipDueTab_dueList = new Grid({
 		el: document.getElementById('counselMain_membershipDueTab_dueList'),
@@ -60,7 +73,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_1,
 					name: 'FEE_YM_1',
 					width: 65,
 					align: "center",
@@ -69,7 +82,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_2,
 					name: 'FEE_YM_2',
 					width: 65,
 					align: "center",
@@ -78,7 +91,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_3,
 					name: 'FEE_YM_3',
 					width: 65,
 					align: "center",
@@ -87,7 +100,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_4,
 					name: 'FEE_YM_4',
 					width: 65,
 					align: "center",
@@ -96,7 +109,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_5,
 					name: 'FEE_YM_5',
 					width: 65,
 					align: "center",
@@ -105,7 +118,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_6,
 					name: 'FEE_YM_6',
 					width: 65,
 					align: "center",
@@ -114,7 +127,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_7,
 					name: 'FEE_YM_7',
 					width: 65,
 					align: "center",
@@ -123,7 +136,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_8,
 					name: 'FEE_YM_8',
 					width: 65,
 					align: "center",
@@ -132,7 +145,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_9,
 					name: 'FEE_YM_9',
 					width: 65,
 					align: "center",
@@ -141,7 +154,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_10,
 					name: 'FEE_YM_10',
 					width: 65,
 					align: "center",
@@ -150,7 +163,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_11,
 					name: 'FEE_YM_11',
 					width: 65,
 					align: "center",
@@ -159,7 +172,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '',
+					header: FEE_YM_12,
 					name: 'FEE_YM_12',
 					width: 65,
 					align: "center",

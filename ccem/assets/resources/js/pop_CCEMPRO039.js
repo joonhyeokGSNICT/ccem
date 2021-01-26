@@ -32,6 +32,20 @@ $(function(){
 			$("#customerSMSSendDateCheck").prop("checked",false);
 		}
 	});
+	calendarUtil.init('customerSMSPer_st',calendarUtil.calendarOption,function(){
+		if(($("#customerSMSPer_st").val().replace(/_/gi,"").length == 10 && $("#customerSMSPer_ed").val().replace(/_/gi,"").length == 10)){	// 길이가 10이 아닌 경우 체크해제
+			$("#customerSMSPerDateCheck").prop("checked",true);
+		}else {
+			$("#customerSMSPerDateCheck").prop("checked",false);
+		}
+	});
+	calendarUtil.init('customerSMSPer_ed',calendarUtil.calendarOption,function(){
+		if(($("#customerSMSPer_st").val().replace(/_/gi,"").length == 10 && $("#customerSMSPer_ed").val().replace(/_/gi,"").length == 10)){	// 길이가 10이 아닌 경우 체크해제
+			$("#customerSMSPerDateCheck").prop("checked",true);
+		}else {
+			$("#customerSMSPerDateCheck").prop("checked",false);
+		}
+	});
 	/*$('input[name="customerSMS"]').daterangepicker(calendarUtil.calendarOption, function(start, end, label) {
 	    console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
 	  });*/
@@ -203,69 +217,106 @@ $(function(){
     });
     
     // 개인별 발신목록
-    smsPerSendListGrid = new Grid({
-        el: document.getElementById("smsPerSendListGrid"),
-        bodyHeight: 480,
-		pageOptions: {
-		  perPage: 25,
-		  useClient: true
-		},
-		rowHeaders: [
+	smsPerSendListGrid = new Grid({
+		el: document.getElementById('smsPerSendListGrid'),
+		bodyHeight: 480,
+		rowHeaders: [{
+            type: 'rowNum',
+            header: "NO",
+        }],
+        pageOptions: {
+  		  perPage: 25,
+  		  useClient: true
+  		},
+        columnOptions: {
+            minWidth: 50,
+            resizable: true,
+            frozenCount: 0,
+            frozenBorderWidth: 1,
+        },
+        columns: [
 			{
-				type: 'rowNum',
-                header: "NO",
-            },
-        ],
-		columns: [
+				header: '구분',
+				name: 'KIND_NM',
+				width: 80,
+				align: "center",
+				sortable: true,
+				ellipsis: true,
+			},
 			{
-				header: '수신일자',
-				name: 'SMS_DATE',
-				width: 90,
+				header: '발신일자',
+				name: 'RDATE',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 				formatter: columnInfo => FormatUtil.date(columnInfo.value)
 			},
 			{
-				header: '수신시간',
-				name: 'SMS_TIME',
-				width: 90,
+				header: '발신시간',
+				name: 'RTIME',
+				width: 100,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 				formatter: columnInfo => FormatUtil.time(columnInfo.value)
 			},
+			//data="2:성공,4:실패"	</C>	
 			{
-				header: '단말번호',
-				name: 'MOBIL_ORGNO',
+				header: '발신결과',
+				name: 'RESULT',
 				width: 110,
+				align: "center",
+				sortable: true,
+				ellipsis: true,
+				formatter: function(e){
+					var result = "";
+					switch(e.value){
+					case '2':
+						result = "성공"
+						break;
+					case '4':
+						result = "실패"
+						break;
+					}
+					return result;
+				}
+			},
+			{
+				header: '발신전화번호',
+				name: 'RPHONE',
+				width: 130,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
 			{
-				header: '수신번호',
-				name: 'MOBIL_USERNO',
-				width: 110,
+				header: '상담원',
+				name: 'SENDNAME',
 				align: "center",
+				width: 80,
 				sortable: true,
 				ellipsis: true,
 			},
 			{
-				header: '메시지',
+				header: '내용',
 				name: 'MSG',
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 			}
-		],
+			],
+	});
+	smsPerSendListGrid.on('click', (ev) => {
+		if(ev.targetType =='cell'){
+			smsPerSendListGrid.addSelection(ev);
+			smsPerSendListGrid.clickSort(ev);
+			/*var currentData = smsPerSendListGrid.getRow(ev.rowKey);
+			$("#smsContent").val(currentData.MSG);*/
+		}
     });
-    smsPerSendListGrid.on("click", ev => {
-    	if(ev.targetType="cell"){
-    		smsPerSendListGrid.addSelection(ev);
-    		smsPerSendListGrid.clickSort(ev);
-    	}
-    });
+    
+    
     
     // === 이벤트
     // 탭 이동시 이벤트
@@ -290,17 +341,9 @@ $(function(){
 			loadList("getSendSMS", smsSendListGrid, "", "RDAY");
 			smsSendListGrid.refreshLayout();
     		break;
-		case 'smsSearchBtn_per' :
-			
-			break;
-		case 'smsSearchBtn' :
-    		
-    		break;
-		case 'smsSearchBtn_send' :
-		    		
-		    		break;
-		case 'smsSearchBtn_per' :
-			
+		case 'personalTabBtn' :
+			loadList("getTB_SMSDATA", smsPerSendListGrid, "", "RDATE");
+			smsPerSendListGrid.refreshLayout();
 			break;
 			
     	}
@@ -360,12 +403,17 @@ function loadList(id, grid, listID, sort) {
 	var sendUrl = '';
 	
 	switch(id){
+	
+	// 수신이력
 	case 'getRecvSMS':		// 수신조회 
-		param.menuname = "수신조회";
+		param.menuname = "SMS 수/발신이력";
 		if($("#customerSMSDateCheck").is(":checked")){		
 			param.send1[0].CHK_SEARCH_DATE = "Y";
 			param.send1[0].SEARCH_STDATE = $("#customerSMS_st").val().replace(/-/gi,"");				// 날짜시작
 			param.send1[0].SEARCH_EDDATE = $("#customerSMS_ed").val().replace(/-/gi,"");				// 날짜종료
+		}else {
+			alert("기간은 필수입니다.");
+			return;
 		}
 		if($("#customerSMSPhoneCheck").is(":checked")){		
 			param.send1[0].CHK_MOBIL_NO = "Y";
@@ -378,18 +426,52 @@ function loadList(id, grid, listID, sort) {
 		sendUrl = '/sys.getRecvSMS.do';
 		break;
 		
+	// 발신이력
 	case 'getSendSMS':
-		param.menuname = "발신조회";
+		param.menuname = "SMS 수/발신이력";
 		if($("#customerSMSSendDateCheck").is(":checked")){		
 			param.send1[0].CHK_SEARCH_DATE = "Y";
 			param.send1[0].SEARCH_STDATE = $("#customerSMSSend_st").val().replace(/-/gi,"");				// 날짜시작
 			param.send1[0].SEARCH_EDDATE = $("#customerSMSSend_ed").val().replace(/-/gi,"");				// 날짜종료
+		}else {
+			alert("기간은 필수입니다.");
+			return;
 		}
 		if($("#customerSMSSendPhoneCheck").is(":checked")){		
 			param.send1[0].CHK_GROUP_NAME = "Y";
 			param.send1[0].GROUP_NAME = $("#customerSMSSendPhone").val().replace(/-/gi,"");					// 주제명
 		}
 		sendUrl = '/sys.getSendSMS.do';
+		break;
+		
+	// 개인별 발송
+	case 'getTB_SMSDATA':
+		param.menuname = "SMS 수/발신이력";
+		if($("#customerSMSPerDateCheck").is(":checked") || $("#customerSMSPerPhoneCheck").is(":checked")){
+		}else {
+			alert("검색조건이 하나 이상 필요합니다.");
+			return;
+		}
+		
+		if($("#customerSMSPerDateCheck").is(":checked")){	
+			if($("#customerSMSPerPhoneCheck").is(":checked")){
+			}else {
+				var between = (new Date($("#customerSMSPer_ed").val()).getTime() - new Date($("#customerSMSPer_st").val()).getTime()) / 1000 / 60 / 60 / 24;
+				console.log(between);
+				if(between != 0){ // 두 날짜 사이 구하기
+					alert("기간으로만 조회시 하루만 가능합니다.");
+					return;
+				}
+			}
+			param.send1[0].CHK_DATE = "Y";
+			param.send1[0].START_DATE = $("#customerSMSPer_st").val().replace(/-/gi,"");				// 날짜시작
+			param.send1[0].END_DATE = $("#customerSMSPer_ed").val().replace(/-/gi,"");					// 날짜종료
+		}
+		if($("#customerSMSPerPhoneCheck").is(":checked")){
+			param.send1[0].CHK_PHONE = "Y";
+			param.send1[0].DEST_PHONE = $("#customerSMSPerPhone").val().replace(/-/gi,"");				// 전화번호
+		}
+		sendUrl = '/cns.getTB_SMSDATA.do';
 		break;
 	}
 	
