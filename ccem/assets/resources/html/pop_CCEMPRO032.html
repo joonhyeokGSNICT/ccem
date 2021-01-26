@@ -1,0 +1,321 @@
+<!-- 
+	화면ID : CCEM-PRO-032
+		메인 - 선생님소개
+	AS-IS : [clm3110] 선생님소개
+		상담화면 - 선생님소개
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>선생님소개</title>
+	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
+	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading-animate.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading.css">
+	<link rel="stylesheet" href="../css/pop_common.css">
+</head>
+<body>
+	<div style="background: #123f8a; height: 35px;">
+		<div class="col text-right">
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">소계연계</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="parent.close()">닫 기</button>
+		</div>
+	</div>
+	<div class="mt-2">
+		<!-- 선생님소개 왼쪽 -->
+		<div style="width:15%; float:left;">
+			<div class="row mt-1">
+				<div class="col">
+					<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 관심부분</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="rounded-lg border bg-light text-dark p-2">
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio1">
+							<label class="form-check-label" for="radio1">수리교사</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio2">
+							<label class="form-check-label" for="radio2">어문교사</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio3">
+							<label class="form-check-label" for="radio3">종합교사</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio4">
+							<label class="form-check-label" for="radio4">솔루니교사</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio5">
+							<label class="form-check-label" for="radio5">소빅스튜터</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio6">
+							<label class="form-check-label" for="radio6">YC수리</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio7">
+							<label class="form-check-label" for="radio7">YC어문</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio8" checked>
+							<label class="form-check-label" for="radio8">YC종합</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="interest" id="radio9">
+							<label class="form-check-label" for="radio9">러닝센터교사</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="interest" id="radio10">
+							<label class="form-check-label" for="radio10">차이홍교사</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row mt-2">
+				<div class="col">
+					<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 재사업 시기</span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="rounded-lg border bg-light text-dark p-2">
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio11" checked>
+							<label class="form-check-label" for="radio11">즉시</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio12">
+							<label class="form-check-label" for="radio12">1 ~ 3개월 후</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio13">
+							<label class="form-check-label" for="radio13">4 ~ 6개월 후</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio14">
+							<label class="form-check-label" for="radio14">7 ~ 9개월 후</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio15">
+							<label class="form-check-label" for="radio15">10 ~ 12개월 후</label>
+						</div>
+						<div class="form-check mb-2">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio16">
+							<label class="form-check-label" for="radio16">1년 이후</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="reBusiness" id="radio17">
+							<label class="form-check-label" for="radio17">출산 이후</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 선생님소개 오른쪽 -->
+		<div class="mt-2" style="width:84.5%; float:right;">
+			<div style="width:52%; float:left;">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width:13%;">
+						<col span="1" style="width:19%;">
+						<col span="1" style="width:14%;">
+						<col span="1" style="width:20%;">
+						<col span="1" style="width:14%;">
+						<col span="1" style="width:20%;">
+					</colgroup>
+					<tr>
+						<th>선생님명</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>사원번호</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>전화번호</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+					</tr>
+					<tr>
+						<th>생년월일</th>
+						<td><select class="form-control form-control-sm"></select></td>
+						<th>주소</th>
+						<td colspan="3">
+							<div class="input-group">
+								<input type="text" class="form-control form-control-sm" style="width: 30%;">
+								<input type="text" class="form-control form-control-sm" style="width: 70%;">
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div style="width:47.5%; float:right;">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width:16%;">
+						<col span="1" style="width:25%;">
+						<col span="1" style="width:16%;">
+						<col span="1" style="width:22%;">
+						<col span="1" style="width:10%;">
+						<col span="1" style="width:11%;">
+					</colgroup>
+					<tr>
+						<th>상담일자</th>
+						<td><input type="text" class="form-control form-control-sm calendar" id="calendar6"></td>
+						<th>접수번호</th>
+						<td><input type="text" class="form-control form-control-sm"></td>
+						<th>순번</th>
+						<td><select class="form-control form-control-sm"></select></td>
+					</tr>
+					<tr>
+						<th>상담시간</th>
+						<td><input class="form-control form-control-sm imask-time" id="time5"></td>
+						<th>상담채널</th>
+						<td colspan="3"><select class="form-control form-control-sm"></select></td>
+					</tr>
+				</table>
+			</div>
+			<div class="row w-100 mt-2">
+				<div class="col">
+					<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 연계정보</span>
+				</div>
+			</div>
+			<table class="table table-sm table-bordered">
+				<colgroup>
+					<col span="1" style="width:    7%;">
+					<col span="1" style="width: 18.3%;">
+					<col span="1" style="width:  8.3%;">
+					<col span="1" style="width: 16.6%;">
+					<col span="1" style="width:  8.3%;">
+					<col span="1" style="width: 16.6%;">
+					<col span="1" style="width:  8.3%;">
+					<col span="1" style="width: 16.6%;">
+				</colgroup>
+				<tr>
+					<th>연계일시</th>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm calendar" id="calendar7" style="width: 55%;">
+							<input type="text" class="form-control form-control-sm imask-time" id="time6" style="width: 45%;">
+						</div>
+					</td>
+					<th>본부전화</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+					<th>본부FAX</th>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm">
+							<input type="text" class="form-control form-control-sm">
+							<input type="text" class="form-control form-control-sm">
+						</div>
+					</td>
+					<th>연계방법</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+				</tr>
+				<tr>
+					<th>연계본부</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+					<th>본부접수자</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+					<th>상담원</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+					<th>연계대상자</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+				</tr>
+				<tr>
+					<th>FAX양식</th>
+					<td colspan="3"><input type="text" class="form-control form-control-sm"></td>
+					<th>연계구분</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+				</tr>
+			</table>
+			<div class="row w-100 mt-2">
+				<div class="col">
+					<span class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 통화정보결과</span>
+				</div>
+			</div>
+			<table class="table table-sm table-bordered">
+				<colgroup>
+					<col span="1" style="width:10%;">
+					<col span="1" style="width:90%;">
+				</colgroup>
+				<tr>
+					<th>제목</th>
+					<td><input type="text" class="form-control form-control-sm"></td>
+				</tr>
+				<tr>
+					<th>기타<br>요구사항</th>
+					<td style="height: 192px;"><textarea class="form-control w-100 h-100"></textarea></td>
+				</tr>
+			</table>
+			<table class="table table-sm table-bordered">
+				<colgroup>
+					<col span="1" style="width:10%;">
+					<col span="1" style="width:20%;">
+					<col span="1" style="width:10%;">
+					<col span="1" style="width:20%;">
+					<col span="1" style="width:10%;">
+					<col span="1" style="width:30%;">
+				</colgroup>
+				<tr>
+					<th>해지사유</th>
+					<td><select class="form-control form-control-sm"></select></td>
+					<th>재사업경로</th>
+					<td><select class="form-control form-control-sm"></select></td>
+					<th>분류(대)</th>
+					<td>
+						<div class="input-group" onclick="openPopup('CCEMPRO042')">
+							<input type="text" class="form-control form-control-sm" style="width: 30%;">
+							<input type="text" class="form-control form-control-sm" style="width: 70%;">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>사업구분</th>
+					<td><select class="form-control form-control-sm"></select></td>
+					<th>처리상태</th>
+					<td><select class="form-control form-control-sm"></select></td>
+					<th>분류(중)</th>
+					<td>
+						<div class="input-group" onclick="openPopup('CCEMPRO042')">
+							<input type="text" class="form-control form-control-sm" style="width: 30%;">
+							<input type="text" class="form-control form-control-sm" style="width: 70%;">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>상담구분</th>
+					<td><select class="form-control form-control-sm"></select></td>
+					<th>처리구분</th>
+					<td><select class="form-control form-control-sm"></select></td>
+					<th>분류(소)</th>
+					<td>
+						<div class="input-group" onclick="openPopup('CCEMPRO042')">
+							<input type="text" class="form-control form-control-sm" style="width: 30%;">
+							<input type="text" class="form-control form-control-sm" style="width: 70%;">
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/imask.js"></script>
+    <script src="../lib/moment.min.js"></script>
+	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/jquery.inputmask.bundle.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
+	<script src="../js/config.js"></script>
+	<script src="../js/ces_common.js"></script>
+	<script src="../js/ces_util.js"></script>
+	<script src="../js/pop_CSELCOMMON.js"></script>
+	<script src="../js/pop_CCEMPRO032.js"></script>
+  
+</body>
+</html>
