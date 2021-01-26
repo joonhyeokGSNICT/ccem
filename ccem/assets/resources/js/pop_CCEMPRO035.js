@@ -226,7 +226,7 @@ const createGrids = () => {
 	});
 
 	grid1.on("beforePageMove", ev => {
-		// getCsel(ev.page);
+		getCsel(ev.page);
 	});
 
 	// 상담제품 grid
@@ -374,20 +374,32 @@ const setCodeData = (codeData) => {
 		$(`select[name='${codeMk}']`).append(new Option(codeNm, codeId));
 	}
 
-	// set multipleSelect
+	// create multipleSelect
+	// 상담원그룹
 	$('#selectbox8').multipleSelect({
 		selectAll: false,
 		onClick: (view) => {
 			const selects = $("#selectbox8").val();
+			const isCheck = (selects.length > 0);
 			filterUser(selects);
-			if (selects.length > 0) {
-				document.querySelector('#checkbox4').checked = true;
-				document.querySelector('#checkbox8').checked = true;
-			}else {
-				document.querySelector('#checkbox4').checked = false;
-				document.querySelector('#checkbox8').checked = false;
-			}
+			$("#checkbox4").prop("checked", isCheck);
+			$("#checkbox8").prop("checked", isCheck);
 		},
+	});
+	// 상담경로
+	$('#selectbox14').multipleSelect({
+		selectAll: false,
+		onClick: (view) => $("#checkbox17").prop("checked", ($("#selectbox14").val().length > 0)),
+	});
+	// 본부
+	$('#selectbox11').multipleSelect({
+		selectAll: false,
+		onClick: (view) => $("#checkbox11").prop("checked", ($("#selectbox11").val().length > 0)),
+	});
+	// 상담채널
+	$('#selectbox16').multipleSelect({
+		selectAll: false,
+		onClick: (view) => $("#checkbox19").prop("checked", ($("#selectbox16").val().length > 0)),
 	});
 }
 
@@ -478,71 +490,67 @@ const getCselCondition = (page, perPage) => {
 	const checkVal = "Y", uncheckVal = "N";
 
 	let data = {
-		// QUERY_PAGING		:	page ? "1" : "0",		// 	페이징여부 (0: 전체 / 1: 페이징)
-		// QUERY_LIMIT			:	page ? perPage : "",	// 데이터 목록 개수
-		// QUERY_PAGE			:	page || "",				// 페이지 번호
-		// QUERY_START			:	page ? "1" : "",		// 조회할 번호
-		CHK_DATE			:	$("#checkbox1").is(":checked") 		? checkVal : uncheckVal,		// 상담일자  - 체크여부				
-		// CHK_FILLER_1		:	$("#checkbox").is(":checked") 		? checkVal : uncheckVal,		// 필러1 - 체크여부					
-		CHK_TRANS_MK		:	$("#checkbox2").is(":checked") 		? checkVal : uncheckVal,		// 연계여부 - 체크여부					
-		CHK_TB_PROD			:	$("#checkbox7").is(":checked") 		? checkVal : uncheckVal,		// 과목코드 - 체크여부				
-		CHK_USER_GRP_CDE	:	$("#checkbox4").is(":checked") 		? checkVal : uncheckVal,		// 상담원그룹 - 체크여부						
-		CHK_CSEL_MK			:	$("#checkbox5").is(":checked") 		? checkVal : uncheckVal,		// 상담구분 - 체크여부				
-		CHK_PROC_MK			:	$("#checkbox6").is(":checked") 		? checkVal : uncheckVal,		// 처리구분 - 체크여부				
-		CHK_PROC_STS_MK		:	$("#checkbox12").is(":checked") 	? checkVal : uncheckVal,		// 처리상태구분 - 체크여부					
-		CHK_TB_USER			:	$("#checkbox8").is(":checked") 		? checkVal : uncheckVal,		// 상담원 - 체크여부				
-		CHK_DEPT_NM			:	$("#checkbox10").is(":checked") 	? checkVal : uncheckVal,		// 지점명 - 체크여부(사업국)				
-		CHK_DIV_CDE			:	$("#checkbox11").is(":checked") 	? checkVal : uncheckVal,		// 본부코드 - 체크여부				
-		CHK_CSEL_CHNL_MK	:	$("#checkbox19").is(":checked") 	? checkVal : uncheckVal,		// 상담채널 - 체크여부						
-		CHK_CSEL_RST_MK		:	$("#checkbox16").is(":checked") 	? checkVal : uncheckVal,		// 상담결과 - 체크여부					
-		CHK_CSEL_LTYPE		:	$("#checkbox13").is(":checked") 	? checkVal : uncheckVal,		// 대분류 콤보 - 체크여부					
-		CHK_CSEL_MTYPE		:	$("#checkbox14").is(":checked") 	? checkVal : uncheckVal,		// 중분류 콤보 - 체크여부					
-		CHK_CSEL_STYPE		:	$("#checkbox15").is(":checked") 	? checkVal : uncheckVal,		// 소분류 콤보 - 체크여부					
-		CHK_REFUND_FLAG		:	$("#checkbox20").is(":checked") 	? checkVal : uncheckVal,		// 환불승인상태 - 체크여부(내담자)				
-		CHK_STD_CRS_CDE		:	$("#checkbox17").is(":checked") 	? checkVal : uncheckVal,		// 상담경로 - 체크여부					
-		CHK_CSEL_GRD		:	$("#checkbox18").is(":checked") 	? checkVal : uncheckVal,		// 상담등급 - 체크여부					
-		CHK_VOC				:	$("#checkbox23").is(":checked") 	? checkVal : uncheckVal,		// VOC - 체크여부			
-		CHK_RE_PROC			:	$("#checkbox24").is(":checked") 	? checkVal : uncheckVal,		// 재확인 - 체크여부				
-		CHK_NGPROC			:	$("#checkbox25").is(":checked") 	? checkVal : uncheckVal,		// 업무정직도 - 체크여부				
-		CHK_STD_MON_CDE		:	$("#checkbox21").is(":checked") 	? checkVal : uncheckVal,		// 학습개월 - 체크여부					
-		CHK_RENEW_POTN		:	$("#checkbox22").is(":checked") 	? checkVal : uncheckVal,		// 복회가능성 - 체크여부					
-		CHK_LC_MK			: 	$("#checkbox28").is(":checked") 	? checkVal : uncheckVal, 		// 러닝센터 - 체크여부
-		CHK_YC_MK			: 	$("#checkbox29").is(":checked") 	? checkVal : uncheckVal, 		// 검색 조건 추가됨
-		CHK_HL_MK			: 	$("#checkbox30").is(":checked") 	? checkVal : uncheckVal, 		// 검색 조건 추가됨			
-		CHK_PROC_DEPT_NM	:	$("#checkbox26").is(":checked") 	? checkVal : uncheckVal,		// 처리지점명 - 체크여부(연계부서)						
-		CHK_TIME_APPO		:	$("#checkbox31").is(":checked") 	? checkVal : uncheckVal,		// 시간약속 - 체크여부					
-		CHK_SMS				:	$("#checkbox27").is(":checked") 	? checkVal : uncheckVal,		// 문자발송(SMS) - 체크여부			
-		CHK_PRDT_GRP		:	$("#checkbox3").is(":checked") 		? checkVal : uncheckVal,		// 과목군 - 체크여부	
-		CHK_LC_NM			:	$("#checkbox9").is(":checked") 		? checkVal : uncheckVal,		// 센터명 - 체크여부(센터)			
+		QUERY_PAGING		:	page ? "1" : "0", // 페이징여부 (0: 전체 / 1: 페이징)
+		QUERY_LIMIT			:	perPage,		  // 데이터 목록 개수
+		QUERY_PAGE			:	page,			  // 페이지 번호
+		QUERY_START			:	"0",			  // 조회할 번호
+		CHK_DATE			:	$("#checkbox1").is(":checked") 	 ? checkVal : uncheckVal,	// 상담일자  - 체크여부				
+		CHK_TRANS_MK		:	$("#checkbox2").is(":checked") 	 ? checkVal : uncheckVal,	// 연계여부 - 체크여부					
+		CHK_TB_PROD			:	$("#checkbox7").is(":checked") 	 ? checkVal : uncheckVal,	// 과목코드 - 체크여부				
+		CHK_USER_GRP_CDE	:	$("#checkbox4").is(":checked") 	 ? checkVal : uncheckVal,	// 상담원그룹 - 체크여부						
+		CHK_CSEL_MK			:	$("#checkbox5").is(":checked") 	 ? checkVal : uncheckVal,	// 상담구분 - 체크여부				
+		CHK_PROC_MK			:	$("#checkbox6").is(":checked") 	 ? checkVal : uncheckVal,	// 처리구분 - 체크여부				
+		CHK_PROC_STS_MK		:	$("#checkbox12").is(":checked")  ? checkVal : uncheckVal,	// 처리상태구분 - 체크여부					
+		CHK_TB_USER			:	$("#checkbox8").is(":checked") 	 ? checkVal : uncheckVal,	// 상담원 - 체크여부				
+		CHK_DEPT_NM			:	$("#checkbox10").is(":checked")  ? checkVal : uncheckVal,	// 지점명 - 체크여부(사업국)				
+		CHK_DIV_CDE			:	$("#checkbox11").is(":checked")  ? checkVal : uncheckVal,	// 본부코드 - 체크여부				
+		CHK_CSEL_CHNL_MK	:	$("#checkbox19").is(":checked")  ? checkVal : uncheckVal,	// 상담채널 - 체크여부						
+		CHK_CSEL_RST_MK		:	$("#checkbox16").is(":checked")  ? checkVal : uncheckVal,	// 상담결과 - 체크여부					
+		CHK_CSEL_LTYPE		:	$("#checkbox13").is(":checked")  ? checkVal : uncheckVal,	// 대분류 콤보 - 체크여부					
+		CHK_CSEL_MTYPE		:	$("#checkbox14").is(":checked")  ? checkVal : uncheckVal,	// 중분류 콤보 - 체크여부					
+		CHK_CSEL_STYPE		:	$("#checkbox15").is(":checked")  ? checkVal : uncheckVal,	// 소분류 콤보 - 체크여부					
+		CHK_REFUND_FLAG		:	$("#checkbox20").is(":checked")  ? checkVal : uncheckVal,	// 환불승인상태 - 체크여부(내담자)				
+		CHK_STD_CRS_CDE		:	$("#checkbox17").is(":checked")  ? checkVal : uncheckVal,	// 상담경로 - 체크여부					
+		CHK_CSEL_GRD		:	$("#checkbox18").is(":checked")  ? checkVal : uncheckVal,	// 상담등급 - 체크여부					
+		CHK_VOC				:	$("#checkbox23").is(":checked")  ? checkVal : uncheckVal,	// VOC - 체크여부			
+		CHK_RE_PROC			:	$("#checkbox24").is(":checked")  ? checkVal : uncheckVal,	// 재확인 - 체크여부				
+		CHK_STD_MON_CDE		:	$("#checkbox21").is(":checked")  ? checkVal : uncheckVal,	// 학습개월 - 체크여부					
+		CHK_RENEW_POTN		:	$("#checkbox22").is(":checked")  ? checkVal : uncheckVal,	// 복회가능성 - 체크여부					
+		CHK_LC_MK			: 	$("#checkbox28").is(":checked")  ? checkVal : uncheckVal, 	// 러닝센터 - 체크여부
+		CHK_YC_MK			: 	$("#checkbox29").is(":checked")  ? checkVal : uncheckVal, 	// 검색 조건 추가됨
+		CHK_HL_MK			: 	$("#checkbox30").is(":checked")  ? checkVal : uncheckVal, 	// 검색 조건 추가됨			
+		CHK_PROC_DEPT_NM	:	$("#checkbox26").is(":checked")  ? checkVal : uncheckVal,	// 처리지점명 - 체크여부(연계부서)						
+		CHK_SMS				:	$("#checkbox27").is(":checked")  ? checkVal : uncheckVal,	// 문자발송(SMS) - 체크여부			
+		CHK_PRDT_GRP		:	$("#checkbox3").is(":checked") 	 ? checkVal : uncheckVal,	// 과목군 - 체크여부	
+		CHK_LC_NM			:	$("#checkbox9").is(":checked") 	 ? checkVal : uncheckVal,	// 센터명 - 체크여부(센터)
+		CHK_RE_CALL			:	$("#checkbox33").is(":checked")	 ? checkVal : uncheckVal,	// 재통화 - 체크여부(센터)
 		VAL_STDATE			:	calendarUtil.getImaskValue("calendar1"),		// 상담일자FROM - 조회조건				
 		VAL_EDDATE			:	calendarUtil.getImaskValue("calendar2"),		// 상담일자TO - 조회조건				
-		VAL_TRANS_MK		:	$("#selectbox6").val(),				// 연계여부 - 조회조건					
-		VAL_TB_PROD			:	$("#selectbox1").val(),				// 과목코드 - 조회조건				
-		VAL_USER_GRP_CDE	:	$("#selectbox8").val(),				// 상담원그룹 - 조회조건													
-		VAL_CSEL_MK			:	$("#selectbox9").val(),				// 상담구분 - 조회조건			
-		VAL_PROC_MK			:	$("#selectbox10").val(),			// 처리구분 - 조회조건			
-		VAL_PROC_STS_MK		:	$("#selectbox12").val(),			// 처리상태구분 - 조회조건				
-		VAL_TB_USER			:	$("#selectbox2").val(),				// 상담원 - 조회조건			
-		VAL_DEPT_NM			:	$("#textbox2").val(),				// 지점명 - 조회조건(사업국)			
-		VAL_DIV_CDE			:	[$("#selectbox11").val()],			// 본부코드 - 조회조건			
-		VAL_CSEL_CHNL_MK	:	[$("#selectbox16").val()],			// 상담채널 - 조회조건						
-		VAL_CSEL_RST_MK		:	$("#selectbox13").val(),			// 상담결과 - 조회조건					
-		VAL_CSEL_LTYPE		:	$("#selectbox3").val(),				// 대분류 콤보 - 조회조건					
-		VAL_CSEL_MTYPE		:	$("#selectbox4").val(),				// 중분류 콤보 - 조회조건					
-		VAL_CSEL_STYPE		:	$("#selectbox5").val(),				// 소분류 콤보 - 조회조건					
-		VAL_CSEL_MAN_MK		:	$("#selectbox17").val(),			// 환불승인상태 - 조회조건(내담자)				
-		VAL_STD_CRS_CDE		:	[$("#selectbox14").val()],			// 상담경로 - 조회조건					
-		VAL_CSEL_GRD		:	$("#selectbox15").val(),			// 상담등급 - 조회조건					
-		VAL_VOC				:	$("#selectbox20").val(),			// VOC - 조회조건			
-		VAL_RE_PROC			:	$("#selectbox").val(),				// 재확인 - 조회조건						TODO 값 확인하기	
-		VAL_NGPROC			:	$("#selectbox").val(),				// 업무정직도 - 조회조건					 TODO 값 확인하기			
-		VAL_STD_MON_CDE		:	$("#selectbox18").val(),			// 학습개월 - 조회조건					
-		VAL_RENEW_POTN		:	$("#selectbox19").val(),			// 복회가능성 - 조회조건					
-		VAL_PROC_DEPT_NM	:	$("#textbox3").val(),				// 처리지점명 - 조회조건(연계부서)					
-		VAL_TIME_APPO		:	$("#selectbox").val(),				// 시간약속 - 조회조건						 TODO 값 확인하기				
-		VAL_SMS				:	$("#selectbox21").val(),			// 문자발송(SMS) - 조회조건			
-		VAL_PRDT_GRP		:	$("#selectbox7").val(),				// 과목군 - 조회조건					
-		VAL_LC_NM			:	$("#textbox1").val(),				// 센터명 - 조회조건					
+		VAL_TRANS_MK		:	$("#selectbox6").val(),		// 연계여부 - 조회조건					
+		VAL_TB_PROD			:	$("#selectbox1").val(),		// 과목코드 - 조회조건				
+		VAL_USER_GRP_CDE	:	$("#selectbox8").val(),		// 상담원그룹 - 조회조건													
+		VAL_CSEL_MK			:	$("#selectbox9").val(),		// 상담구분 - 조회조건			
+		VAL_PROC_MK			:	$("#selectbox10").val(),	// 처리구분 - 조회조건			
+		VAL_PROC_STS_MK		:	$("#selectbox12").val(),	// 처리상태구분 - 조회조건				
+		VAL_TB_USER			:	$("#selectbox2").val(),		// 상담원 - 조회조건			
+		VAL_DEPT_NM			:	$("#textbox2").val(),		// 지점명 - 조회조건(사업국)			
+		VAL_DIV_CDE			:	$("#selectbox11").val(),	// 본부코드 - 조회조건			
+		VAL_CSEL_CHNL_MK	:	$("#selectbox16").val(),	// 상담채널 - 조회조건						
+		VAL_CSEL_RST_MK		:	$("#selectbox13").val(),	// 상담결과 - 조회조건					
+		VAL_CSEL_LTYPE		:	$("#selectbox3").val(),		// 대분류 콤보 - 조회조건					
+		VAL_CSEL_MTYPE		:	$("#selectbox4").val(),		// 중분류 콤보 - 조회조건					
+		VAL_CSEL_STYPE		:	$("#selectbox5").val(),		// 소분류 콤보 - 조회조건					
+		VAL_CSEL_MAN_MK		:	$("#selectbox17").val(),	// 환불승인상태 - 조회조건(내담자)				
+		VAL_STD_CRS_CDE		:	$("#selectbox14").val(),	// 상담경로 - 조회조건					
+		VAL_CSEL_GRD		:	$("#selectbox15").val(),	// 상담등급 - 조회조건					
+		VAL_VOC				:	$("#selectbox20").val(),	// VOC - 조회조건			
+		VAL_STD_MON_CDE		:	$("#selectbox18").val(),	// 학습개월 - 조회조건					
+		VAL_RENEW_POTN		:	$("#selectbox19").val(),	// 복회가능성 - 조회조건					
+		VAL_PROC_DEPT_NM	:	$("#textbox3").val(),		// 처리지점명 - 조회조건(연계부서)					
+		VAL_SMS				:	$("#selectbox21").val(),	// 문자발송(SMS) - 조회조건			
+		VAL_PRDT_GRP		:	$("#selectbox7").val(),		// 과목군 - 조회조건					
+		VAL_LC_NM			:	$("#textbox1").val(),		// 센터명 - 조회조건		
+		VAL_RE_CALL			:	$("#selectbox22").val(),	// 재통화 - 조회조건								
 	}
 
 	// 조회조건 데이타가 공백이면, 체크해제한다.
@@ -607,16 +615,16 @@ const getCsel = (sPage) => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-		
-		// grid paginated 
-		const options = {
-			// pageState: {
-			// 	page: sPage,		// Target page number.
-			// 	totalCount: 1000,	// The total pagination count. TODO 백엔드 요청.
-			// 	perPage: sPerPage,	// Number of rows per page.
-			// }
-		}
-		grid1.resetData(data.dsRecv, options);
+		const cselData = data.dsRecv;
+		if(cselData.length > 0) {
+			grid1.resetData(cselData, {
+				pageState: {
+					page: sPage,		// Target page number.
+					totalCount: cselData[0].totalCnt,	// The total pagination count.
+					perPage: sPerPage,	// Number of rows per page.
+				}
+			});
+		} 
 	});	
 }
 
@@ -692,6 +700,7 @@ const setCselDetail = row => {
 	grid1.getColumns().forEach(el => $(`#txt${el.name}`).val(row[el.name]));
 	calendarUtil.updateImask();
 
+	// VOC 체크여부
 	row.VOC_MK = row.VOC_MK == "1" ? true : false;
 	$("#checkbox32").prop("checked", row.VOC_MK);
 

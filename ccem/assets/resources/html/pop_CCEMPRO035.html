@@ -181,11 +181,7 @@
 									<label class="form-check-label" for="checkbox11">본부</label>
 								</div>
 							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="DIV_CDE" id="selectbox11" onchange="document.querySelector('#checkbox11').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
+							<td><select class="form-control form-control-sm" name="DIV_CDE" id="selectbox11" multiple="multiple"></select></td>
 							<th>
 								<div class="form-check ml-1">
 									<input class="form-check-input" type="checkbox" id="checkbox12">
@@ -257,11 +253,7 @@
 									<label class="form-check-label" for="checkbox17">상담경로</label>
 								</div>
 							</th>
-							<td>
-								<select class="form-control form-control-sm" name="STD_CRS_CDE" id="selectbox14" onchange="document.querySelector('#checkbox17').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
+							<td><select class="form-control form-control-sm" name="STD_CRS_CDE" id="selectbox14" multiple="multiple"></select></td>
 							<th>
 								<div class="form-check ml-1">
 									<input class="form-check-input" type="checkbox" id="checkbox18">
@@ -279,11 +271,7 @@
 									<label class="form-check-label" for="checkbox19">상담채널</label>
 								</div>
 							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_CHNL_MK" id="selectbox16" onchange="document.querySelector('#checkbox19').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
+							<td><select class="form-control form-control-sm" name="CSEL_CHNL_MK" id="selectbox16" multiple="multiple"></select></td>
 							<th>
 								<div class="form-check ml-1">
 									<input class="form-check-input" type="checkbox" id="checkbox20">
@@ -334,15 +322,16 @@
 							</td>
 							<th>
 								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox24">
-									<label class="form-check-label" for="checkbox24">재확인</label>
+									<input class="form-check-input" type="checkbox" id="checkbox33">
+									<label class="form-check-label" for="checkbox33">재통화</label>
 								</div>
 							</th>
 							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox25">
-									<label class="form-check-label" for="checkbox25">업무정직도</label>
-								</div>
+								<select class="form-control form-control-sm" id="selectbox22" onchange="document.querySelector('#checkbox33').checked = true;">
+									<option value="" hidden></option>
+									<option value="N">재통화예약</option>
+									<option value="Y">재통화완료</option>
+								</select>
 							</th>
 						</tr>
 						<tr>
@@ -372,28 +361,30 @@
 								</select>
 							</td>
 							<th colspan="2">
+								
+							</th>
+							<th>
+								<div class="form-check ml-1">
+									<input class="form-check-input" type="checkbox" id="checkbox24">
+									<label class="form-check-label" for="checkbox24">재확인</label>
+								</div>
+							</th>
+							<th>
 								<div class="input-group">
 									<div class="form-check ml-1">
 										<input class="form-check-input" type="checkbox" id="checkbox28">
 										<label class="form-check-label" for="checkbox28">LC</label>
 									</div>
-									<div class="form-check ml-5">
+									<div class="form-check ml-3">
 										<input class="form-check-input" type="checkbox" id="checkbox29">
 										<label class="form-check-label" for="checkbox29">YC</label>
 									</div>
-									<div class="form-check ml-5">
+									<div class="form-check ml-3">
 										<input class="form-check-input" type="checkbox" id="checkbox30">
 										<label class="form-check-label" for="checkbox30">HL</label>
 									</div>
 								</div>
 							</th>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox31">
-									<label class="form-check-label" for="checkbox31">시간약속</label>
-								</div>
-							</th>
-							<th></th>
 						</tr>
 					</table>
 				</form>
