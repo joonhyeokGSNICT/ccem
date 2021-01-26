@@ -220,9 +220,9 @@ $(function(){
     smsSendListGrid.on("dblclick", ev => {
     	if(ev.targetType="cell"){
     		currentSendInfo = smsSendListGrid.getRow(ev.rowKey);
-    		PopupUtil.open('CCEMPRO086', 1145, 700);
-    		
-    		
+    		if(currentSendInfo != null){
+    			PopupUtil.open('CCEMPRO086', 1145, 700);
+    		}
     	}
     });
     
