@@ -1,7 +1,9 @@
 var topbarObject;			// topbar window
+var topbarClient;			// topbar client
 var currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
 
-var grid1, grid2;	// TOAST UI Grid
+var grid1;	// 상담이력 grid
+var grid2;	// 상담과목 grid
 
 let prods = [];		// 과목 리스트
 let users = [];		// 상담원 리스트
@@ -26,43 +28,12 @@ $(function () {
 
 const onStart = () => {
 	topbarObject = opener;
+	topbarClient = topbarObject.client;
 	currentUser = topbarObject.currentUserInfo.user;
 	createGrids();
 	setCodeData(topbarObject.codeData);
 	getProd();
 	getUser();
-
-	// 상담원그룹과 상담원 세팅
-	const currentUserGrp = currentUser.user_fields.user_grp_cde
-	const currentUserLvl = currentUser.user_fields.user_lvl_mk
-	const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false;
-	const isLowLvl = (currentUserLvl != "user_lvl_mk_1" || currentUserLvl != "user_lvl_mk_2" || currentUserLvl != "user_lvl_mk_3" || currentUserLvl != "user_lvl_mk_4") ? true : false;
-	$("#selectbox8").val(currentUserGrp);
-	filterUser(currentUserGrp);
-	$("#selectbox2").val(currentUser.external_id);
-	$("#checkbox4").prop("checked", true);
-	$("#checkbox8").prop("checked", true);
-
-	// 권한이 낮은 사용자
-	if (isLowLvl) {
-		$("#selectbox8").prop("disabled", true);
-		$("#checkbox4").prop("disabled", true);
-	}
-	// 권한이 높은 사용자
-	else if (isAdmin) {
-		$("#checkbox8").prop("checked", false);
-	}
-	// 7100 ESL사업부 - 그룹변경 안되게 수정
-	if (currentUserGrp == "7100") {
-		$("#selectbox8").prop("disabled", true);
-		$("#checkbox4").prop("disabled", true);
-	}
-	// 엑셀버튼 - 사용자레벨이 3이하 가능
-	if (isAdmin) {
-		$("#button3").prop("disabled", false);
-	} else {
-		$("#button3").prop("disabled", true);
-	}
 }
 
 const createGrids = () => {
@@ -232,8 +203,11 @@ const createGrids = () => {
 	});
 
 	grid1.on("dblclick", ev => {
-		// 해당 고객정보로 탑바 고객정보 재조회
-		topbarObject.onAutoSearch(grid1.getValue(ev.rowKey, "CUST_ID"));
+		if(ev.targetType == "cell"){
+			// 티켓오픈
+			const TICKET_ID = grid1.getValue(ev.rowKey, "TICKET_ID");
+			if(TICKET_ID) topbarClient.invoke('routeTo', 'ticket', TICKET_ID);	
+		}
 	});
 
 	grid1.on("onGridUpdated", () => {
@@ -249,6 +223,10 @@ const createGrids = () => {
 			$("#button8").prop("disabled", true);	// 삭제
 		}
 
+	});
+
+	grid1.on("beforePageMove", ev => {
+		// getCsel(ev.page);
 	});
 
 	// 상담제품 grid
@@ -291,11 +269,12 @@ const filterProd = keyword => {
 
 /**
  * 상담원 필터링
- * @param {string} key 
+ * @param {array} selects 
  */
-const filterUser = key => {
+const filterUser = selects => {
 	let selectbox = $("#selectbox2").empty();
-	let data = users.filter(el => el.USER_GRP_CDE == key);
+	if(selects.length === 0) return;
+	let data = users.filter(el => selects.includes(el.USER_GRP_CDE));
 	data.forEach(el => selectbox.append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 }
 
@@ -394,6 +373,22 @@ const setCodeData = (codeData) => {
 			`[${codeId}] ${codeNm}` : codeNm;
 		$(`select[name='${codeMk}']`).append(new Option(codeNm, codeId));
 	}
+
+	// set multipleSelect
+	$('#selectbox8').multipleSelect({
+		selectAll: false,
+		onClick: (view) => {
+			const selects = $("#selectbox8").val();
+			filterUser(selects);
+			if (selects.length > 0) {
+				document.querySelector('#checkbox4').checked = true;
+				document.querySelector('#checkbox8').checked = true;
+			}else {
+				document.querySelector('#checkbox4').checked = false;
+				document.querySelector('#checkbox8').checked = false;
+			}
+		},
+	});
 }
 
 /**
@@ -436,8 +431,41 @@ const getUser = () => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
+
 		users = data.dsRecv;
 		users.forEach(el => $("#selectbox2").append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
+
+		// 상담원그룹과 상담원 세팅
+		const currentUserGrp = currentUser.user_fields.user_grp_cde || "";
+		const currentUserLvl = currentUser.user_fields.user_lvl_mk || "";
+		const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false;
+		const isLowLvl = (currentUserLvl != "user_lvl_mk_1" && currentUserLvl != "user_lvl_mk_2" && currentUserLvl != "user_lvl_mk_3" && currentUserLvl != "user_lvl_mk_4") ? true : false;
+		$("#selectbox8").multipleSelect("setSelects", currentUserGrp);
+		filterUser([currentUserGrp]);
+		$("#selectbox2").val(currentUser.external_id);
+		$("#checkbox4").prop("checked", true);
+		$("#checkbox8").prop("checked", true);
+		// 사용자권한에 따라 사용여부 결정
+		// 권한이 낮은 사용자
+		if (isLowLvl) {
+			$("#selectbox8").multipleSelect("disable", true);
+			$("#checkbox4").prop("disabled", true);
+		}
+		// 권한이 높은 사용자
+		else if (isAdmin) {
+			$("#checkbox8").prop("checked", false);
+		}
+		// 7100 ESL사업부 - 그룹변경 안되게 수정
+		if (currentUserGrp == "7100") {
+			$("#selectbox8").multipleSelect("disable", true);
+			$("#checkbox4").prop("disabled", true);
+		}
+		// 엑셀버튼 - 사용자레벨이 3이하 가능
+		if (isAdmin) {
+			$("#button3").prop("disabled", false);
+		} else {
+			$("#button3").prop("disabled", true);
+		}
 	});
 }
 
@@ -445,11 +473,15 @@ const getUser = () => {
  * 상담조회 value check
  * @return 조회조건
  */
-const getCselCondition = () => {
+const getCselCondition = (page, perPage) => {
 
 	const checkVal = "Y", uncheckVal = "N";
 
 	let data = {
+		// QUERY_PAGING		:	page ? "1" : "0",		// 	페이징여부 (0: 전체 / 1: 페이징)
+		// QUERY_LIMIT			:	page ? perPage : "",	// 데이터 목록 개수
+		// QUERY_PAGE			:	page || "",				// 페이지 번호
+		// QUERY_START			:	page ? "1" : "",		// 조회할 번호
 		CHK_DATE			:	$("#checkbox1").is(":checked") 		? checkVal : uncheckVal,		// 상담일자  - 체크여부				
 		// CHK_FILLER_1		:	$("#checkbox").is(":checked") 		? checkVal : uncheckVal,		// 필러1 - 체크여부					
 		CHK_TRANS_MK		:	$("#checkbox2").is(":checked") 		? checkVal : uncheckVal,		// 연계여부 - 체크여부					
@@ -474,15 +506,16 @@ const getCselCondition = () => {
 		CHK_NGPROC			:	$("#checkbox25").is(":checked") 	? checkVal : uncheckVal,		// 업무정직도 - 체크여부				
 		CHK_STD_MON_CDE		:	$("#checkbox21").is(":checked") 	? checkVal : uncheckVal,		// 학습개월 - 체크여부					
 		CHK_RENEW_POTN		:	$("#checkbox22").is(":checked") 	? checkVal : uncheckVal,		// 복회가능성 - 체크여부					
-		// CHK_TB_VENDER		:	$("#checkbox").is(":checked") 	? checkVal : uncheckVal,		// LC/YC - 체크여부					TODO LC, YC, HL 체크분리
-		// CHK_LC_MK			:	$("#checkbox").is(":checked") 	? checkVal : uncheckVal,		// 러닝센터 - 체크여부				
+		CHK_LC_MK			: 	$("#checkbox28").is(":checked") 	? checkVal : uncheckVal, 		// 러닝센터 - 체크여부
+		CHK_YC_MK			: 	$("#checkbox29").is(":checked") 	? checkVal : uncheckVal, 		// 검색 조건 추가됨
+		CHK_HL_MK			: 	$("#checkbox30").is(":checked") 	? checkVal : uncheckVal, 		// 검색 조건 추가됨			
 		CHK_PROC_DEPT_NM	:	$("#checkbox26").is(":checked") 	? checkVal : uncheckVal,		// 처리지점명 - 체크여부(연계부서)						
 		CHK_TIME_APPO		:	$("#checkbox31").is(":checked") 	? checkVal : uncheckVal,		// 시간약속 - 체크여부					
 		CHK_SMS				:	$("#checkbox27").is(":checked") 	? checkVal : uncheckVal,		// 문자발송(SMS) - 체크여부			
 		CHK_PRDT_GRP		:	$("#checkbox3").is(":checked") 		? checkVal : uncheckVal,		// 과목군 - 체크여부	
 		CHK_LC_NM			:	$("#checkbox9").is(":checked") 		? checkVal : uncheckVal,		// 센터명 - 체크여부(센터)			
-		VAL_STDATE			:	$("#calendar1").val().replace(/[^0-9]/gi, ''),		// 상담일자FROM - 조회조건				
-		VAL_EDDATE			:	$("#calendar2").val().replace(/[^0-9]/gi, ''),		// 상담일자TO - 조회조건				
+		VAL_STDATE			:	calendarUtil.getImaskValue("calendar1"),		// 상담일자FROM - 조회조건				
+		VAL_EDDATE			:	calendarUtil.getImaskValue("calendar2"),		// 상담일자TO - 조회조건				
 		VAL_TRANS_MK		:	$("#selectbox6").val(),				// 연계여부 - 조회조건					
 		VAL_TB_PROD			:	$("#selectbox1").val(),				// 과목코드 - 조회조건				
 		VAL_USER_GRP_CDE	:	$("#selectbox8").val(),				// 상담원그룹 - 조회조건													
@@ -491,22 +524,20 @@ const getCselCondition = () => {
 		VAL_PROC_STS_MK		:	$("#selectbox12").val(),			// 처리상태구분 - 조회조건				
 		VAL_TB_USER			:	$("#selectbox2").val(),				// 상담원 - 조회조건			
 		VAL_DEPT_NM			:	$("#textbox2").val(),				// 지점명 - 조회조건(사업국)			
-		VAL_DIV_CDE			:	$("#selectbox11").val(),			// 본부코드 - 조회조건			
-		VAL_CSEL_CHNL_MK	:	$("#selectbox16").val(),			// 상담채널 - 조회조건						
+		VAL_DIV_CDE			:	[$("#selectbox11").val()],			// 본부코드 - 조회조건			
+		VAL_CSEL_CHNL_MK	:	[$("#selectbox16").val()],			// 상담채널 - 조회조건						
 		VAL_CSEL_RST_MK		:	$("#selectbox13").val(),			// 상담결과 - 조회조건					
 		VAL_CSEL_LTYPE		:	$("#selectbox3").val(),				// 대분류 콤보 - 조회조건					
 		VAL_CSEL_MTYPE		:	$("#selectbox4").val(),				// 중분류 콤보 - 조회조건					
 		VAL_CSEL_STYPE		:	$("#selectbox5").val(),				// 소분류 콤보 - 조회조건					
-		VAL_REFUND_FLAG		:	$("#selectbox17").val(),			// 환불승인상태 - 조회조건(내담자)				
-		VAL_STD_CRS_CDE		:	$("#selectbox14").val(),			// 상담경로 - 조회조건					
+		VAL_CSEL_MAN_MK		:	$("#selectbox17").val(),			// 환불승인상태 - 조회조건(내담자)				
+		VAL_STD_CRS_CDE		:	[$("#selectbox14").val()],			// 상담경로 - 조회조건					
 		VAL_CSEL_GRD		:	$("#selectbox15").val(),			// 상담등급 - 조회조건					
 		VAL_VOC				:	$("#selectbox20").val(),			// VOC - 조회조건			
 		VAL_RE_PROC			:	$("#selectbox").val(),				// 재확인 - 조회조건						TODO 값 확인하기	
 		VAL_NGPROC			:	$("#selectbox").val(),				// 업무정직도 - 조회조건					 TODO 값 확인하기			
 		VAL_STD_MON_CDE		:	$("#selectbox18").val(),			// 학습개월 - 조회조건					
 		VAL_RENEW_POTN		:	$("#selectbox19").val(),			// 복회가능성 - 조회조건					
-		// VAL_TB_VENDER		:	$("#selectbox").val(),			// LC_YC - 조회조건							TODO LC, YC, HL 체크분리
-		// VAL_LC_MK			:	$("#selectbox").val(),			// 러닝센터 - 조회조건				
 		VAL_PROC_DEPT_NM	:	$("#textbox3").val(),				// 처리지점명 - 조회조건(연계부서)					
 		VAL_TIME_APPO		:	$("#selectbox").val(),				// 시간약속 - 조회조건						 TODO 값 확인하기				
 		VAL_SMS				:	$("#selectbox21").val(),			// 문자발송(SMS) - 조회조건			
@@ -545,18 +576,20 @@ const getCselCondition = () => {
 
 /**
  * 상담조회
+ * @param {number} sPage 
  */
-const getCsel = () => {
+const getCsel = (sPage) => {
 
 	// 조회데이터 초기화
 	grid1.resetData([]);
 	grid2.resetData([]);
 	$("#form1")[0].reset();
-	calendarUtil.setImaskValue("txtPROC_HOPE_DATE", "____-__-__");
-	calendarUtil.setImaskValue("txtPROC_DATE", "____-__-__");
+	calendarUtil.setImaskValue("txtPROC_HOPE_DATE", "");
+	calendarUtil.setImaskValue("txtPROC_DATE", "");
 
 	// 조회조건 체크
-	const condition = getCselCondition();
+	const sPerPage = grid1.getPaginationPerPage();
+	const condition = getCselCondition(sPage, sPerPage);
 	if(!condition) return;
 
 	// 상담조회 api call
@@ -574,7 +607,16 @@ const getCsel = () => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-		grid1.resetData(data.dsRecv);
+		
+		// grid paginated 
+		const options = {
+			// pageState: {
+			// 	page: sPage,		// Target page number.
+			// 	totalCount: 1000,	// The total pagination count. TODO 백엔드 요청.
+			// 	perPage: sPerPage,	// Number of rows per page.
+			// }
+		}
+		grid1.resetData(data.dsRecv, options);
 	});	
 }
 
@@ -887,6 +929,6 @@ const delCounsel = () => {
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
 		alert("정상적으로 삭제 되었습니다.");
-		getCsel();
+		getCsel(1);
 	});
 }

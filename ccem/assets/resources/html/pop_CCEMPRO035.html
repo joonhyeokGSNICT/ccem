@@ -18,6 +18,8 @@
 	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
 	<link rel="stylesheet" href="../lib/customModal/css/modal-loading-animate.css">
 	<link rel="stylesheet" href="../lib/customModal/css/modal-loading.css">
+	<link rel="stylesheet" href="../lib/multiple-select/css/multiple-select.min.css">
+	<link rel="stylesheet" href="../lib/multiple-select/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../css/ces_top.css">
 </head>
 <body>
@@ -30,7 +32,7 @@
 				</div>
 			</div>
 			<div class="col text-right">
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="getCsel()">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="getCsel(1)">조 회</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="PopupUtil.open('CCEMPRO033', 1184, 650)">고객조회</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4" id="button3" onclick="saveExcelCsel()">엑셀저장</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="PopupUtil.open('CCEMPRO036', 815, 547)"  disabled>녹취매핑</button>&nbsp;
@@ -43,7 +45,7 @@
 		</div>
 		<div class="row">
 			<div class="col">
-				<form onsubmit="getCsel(); return false;" autocomplete="off">
+				<form onsubmit="getCsel(1); return false;" autocomplete="off">
 					<button type="submit" hidden></button>
 					<!-- 상담조회 조회조건 -->
 					<table class="table table-xs table-bordered mt-2">
@@ -103,15 +105,7 @@
 									<label class="form-check-label" for="checkbox4">상담원그룹</label>
 								</div>
 							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="USER_GRP_CDE" id="selectbox8" onchange="
-									filterUser(this.value);
-									document.querySelector('#checkbox4').checked = true;
-									document.querySelector('#checkbox8').checked = true;
-								">
-									<option value="" hidden></option>
-								</select>
-							</td>
+							<td><select class="form-control form-control-sm" name="USER_GRP_CDE" id="selectbox8" multiple="multiple"></select></td>
 						</tr>
 						<tr>
 							<th>
@@ -554,6 +548,7 @@
     <script src="../lib/moment.min.js"></script>
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
 	<script src="../lib/customModal/js/modal-loading.js"></script>
+	<script src="../lib/multiple-select/js/multiple-select.min.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_common.js"></script>
 	<script src="../js/ces_util.js"></script>
