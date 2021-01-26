@@ -40,7 +40,7 @@
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="recieveTabBtn">조회</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn" onclick="">엑셀저장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn" onclick="excelExport(smsRecvListGrid,'SMS수신이력Excel_'+getToday(0),'tableExcel')">엑셀저장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 						</div>
 					</div>
@@ -79,7 +79,7 @@
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="sendTabBtn" >조회</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_send" onclick="">엑셀저장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_send" onclick="excelExport(smsSendListGrid,'SMS발신이력Excel_'+getToday(0),'tableExcel')">엑셀저장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 						</div>
 					</div>
@@ -111,7 +111,7 @@
 					<div class="row" style="background: #123f8a; height: 35px;">
 						<div class="col text-right">
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="personalTabBtn" >조회</button>&nbsp;
-							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_per" onclick="">엑셀저장</button>&nbsp;
+							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn_per" onclick="excelExport(smsPerSendListGrid,'SMS개인별발신이력Excel_'+getToday(0),'tableExcel')">엑셀저장</button>&nbsp;
 							<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 						</div>
 					</div>
