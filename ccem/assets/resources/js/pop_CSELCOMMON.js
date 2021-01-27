@@ -136,6 +136,53 @@ const uncheckProd = (grid, data) => {
 }
 
 /**
+ * 병행과목코드의 PLURAL_PRDT_LIST로 grid 체크하는 함수
+ * - as-is : comm.js.gf_setPlProd()
+ * @param {object} grid grid1, grid4
+ * @param {string} data PLURAL_PRDT_LIST
+ */
+const setPlProd = (grid, data) => {
+	const checkeds = data ? data.split("_") : "";
+	const gridData = grid.getData();
+
+	if(checkeds.length == 0) {
+		gridData.forEach(el => grid.uncheck(el.rowKey));
+		return;
+	}
+
+	gridData.forEach(el => {
+		if (checkeds.includes(el.PRDT_ID)) {
+			grid.check(el.rowKey);
+		} else {
+			grid.uncheck(el.rowKey);
+		}
+	});
+}
+
+/**
+ * 선택된 과목들을 과목코드로 sorting하여 병행과목리스트 반환. 
+ * - as-is : com.js.gf_getPlProd()
+ * @param {object} grid grid2, grid5
+ * @returns {object} { ids, names }
+ */
+const getPlProd = (grid) => {
+	const ids = new Array();
+	const names = new Array();
+	
+	const data = grid.getData();
+
+	// sort
+	data.sort((a, b) => a.PRDT_ID < b.PRDT_ID ? -1 : a.PRDT_ID > b.PRDT_ID ? 1 : 0);
+
+	data.forEach(el => {
+		ids.push(el.PRDT_ID);	  // 제품id
+		names.push(el.PRDT_NAME); //제품명
+	});
+
+	return { ids, names };
+}
+
+/**
  * 해당코드의 NAME을 반환.
  * @param {string} mk 코드구분 
  * @param {string} id 코드ID
@@ -174,24 +221,13 @@ const openPopup = (key) => {
 }
 
 /**
- * 사업국/센터 팝업
+ * 사업국/센터/연계부서 팝업
  * - as-is : cns5810.openCOM1300(), openCOM1620(), openCOM1030()
  * @param {number} keyCode 
  */
-const openCCEMPRO044 = (keyCode) => {
+const openCCEMPRO044 = (keyCode, hash) => {
 	if (keyCode == 13) {
-		PopupUtil.open("CCEMPRO044", 1145, 475, "#disPlayUp");
-	}
-}
-
-/**
- * 연계부서 팝업
- * - as-is : cns5810.openCOM1300(), openCOM1620(), openCOM1030()
- * @param {number} keyCode 
- */
-const openCCEMPRO044Dn = (keyCode) => {
-	if (keyCode == 13) {
-		PopupUtil.open("CCEMPRO044", 1145, 475, "#disPlayDn");
+		PopupUtil.open("CCEMPRO044", 1145, 475, hash);
 	}
 }
 

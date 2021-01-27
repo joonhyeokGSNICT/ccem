@@ -33,7 +33,7 @@ $(function () {
 	// 저장 버튼
 	$("#button8").on("click", ev => {
 		loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
-		saveCounsel()
+		onSave()
 			.then((succ) => { if (succ) alert("저장 되었습니다."); })
 			.catch((error) => {
 				console.error(error);
@@ -414,25 +414,21 @@ const getCounsel = (sCselSeq, isFirst) => {
 			});
 		}
 
+		// 상담순번 세팅
 		$("#selectbox14").val(sCselSeq);
 
+		// 상담정보 세팅
 		if (counselData.length >= 1) {
 
 			const rowIdx = $("#selectbox14 option:selected").index();
 			const rowData 	= counselData[rowIdx];
 
 			// 추가등록/관계회원이 아닌경우에만 티켓오픈.
-			if(sCselSeq == 1) {
-				topbarClient.invoke('routeTo', 'ticket', rowData.ZEN_TICKET_ID);	// 티켓오픈
-			}
-			
-			const CUST_MK	= rowData.CUST_MK;			// 고객구분
-			const target 	= (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C"; // C : 고객, T : 선생님
-			getBaseData(target, rowData.CUST_ID);		// 기본정보조회
+			if(sCselSeq == 1) topbarClient.invoke('routeTo', 'ticket', rowData.ZEN_TICKET_ID);	// 티켓오픈		
 
-			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	// 상담과목 선택
+			// 상담과목 선택
+			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	
 			
-			// 상담정보 세팅
 			$("#textbox29").val(rowData.CSEL_STTIME);										// 상담시간
 			$("#selectbox15").val(rowData.CSEL_CHNL_MK);		                			// 상담채널구분
 			$("#textbox11").val(rowData.PROC_DEPT_ID);										// 직원상담처리지점 (연계부서코드)
@@ -469,18 +465,12 @@ const getCounsel = (sCselSeq, isFirst) => {
 			$("#hiddenbox7").val(rowData.DM_MATCHCD);										// DM매치코드
 			$("#hiddenbox8").val(rowData.DM_LIST_ID);										// DM목록ID
 
-			// 상담결과 구분이 DM 사은품접수일 경우.
-			if(rowData.CSEL_RST_MK1 == "12") { 
-				// 지급사유 selectbox 활성화
-				$("#selectbox16").prop("disabled", false);
-				return;
-			} else {
-				// 지급사유 selectbox 비활성화
-				$("#selectbox16").prop("disabled", true);
-				$("#selectbox16").val("");
-			}
-
 			setBtnCtrlAtLoadComp();
+			
+			// 기본정보조회
+			const CUST_MK	= rowData.CUST_MK;			// 고객구분
+			const target 	= (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C"; // C : 고객, T : 선생님
+			getBaseData(target, rowData.CUST_ID);
 
 		}
 
@@ -1032,7 +1022,7 @@ var addCselByFamily = (data) => {
  * 저장
  * - as-is : cns5810.onSave()
  */
-const saveCounsel = async () => {
+const onSave = async () => {
 
 	// 과목군을 전체로 변경하여 filter 처리후에 검색어 검색 처리
 	$("#selectbox12").val("").trigger("change");
@@ -1050,7 +1040,7 @@ const saveCounsel = async () => {
 	const obData = {};							// TODO OB관련 데이터
 	if (!obData) return false;
 
-	let resSaveCCEM;
+	let resSave;
 
 	////////////////////////////////////////// 추가등록 또는 관계회원 신규 ////////////////////////////////////////
 	if (sJobType == "I" && selectedSeq > 1) {
@@ -1061,17 +1051,17 @@ const saveCounsel = async () => {
 
 		// ccem 저장
 		counselData.ZEN_TICKET_ID = ticket.id;
-		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
+		resSave = await saveCounsel(counselData, addInfoData, obData);
 	
 		// 티켓 업데이트
-		counselData.CSEL_NO = resSaveCCEM.CSEL_NO;
+		counselData.CSEL_NO = resSave.CSEL_NO;
 		await updateTicket(counselData, addInfoData, obData);
 
 	////////////////////////////////////////// 추가등록 또는 관계회원 수정 ////////////////////////////////////////
 	} else if (sJobType == "U" && selectedSeq > 1) {
 
 		// ccem 저장
-		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
+		resSave = await saveCounsel(counselData, addInfoData, obData);
 
 		// 티켓 업데이트
 		await updateTicket(counselData, addInfoData, obData);
@@ -1098,7 +1088,7 @@ const saveCounsel = async () => {
 
 		// ccem 저장
 		counselData.ZEN_TICKET_ID = ticket.id;
-		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
+		resSave = await saveCounsel(counselData, addInfoData, obData);
 
 		// 티켓필드 입력
 		await setTicket(counselData, addInfoData, obData);
@@ -1120,10 +1110,10 @@ const saveCounsel = async () => {
 
 		// ccem 저장
 		counselData.ZEN_TICKET_ID = ticket.id;
-		resSaveCCEM = await saveCCEM(counselData, addInfoData, obData);
+		resSave = await saveCounsel(counselData, addInfoData, obData);
 
 		// 티켓필드 입력
-		counselData.CSEL_NO = resSaveCCEM.CSEL_NO;
+		counselData.CSEL_NO = resSave.CSEL_NO;
 		await setTicket(counselData, addInfoData, obData);
 
 	} else {
@@ -1132,8 +1122,8 @@ const saveCounsel = async () => {
 	}
 	
 	// 저장성공후
-	$("#textbox28").val(resSaveCCEM.CSEL_NO); 	// 접수번호 세팅
-	getCounsel(selectedSeq, true);				// 상담 재조회
+	$("#textbox28").val(resSave.CSEL_NO); 	// 접수번호 세팅
+	getCounsel(selectedSeq, true);			// 상담 재조회
 
 	return true;
 
@@ -1502,7 +1492,7 @@ const getAddInfoCondition = () => {
  * @param {obejct} addInfoData DM 사은품 접수/개인정보동의/고객직접퇴회
  * @param {obejct} obData OB관련 데이터
  */
-const saveCCEM = async (counselData, addInfoData, obData) => new Promise((resolve, reject) => {
+const saveCounsel = async (counselData, addInfoData, obData) => new Promise((resolve, reject) => {
 
 	const settings = {
 		global: false,
@@ -1530,53 +1520,6 @@ const saveCCEM = async (counselData, addInfoData, obData) => new Promise((resolv
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 
 });
-
-/**
- * 병행과목코드의 PLURAL_PRDT_LIST로 grid 체크하는 함수
- * - as-is : comm.js.gf_setPlProd()
- * @param {object} grid TOAST UI Grid
- * @param {string} data PLURAL_PRDT_LIST
- */
-const setPlProd = (grid, data) => {
-	const checkeds = data ? data.split("_") : "";
-	const gridData = grid.getData();
-
-	if(checkeds.length == 0) {
-		gridData.forEach(el => grid.uncheck(el.rowKey));
-		return;
-	}
-
-	gridData.forEach(el => {
-		if (checkeds.includes(el.PRDT_ID)) {
-			grid.check(el.rowKey);
-		} else {
-			grid.uncheck(el.rowKey);
-		}
-	});
-}
-
-/**
- * 선택된 과목들을 과목코드로 sorting하여 병행과목리스트 반환. 
- * - as-is : com.js.gf_getPlProd()
- * @param {object} grid TOAST UI Grid
- * @returns {object} { ids, names }
- */
-const getPlProd = (grid) => {
-	const ids = new Array();
-	const names = new Array();
-	
-	const data = grid.getData();
-
-	// sort
-	data.sort((a, b) => a.PRDT_ID < b.PRDT_ID ? -1 : a.PRDT_ID > b.PRDT_ID ? 1 : 0);
-
-	data.forEach(el => {
-		ids.push(el.PRDT_ID);	  // 제품id
-		names.push(el.PRDT_NAME); //제품명
-	});
-
-	return { ids, names };
-}
 
 /**
  * 시정처리건 조회
@@ -1761,6 +1704,14 @@ const setBtnCtrlAtLoadComp = () => {
 			$("#button4").prop("disabled", true);	// 상담연계
 			$("#button7").prop("disabled", true);	// 결과등록
 			break;
+	}
+
+	// 상담결과 구분이 DM 사은품접수일 경우.
+	if ($("#selectbox8").val() == "12") {
+		$("#selectbox16").prop("disabled", false); // 지급사유 selectbox 활성화
+	} else {
+		$("#selectbox16").prop("disabled", true); // 지급사유 selectbox 비활성화
+		$("#selectbox16").val("");
 	}
 
 }
