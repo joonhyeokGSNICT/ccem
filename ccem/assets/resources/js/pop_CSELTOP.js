@@ -4,7 +4,17 @@ $(function () {
 	$('.nav-link').on('shown.bs.tab', refreshGrid);
 	
 	// insert hash
-	$('.nav-link').on('click', ev => window.location.hash = ev.target.hash);
+	$('.nav-link').on('click', ev => {
+		window.location.hash = ev.target.hash;
+		const navId = ev.target.id;
+		if(navId == "counselRgtrNav") {
+			if(!$("#CCEMPRO022").attr("src")) $("#CCEMPRO022").attr("src", "./pop_CCEMPRO022.html");
+		}else if(navId == "entrRgtrNav") {
+			if(!$("#CCEMPRO031").attr("src")) $("#CCEMPRO031").attr("src", "./pop_CCEMPRO031.html");
+		}else if(navId == "tchrIntrdNav") {
+			if(!$("#CCEMPRO032").attr("src")) $("#CCEMPRO032").attr("src", "./pop_CCEMPRO032.html");
+		}
+	});
 
 	// select tab by hash
 	let hash = window.location.hash;
