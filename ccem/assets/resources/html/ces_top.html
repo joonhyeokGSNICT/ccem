@@ -1226,7 +1226,7 @@
 											<div id="counselMainTeacher_counselHist_grid"></div>
 											<div class="mainDivision">
 												<div id="counselMain_counselList_left" class="" style="width: 50%; float: left;">
-													<table class="table table-sm table-bordered mt-2" style="">
+													<table class="table table-sm table-bordered mt-2">
 														<colgroup>
 															<col span="1" style="width: 22%;">
 															<col span="1" style="width: 33%;">
@@ -1621,147 +1621,20 @@
 			<div class="modal-body">
 			  <section class="call_rst border p-2 mb-2">
 				<h6 style="font-weight: bold;">통화결과</h6>
-				<table class="table table-sm table-borderless w-100 m-0">
-				  <colgroup>
-					<col width="50%"></col>
-					<col width="50%"></col>
-				  </colgroup>
-				  <tbody>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op1" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op1">통화</label>
-						</div>
-					  </td>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op2" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op2">통화중</label>
-						</div>
-					  </td>
-					</tr>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op3" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op3">무응답</label>
-						</div>
-					  </td>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op4" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op4">조사거부</label>
-						</div>
-					  </td>
-					</tr>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op5" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op5">오번호</label>
-						</div>
-					  </td>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op6" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op6">재통화예약</label>
-						</div>
-					  </td>
-					</tr>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op7" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op7">부재1회</label>
-						</div>
-					  </td>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op8" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op8">부재2회</label>
-						</div>
-					  </td>
-					</tr>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio custom-control-inline">
-						  <input id="call_rst_op9" name="call_rst" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="call_rst_op9">기타</label>
-						</div>
-					  </td>
-					  <td>
-			  
-					  </td>
-					</tr>
-				  </tbody>
+				<table class="table table-sm table-borderless w-100 m-0" id="callRstMkObTable">
 				</table>
 			  </section>
 		  
 			  <section class="cust_resp border p-2 mb-2">
 				<h6 style="font-weight: bold;">고객반응</h6>
-				<table class="table table-sm table-borderless w-100 m-0">
-				  <colgroup>
-					<col width="50%"></col>
-					<col width="50%"></col>
-				  </colgroup>
-				  <tbody>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio">
-						  <input id="cust_resp_op1" name="cust_resp" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="cust_resp_op1">긍정</label>
-						</div>
-					  </td>
-					  <td>
-						<div class="custom-control custom-radio">
-						  <input id="cust_resp_op2" name="cust_resp" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="cust_resp_op2">보통</label>
-						</div>
-					  </td>
-					</tr>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio">
-						  <input id="cust_resp_op3" name="cust_resp" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="cust_resp_op3">부정</label>
-						</div>
-					  </td>
-					  <td>
-						<div class="custom-control custom-radio">
-						  <input id="cust_resp_op4" name="cust_resp" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="cust_resp_op4">무반응</label>
-						</div>
-					  </td>
-					</tr>
-					<tr>
-					  <td>
-						<div class="custom-control custom-radio">
-						  <input id="cust_resp_op5" name="cust_resp" type="radio" class="custom-control-input">
-						  <label class="custom-control-label" for="cust_resp_op5">기타</label>
-						</div>
-					  </td>
-					  <td>
-					  </td>
-					</tr>
-				  </tbody>
+				<table class="table table-sm table-borderless w-100 m-0"  id="custRespMkObTable">
 				</table>
 			  </section>
 		  
 			  <section class="csel_rst border p-2">
 				<h6 style="font-weight: bold;">상담결과</h6>
-				<div class="custom-control custom-radio custom-control-inline">
-				  <input id="csel_rst_op1" name="csel_rst" type="radio" class="custom-control-input">
-				  <label class="custom-control-label" for="csel_rst_op1">통화성공</label>
-				</div>
-				<div class="custom-control custom-radio custom-control-inline">
-				  <input id="csel_rst_op2" name="csel_rst" type="radio" class="custom-control-input">
-				  <label class="custom-control-label" for="csel_rst_op2">통화실패</label>
-				</div>
-				<div class="custom-control custom-radio custom-control-inline">
-				  <input id="csel_rst_op3" name="csel_rst" type="radio" class="custom-control-input">
-				  <label class="custom-control-label" for="csel_rst_op3">입회연계</label>
-				</div>
+				<table class="table table-sm table-borderless w-100 m-0"  id="cselRstMkObTable">
+				</table>
 			  </section>
 			</div>
 			<div class="modal-footer">
