@@ -224,9 +224,14 @@ $(function(){
 				const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
 				opener.getBaseData("C", CUST_ID);
 				window.close();
+			// 입회등록 화면에서 오픈했을때.
+			} else if (openerNm == "CCEMPRO031") {
+				const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
+				opener.getCust(CUST_ID);
+				window.close();
 			// 부모창이 존재하지 않을때.
 			} else {
-				alert("고객조회 중 오류가 발생하였습니다. 팝업창을 닫고 다시 실행해 주세요.");
+                alert("세션정보를 찾을 수 없습니다.\n\n팝업창을 닫고 다시 실행해 주세요.");
 			}
 		}
     });

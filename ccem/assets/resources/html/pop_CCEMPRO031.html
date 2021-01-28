@@ -23,7 +23,7 @@
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="">저 장</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="openPopup('CCEMPRO033')">고객조회</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="" disabled>입회연계</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="" disabled>추가등록</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="addCsel()" disabled>추가등록</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button5" onclick="openPopup('CCEMPRO029')" disabled>관계회원</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button6" onclick="parent.close()">닫 기</button>&nbsp;
 		</div>
@@ -101,7 +101,7 @@
 					<td><input type="text" class="form-control form-control-sm" id="textbox7" readonly></td>
 					<th>순번</th>
 					<td>
-						<select class="form-control form-control-sm" id="selectbox3">
+						<select class="form-control form-control-sm" id="selectbox3" onchange="onSearch(this.value)">
 							<option value="1" data-job-type="I">1</option>
 						</select>
 					</td>
@@ -288,6 +288,10 @@
 	<input type="hidden" id="hiddenbox5">
 	<!-- 지역코드(AREA_CDE) -->
 	<input type="hidden" id="hiddenbox6">
+	<!-- 연계번호(TRANS_NO) -->
+	<input type="hidden" id="hiddenbox7">
+	<!-- 연계대상자(EMP_ID_LIST) -->
+	<input type="hidden" id="hiddenbox8">
 	
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
