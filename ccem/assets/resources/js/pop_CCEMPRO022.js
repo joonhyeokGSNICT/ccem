@@ -776,7 +776,7 @@ var addCselByFamily = (data) => {
  */
 const onSave = async () => {
 
-	// 과목군을 전체로 변경하여 filter 처리후에 검색어 검색 처리
+	// 과목군을 전체로 변경하여 filter 초기화
 	$("#selectbox12").val("").trigger("change");
 
 	// 저장구분(I: 신규, U: 수정)
@@ -794,7 +794,7 @@ const onSave = async () => {
 	const customData  = getCustomData();
 	const EMP_ID_LIST = $("#hiddenbox11").val().split(",");
 
-	let resSave;
+	let resSave;	// CCEM저장 결과
 
 	// 추가등록 또는 관계회원 신규
 	if (sJobType == "I" && selectedSeq > 1) {
@@ -821,55 +821,21 @@ const onSave = async () => {
 		await updateTicket(counselData, customData, EMP_ID_LIST);
 		
 	// 수정
-	} else if (sJobType == "U") {
+	} else if (sJobType == "I" || sJobType == "U") {
 
-		sidebarClient = topbarObject.sidebarClient;	// 현재 활성화된 티켓을 가져온다.
-		if (!sidebarClient) {
-			alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-			return false;
-		}
-
-		const { ticket } = await sidebarClient.get("ticket");
-		if (!ticket) {
-			alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-			return false;
-		}
-
-		if (counselData.ZEN_TICKET_ID && counselData.ZEN_TICKET_ID != ticket.id) {
-			alert(`현재 상담정보의 티켓이 아닙니다. \n\n#${counselData.ZEN_TICKET_ID} 티켓을 다시 오픈해 주시기 바랍니다.`);
-			return;
-		}
+		// 티켓이 유효한지 체크.
+		const ticketCondition = await checkTicket(sJobType, counselData.ZEN_TICKET_ID);
+		if (!ticketCondition) return false;
 
 		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticket.id;
-		resSave = await saveCounsel(counselData, addInfoData, obData);
-
-		// 티켓필드 입력
-		await setTicket(counselData, customData, EMP_ID_LIST);
-	
-	// 신규
-	} else if (sJobType == "I") {	
-
-		sidebarClient = topbarObject.sidebarClient;	// 현재 활성화된 티켓을 가져온다.
-		if (!sidebarClient) {
-			alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-			return false;
-		}
-
-		const { ticket } = await sidebarClient.get("ticket");
-		if (!ticket) {
-			alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-			return false;
-		}
-
-		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticket.id;
+		counselData.ZEN_TICKET_ID = ticketCondition;
 		resSave = await saveCounsel(counselData, addInfoData, obData);
 
 		// 티켓필드 입력
 		counselData.CSEL_NO = resSave.CSEL_NO;
 		await setTicket(counselData, customData, EMP_ID_LIST);
-
+	
+	// 신규
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;

@@ -487,3 +487,43 @@ const setTicket = async (counselData, customData, EMP_ID_LIST) => {
 	
 }
 
+/**
+ * 티켓이 유효한지 체크
+ * @param {string} jobType       저장구분(I, U)
+ * @param {string} ZEN_TICKET_ID 티켓ID
+ */
+const checkTicket = async (jobType, ZEN_TICKET_ID) => {
+    
+    sidebarClient = topbarObject.sidebarClient;	// 현재 활성화된 티켓을 가져온다.
+
+    if (!sidebarClient) {
+        alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+        return false;
+    }
+
+    const { ticket } = await sidebarClient.get("ticket");
+    if (!ticket) {
+        alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+        return false;
+    }
+
+    // 신규일때
+    if (jobType == "I") {
+
+        if (ticket.externalId) {
+            alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+            return false;
+        }
+    }
+    // 수정일때
+    else {
+
+        if (ZEN_TICKET_ID && ZEN_TICKET_ID != ticket.id) {
+            alert(`현재 상담정보의 티켓이 아닙니다. \n\n#${ZEN_TICKET_ID} 티켓을 다시 오픈해 주시기 바랍니다.`);
+            return false;
+        }
+    }
+
+    return ticket.id;
+
+}
