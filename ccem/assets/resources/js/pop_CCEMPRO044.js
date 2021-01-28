@@ -9,7 +9,6 @@ var _tchrMkCDEList;		// 통합코드 TCHR_MK_CDE : 선생님 직책리스트 - �
 
 var _closedOrgList; 	// 폐쇄기관 포함된 조직 리스트
 var _openOrgList;		// 오픈한 조직 리스트(폐쇄 제외)
-var _currentList;
 
 var _selectedNode;		// 현재 트리에 선택된 값(선택된 값이 정보로 표기)
 var _searchedEmpList;	// 검색한 조직원 리스트(조회 후 트리에 맞게 표기)
@@ -182,7 +181,7 @@ function init(){
 			// $("#statusLine").text(event.type + ": " + data.node);
 			// console.log(event, data, ", targetType=" + data.targetType);
 			_selectedNode = data.node;
-			// console.log("_selectedNode >> ", _selectedNode)
+			console.log("_selectedNode >> ", _selectedNode)
 			// console.log("data.node >> ", data.node)
 
 			// 본부/사업국/센터 정보창 변경
@@ -205,27 +204,7 @@ function init(){
 			} 
 
 			// 선택 후 조직 내 구성원 조회
-			if (data.node.data.LV == "0"){
-				$("#HQ_NAME").text(data.node.title);
-				$("#DEPT_NAME").text("");
-				$("#LC_NAME").text("");
-				$("#HQ_NAME2").text(data.node.title);
-				$("#DEPT_NAME2").text("");
-				$("#LC_NAME2").text("");
-
-				// 본부내 인원 검색
-				switch (_mode){
-					case "plainTree" : 
-					case "search" :
-						if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
-						else $("#counselSend_btn").addClass('invisible');
-						break;
-					case "plainTreeSelOrg" : 
-						$("#counselSend_btn").addClass('invisible');
-						break;
-				}
-				$("#counselSave_btn").addClass('invisible');
-			} else if(data.node.data.LV == "1"){
+			if (data.node.data.LV == "1"){
 				$("#HQ_NAME").text(data.node.title);
 				$("#DEPT_NAME").text("");
 				$("#LC_NAME").text("");
@@ -592,85 +571,8 @@ const _sortList = {
 			lv1List[index].folder = true;
 		}
 
-		// 상위 브랜드가 있는 경우 선택
-		var tempLv1ListBrand = lv1List.filter(data=> !isEmpty(data.BRAND_ID));
-		var tempBrand = removeDuplicates(tempLv1ListBrand, "BRAND_ID");
-		var lv1ListBrand = [];
-		for ( index in tempBrand ) {
-			var data = {};
-			data.BRAND_ID = tempBrand[index].BRAND_ID;
-			data.BRAND_NAME = tempBrand[index].BRAND_NAME;
-			data.LV = "0";
-			data.title = tempBrand[index].BRAND_NAME;
-			lv1ListBrand.push(data);
-		}
-
-		// 4depth인 CEO의 경우 레벨 변경
-		var tempLv1List = lv1List.filter(data=> isEmpty(data.BRAND_ID));
-		for ( var i in tempLv1List ) {
-			if ( tempLv1List[i].DEPT_NAME =="CEO" ) { // 1depth의 CEO만 선택하여 브랜드 임의 설정
-				tempLv1List[i].LV = "0";
-				tempLv1List[i].BRAND_ID = "00";
-				tempLv1List[i].BRAND_NAME = "CEO";
-				var tempLv0 = tempLv1List[i];
-				if ( tempLv0.children.length > 0) { // 2depth안에 있는 브랜드를 LV = "1"로 변경 
-					var tempLv1 = tempLv0.children;
-					for ( var j in tempLv1) {
-						tempLv1[j].BRAND_ID = "00";
-						tempLv1[j].BRAND_NAME = "CEO";
-						tempLv1[j].LV = "1";
-						if ( tempLv1[j].children.length > 0) {  // 3depth안에 있는 브랜드를 LV = "2"로 변경 
-							var tempLv2 = tempLv1[j].children;
-							for ( var k in tempLv2) {
-								tempLv2[k].LV = "2";
-								if ( tempLv2[k].children.length > 0) { // 4depth안에 있는 브랜드를 LV = "3"로 변경 
-									var tempLv3 = tempLv2[k].children;
-									for ( var l in tempLv3) {
-										tempLv3[l].LV = "3";
-									}
-								}
-							}
-						}	
-					}
-				}
-			}
-		}
-
-		// 브랜드 밑에 본부/사업국/센터를 둠
-		for(index in lv1ListBrand) {
-			var tempLv2List = tempLv1ListBrand.filter(data=> data.BRAND_ID == lv1ListBrand[index].BRAND_ID);
-			lv1ListBrand[index].children = tempLv2List;
-			lv1ListBrand[index].folder = true;
-		}
-
-		// 브랜드가 있는 부서와 기타 부서 배열 통합
-		lv1List = lv1ListBrand.concat(tempLv1List);
-
 		// 트리구조 삽입		
 		tree.reload(lv1List);
-		
-		// 필터검색을 위한 전역변수(배열)설정
-		var allContent = [];
-		for ( var i in lv1List ) {
-			var tempLv0 = lv1List[i];
-				
-			var tempLv1 = tempLv0.children;
-			for ( var j in tempLv1) {
-				var tempLv2 = tempLv1[j].children;
-				for ( var k in tempLv2) {
-					allContent = allContent.concat(tempLv2[k].children);
-					tempLv2[k].children = [];
-				}	
-				allContent = allContent.concat(tempLv1[j].children);
-				tempLv1[j].children = [];
-			}
-			allContent = allContent.concat(lv1List[i].children);
-			lv1List[i].children = [];
-		}
-		allContent = allContent.concat(lv1List);
-
-		_currentList = allContent;
-		return allContent;
 	},
 
 	/**
@@ -711,18 +613,21 @@ const _sortList = {
 		 *         : false = 폐쇄기관포함 미체크됨
 		 *         : true  = 폐쇄기관포함 체크됨
 		 */
-		var treeData = _currentList;
+		var treeData = [];
 		if ( $('#includeClosed').prop("checked")==true ) {
+			treeData = _closedOrgList;
 			if ( _isChange == false ) {
-				treeData = _sortList.orgList(_closedOrgList);
+				_sortList.orgList(treeData);
 				_isChange = true;
 			}
 		} else {
+			treeData = _openOrgList;
 			if ( _isChange == true ) {
-				treeData = _sortList.orgList(_openOrgList);
+				_sortList.orgList(treeData);
 				_isChange = false;
 			}
 		}
+
 		var temp = respondeData;
 		for ( index in temp ){
 			// 구성원의 교사구분 처리
@@ -1222,7 +1127,7 @@ const _btn = {
 		if ( $('#deptSearch').prop("checked")==true ) {
 			_isEmpSearch = false;
 
-			var treeData = _currentList;
+			var treeData
 			/**
 			 * 처음 화면 진입 시 오픈된 기관만 검색
 			 * _isChange 
@@ -1230,13 +1135,15 @@ const _btn = {
 			 * true  = 폐쇄기관포함 체크됨
 			 */
 			if ( $('#includeClosed').prop("checked")==true ) {
+				treeData = _closedOrgList;
 				if ( _isChange == false ) {
-					treeData = _sortList.orgList(_closedOrgList);
+					_sortList.orgList(treeData);
 					_isChange = true;
 				}
 			} else {
+				treeData = _openOrgList;
 				if ( _isChange == true ) {
-					treeData = _sortList.orgList(_openOrgList);
+					_sortList.orgList(treeData);
 					_isChange = false;
 				}
 			}
@@ -1330,8 +1237,8 @@ const _btn = {
 	// resetTree() : 트리 초기화(선택값 초기화)
 	resetTree(){
 		var treeData
-		if ( $('#includeClosed').prop("checked")==true ) treeData = _sortList.orgList(_closedOrgList);
-		else treeData = _sortList.orgList(_openOrgList);
+		if ( $('#includeClosed').prop("checked")==true ) treeData = _closedOrgList;
+		else treeData = _openOrgList;
 		$('#searchOrg_txt').val("");
 		$('#searchEmpOrgNM_input').val("");
 		$('#searchEmpNM_input').val("");
@@ -1341,6 +1248,7 @@ const _btn = {
 		$('#searchEmpNM_chk').prop("checked",false);
 		$('#searchEmpOrgNM_chk').prop("checked",false);
 		$('#searchEmp_chk').prop("checked",true);
+		_sortList.orgList(treeData);
 		_isEmpSearch = false;
 		_btn.tableReset();
 		$('#deptCenter').click();
