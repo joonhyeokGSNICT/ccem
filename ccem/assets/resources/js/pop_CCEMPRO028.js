@@ -180,9 +180,6 @@ const createGrids = () => {
 			}
 		}
 
-		// 연계정보세팅
-		setTransDisPlay(grid1.getRow(0));
-
 		// 나머지 세팅
 		grid1.focus(0);
 		$("#selectbox1").val(grid1.getValue(0, "RTN_FLAG"));		// 회신여부
@@ -325,7 +322,7 @@ const getCselTrans = () => {
 		dataType: "json",
 		data: JSON.stringify({
 			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
+			recvdataids: ["dsRecv1", "dsRecv2"],
 			dsSend: [{ 
 				CSEL_DATE	: sCSEL_DATE,	// 상담일자		
 				CSEL_NO		: sCSEL_NO, 	// 상담번호	
@@ -333,21 +330,36 @@ const getCselTrans = () => {
 			}],			
 		}),
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-		grid1.resetData(data.dsRecv);
-		getCselProd(data.dsRecv);	// 상담과목 조회
+	$.ajax(settings).done(res => {
+		if (!checkApi(res, settings)) return;
+
+		const DS_TRANS 		= res.dsRecv1; 	// 상담연계정보
+		const DS_TRANS_EMP  = res.dsRecv2;	// 연계대상자정보
+
+		if (!DS_TRANS || DS_TRANS.length == 0) return;
+
+		grid1.resetData(DS_TRANS);	 // 고객정보grid 및 상담연계정보 세팅
+		getCselProd(DS_TRANS);		 // 상담과목 조회
+		setTransDisPlay(DS_TRANS[0]);// 연계정보세팅
+
+		// 연계대상자 세팅
+		if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) return;
+		const ids 	= DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
+		const names = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+		$("#hiddenbox8").val(ids);
+		$("#textbox17").val(names);	
+
 	});
 }
 
 /**
  * 상담과목 조회
  * - as-is : cns2510.onSearch()
- * @param {array} CselTransData 상담/연계정보
+ * @param {array} DS_TRANS 상담/연계정보
  */
-const getCselProd = (CselTransData) => {
+const getCselProd = (DS_TRANS) => {
 
-	for (const trans of CselTransData) {
+	for (const trans of DS_TRANS) {
 		const settings = {
 			url: `${API_SERVER}/cns.getCselProd.do`,
 			method: 'POST',
@@ -363,12 +375,12 @@ const getCselProd = (CselTransData) => {
 				}],
 			}),
 		}
-		$.ajax(settings).done(data => {
-			if (!checkApi(data, settings)) return;
+		$.ajax(settings).done(res => {
+			if (!checkApi(res, settings)) return;
 
 			// 중복체크
 			const prdt_ids = grid2.getData().map(el => el.PRDT_ID);
-			const addData = data.dsRecv;
+			const addData = res.dsRecv;
 			for (const row of addData) {
 				if (prdt_ids.includes(row.PRDT_ID)) continue;
 				grid2.appendRow(row);
