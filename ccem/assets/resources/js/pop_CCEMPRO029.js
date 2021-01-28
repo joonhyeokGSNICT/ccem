@@ -39,16 +39,27 @@ const createGrids = () => {
     });
 
     grid.on("dblclick", (ev) => {
+        if (ev.targetType == "cell") {
 
-        const openerName = opener ? opener.name : "";
-
-        // 상담등록 > 관계회원 버튼으로 오픈했을 때.
-        if (openerName.includes("CCEMPRO022")) {
+            const opener_name = opener ? opener.name : "";
             const rowData = grid.getRow(ev.rowKey);
-            opener.addCselByFamily(rowData);
-            window.close();
-        }
 
+            // 상담등록 > 관계회원 버튼으로 오픈했을 때.
+            if (opener_name.includes("CCEMPRO022")) {
+                opener.addCselByFamily(rowData);
+                window.close();
+            }
+            // 입회등록 > 관계회원 버튼으로 오픈했을 때.
+            else if (opener_name.includes("CCEMPRO031")) {
+                opener.addCselByFamily(rowData);
+                window.close();
+            }
+            // 부모창이 존재하지 않을때.
+            else {
+                alert("세션정보를 찾을 수 없습니다.\n\n팝업창을 닫고 다시 실행해 주세요.");
+            }
+
+        }
     });
 }
 
@@ -58,12 +69,18 @@ const createGrids = () => {
  */
 const onStart = (openerName) => {
 
+    let custId = "";
+
     // 상담등록 > 관계회원 버튼으로 오픈했을 때.
     if (openerName.includes("CCEMPRO022")) {
-        const custId = opener.document.getElementById("hiddenbox6").value;
-        getFamily(custId);
+        custId = opener.document.getElementById("hiddenbox6").value;
     }
-
+    // 입회등록 > 관계회원 버튼으로 오픈했을 때.
+    else if (openerName.includes("CCEMPRO031")) {
+        custId = opener.document.getElementById("hiddenbox3").value;
+    }
+    
+    getFamily(custId);
 }
 
 /**
