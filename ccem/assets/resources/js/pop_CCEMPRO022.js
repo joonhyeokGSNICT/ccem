@@ -187,6 +187,7 @@ const onStart = () => {
 		codeData 	  = topbarObject.codeData;	
 		setCodeData();
 
+		// 고객기본정보 조회
 		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
 		const custMk = topbarObject.document.getElementById("custInfo_CUST_MK").value;	// 고객구분
 		const target = (custMk == "PE" || custMk == "TC") ? "T" : "C";
@@ -206,6 +207,10 @@ const onStart = () => {
 		const cselDate 		= counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
 		const cselNo 		= counselGrid.getValue(rowKey, "CSEL_NO");		// 상담번호
 		const cselSeq 		= counselGrid.getValue(rowKey, "CSEL_SEQ");		// 상담순번
+		const TICKET_ID 	= counselGrid.getValue(rowKey, "TICKET_ID");	// 티켓ID
+		if(TICKET_ID) topbarClient.invoke('routeTo', 'ticket', TICKET_ID);  // 티켓오픈
+
+		// 상담정보 조회
 		calendarUtil.setImaskValue("textbox27", cselDate);
 		$("#textbox28").val(cselNo);
 		getCounsel(cselSeq, true);
@@ -423,8 +428,8 @@ const getCounsel = (sCselSeq, isFirst) => {
 			const rowIdx = $("#selectbox14 option:selected").index();
 			const rowData 	= counselData[rowIdx];
 
-			// 추가등록/관계회원이 아닌경우에만 티켓오픈.
-			if(sCselSeq == 1) topbarClient.invoke('routeTo', 'ticket', rowData.ZEN_TICKET_ID);	// 티켓오픈		
+			// 티켓ID가 존재하고 추가등록/관계회원이 아닌경우에만 티켓오픈.
+			if(rowData.ZEN_TICKET_ID && sCselSeq == 1) topbarClient.invoke('routeTo', 'ticket', rowData.ZEN_TICKET_ID);
 
 			// 상담과목 선택
 			setPlProd(grid1, rowData.PLURAL_PRDT_LIST);	
