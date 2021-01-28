@@ -82,7 +82,7 @@ $(function(){
 				{
 					header: '회비금액',
 					name: 'REQ_AMT',
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -280,7 +280,7 @@ $(function(){
 				{
 					header: '회비',
 					name: 'REQ_AMT',
-					align: "center",
+					align: "right",
 					width: 70,
 					sortable: true,
 					ellipsis: true,
@@ -414,7 +414,7 @@ $(function(){
 					header: '결제금액',
 					name: 'APPR_PRICE',
 					width: 60,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()

@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
 	<!-- toastGrid -->
 	<link href="../lib/toast-grid/css/tui-grid.css" rel="stylesheet" type="text/css" />
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
 	<!-- main.css -->
 	<link rel="stylesheet" href="../css/ces_top.css">
 	<!-- fancy tree -->
@@ -29,7 +31,6 @@
 			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
 				<div class="row" style="background: #123f8a; height: 35px;">
 					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">수신거부</button>&nbsp;
 						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫기</button>&nbsp;
 					</div>
 				</div>
@@ -55,31 +56,32 @@
 						</div>
 						<div class="row mt-1">
 							<div class="col">
-								<div class="input-group input-group-sm">
-								     <div class="input-group-prepend">
+								<div class="input-group input-group-sm" style="width:60%; float:left;">
+								    <div class="input-group-prepend">
 								       <span class="input-group-text">수신번호</span>
 								    </div>
 								    <input type="text" class="form-control">
 								</div>	
+								<div style="float:left;">
+									<input type="button" class="btn btn-sm customerBtn" value="보내기" id="" onclick="" style="padding: 0.25rem .0rem !important;">
+									<input type="button" class="btn btn-sm btn-danger customerBtn" value="초기화" id="" onclick="cleanContent();" style="padding: 0.25rem .0rem !important; background:#c82333;">
+								</div>
 								<div class="input-group input-group-sm">
 								     <div class="input-group-prepend">
 								       <span class="input-group-text">발신번호</span>
 								    </div>
-								    <input type="text" class="form-control">
+								    <input type="text" class="form-control" value="" id="smsSendNum" disabled>
 								</div>
 								<table class="table table-sm table-bordered">
 									<colgroup>
-										<col span="1" style="width: 22%;">
 										<col span="1" style="width: 28%;">
-										<col span="1" style="width: 50%;">
+										<col span="1" style="width: 72%;">
 									</colgroup>
 									<tr>
-										<th>수신거부</th>
 										<th>회원명</th>
-										<td><input type="text" class="form-control form-control-sm"></td>
+										<td><input type="text" class="form-control form-control-sm" readonly></td>
 									</tr>
 									<tr>
-										<th style="text-align:center;"><input type="checkbox"></th>
 										<th colspan="1">회원 휴대폰</td>
 										<td><div class="input-group">
 										  <div class="input-group-prepend">
@@ -87,12 +89,11 @@
 										      <input type="radio">
 										    </div>
 										  </div>
-										  <input type="text" class="form-control" placeholder="">
+										  <input type="text" class="form-control" placeholder="" readonly>
 										</div>
 										</td>
 									</tr>
 									<tr>
-										<th style="text-align:center;"><input type="checkbox"></th>
 										<th colspan="1">회원/모 휴대폰</td>
 										<td><div class="input-group">
 										  <div class="input-group-prepend">
@@ -100,12 +101,11 @@
 										      <input type="radio">
 										    </div>
 										  </div>
-										  <input type="text" class="form-control" placeholder="">
+										  <input type="text" class="form-control" placeholder="" readonly>
 										</div>
 										</td>
 									</tr>
 									<tr>
-										<th style="text-align:center;"><input type="checkbox"></th>
 										<th colspan="1">회원/부 휴대폰</td>
 										<td><div class="input-group">
 										  <div class="input-group-prepend">
@@ -113,7 +113,7 @@
 										      <input type="radio">
 										    </div>
 										  </div>
-										  <input type="text" class="form-control" placeholder="">
+										  <input type="text" class="form-control" placeholder="" readonly>
 										</div>
 										</td>
 									</tr>
@@ -206,8 +206,10 @@
 	<script src="../lib/fancytree/jquery.fancytree.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/client.js"></script>
 	<script src="../js/config.js"></script>
+	<script src="../js/ces_common.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO046.js"></script>
 
