@@ -67,7 +67,7 @@ $(function(){
 					header: '계',
 					name: 'TOTAL_FEE',
 					width: 70,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -76,7 +76,7 @@ $(function(){
 					header: FEE_YM_1,
 					name: 'FEE_YM_1',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -85,7 +85,7 @@ $(function(){
 					header: FEE_YM_2,
 					name: 'FEE_YM_2',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -94,7 +94,7 @@ $(function(){
 					header: FEE_YM_3,
 					name: 'FEE_YM_3',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -103,7 +103,7 @@ $(function(){
 					header: FEE_YM_4,
 					name: 'FEE_YM_4',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -112,7 +112,7 @@ $(function(){
 					header: FEE_YM_5,
 					name: 'FEE_YM_5',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -121,7 +121,7 @@ $(function(){
 					header: FEE_YM_6,
 					name: 'FEE_YM_6',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -130,7 +130,7 @@ $(function(){
 					header: FEE_YM_7,
 					name: 'FEE_YM_7',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -139,7 +139,7 @@ $(function(){
 					header: FEE_YM_8,
 					name: 'FEE_YM_8',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -148,7 +148,7 @@ $(function(){
 					header: FEE_YM_9,
 					name: 'FEE_YM_9',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -157,7 +157,7 @@ $(function(){
 					header: FEE_YM_10,
 					name: 'FEE_YM_10',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -166,7 +166,7 @@ $(function(){
 					header: FEE_YM_11,
 					name: 'FEE_YM_11',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -175,7 +175,7 @@ $(function(){
 					header: FEE_YM_12,
 					name: 'FEE_YM_12',
 					width: 65,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -244,7 +244,7 @@ $(function(){
 					header: '입금액',
 					name: 'FEE_YM_RCPT_AMT',
 					width: 60,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -321,7 +321,7 @@ $(function(){
 					header: '입금액',
 					name: 'A4',
 					width: 60,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()
@@ -330,7 +330,7 @@ $(function(){
 					header: '할인액',
 					name: 'A5',
 					width: 60,
-					align: "center",
+					align: "right",
 					sortable: true,
 					ellipsis: true,
 					formatter: columnInfo => columnInfo.value.format()

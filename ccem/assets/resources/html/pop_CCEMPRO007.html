@@ -15,13 +15,15 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css" />
 	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
 	<link rel="stylesheet" href="../css/ces_top.css">
 </head>
 <body>
 	<div class="container customBody">
 		<div class="row" style="background: #123f8a; height: 35px;">
 			<div class="col text-right">
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="getAutoTrasferInfo();">조 회</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 			</div>
 		</div>
@@ -42,11 +44,11 @@
 						<th>기준년월</th>
 						<td><input type="text" class="form-control form-control-sm" id="calendar3" autocomplete="off"/></td>
 						<th>카드사</th>
-						<td><select class="form-control form-control-sm"></select></td>
+						<td><select class="form-control form-control-sm at_select" id="autoTransfer_BANK_NAME"></select></td>
 						<th>카드번호</th>
-						<td><select class="form-control form-control-sm"></select></td>
+						<td><select class="form-control form-control-sm at_select" id="autoTransfer_TRS_ACCT_ID"></select></td>
 						<th>브랜드명</th>
-						<td><select class="form-control form-control-sm"></select></td>
+						<td><select class="form-control form-control-sm at_select" id="autoTransfer_RCPT_NM"></select></td>
 					</tr>
 				</table>
 				<table class="table table-sm table-bordered">
@@ -60,19 +62,19 @@
 					</colgroup>
 					<tr>
 						<th>소유주</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm" id="autoTransDtl_TRS_RSD_NM" readonly></td>
 						<th>카드번호</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm" id="autoTransDtl_TRS_CARD_NO" readonly></td>
 						<th>카드사</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm" id="autoTransDtl_TRS_CARD_NM" readonly></td>
 					</tr>
 					<tr>
 						<th>결제일</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
+						<td><input type="text" class="form-control form-control-sm" id="autoTransDtl_TRS_ACCT_DT" readonly></td>
 						<th>자동이체 신청일</th>
-						<td><input type="text" class="form-control form-control-sm" id="calendar1"></td>
+						<td><input type="text" class="form-control form-control-sm" id="calendar1" readonly></td>
 						<th>자동이체 해지일</th>
-						<td><input type="text" class="form-control form-control-sm" id="calendar2"></td>
+						<td><input type="text" class="form-control form-control-sm" id="calendar2" readonly></td>
 					</tr>
 				</table>
 			</div>
@@ -99,6 +101,7 @@
 	<script src="../lib/imask.js"></script>
     <script src="../lib/moment.min.js"></script>
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>
     <script src="../js/pop_CCEMPRO007.js"></script>
