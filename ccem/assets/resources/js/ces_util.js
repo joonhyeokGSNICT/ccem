@@ -577,17 +577,33 @@ var calendarUtil = {
 }
 
 var PopupUtil = {
+    /**
+     * 오픈된 팝업
+     */
     pops: {},
+    /**
+     * 팝업오픈여부
+     * @param {string} name 
+     */
     contains(name) {
         if(this.pops[name] && this.pops[name].name) return true;
         else return false;
     },
-    open(name, width, height, hash) {
+    /**
+     * 팝업 오픈
+     * @param {string} name 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {string} hash 
+     * @param {object} param 
+     */
+    open(name, width, height, hash, param) {
         if(this.contains(name)) {
             this.pops[name].focus();
         }else {
             this.pops[name] = window.open(`pop_${name}.html${hash||""}`, name, `width=${width}, height=${height}`);
         }
+        this.pops[name].POP_DATA = param;
     },
 }
 
