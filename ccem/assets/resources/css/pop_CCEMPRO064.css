@@ -1,0 +1,155 @@
+html, body {overflow-y: hidden;}
+body {font-size: 14px; min-width:500px;}
+td{padding-top: 0 !important; padding-bottom: 0 !important;}
+h6{font-weight: 600;}
+
+
+.tapStyle {
+  margin: 10px 0 -2px 8px;
+  border-radius: 5px;
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  width: 100px;
+  background-color: #161e91;
+  border: 2px solid #0d1147;
+  text-align: center;
+  padding: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+}
+
+
+/* Call현황 - IB/OB 박스 설정 */
+.callImg {
+  height: 35px; 
+  width: 35px; 
+  margin-right: 5px;
+}
+
+.callTitle {
+  font-weight: bold; 
+  font-size: 20px; 
+}
+
+.callContent {
+  margin-left:4px; 
+  padding: 7px 10px 10px 15px;
+  border-left: 1px solid #333333;
+}
+
+.count{
+  font-size:2rem; 
+  font-weight: bold;
+}
+
+.timeCount{
+  margin-left:2px; 
+  font-weight:bold; 
+  color:#777777
+}
+
+
+/* Call현황 - OB개인별 박스 설정 */
+#OBPersonalCount {
+  color: #F6F4F3;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 13px;
+  width:100%;
+}
+
+.IVRcount, .Resignation, .TelephoneSurvey, .RequestConsult, .InfoAgreement {
+  padding: 5px;
+  width: 18.7%;
+  border-radius: 5px;
+  float: left;
+  margin : 3px;
+}
+
+.col {
+  padding: 10px;
+}
+
+.inBound, .outBound {
+  padding: 5px;
+  border-radius: 5px;
+  margin : 3px;
+  background-color: #ffffff; 
+  border: 1px solid #333333; 
+}
+
+
+.IVRcount {
+  background: #EF2F3C;
+}
+
+.Resignation {
+  background:  #183059;
+}
+
+.TelephoneSurvey {
+  background: #276FBF;
+}
+
+.RequestConsult {
+  background: #F0A202;
+}
+
+.InfoAgreement {
+  background: #00704a;
+}
+
+.numbers {
+  color: #F6F4F3;
+  font-size: 3em;
+  color:#F6F4F3; 
+  font-weight:bold;
+}
+
+.string {
+  position: absolute;
+  height: 70px;
+  width: 1px;
+  left: 48%;
+  top: 100%;
+  z-index: -1;
+}
+
+.obTitle{
+    border-bottom: 1px solid #ffffff; 
+    padding-bottom: 3px;
+    font-weight: bold;
+}
+
+/* top5 */
+.cntRows{
+  text-align: right; 
+  padding-right:6px;
+}
+
+.table td, .table th {
+  padding:1px;
+  vertical-align: middle;
+}
+
+.table th {
+  text-align: center;
+}
+
+.top5Title{
+  font-weight: bold;
+  font-size: 16px;
+  margin: auto;
+  width: 80px;
+}
+
+.tableBorder {
+  border-radius: 5px; 
+  border:1px solid #bbbbbb; 
+  background-color: #ffffff;
+}
+
+.noMarginBottom {
+  margin-bottom: 0px;
+}

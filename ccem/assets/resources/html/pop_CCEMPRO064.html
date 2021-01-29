@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- zaf_sdk.min.js -->
+  <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
+  <!-- jquery-3.4.1 -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <!-- moment.js/2.18.0 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+  <!-- bootstrap 4.4.1 -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <!-- main css -->
+  <link rel="stylesheet" href="../css/pop_CCEMPRO064.css">
+    
+</head>
+<body>
+    <!-- 상단 : Call현황 -->
+    <div class="tapStyle">
+        Call 현황
+    </div>
+    <div style="width: 100%; padding-right: 15px; padding-left: 15px;">
+        <div class="row" style="background-color: #edf0ff; border-top: 2px solid #0d1147">
+            <div class="col-12" style="padding:10px 11px 0px;">
+                <div class="inBound" style="height:100px; overflow-x:hidden; padding: 0px 5px;">
+                    <table class="table noMarginBottom">
+                        <tbody>
+                            <colgroup>
+                                <col span="1" style="width: 12%;">
+                                <col span="1" style="width: 76%;">
+                                <col span="1" style="width: 12%;">
+                            </colgroup>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold;">[긴급]</td>
+                                <td>금융결제원 카드 결제 이슈 해결</td>
+                                <td class="cntRows" style="padding-right:6px;">(15:50)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold;">[공지]</td>
+                                <td>상담프로그램 업데이트(2/10예정)</td>
+                                <td class="cntRows" style="padding-right:6px;">(14:50)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold;">[긴급]</td>
+                                <td>금융결제원 카드 결제 이슈 처리 중</td>
+                                <td class="cntRows" style="padding-right:6px;">(10:15)</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold;">[긴급]</td>
+                                <td>금융결제원 카드 결제 이슈 발생</td>
+                                <td class="cntRows" style="padding-right:6px;">(10:00)</td>
+                            </tr>
+                            <tr>  
+                                <td style="text-align: center; font-weight: bold;">[공지]</td>
+                                <td>상담 시, 오류가 발생할 경우 관리자에게 문의하세요! 관리자 전화번호는 010-XXXX-XXXX입니다.</td>
+                                <td class="cntRows" style="padding-right:6px;">(09:00)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="background-color: #edf0ff;">
+            <div class="col" style="padding-right:2px; padding-bottom:5px;">
+                <div class="inBound">
+                    <div class="row" style="margin-left:0px; margin-right:0px;">
+                        <div class="col-3" style="padding: 10px 10px 5px;">
+                            <img src="../img/noun_call_in.png" class="callImg">
+                            <a class="callTitle" style="margin-left: 7px;">IB</a>
+                        </div>
+                        <div class="col-8 callContent">
+                            <div>
+                                <span class="count" id="IB_CNT">-건</span>
+                            </div>
+                            <div  style="margin-top:-5px">
+                                <span class="timeCount" id="IB_TIME">(--:--:--)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col" style="padding-left:2px; padding-bottom:5px;">
+                <div class="inBound">
+                    <div class="row" style="margin-left:0px; margin-right:0px;">
+                        <div class="col-3" style="padding: 10px 10px 5px;">
+                            <img src="../img/noun_call_out.png" class="callImg">
+                            <a class="callTitle" style="margin-left: 3px;">OB</a>
+                        </div>
+                        <div class="col-8 callContent">
+                            <div>
+                                <span class="count" id="OB_CNT">-건</span>
+                            </div>
+                            <div  style="margin-top:-5px">
+                                <span class="timeCount" id="OB_TIME">(--:--:--)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center" style="background-color: #edf0ff; border-bottom: 2px solid #0d1147">
+            <div class="col" style="padding-top:0px;">
+                <div id="OBPersonalCount">
+                    <div class="IVRcount"> 
+                        <div class="obTitle">IVR</div>
+                        <div class="numbers">-</div>
+                    </div> 
+                    <div class="Resignation"> 
+                        <div class="obTitle">고객직접퇴회</div>
+                        <div class="numbers">-</div>
+                    </div> 
+                    <div class="TelephoneSurvey"> 
+                        <div class="obTitle">전화설문조사</div>
+                        <div class="numbers">-</div>
+                    </div> 
+                    <div class="RequestConsult"> 
+                        <div class="obTitle">전화상담신청</div>
+                        <div class="numbers">-</div>
+                    </div>
+                    <div class="InfoAgreement"> 
+                        <div class="obTitle">정보이용동의</div>
+                        <div class="numbers">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 Top5 -->
+    <div class="tapStyle" style="margin-top:18px;">
+        Top5
+    </div>
+    <div style="width: 100%; padding-right: 15px; padding-left: 15px;">
+        <div class="row" style="background-color: #edf0ff; border-top: 2px solid #0d1147">
+            <div class="col" style="padding-bottom:0px;">
+                <div class="tableBorder" >
+                    <table class="table noMarginBottom">
+                        <tbody>
+                            <colgroup>
+                                <col span="1" style="width: 22%;">
+                                <col span="1" style="width: 5%;">
+                                <col span="1" style="width: 55%;">
+                                <col span="1" style="width: 10%;">
+                            </colgroup>
+                            <tr>
+                                <th rowspan="5">
+                                    <div class="top5Title">
+                                        <div>고객불만</div>
+                                    </div>
+                                </th>
+                                <th scope="row" id="complain_0"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" id="complain_1"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" id="complain_2"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" id="complain_3"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="complain_4"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="background-color: #edf0ff;">
+            <div class="col" style="padding-bottom:0px;">
+                <div class="tableBorder" >
+                    <table class="table noMarginBottom">
+                        <tbody>
+                            <colgroup>
+                                <col span="1" style="width: 22%;">
+                                <col span="1" style="width: 5%;">
+                                <col span="1" style="width: 55%;">
+                                <col span="1" style="width: 10%;">
+                            </colgroup>
+                            <tr>
+                                <th rowspan="5">
+                                    <div class="top5Title">
+                                        <div>고객요청</div>
+                                    </div>
+                                </th>
+                                <th scope="row" id="request_0"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="request_1"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="request_2"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="request_3"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="request_4"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="background-color: #edf0ff; border-bottom: 2px solid #0d1147">
+            <div class="col">
+                <div class="tableBorder" >
+                    <table class="table noMarginBottom">
+                        <tbody>
+                            <colgroup>
+                                <col span="1" style="width: 22%;">
+                                <col span="1" style="width: 5%;">
+                                <col span="1" style="width: 55%;">
+                                <col span="1" style="width: 10%;">
+                            </colgroup>
+                            <tr>
+                                <th rowspan="5">
+                                    <div class="top5Title">
+                                        <div>고객문의</div>
+                                    </div>
+                                </th>
+                                <th scope="row" id="question_0"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="question_1"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="question_2"></th>
+                                <td> </td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="question_3"></th>
+                                <td> </td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                              <tr>
+                                <th scope="row" id="question_4"></th>
+                                <td> </td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
+                              </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="../js/config.js"></script>
+<script src="../js/pop_CCEMPRO064.js"></script>
+
+
+</html>
