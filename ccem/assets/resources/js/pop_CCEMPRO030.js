@@ -367,6 +367,7 @@ const getGift = () => {
 
 		if (data.dsRecv.length >= 1) {
             DS_GIFT = data.dsRecv[0];
+            DS_GIFT.ROW_TYPE = "U";
             // DS_GIFT.GIFT_DATE       // 사은품접수일자    
             // DS_GIFT.GIFT_NO         // 사은품접수번호
             // DS_GIFT.GIFT_SEQ        // 사은품접수순번    
@@ -383,6 +384,7 @@ const getGift = () => {
         } 
         // 검색결과가 없는경우.
         else {
+            DS_GIFT.ROW_TYPE = "I";
             calendarUtil.setImaskValue("calendar1", getDateFormat());           // 발송일자  
         }
 
@@ -418,6 +420,7 @@ const getHappy1 = () => {
 
 		if (data.dsRecv.length >= 1) {
             DS_HPCALL1 = data.dsRecv[0];
+            DS_HPCALL1.ROW_TYPE = "U";
             // DS_HPCALL1.CSEL_DATE        // 상담일자       
             // DS_HPCALL1.CSEL_NO          // 상담번호   
             calendarUtil.setImaskValue("calendar3", DS_HPCALL1.HPCALL_DATE || ""); // 해피콜일자       
@@ -437,6 +440,7 @@ const getHappy1 = () => {
         } 
         // 처음 저장인 경우
         else {
+            DS_HPCALL1.ROW_TYPE = "I";
             calendarUtil.setImaskValue("calendar3", getDateFormat()); // 해피콜일자 초기화
             $("#timebox2").val(getTimeFormat());                     // 해피콜시간 초기화
             $("#textbox25").val(currentUser.name);                   // 해피콜담당자명 초기화
@@ -476,6 +480,7 @@ const getHappy2 = (isHappy1) => {
 
 		if (data.dsRecv.length >= 1) {
             DS_HPCALL2 = data.dsRecv[0];
+            DS_HPCALL2.ROW_TYPE = "U";
             // DS_HPCALL2.CSEL_DATE          // 상담일자
             // DS_HPCALL2.CSEL_NO            // 상담번호
             calendarUtil.setImaskValue("calendar4", DS_HPCALL2.HPCALL_DATE || ""); // 해피콜일자    
@@ -490,6 +495,7 @@ const getHappy2 = (isHappy1) => {
         } 
         // 검색결과가 없고, 1차해피콜 결과도 없을때.
         else if (!isHappy1) {
+            DS_HPCALL2.ROW_TYPE = "I";
             calendarUtil.setImaskValue("calendar4", getDateFormat());    // 해피콜일자 초기화
             $("#timebox3").val(getTimeFormat());                        // 해피콜시간 초기화
             $("#textbox27").val(currentUser.name);                      // 해피콜담당자명 초기화
@@ -566,6 +572,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
 
 		if (data.dsRecv.length >= 1) {
             DS_DEPT_PROC = data.dsRecv[0];
+            DS_DEPT_PROC.ROW_TYPE = "U";
             // DS_DEPT_PROC.TRANS_DATE        // 연계일자
             // DS_DEPT_PROC.TRANS_NO          // 연계번호
             // DS_DEPT_PROC.TRANS_MK          // 연계구분
@@ -592,6 +599,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
         }
         // 처음 저장인 경우
         else {
+            DS_DEPT_PROC.ROW_TYPE = "I";
             calendarUtil.setImaskValue("calendar2", getDateFormat());    // 접수일자 초기화
             $("#timebox1").val(getTimeFormat());                        // 접수시간 초기화
             DS_DEPT_PROC.TRANS_DATE     =   getDateFormat();            // 연계일자
@@ -1374,78 +1382,87 @@ const addSMSData = (sendData) => {
 const onSave = (sBtnMk) => {
     
     // 1. 지점처리내역 
-    // - 저장할 경우 
-    if(!getDeptValidityCheck()) return;
-    MK_TRANS_TR = "I"
-    // - 변경할 경우 
-    if(!getDeptValidityCheck()) return;
-    MK_TRANS_TR = "U"
-    // - 저장 또는 변경이 아닌경우        
-    MK_TRANS_TR = "N"
+    if (DS_DEPT_PROC.ROW_TYPE == "I" || DS_DEPT_PROC.ROW_TYPE == "U") {
+        if (!getDeptValidityCheck()) return;
+    } else {
+        DS_DEPT_PROC.ROW_TYPE = "N";
+    }
     
     // 2. 1차 해피콜
-    // - 저장인 경우, 데이터의 조작이 있는 경우 
-    if ($("#textbox26").val().length >= 1 ||
-        $("#textbox35").val().length >= 1 ||
-        $("#selectbox1").val().length >= 1 ||
-        $("#selectbox2").val.length >= 1) {
+    const orgHp1Stat = DS_HPCALL1.ROW_TYPE;
+    if (DS_HPCALL1.ROW_TYPE == "I") {
+        // 데이터의 조작이 있는 경우 
+        if ($("#textbox26").val().length >= 1 ||        // 제목
+            $("#textbox35").val().length >= 1 ||        // 내용
+            $("#selectbox1").val().length >= 1 ||       // 상담원만족도
+            $("#selectbox2").val().length >= 1) {       // 피드백경로
+            if (!getHpCall1ValidityCheck()) return;
+        }
+        // 데이터의 조작이 없는 경우
+        else {
+            DS_HPCALL1.ROW_TYPE = "N";
+        }
+    } else if (DS_HPCALL1.ROW_TYPE == "U") {
         if (!getHpCall1ValidityCheck()) return;
-        MK_HPCALL1_TR = "I"
+    } else {
+        DS_HPCALL1.ROW_TYPE = "N";
     }
-    // - 저장이지만 데이터의 조작이 없는 경우
-    MK_HPCALL1_TR = "N"
-    // - 변경인 경우 
-    if (!getHpCall1ValidityCheck()) return;
-    MK_HPCALL1_TR = "U"
-    // 저장 또는 변경이 아닌경우
-    MK_HPCALL1_TR = "N"
 
-        
     // 3. 2차 해피콜
-    // - 저장인 경우, 1차해피콜이 저장(신규)이 아닌 경우, 데이터의 조작이 있는 경우
-    if ($("#textbox28").val().length >= 1 ||
-        $("#textbox36").val().length >= 1 ||
-        $("#selectbox3").val().length >= 1 ||
-        $("#selectbox4").val().length >= 1) {
+    if (DS_HPCALL2.ROW_TYPE == "I") {
+        // 1차해피콜이 저장(신규)이 아닌 경우
+        if (orgHp1Stat != "I") {
+            // 데이터의 조작이 있는 경우
+            if ($("#textbox28").val().length >= 1 ||
+                $("#textbox36").val().length >= 1 ||
+                $("#selectbox3").val().length >= 1 ||
+                $("#selectbox4").val().length >= 1) {
+                if (!getHpCall2ValidityCheck()) return;
+            }
+            // 데이터의 조작이 없는 경우
+            else {
+                DS_HPCALL2.ROW_TYPE = "N";
+            }
+        }
+        // 1차 해피콜이 저장(신규)인 경우
+        else {
+            DS_HPCALL2.ROW_TYPE = "N";
+        }
+    } else if (DS_HPCALL2.ROW_TYPE == "U") {
         if (!getHpCall2ValidityCheck()) return;
-        MK_HPCALL2_TR = "I"
-    } 
-    // - 데이터의 조작이 없는 경우
-    else {
-        MK_HPCALL2_TR = "N"
+    } else {
+        DS_HPCALL2.ROW_TYPE = "N";
     }
-    // - 저장인 경우, 1차 해피콜이 저장(신규)인 경우
-    MK_HPCALL2_TR = "N"
-    // - 변경인 경우
-    if (!getHpCall2ValidityCheck()) return;
-    MK_HPCALL2_TR = "U"
-    // - 저장 또는 변경이 아닌경우
-    MK_HPCALL2_TR = "N"
-                    
+
     // 4. 사은품      
-    // - 저장인 경우, 1차해피콜이 신규가 아니거나, 1차해피콜을  저장하는 경우, 데이터의 조작이 있는 경우  
-    if ($("#selectbox5").val().length >= 1 ||
-        $("#selectbox6").val().length >= 1 ||
-        calendarUtil.getImaskValue("textbox30").length >= 1 ||
-        $("#selectbox7").val().length >= 1 ||
-        $("#textbox31").val().length >= 1 ||
-        $("#textbox32").val().length >= 1) {
+    if (DS_GIFT.ROW_TYPE == "I") {
+        // 1차해피콜이 신규가 아니거나, 1차해피콜을  저장하는 경우
+        if (orgHp1Stat != "I" || DS_HPCALL1.ROW_TYPE == "I") {
+            // 데이터의 조작이 있는 경우
+            if ($("#selectbox5").val().length >= 1 ||
+                $("#selectbox6").val().length >= 1 ||
+                calendarUtil.getImaskValue("textbox30").length >= 1 ||
+                $("#selectbox7").val().length >= 1 ||
+                $("#textbox31").val().length >= 1 ||
+                $("#textbox32").val().length >= 1) {
+                if (!getGiftValidityCheck()) return;
+            }
+            // 데이터의 조작이 없는 경우
+            else {
+                DS_GIFT.ROW_TYPE = "N";
+            }
+        }
+        // 1차해피콜이 신규인 경우이고, 1차해피콜을 저장 하지 않을 경우
+        else {
+            DS_GIFT.ROW_TYPE = "N";
+        }
+    } else if (DS_GIFT.ROW_TYPE == "U") {
         if (!getGiftValidityCheck()) return;
-        MK_GIFT_TR = "I"
+    } else {
+        DS_GIFT.ROW_TYPE = "N";
     }
-    // - 데이터의 조작이 없는 경우
-    else {
-        MK_GIFT_TR = "N"
-    }
-    // - 저장인 경우, 1차해피콜이 신규인 경우이고, 1차해피콜을 저장 하지 않을 경우
-    MK_GIFT_TR = "N"
-    // - 변경인 경우
-    if (!getGiftValidityCheck()) return;
-    MK_GIFT_TR = "U"
-    // - 저장, 변경이 아닌경우
-    MK_GIFT_TR = "N"
-  
-    if (MK_TRANS_TR != "N" || MK_HPCALL1_TR != "N" || MK_HPCALL2_TR != "N" || MK_GIFT_TR != "N" || sBtnMk == "CO") {
+    
+    if (DS_DEPT_PROC.ROW_TYPE != "N" || DS_HPCALL1.ROW_TYPE != "N" || DS_HPCALL2.ROW_TYPE != "N" || DS_GIFT.ROW_TYPE != "N" || sBtnMk == "CO") {
         const condition = getSaveCondition(sBtnMk);
         saveCselResult(condition);
     }
@@ -1606,7 +1623,7 @@ const getSaveCondition = (sBtnMk) => {
     const data = {
         // 지점처리정보 데이터
         DS_TRANS: {
-            ROW_TYPE         : "",                                      // 저장구분(I/U/D)              TODO
+            ROW_TYPE         : DS_DEPT_PROC.ROW_TYPE,                   // 저장구분(I/U/D)
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                    // 상담일자
             CSEL_NO          : DS_COUNSEL.CSEL_NO,                      // 상담번호
             CSEL_SEQ         : DS_COUNSEL.CSEL_SEQ,                     // 상담순번
@@ -1634,7 +1651,7 @@ const getSaveCondition = (sBtnMk) => {
         },
         // 해피콜1차 정보 데이터
         DS_HPCALL1: {
-            ROW_TYPE         : "",                                       // 저장구분(I/U/D)             TODO
+            ROW_TYPE         : DS_HPCALL1.ROW_TYPE,                      // 저장구분(I/U/D)  
             CSEL_DATE        : DS_HPCALL1.CSEL_DATE,                     // 상담일자
             CSEL_NO          : DS_HPCALL1.CSEL_NO,                       // 상담번호
             HPCALL_DATE      : calendarUtil.getImaskValue("calendar3"),  // 해피콜일자
@@ -1651,7 +1668,7 @@ const getSaveCondition = (sBtnMk) => {
         },
         // 해피콜2차 정보 데이터
         DS_HPCALL2: {
-            ROW_TYPE         : "",                                       // 저장구분(I/U/D)                TODO   
+            ROW_TYPE         : DS_HPCALL2.ROW_TYPE,                      // 저장구분(I/U/D)
             CSEL_DATE        : DS_HPCALL2.CSEL_DATE,                     // 상담일자      
             CSEL_NO          : DS_HPCALL2.CSEL_NO,                       // 상담번호  
             HPCALL_DATE      : calendarUtil.getImaskValue("calendar4"),  // 해피콜일자      
@@ -1664,7 +1681,7 @@ const getSaveCondition = (sBtnMk) => {
         },
         // 사은품 정보 데이터
         DS_GIFT: {
-            ROW_TYPE         : "",                                       // 저장구분(I/U/D)                 TODO   
+            ROW_TYPE         : DS_GIFT.ROW_TYPE,                         // 저장구분(I/U/D)
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                     // 상담일자       
             CSEL_NO          : DS_COUNSEL.CSEL_NO ,                      // 상담번호   
             GIFT_DATE        : DS_GIFT.GIFT_DATE,                        // 사은품일자       
@@ -1709,19 +1726,19 @@ const getSaveCondition = (sBtnMk) => {
     // 저장 버튼을 클릭한 경우
     else if (sBtnMk == "SA") {
         if (DS_COUNSEL.PROC_STS_MK == "03" || DS_COUNSEL.PROC_STS_MK == "01") { // 지점처리중인 경우                
-            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                      TODO
+            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                    
                 data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
-            } else if (data.DS_HPCALL1.ROW_TYPE != "N") { // 1차해피콜인 경우                                                      TODO
+            } else if (data.DS_HPCALL1.ROW_TYPE != "N") { // 1차해피콜인 경우                                                   
                 data.DS_TRANS.PROC_STS_MK = "15"; // 해피콜완료
-            } else if (data.DS_TRANS.ROW_TYPE != "N") { // 지점처리인 경우                                                      TODO
+            } else if (data.DS_TRANS.ROW_TYPE != "N") { // 지점처리인 경우                                               
                 data.DS_TRANS.PROC_STS_MK = "04"; // 지점처리중
             } else {
                 data.DS_TRANS.PROC_STS_MK = "03"; // 지점처리완료
             }
         } else if (DS_COUNSEL.PROC_STS_MK == "04") { // 지점처리완료인 경우
-            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                      TODO
+            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                            
                 data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
-            } else if (data.DS_HPCALL1.ROW_TYPE != "N") { // 1차해피콜인 경우                                                      TODO
+            } else if (data.DS_HPCALL1.ROW_TYPE != "N") { // 1차해피콜인 경우                                          
                 data.DS_TRANS.PROC_STS_MK = "15"; // 해피콜완료
             } else {
                 data.DS_TRANS.PROC_STS_MK = "04"; // 지점처리완료
@@ -1729,7 +1746,7 @@ const getSaveCondition = (sBtnMk) => {
         } else if (DS_COUNSEL.PROC_STS_MK == "12") { // 2차결재인 경우
             data.DS_TRANS.PROC_STS_MK = "12"; // 2차결재
         } else if (DS_COUNSEL.PROC_STS_MK == "15") { // 해피콜완료인 경우
-            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                      TODO
+            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                
                 data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
             } else {
                 data.DS_TRANS.PROC_STS_MK = "15"; // 해피콜완료
@@ -1742,6 +1759,8 @@ const getSaveCondition = (sBtnMk) => {
             data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
         }
     }
+
+    return data;
 
 }
 
