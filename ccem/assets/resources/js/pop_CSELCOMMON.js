@@ -478,11 +478,12 @@ const setTicket = async (counselData, customData, EMP_ID_LIST) => {
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["JOB"]}`]                     = "";                                                       // 직무 
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_KIND_CDE"]}`]            = `div_kind_cde_${customData.brandId}`;						// 브랜드  
 	
-	// 티켓필드 입력
-	await sidebarClient.set(req);
-	await sidebarClient.invoke('comment.appendText', counselData.CSEL_CNTS);
-	for(follower of followerData) {
-		await sidebarClient.invoke('ticket.collaborators.add', follower);
+	
+	await sidebarClient.set(req);											 // 티켓필드 입력
+	await sidebarClient.set("comment.type", "internalNote");				 // 내부메모로 변경
+	await sidebarClient.invoke('comment.appendText', counselData.CSEL_CNTS); // 코멘트입력
+	for (follower of followerData) {
+		await sidebarClient.invoke('ticket.collaborators.add', follower);	 // 팔로워세팅
 	}
 	
 }
