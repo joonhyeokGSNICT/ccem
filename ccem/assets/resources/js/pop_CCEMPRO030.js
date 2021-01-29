@@ -1160,7 +1160,7 @@ const onSMS = (sType) => {
         arrInData[10]= "cns2700";      // url정보	    	
     }
 
-    PopupUtil.open("CCEMPRO046", 980, 600);
+    PopupUtil.open("CCEMPRO046", 980, 600, "", arrInData);
 }
 
 /**
