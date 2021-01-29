@@ -50,7 +50,7 @@
 							<div class="col-5" style="text-align:center;">
 								<span class="badge badge-primary w-100" id="smsBadge">SMS</span><span class="badge badge-danger w-100" id="lmsBadge" style="display:none;">LMS</span>
 							</div>
-							<div class="col-7" style="text-align:center;">
+							<div class="col-7" style="text-align:right;">
 								<span id="calByte" style="font-weight:600;">0</span><span style="font-weight:600;"> / 4000 bytes</span>
 							</div>
 						</div>
@@ -62,7 +62,7 @@
 								    </div>
 								    <input type="text" class="form-control">
 								</div>	
-								<div style="float:left;">
+								<div style="float:right;">
 									<input type="button" class="btn btn-sm customerBtn" value="보내기" id="" onclick="" style="padding: 0.25rem .0rem !important;">
 									<input type="button" class="btn btn-sm btn-danger customerBtn" value="초기화" id="" onclick="cleanContent();" style="padding: 0.25rem .0rem !important; background:#c82333;">
 								</div>
@@ -72,7 +72,7 @@
 								    </div>
 								    <input type="text" class="form-control" value="" id="smsSendNum" disabled>
 								</div>
-								<table class="table table-sm table-bordered">
+								<table class="table table-sm table-bordered" id="inputTable">
 									<colgroup>
 										<col span="1" style="width: 28%;">
 										<col span="1" style="width: 72%;">
@@ -82,38 +82,38 @@
 										<td><input type="text" class="form-control form-control-sm" readonly></td>
 									</tr>
 									<tr>
-										<th colspan="1">회원 휴대폰</td>
-										<td><div class="input-group">
+										<th colspan="1">회원 휴대폰</th>
+										<td><div class="input-group input-group-sm">
 										  <div class="input-group-prepend">
 										    <div class="input-group-text">
-										      <input type="radio">
+										      <input type="radio" id="custPhoneNumCheck" name="sendCheck">
 										    </div>
 										  </div>
-										  <input type="text" class="form-control" placeholder="" readonly>
+										  <input type="text" class="form-control" placeholder="" id="custPhoneNum" readonly>
 										</div>
 										</td>
 									</tr>
 									<tr>
-										<th colspan="1">회원/모 휴대폰</td>
-										<td><div class="input-group">
+										<th colspan="1">회원/모 휴대폰</th>
+										<td><div class="input-group input-group-sm">
 										  <div class="input-group-prepend">
 										    <div class="input-group-text">
-										      <input type="radio">
+										      <input type="radio" id="custMBRPhoneNumCheck" name="sendCheck">
 										    </div>
 										  </div>
-										  <input type="text" class="form-control" placeholder="" readonly>
+										  <input type="text" class="form-control" placeholder="" id="custMBRPhoneNum" readonly>
 										</div>
 										</td>
 									</tr>
 									<tr>
-										<th colspan="1">회원/부 휴대폰</td>
-										<td><div class="input-group">
+										<th colspan="1">회원/부 휴대폰</th>
+										<td><div class="input-group input-group-sm">
 										  <div class="input-group-prepend">
 										    <div class="input-group-text">
-										      <input type="radio">
+										      <input type="radio" id="custFATPhoneNumCheck" name="sendCheck">
 										    </div>
 										  </div>
-										  <input type="text" class="form-control" placeholder="" readonly>
+										  <input type="text" class="form-control" placeholder="" id="custFATPhoneNum" readonly>
 										</div>
 										</td>
 									</tr>

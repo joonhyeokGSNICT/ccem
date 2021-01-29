@@ -1,14 +1,12 @@
 var smsContentsListGrid;
 
+var param = {};
+var openerParam = {};
+
+var msgType = 0;
+
 $(function(){
-	getBasicList("13").then(function(d){
-		if(d.substring(0,1) == "-"){
-			$("#smsSendNum").val(d.substring(1));
-		}else {
-			$("#smsSendNum").val(d);
-		}
-		});
-	
+	getBasicList("13").then(function(d){$("#smsSendNum").val(CSNumber(d));});				// 대표전화번호
 	const codeList = opener.codeData.filter(el => "SMS_SENDER".includes(el.CODE_MK));
 	console.log(codeList);
 	
@@ -135,15 +133,21 @@ $(function(){
 		}, error: function (response) {
 		}
 	});
+	
+	
+	transVar(); // SMS 데이터 세팅
+	
 });
 
 function checkByte(){
 	if(Number($("#calByte").text()) > 90){
 		$("#lmsBadge").css("display","");
 		$("#smsBadge").css("display","none");
+		msgType = 5;
 	}else{
 		$("#smsBadge").css("display","");
 		$("#lmsBadge").css("display","none");
+		msgType = 0;
 	}
 };
 
@@ -193,29 +197,21 @@ function cleanContent(){
  */
 function sendSMS(){
 	
-	var param = {
-			userid: opener.currentUserInfo.user.external_id,
-		    menuname: 'SMS전송',
-			senddataids: ["send1"],
-			recvdataids: ["recv1"],
-			send1: [{
-				"MSG_TYPE" : "",			//메시지 타입(0:SMS,5:LMS)
-				"DEST_PHONE" : "",	        //수신번호
-				"DEST_NAME" : "",           //수신자
-				"SEND_PHONE" : "",          //발신번호
-				"SEND_NAME" : "",           //발신자명
-				"MSG_BODY" : "",            //전송내용
-				"STATUS" : "",              //발송상태  (0:발송대기)
-				"CUST_ID" : "",             //고객번호
-				"MBR_ID" : "",              //회원번호
-				"CSEL_DATE" : "",           //상담일자
-				"CSEL_NO" : "",             //상담번호
-				"CSEL_SEQ" : "",            //상담순번
-				"EXTERNAL_ID" : "",         //상담자ID
-				"SMS_TRGT_ID" : "",         //대상구분(1:지점,2:학부모,3:교사)
-				"SMS_FIX_ID" : ""           //구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)
-			}]
-		}
+	param.send1 = [{}];
+	param.userid = opener.currentUserInfo.user.external_id;
+	param.menuname = 'SMS전송';
+	param.senddataids = ["send1"];
+	param.recvdataids = ["recv1"];
+	
+	param.send1[0].MSG_TYPE = msgType;																						//메시지 타입(0:SMS,5:LMS)
+	param.send1[0].DEST_PHONE = $("#inputTable").find('input:radio:checked').parent().parent().parent().children().eq(1); 	//수신번호
+	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
+	param.send1[0].SEND_NAME =	opener.currentUserInfo.user.name;
+	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
+	param.send1[0].STATUS = 0;
+	param.send1[0].EXTERNAL_ID = opener.currentUserInfo.user.external_id,         											//상담자ID
+	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
+	param.send1[0].SMS_FIX_ID = "";         				
 	
 	$.ajax({
 		url: API_SERVER + '/sys.addSMSData.do',
@@ -233,3 +229,86 @@ function sendSMS(){
 		}
 	});
 }
+
+/******************************************************
+ * 대표전화번호
+ ******************************************************/
+ function CSNumber(SSCSNumber){
+     var csnumber = SSCSNumber;
+     csnumber = $.trim(csnumber);
+     var retNumber = "";
+     var NumberArr = csnumber.split("-");
+     for (i=0; i<NumberArr.length; i++) {
+         if (NumberArr[i] > 0 ) retNumber = retNumber + NumberArr[i] + "-";
+     }
+     if (retNumber.length > 0) retNumber = retNumber.substring(0,retNumber.length-1);
+     return retNumber;
+ }
+ 
+ /******************************************************
+  * SMS 회원명으로 발송하기위하여 회원정보 셋팅하기.
+  ******************************************************/    
+  function transVar() {
+	  param.send1 = [{}];
+	  if(POP_DATA != undefined){
+		  param.send1[0].CUST_ID 	= POP_DATA[0]; 	// 고객번호 
+		  param.send1[0].DEST_NAME 	= POP_DATA[1]; 	// 고객명
+		  $("#custPhoneNum").val(POP_DATA[2]); 		// 회원휴대폰
+		  $("#custMBRPhoneNum").val(POP_DATA[3]); 	// 회원/모 휴대폰
+		  $("#custFATPhoneNum").val(POP_DATA[4]); 	// 회원/부 휴대폰
+		  var rdoSelect      		= POP_DATA[5]; 	// 휴대폰 디폴트 선택값
+		  param.send1[0].MBR_ID 	= POP_DATA[6]; 	// 회원번호
+		  param.send1[0].CSEL_DATE 	= POP_DATA[7]; 	// 상담일자
+		  param.send1[0].CSEL_NO 	= POP_DATA[8]; 	// 상담번호
+		  param.send1[0].CSEL_SEQ 	= POP_DATA[9]; 	// 상담순번
+		  var sUrl  		 		= POP_DATA[10]; 		// 부모창 URL(clm3700, cns2100, cns2700, cns5400)
+		  
+		  if (!isNaN(rdoSelect)) {
+			  $("#inputTable").find('input:radio').eq(rdoSelect-1);
+		  }     
+	  }
+  }
+
+/*function sendSMS(){
+	param.send1 = [{}];
+	param.userid = opener.currentUserInfo.user.external_id;
+	param.menuname = 'SMS전송';
+	param.senddataids = ["send1"];
+	param.recvdataids = ["recv1"];
+	
+	param.send1[0].MSG_TYPE = msgType;																						//메시지 타입(0:SMS,5:LMS)
+	param.send1[0].DEST_PHONE = $("#inputTable").find('input:radio:checked').parent().parent().parent().children().eq(1); 	//수신번호
+	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
+	param.send1[0].SEND_NAME =	opener.currentUserInfo.user.name;
+	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
+	param.send1[0].STATUS = 0;
+	param.send1[0].EXTERNAL_ID = opener.currentUserInfo.user.external_id,         											//상담자ID
+	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
+	param.send1[0].SMS_FIX_ID = "";         																				//구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)
+	
+	
+	
+	{
+		userid: opener.currentUserInfo.user.external_id,
+	    menuname: 'SMS전송',
+		senddataids: ["send1"],
+		recvdataids: ["recv1"],
+		send1: [{
+			"MSG_TYPE" : "",			//메시지 타입(0:SMS,5:LMS)
+			"DEST_PHONE" : "",	        //수신번호
+			"DEST_NAME" : "",           //수신자
+			"SEND_PHONE" : "",          //발신번호
+			"SEND_NAME" : "",           //발신자명
+			"MSG_BODY" : "",            //전송내용
+			"STATUS" : "",              //발송상태  (0:발송대기)
+			"CUST_ID" : "",             //고객번호
+			"MBR_ID" : "",              //회원번호
+			"CSEL_DATE" : "",           //상담일자
+			"CSEL_NO" : "",             //상담번호
+			"CSEL_SEQ" : "",            //상담순번
+			"EXTERNAL_ID" : 			opener.currentUserInfo.user.external_id,         //상담자ID
+			"SMS_TRGT_ID" : "",         //대상구분(1:지점,2:학부모,3:교사)
+			"SMS_FIX_ID" : ""           //구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)
+		}]
+	}
+}*/

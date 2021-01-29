@@ -2643,3 +2643,35 @@ function loadTeacherInfoMain() {
 	
 	loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 상담이력 조회
 }
+
+function smsOnClick(){
+	if(currentCustInfo.CUST_ID == null || currentCustInfo.CUST_ID == ""){
+		ModalUtil.modalPop("알림","고객조회를 먼저 해 주세요.");
+	}
+	var user_grp = "";
+	for(d of currentUserInfo.user.tags){
+		if(d.length == 4){
+			user_grp = d;
+		}
+	}
+	// MOL상담원 SMS사용금지
+	if(user_grp == '7096'){
+		return;
+	};
+	var arrInData = new Array();
+	arrInData[0] = currentCustInfo.CUST_ID;                                                                      	// 회원번호
+	arrInData[1] = currentCustInfo.NAME;                                                                      		// 회원명
+	arrInData[2] = currentCustInfo.MOBILNO != null?currentCustInfo.MOBILNO.replace(/-/gi,""):"";  					// 회원휴대폰
+	arrInData[3] = currentCustInfo.MOBILNO_MBR != null?currentCustInfo.MOBILNO_MBR.replace(/-/gi,""):""; 			// 회원/모 휴대폰
+	arrInData[4] = currentCustInfo.MOBILNO_FAT != null?currentCustInfo.MOBILNO_FAT.replace(/-/gi,""):""; 			// 회원/부 휴대폰
+	arrInData[5] = "2";            																					// 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
+	arrInData[6] = currentCustInfo.MBR_ID; 																			// 회원번호
+	arrInData[7] = "";              // 상담일자
+	arrInData[8] = "";              // 상담번호
+	arrInData[9] = "";              // 상담순번
+	PopupUtil.open('CCEMPRO046', 1000, 600 ,"", arrInData);
+};
+
+
+
+
