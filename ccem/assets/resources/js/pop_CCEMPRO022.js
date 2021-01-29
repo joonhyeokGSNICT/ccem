@@ -789,8 +789,6 @@ const onSave = async () => {
 	if (!counselData) return false;
 	const addInfoData = getAddInfoCondition();
 	if (!addInfoData) return false;
-	const obData = {};							// TODO OB관련 데이터
-	if (!obData) return false;
 	const customData  = getCustomData();
 	const EMP_ID_LIST = $("#hiddenbox11").val().split(",");
 
@@ -805,6 +803,7 @@ const onSave = async () => {
 
 		// ccem 저장
 		counselData.ZEN_TICKET_ID = ticket.id;
+		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
 		resSave = await saveCounsel(counselData, addInfoData, obData);
 	
 		// 티켓 업데이트
@@ -815,12 +814,13 @@ const onSave = async () => {
 	} else if (sJobType == "U" && selectedSeq > 1) {
 
 		// ccem 저장
+		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
 		resSave = await saveCounsel(counselData, addInfoData, obData);
 
 		// 티켓 업데이트
 		await updateTicket(counselData, customData, EMP_ID_LIST);
 		
-	// 수정
+	// 상담순번이 1이고, 신규 또는 수정일떄.
 	} else if (sJobType == "I" || sJobType == "U") {
 
 		// 티켓이 유효한지 체크.
@@ -829,13 +829,13 @@ const onSave = async () => {
 
 		// ccem 저장
 		counselData.ZEN_TICKET_ID = ticketCondition;
+		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
 		resSave = await saveCounsel(counselData, addInfoData, obData);
 
 		// 티켓필드 입력
 		counselData.CSEL_NO = resSave.CSEL_NO;
 		await setTicket(counselData, customData, EMP_ID_LIST);
-	
-	// 신규
+
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
@@ -1204,6 +1204,40 @@ const getAddInfoCondition = () => {
 	else {
 		return {};
 	}
+}
+
+/**
+ * TODO OB관련 데이터 value check
+ * @param {string|number} ticket_id
+ */
+const getObCondition = async (ticket_id) => {
+
+	const data = {
+		OBLIST_CDE		: "", // OB리스트구분	
+		LIST_CUST_ID	: "", // 리스트_고객_ID(OBLIST_CDE = '60' 외 나머지 경우 셋팅)
+		CSEL_DATE		: calendarUtil.getImaskValue("textbox27"),  // 상담일자	
+		CSEL_NO			: $("#textbox28").val(), 					// 상담번호
+		CALLBACK_ID		: "", // CALLBACK_ID(OBLIST_CDE = '60'일 경우 셋팅)
+	}
+	
+	// 티켓필드에서 필요한정보를 가져온다.
+	if (!ticket_id) return new Object();
+	const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+	if (!ticket || !ticket.custom_fields || ticket.custom_fields.length == 0) return new Object();
+
+	const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+	const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
+	const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
+
+	// OB리스트구분에 따라 값세팅
+	data.OBLIST_CDE = fOB_MK?.value || "";
+	if (data.OBLIST_CDE == "60") {
+		data.CALLBACK_ID = fCALLBACK_ID?.value || "";
+	} else {
+		data.LIST_CUST_ID = fLIST_CUST_ID?.value || "";
+	}
+
+	return data;
 }
 
 /**
