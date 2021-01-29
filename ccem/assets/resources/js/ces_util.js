@@ -395,15 +395,13 @@ var calendarUtil = {
         let imask = calendarUtil.dateMask(id);
 
         $("#" + id).on("apply.daterangepicker", (ev, picker) => {
-            $("#" + id).val(picker.startDate.format("YYYY-MM-DD"));
-            imask.updateValue();
-            if (applyCallBack) applyCallBack();
+            imask.value = picker.startDate.format("YYYY-MM-DD");
+            applyCallBack?.();
         });
 
         $("#" + id).on("cancel.daterangepicker", (ev, picker) => {
-            $("#" + id).val("____-__-__");
-            imask.updateValue();
-            if (cancelCallBack) cancelCallBack();
+            imask.value = "";
+            cancelCallBack?.();
         });
     },
     /**
