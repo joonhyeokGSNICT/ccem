@@ -1,4 +1,8 @@
-let currentUser;        // 현재 사용중인 유저의 정보(ZENDESK)
+let topbarObject;			// topbar window
+let topbarClient;			// topbar client
+let sidebarClient;          // sidebar client
+let currentUser;            // 현재 사용중인 유저의 정보(ZENDESK)
+
 let giftList = [];      // 사은품내역2 코드
 
 let DS_CSEL_PROC = {};  // 상담내역
@@ -31,17 +35,30 @@ $(function () {
  */
 const onStart = async (openerNm) => {
 
-    // TODO 상담조회에서 팝업 되었을때,
-    if (openerNm.includes("CCEMPRO000")) {
-        sCselDate   = ""  // 상담일자
-        sCselNo     = ""  // 상담번호
-        sCselSeq    = ""  // 상담순번
-        sCustId     = ""  // 고객번호
-        sCustMk     = ""  // 고객구분
+    // 상담조회에서 팝업 되었을때,
+    if (openerNm.includes("CCEMPRO035")) {
+        topbarObject  = opener.topbarObject;
+        topbarClient  = topbarObject.client;
+        sidebarClient = topbarObject.sidebarClient;
+        currentUser   = topbarObject.currentUserInfo.user;
+
+        const counselGrid = opener.grid1;	// 상담조회 grid
+		const rowKey 	  = counselGrid.getSelectedRowKey();
+		sCselDate 	      = counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
+		sCselNo  		  = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
+        sCselSeq 		  = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
+        sCustId           = counselGrid.getValue(rowKey, "CUST_ID");    // 고객번호
+        sCustMk           = counselGrid.getValue(rowKey, "CUST_MK")     // 고객구분
+
+        await setCodeData(topbarObject.codeData);
+        getCselProc();
 
     // 상담등록화면에서 팝업되었을때,
     } else if (openerNm.includes("CCEMPRO022")) {
-        currentUser = opener.currentUser;
+        topbarObject  = opener.topbarObject;
+        topbarClient  = topbarObject.client;
+        sidebarClient = topbarObject.sidebarClient;
+        currentUser   = topbarObject.currentUserInfo.user;
 
         sCselDate   = opener.calendarUtil.getImaskValue("textbox27");   // 상담일자
         sCselNo     = $("#textbox28", opener.document).val();           // 상담번호
@@ -49,7 +66,7 @@ const onStart = async (openerNm) => {
         sCustId     = $("#hiddenbox6", opener.document).val();          // 고객번호
         sCustMk     = $("#hiddenbox2", opener.document).val();          // 고객구분
 
-        await setCodeData(opener.codeData);
+        await setCodeData(topbarObject.codeData);
         getCselProc();
 
     // TODO I/B해피콜 리스트에서 팝업되었을때,

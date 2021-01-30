@@ -1,5 +1,7 @@
-let currentUser = {};   // 현재 사용중인 유저의 정보(ZENDESK)
-let codeData = [];
+let topbarObject;			// topbar window
+let topbarClient;			// topbar client
+let sidebarClient;          // sidebar client
+let currentUser = {};       // 현재 사용중인 유저의 정보(ZENDESK)
 
 let giftList = [];      // 사은품내역2 코드
 
@@ -18,8 +20,6 @@ let sCSEL_SEQ   = "";   // 상담순번
 let sPROC_MK    = "";   // 처리구분
 
 let SEND_PHONE = "";    // 대표번호
-
-let sCallPage = "";
 
 $(function () {
 
@@ -44,16 +44,23 @@ $(function () {
  */
 const onStart = async (openerNm) => {
     
-    console.debug("openerNm: ", openerNm)
-    
+    // 상담조회에서 팝업 되었을때,
+    if (openerNm.includes("CCEMPRO035")) { 
+        topbarObject  = opener.topbarObject;
+        topbarClient  = topbarObject.client;
+        sidebarClient = topbarObject.sidebarClient;
+        currentUser   = topbarObject.currentUserInfo.user;
 
-    // TODO 상담조회에서 팝업 되었을때,
-    if (openerNm.includes("CCEMPRO000")) { 
-        sCSEL_DATE = "";
-        sCSEL_NO   = "";
-        sCSEL_SEQ  = "";
-        sPROC_MK   = "";
-        sCallPage = "1";
+        const counselGrid = opener.grid1;	// 상담조회 grid
+		const rowKey 	  = counselGrid.getSelectedRowKey();
+        sCSEL_DATE        = counselGrid.getValue(rowKey, "CSEL_DATE");	
+        sCSEL_NO          = counselGrid.getValue(rowKey, "CSEL_NO");	
+        sCSEL_SEQ         = counselGrid.getValue(rowKey, "CSEL_SEQ");	
+        sPROC_MK          = counselGrid.getValue(rowKey, "PROC_MK");
+
+        await setCodeData(topbarObject.codeData);
+        onSearch();
+
     }
     // TODO 시정처리관리에서 팝업되었을때,
     else if (openerNm.includes("CCEMPRO000")) { 
@@ -61,7 +68,6 @@ const onStart = async (openerNm) => {
         sCSEL_NO   = "";
         sCSEL_SEQ  = "";
         sPROC_MK   = "";
-        sCallPage = "2";
     }
     // TODO I/B해피콜 리스트에서 팝업되었을때,
     else if (openerNm.includes("CCEMPRO000")) { 
@@ -69,7 +75,6 @@ const onStart = async (openerNm) => {
         sCSEL_NO   = "";
         sCSEL_SEQ  = "";
         sPROC_MK   = "";
-        sCallPage = "3";
     }
     // TODO 연계확인에서 팝업되었을때,
     else if (openerNm.includes("CCEMPRO000")) { 
@@ -77,26 +82,21 @@ const onStart = async (openerNm) => {
         sCSEL_NO   = "";
         sCSEL_SEQ  = "";
         sPROC_MK   = "";
-        sCallPage = "3";
     }
-    // TODO 상담등록에서 팝업되었을때,
+    // 상담등록에서 팝업되었을때,
     else if (openerNm.includes("CCEMPRO022")) {
-        currentUser = opener.currentUser;
+        topbarObject  = opener.topbarObject;
+        topbarClient  = topbarObject.client;
+        sidebarClient = topbarObject.sidebarClient;
+        currentUser   = topbarObject.currentUserInfo.user;
 
         sCSEL_DATE = opener.calendarUtil.getImaskValue("textbox27");    //상담일자
         sCSEL_NO   = $("#textbox28", opener.document).val();            //상담번호
         sCSEL_SEQ  = $("#selectbox14", opener.document).val();          //상담순번
         sPROC_MK   = $("#selectbox4", opener.document).val();           //처리구분
 
-        sCallPage = "4";
-
-        await setCodeData(opener.codeData);
-        getCounselRst();
-        getCharge();
-        getDeptProcVoc();
-        getGift();
-        getHappy1();
-        // getTransList();
+        await setCodeData(topbarObject.codeData);
+        onSearch();
         
     }
 
@@ -183,6 +183,18 @@ const onChangeGift = (value) => {
     const gif = giftList.find(el => el.GIFT_CDE == value);
     const price = gif ? String(gif.GIFT_PRICE) : "0";
     calendarUtil.setImaskValue("textbox30", price);
+}
+
+/**
+ * 조회
+ */
+const onSearch = () => {
+    getCounselRst();
+    getCharge();
+    getDeptProcVoc();
+    getGift();
+    getHappy1();
+    // getTransList();
 }
 
 /**
@@ -1785,11 +1797,6 @@ const saveCselResult = (condition) => {
 	}
 	$.ajax(settings).done(res => {
         if (!checkApi(res, settings)) return;
-        getCounselRst();
-        getCharge();
-        getDeptProcVoc();
-        getGift();
-        getHappy1();
-        // getTransList();
+        onSearch();
     });
 }
