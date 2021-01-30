@@ -230,7 +230,12 @@ const getCselProc = () => {
             // DS_CSEL_PROC.CSEL_RST_MK1       // 상담결과                      
             // DS_CSEL_PROC.CSEL_USER_ID       // 상담등록자                        
             $("#textbox30").val(DS_CSEL_PROC.INVOICENUM);                           // txtInVoiceNum         // 택배송장번호        
-            $("#textbox12").val(DS_CSEL_PROC.LC_ID_NM);                             // txtLC_ID_NM           // 센터명        
+            $("#textbox12").val(DS_CSEL_PROC.LC_ID_NM);                             // txtLC_ID_NM           // 센터명   
+            
+            // 저장구분 체크 - 해당정보가 있으면 수정(U), 없으면 신규(I)
+            DS_CSEL_PROC.PROC_STAT   = DS_CSEL_PROC.PROC_DATE   ? "U" : "I";    // 처리내역
+            DS_CSEL_PROC.HPCALL_STAT = DS_CSEL_PROC.HPCALL_DATE ? "U" : "I";    // 해피콜정보
+            DS_CSEL_PROC.GIFT_STAT   = DS_CSEL_PROC.GIFT_DATE   ? "U" : "I";    // 사은품정보
                 
             setActiveControl();
         }
@@ -480,7 +485,7 @@ const getSaveCondition = () => {
             PROC_STS_MK     : DS_CSEL_PROC.PROC_STS_MK,                 // 처리상태구분
         },
         DS_PROC     : {
-            ROW_TYPE        : "", // 저장구분(I/U/D)
+            ROW_TYPE        : DS_CSEL_PROC.PROC_STAT,                   // 저장구분(I/U/D)
             CSEL_DATE       : DS_CSEL_PROC.CSEL_DATE,                   // 상담일자
             CSEL_NO         : DS_CSEL_PROC.CSEL_NO,                     // 상담번호
             CSEL_SEQ        : DS_CSEL_PROC.CSEL_SEQ,                    // 상담순번
@@ -490,7 +495,7 @@ const getSaveCondition = () => {
             PROC_STS_MK     : DS_CSEL_PROC.PROC_STS_MK,                 // 처리상태구분
         },
         DS_HPCALL   : {
-            ROW_TYPE        : "", // 저장구분(I/U/D)           
+            ROW_TYPE        : DS_CSEL_PROC.HPCALL_STAT,                 // 저장구분(I/U/D)           
             CSEL_DATE       : DS_CSEL_PROC.CSEL_DATE,                   // 상담일자           
             CSEL_NO         : DS_CSEL_PROC.CSEL_NO,                     // 상담번호       
             HPCALL_DATE     : calendarUtil.getImaskValue("calendar3"),  // 해피콜일자           
@@ -506,7 +511,7 @@ const getSaveCondition = () => {
             GIFT_NO         : DS_CSEL_PROC.GIFT_NO,                     // 사은품접수번호       
         },
         DS_GIFT     : {
-            ROW_TYPE        : "", // 저장구분(I/U/D)       
+            ROW_TYPE        : DS_CSEL_PROC.GIFT_STAT,                   // 저장구분(I/U/D)       
             CUST_ID         : DS_CSEL_PROC.CUST_ID,                     // 고객번호   
             GIFT_DATE       : DS_CSEL_PROC.GIFT_DATE,                   // 사은품접수일자       
             GIFT_NO         : DS_CSEL_PROC.GIFT_NO,                     // 사은품접수번호   
@@ -543,7 +548,6 @@ const saveCselProc = (condition) => {
     }
     $.ajax(settings).done(res => {
         if (!checkApi(res, settings)) return;
-        console.debug("saveCselProc: ", res);
         getCselProc();
     })
 }
