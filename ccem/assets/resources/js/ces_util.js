@@ -561,7 +561,7 @@ var calendarUtil = {
      * @param {string} value 
      */
     setImaskValue(id, value) {
-        calendarUtil.imasks[id].value = value;
+        calendarUtil.imasks[id].value = value || "";
     },
     /**
      * @param {string} id 
