@@ -177,9 +177,10 @@ const onStart = () => {
 	$("#button7").prop("disabled", true);	// 결과등록
 
 	const opener_name = parent.opener.name;
+	const hash = parent.location.hash;
 
 	// 탑바 > 고객정보 > 고객 > 상담등록 버튼으로 오픈
-	if (opener_name.includes("top_bar")) {	
+	if (opener_name.includes("top_bar") && hash.includes("by_cust")) {	
 		topbarObject  = parent.opener;
 		topbarClient  = topbarObject.client;
 		sidebarClient = topbarObject.sidebarClient;
@@ -189,12 +190,25 @@ const onStart = () => {
 
 		// 고객기본정보 조회
 		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
-		const custMk = topbarObject.document.getElementById("custInfo_CUST_MK").value;	// 고객구분
-		const target = (custMk == "PE" || custMk == "TC") ? "T" : "C";
-		getBaseData(target, custId);
+		getBaseData("C", custId);
 
+	}
+	// 탑바 > 고객정보 > 선생님 > 상담등록 버튼으로 오픈
+	else if (opener_name.includes("top_bar") && hash.includes("by_tchr")) {	
+		topbarObject  = parent.opener;
+		topbarClient  = topbarObject.client;
+		sidebarClient = topbarObject.sidebarClient;
+		currentUser   = topbarObject.currentUserInfo.user;
+		codeData 	  = topbarObject.codeData;	
+		setCodeData();
+
+		// 고객기본정보 조회
+		const empId = topbarObject.document.getElementById("tchrInfo_EMP_ID").value;	// 사원번호
+		getBaseData("T", empId);
+
+	} 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
-	} else if (opener_name.includes("CCEMPRO035")) {	
+	else if (opener_name.includes("CCEMPRO035")) {	
 		topbarObject  = parent.opener.topbarObject;
 		topbarClient  = topbarObject.client;
 		sidebarClient = topbarObject.sidebarClient;

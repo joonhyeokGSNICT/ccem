@@ -3,24 +3,28 @@ $(function () {
 	// grid refreshLayout
 	$('.nav-link').on('shown.bs.tab', refreshGrid);
 	
-	// insert hash
 	$('.nav-link').on('click', ev => {
+
+		// insert hash
 		window.location.hash = ev.target.hash;
+
+		// insert ifram src
 		const navId = ev.target.id;
-		if(navId == "counselRgtrNav") {
-			if(!$("#CCEMPRO022").attr("src")) $("#CCEMPRO022").attr("src", "./pop_CCEMPRO022.html");
-		}else if(navId == "entrRgtrNav") {
-			if(!$("#CCEMPRO031").attr("src")) $("#CCEMPRO031").attr("src", "./pop_CCEMPRO031.html");
-		}else if(navId == "tchrIntrdNav") {
-			if(!$("#CCEMPRO032").attr("src")) $("#CCEMPRO032").attr("src", "./pop_CCEMPRO032.html");
-		}
+		if (navId == "entrRgtrNav") {
+			if (!$("#CCEMPRO031").attr("src")) $("#CCEMPRO031").attr("src", "./pop_CCEMPRO031.html");
+		} else if (navId == "tchrIntrdNav") {
+			if (!$("#CCEMPRO032").attr("src")) $("#CCEMPRO032").attr("src", "./pop_CCEMPRO032.html");
+		} else {
+			if (!$("#CCEMPRO022").attr("src")) $("#CCEMPRO022").attr("src", "./pop_CCEMPRO022.html");
+		} 
+
 	});
 
-	// select tab by hash
+	// select tab
 	let hash = window.location.hash;
-	if (hash === "#counselRgtrTab") $("#counselRgtrNav").click();
-	else if (hash === "#entrRgtrTab") $("#entrRgtrNav").click();
-	else if (hash === "#tchrIntrdTab") $("#tchrIntrdNav").click();
+	if (hash.includes("#entr_by")) $("#entrRgtrNav").click();
+	else if (hash.includes("#tchr_by")) $("#tchrIntrdNav").click();
+	else $("#counselRgtrNav").click();
 
 });
 

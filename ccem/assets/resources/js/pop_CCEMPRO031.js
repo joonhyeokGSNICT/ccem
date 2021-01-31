@@ -109,13 +109,11 @@ const onStart = () => {
 		const sCUST_ID = topbarObject.document.getElementById("custInfo_CUST_ID").value; // 고객번호
 		const sMBR_ID  = topbarObject.document.getElementById("custInfo_MBR_ID").value;	 // 회원번호
 
-		setCodeData(codeData);
+		setCodeData();
 		setDate();
 		getCust(sCUST_ID);
 
-		console.debug("onStart by top_bar: ", sCUST_ID, sMBR_ID)
-
-	// 상담조회 > 상담/입회수정 버튼으로 오픈
+	// TODO 상담조회 > 상담/입회수정 버튼으로 오픈
 	} else if (opener_name.includes("CCEMPRO035")) {	
 		topbarObject  = parent.opener.topbarObject;
 		topbarClient  = topbarObject.client;
@@ -129,8 +127,6 @@ const onStart = () => {
 		const CSEL_NO      = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
 		const sCSEL_SEQ    = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
 
-		console.debug("onStart by CCEMPRO035: ", sCSEL_DATE, CSEL_NO, sCSEL_SEQ)
-
 	}
 	
 }
@@ -138,9 +134,8 @@ const onStart = () => {
 /**
  * 콤보박스 세팅
  * - as-is : cns4700.setCombo()
- * @param {array} codeData
  */
-const setCodeData = (codeData) => {
+const setCodeData = () => {
 
 	const CODE_MK_LIST = [
 		"PRDT_GRP",			// 과목군
