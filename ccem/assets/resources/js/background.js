@@ -3,6 +3,7 @@ var codeData;
 $(async function () {
 	codeData = await getCommCode();
 	tobbarPreloadPane();
+	navbarPreloadPane();
 });
 
 client.on("getCodeList", function (target_guid) {
@@ -48,6 +49,21 @@ const tobbarPreloadPane = async () => {
 			const topbarClient = client.instance(instanceGuid);
 			await topbarClient.invoke('preloadPane');
 			console.debug("topbar preloadPane success!");
+			break;
+		}
+	}
+}
+
+/**
+ * nav-bar를 미리로드함.
+ */
+const navbarPreloadPane = async () => {
+	const { instances } = await client.get('instances');
+	for (const instanceGuid in instances) {
+		if (instances[instanceGuid].location === 'nav_bar') {
+			const navClient = client.instance(instanceGuid);
+			await navClient.invoke('preloadPane');
+			console.debug("navbar preloadPane success!");
 			break;
 		}
 	}

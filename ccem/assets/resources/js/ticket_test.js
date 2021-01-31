@@ -1,4 +1,5 @@
 var topBarClient;
+var navBarClient;
 
 $(function(){
 	
@@ -12,4 +13,14 @@ $(function(){
 		}
 	});
 	
+	client.get('instances').then(function(instancesData) {
+		var instances = instancesData.instances;
+		for ( var instanceGuid in instances) {
+			if (instances[instanceGuid].location === 'nav_bar') {
+				navBarClient = client.instance(instanceGuid);
+				navBarClient.trigger("getSidebarClient", client._instanceGuid);
+			}
+		}
+	});
+
 });

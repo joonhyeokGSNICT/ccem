@@ -1,17 +1,12 @@
+var _CUST_RESP_MK_OB ;
 
 client.on("api_notification.ob_result_modal_on", function (data) {
 	console.log('[CCEM TOPBAR] api_notification.ob_result_modal_on 진입 >>> ', data.body);
-	_api.getCallRstOB();
+	_api.getOB();
     client.invoke('popover', 'show').then(function () {
         $('#obResultModal').modal('show');
     })
 });
-
-var save_call_rst = function(){
-    // ccem에 ob결과 저장 후, 모달 hide
-    console.log('[CCEM TOPBAR] OB결과 저장 클릭!');
-    $('#obResultModal').modal('hide');
-}
 
 var _api = {
 	getOB() { // 코드북 요청
@@ -40,6 +35,7 @@ var _api = {
 							break;
 						case "CUST_RESP_MK_OB" :
 							// console.log("getOB _ "+response.dsRecv[0].CODE_MK+" >> ",response.dsRecv);
+							_CUST_RESP_MK_OB = response.dsRecv ;
 							_init.custRespMkOb(response.dsRecv);
 							break;
 						case "CSEL_RST_MK_OB" :
@@ -87,6 +83,11 @@ var _init = {
 	custRespMkOb(respData) { // 고객반응OB
 		var initData = respData.filter(data => data.USE_YN == 'Y');
 			initData = initData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
+		if ( $("input[name=call_rst]:checked").attr("codeId") == "05" ) {	// 통화결과가 조사거부일 경우 고객반응 라디오버튼 변경
+			initData = initData.filter( data => Number(data.CODE_ID) > 10);
+		} else {
+			initData = initData.filter( data => Number(data.CODE_ID) < 11);
+		}
 		var html = '';
 		html += `<colgroup>
 					<col width="33.3%"></col>
@@ -137,3 +138,72 @@ var _init = {
 		p.innerHTML = html;
 	}
 }
+
+var _checkVal = {
+	callresult() {
+		_init.custRespMkOb(_CUST_RESP_MK_OB);	
+	},
+	validite() {
+		if (isEmpty( $("input[name=call_rst]:checked").attr("codeId") )) {
+			client.invoke('notify',"[OB결과등록] 통화결과 값을 선택해야 합니다.", 'alert', 5000);
+			return true;
+		} else if (isEmpty( $("input[name=cust_rst]:checked").attr("codeId") )) {
+			client.invoke('notify',"[OB결과등록] 고객반응 값을 선택해야 합니다.", 'alert', 5000);
+			return true;
+		} else if (isEmpty( $("input[name=csel_rst]:checked").attr("codeId") )) {
+			client.invoke('notify',"[OB결과등록] 상담결과 값을 선택해야 합니다.", 'alert', 5000);
+			return true;
+		}
+		return false;
+	}
+}
+
+var save_call_rst = function(){
+	// ccem에 ob결과 저장 후, 모달 hide
+	if (_checkVal.validite() ) return false;
+	
+	sidebarClient.get('ticket').then(function (data) {
+		console.log(data)
+		if (! isEmpty(data.ticket.externalId) ) {
+			if ( data.ticket.externalId.indexOf('_') > 0 ) temp.LIST_CUST_ID = data.ticket.externalId;
+			else CALLBACK_ID = data.ticket.externalId;
+		} else return false;
+	});
+
+	var temp = {};
+	temp.OBLIST_CDE = getOBMK();
+	temp.CALL_RST_MK = $("input[name=call_rst]:checked").attr("codeId");
+	temp.CUST_RESP_MK = $("input[name=cust_rst]:checked").attr("codeId");
+	temp.CSEL_RST_MK = $("input[name=csel_rst]:checked").attr("codeId");
+	temp.USER_ID = currentUserInfo.user.external_id;
+	temp.TELPNO = ""	// softphone에서 값 제시 필요
+	temp.CALL_TIME = "" // softphone에서 값 제시 필요
+	
+	console.log('[CCEM TOPBAR] OB결과 저장 클릭!');
+	console.log(temp);
+    $('#obResultModal').modal('hide');
+}
+
+$(document).ready(function(){
+	$("input:radio[name=call_rst]").click(function(){
+		$("input:radio[name=cust_rst]:checked").prop("checked", false);
+		$("input:radio[name=csel_rst]:checked").prop("checked", false);
+		_init.custRespMkOb(_CUST_RESP_MK_OB);
+	});
+});
+
+/**
+ * 티켓필드에 입력된 리스트ID_고객번호를 반환.
+ */
+const getOBMK = async () => {
+	if(!sidebarClient) return "";
+	const ticketFieldPath = `ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`;
+	const res = await sidebarClient.get(ticketFieldPath);
+	return res[ticketFieldPath] ? res[ticketFieldPath] : "";
+}
+
+// _api.getOB();
+// client.invoke('popover', 'show').then(function () {
+// 	$('#obResultModal').modal('show');
+// })
+

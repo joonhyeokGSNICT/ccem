@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<!-- zaf_sdk.min.js -->
+<script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
+<!-- moment.js/2.18.0 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+<!-- bootstrap 4.4.1 -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- main.css -->
+<link rel="stylesheet" href="../css/ces_top.css">
+</head>
+<body>
+<div style="margin-top:10px;">
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item"><a class="nav-link active" id="" data-toggle="tab" href="#mathProduct" onclick="linkto('mathProduct')">수리제품<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#langProduct" onclick="linkto('langProduct')">어문제품<span class="orderInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#newProduct" onclick="linkto('newProduct')">신규제품<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#jindo" onclick="linkto('jindo')">진도일람표<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#event" onclick="linkto('event')">이벤트 및 기타<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#cashReceipts" onclick="linkto('cashReceipts')">현금영수증/바우처<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#Ext" onclick="linkto('Ext')">내선<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#dues" onclick="linkto('dues')">회비<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#hardclaim" onclick="linkto('hardclaim')">하드클레임<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#error" onclick="linkto('error')">교재오류<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#memManage" onclick="linkto('memManage')">회원관리규정집<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+            <li class="nav-item"><a class="nav-link" id="" data-toggle="tab" href="#KW" onclick="linkto('KW')">강원심층수<span class="asInfoIcon" style="display: none"><i class="fa fa-circle fa-1" aria-hidden="true" style="color: green;"></i></span></a></li>
+        </ul>
+    </div>
+</div>
+<div class="tab-content">
+    <iframe id="iframeContent" class="iframeContent" src='http://localhost:8080/ccem/resources/doc/mathProduct.htm'></iframe>
+</div>
+<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="../js/pop_CCEMPRO048.js"></script>
+</body>
+</html>
