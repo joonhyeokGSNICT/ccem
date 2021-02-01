@@ -288,6 +288,33 @@ function init(){
 						$("#counselSend_btn").removeClass('invisible');
 						break;
 				}
+			} else if(data.node.data.LV == "4"){
+				$("#HQ_NAME").text(data.node.parent.parent.title);
+				$("#DEPT_NAME").text(data.node.parent.title);
+				$("#LC_NAME").text(data.node.title);
+				$("#HQ_NAME2").text(data.node.parent.parent.title);
+				$("#DEPT_NAME2").text(data.node.parent.title);
+				$("#LC_NAME2").text(data.node.title);
+
+				// 센터 인원 검색
+				switch (_mode){
+					case "plainTree" : case "search" :
+						if (_isEmpSearch) {
+							_sortList.selTreeEmpList(data.node.title); 
+						} else {
+							param[0].SEARCH_DEPT_ID = "Y";
+							param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+							_getList.employeeList(param);
+						}
+						if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
+						else $("#counselSend_btn").removeClass('invisible');
+					case "plainTreeNoEmp" : 
+						if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
+						break;
+					case "plainTreeSelOrg" : 
+						$("#counselSend_btn").removeClass('invisible');
+						break;
+				}
 			}
 			$("#POSTNUM").val(data.node.data.ZIPCDE);
 			$("#POSTADDR").val(data.node.data.ZIP_ADDR);
