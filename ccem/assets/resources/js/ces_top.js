@@ -589,6 +589,10 @@ $(function(){
 		case 'customerTab':
 			$("#assignMemberbtn").css("display","");
 			$("#transferCallbtn").css("display","none");
+			$("#csel_cust").css("display","");
+			$("#csel_tchr").css("display","none");
+			$("#csel_t_cust").css("display","");
+			$("#csel_t_tchr").css("display","none");
 			break;
 		case 'teacherTab':
 			$("#assignMemberbtn").css("display","none");
@@ -627,6 +631,11 @@ $(function(){
 		// 회비
 		case 'membershipDue':
 			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
+				$("#memberCashReceipt").attr('disabled', false);
+				$("#memberAutoTransfer").attr('disabled', false);
+				$("#memberCardCharge").attr('disabled', false);
+				$("#memberRefund").attr('disabled', false);
+				$("#memberTransferInfo").attr('disabled', false);
 				loadList('getFeeInfo',counselMain_membershipDueTab_dueList);
 				var param = {
 						userid: currentUserInfo.user.external_id,
@@ -699,6 +708,12 @@ $(function(){
 						}
 					}
 				});*/
+			}else {
+				$("#memberCashReceipt").attr('disabled', true);
+				$("#memberAutoTransfer").attr('disabled', true);
+				$("#memberCardCharge").attr('disabled', true);
+				$("#memberRefund").attr('disabled', true);
+				$("#memberTransferInfo").attr('disabled', true);
 			}
 			
 			counselMain_membershipDueTab_dueList.refreshLayout();			// 상담메인 > 회비	   > 회비정보 grid
@@ -2647,8 +2662,10 @@ function loadTeacherInfoMain() {
 function smsOnClick(){
 	if(currentCustInfo.CUST_ID == null || currentCustInfo.CUST_ID == ""){
 		ModalUtil.modalPop("알림","고객조회를 먼저 해 주세요.");
+		return;
 	}
 	var user_grp = "";
+	
 	for(d of currentUserInfo.user.tags){
 		if(d.length == 4){
 			user_grp = d;
@@ -2672,6 +2689,43 @@ function smsOnClick(){
 	PopupUtil.open('CCEMPRO046', 1000, 600 ,"", arrInData);
 };
 
+/******************************************************
+ * 현금영수증 팝업
+ ******************************************************/
+ function onFeeReceipt(){
+    /*
+    var zsite = "ES";
+    var sAddress = "<%=cb.getBasicCodeData("10")%>";
+    var sUserId = "<%=S_USER_ID%>";
+	var sUserpwd = "<%=S_USER_ID%>";
+	var sPageName = "[cns1300] 현금영수증";
+	var sParam = sAddress+"?zsite="+zsite+"&zlogin_id="+sUserId+"&zpasswd="+sUserpwd;
+	gf_popup(sParam,sPageName,1000,600);
+    */
+	var surl = "";           //현금영수증 드림스 url
+	var zsite = "ES";
+	var slogin_id = currentUserInfo.user.external_id;
+	var zpasswd = currentUserInfo.user.external_id;
+	var name = "[cns1300] 현금영수증";
 
-
+	getBasicList("10").then(function(d){	// 드림스 url 가져오기
+		surl = d;
+		var param = surl + "?zsite="+zsite+"&zlogin_id="+slogin_id+"&zpasswd="+zpasswd;
+		window.open(param);
+	});				
+ }
+ 
+ /******************************************************
+  * 태블릿 배송조회 팝업
+  ******************************************************/     
+  function onIOCSPopup(){
+  	var sMbrId = currentCustInfo.MBR_ID; // 회원번호를 가져옴     	
+     	if(sMbrId == "" || sMbrId == null){        	       		        
+     		client.invoke("notify", "회원번호가 없습니다.", "error", 5000);
+      	return;
+ 	}
+	var surl = "http://web.iocs.co.kr:8080/daekyo/popup/member/"+sMbrId;           //태블릿 url				
+	var param = surl;
+	window.open(param);        
+  }
 

@@ -60,10 +60,10 @@
 								    <div class="input-group-prepend">
 								       <span class="input-group-text">수신번호</span>
 								    </div>
-								    <input type="text" class="form-control">
+								    <input type="text" class="form-control" id="sendtoNum">
 								</div>	
 								<div style="float:right;">
-									<input type="button" class="btn btn-sm customerBtn" value="보내기" id="" onclick="" style="padding: 0.25rem .0rem !important;">
+									<input type="button" class="btn btn-sm customerBtn" value="보내기" id="" onclick="validationCheck()" style="padding: 0.25rem .0rem !important;">
 									<input type="button" class="btn btn-sm btn-danger customerBtn" value="초기화" id="" onclick="cleanContent();" style="padding: 0.25rem .0rem !important; background:#c82333;">
 								</div>
 								<div class="input-group input-group-sm">
@@ -79,7 +79,7 @@
 									</colgroup>
 									<tr>
 										<th>회원명</th>
-										<td><input type="text" class="form-control form-control-sm" readonly></td>
+										<td><input type="text" class="form-control form-control-sm" id="sendCustName" readonly></td>
 									</tr>
 									<tr>
 										<th colspan="1">회원 휴대폰</th>

@@ -137,6 +137,10 @@ $(function(){
 	
 	transVar(); // SMS 데이터 세팅
 	
+	$("input[name=sendCheck]").change(function(){
+		$("#sendtoNum").val(($(this).val()));
+	})
+	
 });
 
 function checkByte(){
@@ -196,7 +200,6 @@ function cleanContent(){
  * 21-01-28 최준혁
  */
 function sendSMS(){
-	
 	param.send1 = [{}];
 	param.userid = opener.currentUserInfo.user.external_id;
 	param.menuname = 'SMS전송';
@@ -204,7 +207,8 @@ function sendSMS(){
 	param.recvdataids = ["recv1"];
 	
 	param.send1[0].MSG_TYPE = msgType;																						//메시지 타입(0:SMS,5:LMS)
-	param.send1[0].DEST_PHONE = $("#inputTable").find('input:radio:checked').parent().parent().parent().children().eq(1); 	//수신번호
+	param.send1[0].DEST_PHONE = $("#sendtoNum").val().replace(/-/gi,""); 													//수신번호
+	param.send1[0].DEST_NAME = $("#sendCustName").val();
 	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
 	param.send1[0].SEND_NAME =	opener.currentUserInfo.user.name;
 	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
@@ -212,6 +216,8 @@ function sendSMS(){
 	param.send1[0].EXTERNAL_ID = opener.currentUserInfo.user.external_id,         											//상담자ID
 	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
 	param.send1[0].SMS_FIX_ID = "";         				
+	
+	console.log(param);
 	
 	$.ajax({
 		url: API_SERVER + '/sys.addSMSData.do',
@@ -222,8 +228,10 @@ function sendSMS(){
 		success: function (response) {
 			if(response.errcode == "0"){
 				console.log(response.recv1);
+				alert("메세지가 발송 되었습니다.");
 			}else {
 				loading.out();
+				alert("문제가 발생했습니다.");
 			}
 		}, error: function (response) {
 		}
@@ -253,20 +261,38 @@ function sendSMS(){
 	  if(POP_DATA != undefined){
 		  param.send1[0].CUST_ID 	= POP_DATA[0]; 	// 고객번호 
 		  param.send1[0].DEST_NAME 	= POP_DATA[1]; 	// 고객명
+		  $("#sendCustName").val(POP_DATA[1]);
 		  $("#custPhoneNum").val(POP_DATA[2]); 		// 회원휴대폰
+		  $("#inputTable").find('input:radio').eq(0).val(POP_DATA[2]);
 		  $("#custMBRPhoneNum").val(POP_DATA[3]); 	// 회원/모 휴대폰
+		  $("#inputTable").find('input:radio').eq(1).val(POP_DATA[3]);
 		  $("#custFATPhoneNum").val(POP_DATA[4]); 	// 회원/부 휴대폰
+		  $("#inputTable").find('input:radio').eq(2).val(POP_DATA[4]);
 		  var rdoSelect      		= POP_DATA[5]; 	// 휴대폰 디폴트 선택값
 		  param.send1[0].MBR_ID 	= POP_DATA[6]; 	// 회원번호
 		  param.send1[0].CSEL_DATE 	= POP_DATA[7]; 	// 상담일자
 		  param.send1[0].CSEL_NO 	= POP_DATA[8]; 	// 상담번호
 		  param.send1[0].CSEL_SEQ 	= POP_DATA[9]; 	// 상담순번
-		  var sUrl  		 		= POP_DATA[10]; 		// 부모창 URL(clm3700, cns2100, cns2700, cns5400)
+		  var sUrl  		 		= POP_DATA[10]; // 부모창 URL(clm3700, cns2100, cns2700, cns5400)
 		  
 		  if (!isNaN(rdoSelect)) {
-			  $("#inputTable").find('input:radio').eq(rdoSelect-1);
+			  $("#inputTable").find('input:radio').eq(rdoSelect-1).prop('checked', true);
+			  $("#sendtoNum").val($("#inputTable").find('input:radio').eq(rdoSelect-1).parent().parent().next().val());
 		  }     
 	  }
+  }
+  
+  function validationCheck(){
+	  if($.trim($("#sendtoNum").val()) == ""){
+		  alert("수신 전화번호를 입력하세요.");
+		  return;
+	  }
+	  if($.trim($("#smsContentArea").val()) == ""){
+		  alert("메세지 내용을 입력하세요.");
+		  return;
+	  }
+	  
+	  sendSMS();
   }
 
 /*function sendSMS(){
