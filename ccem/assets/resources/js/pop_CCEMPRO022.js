@@ -15,7 +15,7 @@ $(function () {
 	// 티켓생성 버튼 
 	$("#button10").on("click", ev => {
 		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
-		createTicket()
+		onNewTicket()
 			.then( async (data) => { 
 				if (data)  {
 					await topbarClient.invoke('routeTo', 'ticket', data.ticket.id);	// 티켓오픈
@@ -495,214 +495,6 @@ const setLable = (target) => {
 }
 
 /**
- * 티켓생성 for 티켓생성버튼/추가등록/관계회원
- * @return {object} response
- */
-const createTicket = async () => {
-
-	const user_id = await checkUser();
-	if(!user_id) return false;
-
-	const option = {
-		url: '/api/v2/tickets.json',
-		method: 'POST',
-		contentType: "application/json",
-		data: JSON.stringify({ 
-			ticket: {
-				subject			: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",	 // 제목
-				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], 	 // 양식 : 상담문의 고정
-				requester_id	: user_id,  				// 젠데스크 고객번호
-				assignee_id		: currentUser.id,			// 젠데스크 상담원번호
-				status			: "open",					// 젠데스크 티켓 상태
-				tags            : ["AUTO_FROM_CCEM"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
-				comment: {
-					public		: false,					// 내부메모
-					body		: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",
-				},
-			} 
-		}),
-	}
-
-	return await topbarClient.request(option);		// 티켓생성
-}
-
-/**
- * 티켓생성 전 사용자가 있는지 체크하고 없으면 생성.
- * @return {number|boolean} Zendesk user id
- */
-const checkUser = async () => {
-	const CUST_ID = $("#hiddenbox6").val();
-	const CUST_NAME = $("#textbox21").val();
-	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
-	const target = (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
-
-	if (!CUST_ID || !CUST_NAME) {
-		alert("조회된 고객이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
-		return false;
-	}
-
-	let sMsg = "";
-	sMsg += "\n * 고객번호 : " + CUST_ID;
-	sMsg += "\n * 고객명   : " + CUST_NAME;
-	sMsg += "\n\n 위 항목으로 티켓을 생성 하시겠습니까?";
-	if (confirm(sMsg) == false) return false;
-
-	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${CUST_ID}`);
-	let user_id = "";
-	
-	// 젠데스크 사용자가 없으면 사용자생성
-	if (users.length === 0) {
-		const custInfo = await getCustInfo(target, CUST_ID);
-		const { user } = await createUser(target, custInfo);
-		user_id = user.id;
-	} else {
-		user_id = users[0].id;
-	}
-
-	return user_id;
-}
-
-/**
- * 고객정보조회 for createUser()
- */
-const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
-	
-	let service, condition;
-
-	// 고객
-	if (target == "C") {
-		service = "/cns.getCustInfo.do";
-		condition = { CUST_ID: custId };
-	// 선생님
-	} else if (target == "T") {
-		service = "/cns.getTchrInfoDtl.do";
-		condition = { EMP_ID: custId };
-	}
-
-	const settings = {
-		global: false,
-		url: `${API_SERVER + service}`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-			dsSend: [condition],
-		}),
-		errMsg: "고객정보조회 중 오류가 발생하였습니다.",
-	}
-	$.ajax(settings)
-		.done(data => {
-			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
-			return resolve(data.dsRecv[0]);
-		})
-		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
-});
-
-/**
- * 사용자생성
- * @param {string} target 
- * @param {object} data 
- */
-const createUser = async (target, data) => {
-
-	let mobilnoMbr	= "";	// 휴대폰번호(엄마)	
-	let mobilnoFat	= "";	// 휴대폰번호(아빠)
-	let mobilnoLaw	= "";	// 휴대폰번호(법정대리인)
-	let telpno		= "";	// 자택 전화번호
-	let custMk		= "";	// 고객구분
-	let gradeNm		= "";	
-	let fatRelNm	= "";	
-
-	// set user_fields data
-	if (target == "C") {
-		if (!data || !data.NAME || !data.CUST_ID) throw new Error("젠데스크 사용자 생성시 필수 값이 존재하지 않습니다.");
-		mobilnoMbr = data.MOBILNO_MBR ? data.MOBILNO_MBR.replace(/[^0-9]/gi, "") : "";
-		mobilnoFat = data.MOBILNO_FAT ? data.MOBILNO_FAT.replace(/[^0-9]/gi, "") : "";
-		mobilnoLaw = data.MOBILNO_LAW ? data.MOBILNO_LAW.replace(/[^0-9]/gi, "") : "";
-		telpno 	   = (data.DDD || "") + (data.TELPNO1 || "") + (data.TELPNO2 || "");
-		custMk 	   = "고객";
-		gradeNm    = findCodeName("GRADE_CDE", data.GRADE_CDE);
-		fatRelNm   = findCodeName("FAT_REL", data.FAT_REL);
-	} else {
-		if (!data || !data.NAME || !data.EMP_ID) throw new Error("젠데스크 사용자 생성시 필수 값이 존재하지 않습니다.");
-		custMk = "교사";
-	}
-
-	// get organization_id
-	const orgId = await checkOrg(telpno, data.FAT_RSDNO);
-	
-	// create user
-    const option = {
-		url: '/api/v2/users',
-		method: 'POST',
-		contentType: "application/json",
-		data: JSON.stringify({
-			user: {
-				name				: data.NAME,			// 고객명
-				external_id			: data.CUST_ID,			// 고객번호
-				organization_id		: orgId,				// 조직ID
-				role				: "end-user",			// 최종 사용자로 통일
-				email				: data.EMAIL,			// 이메일
-				phone				: data.MOBILNO,			// 핸드폰번호
-				user_fields	: {
-					bonbu				: data.UPDEPTNAME,	// 본부
-					dept				: data.DEPT_NAME,	// 사업국	
-					center				: data.LC_NAME,		// 센터
-					grade				: gradeNm,			// 학년	
-					mobilno_mother		: mobilnoMbr,		// 휴대폰번호(엄마)	
-					mobilno_father		: mobilnoFat,		// 휴대폰번호(아빠)
-					mobile_legal		: mobilnoLaw,		// 휴대폰번호(법정대리인)	
-					home_tel			: telpno,			// 자택 전화번호
-					custom_no			: data.MBR_ID,		// 회원번호	
-					fml_connt_cde		: fatRelNm,			// 가족관계
-					fml_seq				: data.FAT_RSDNO,	// 관계번호
-					cust_mk				: custMk,			// 고객구분
-				}
-			},
-		}),
-	}
-	return await topbarClient.request(option);
-}
-
-/**
- * 사용자생성 전 조직이 있는지 체크하고 없으면 생성.
- * @param {string} TELNO 	 자택번호
- * @param {string} FAT_RSDNO 관계번호
- * @return {number} organization_id
- */
-const checkOrg = async (TELNO, FAT_RSDNO) => {
-
-	let orgId = "";
-
-	// get organization_id
-	if (FAT_RSDNO) {
-		const { organizations } = await topbarClient.request(`/api/v2/organizations/search?external_id=${FAT_RSDNO}`);
-		orgId = (organizations.length > 0) ? organizations[0].id : "";
-	}
-
-	// create organization
-	if (!orgId && TELNO && FAT_RSDNO) {
-		const option = {
-			url: '/api/v2/organizations/create_or_update',
-			method: 'POST',
-			contentType: "application/json",
-			data: JSON.stringify({
-				organization: {
-					name		: `${TELNO}_${FAT_RSDNO}`,	// 자택번호_관계번호
-					external_id : FAT_RSDNO,				// 관계번호
-				},
-			}),
-		}
-		const { organization } = await topbarClient.request(option);
-		orgId = organization.id;
-	}
-
-	return orgId;
-}
-
-/**
  * 신규버튼 선택시에 고객 기본정보 초기화
  * - as-is : cns5810.onNewCustInit()
  */
@@ -812,7 +604,7 @@ const onSave = async () => {
 	if (sJobType == "I" && selectedSeq > 1) {
 		
 		// 티켓생성
-		const { ticket } = await createTicket();
+		const { ticket } = await onNewTicket();
 		if (!ticket) return false;
 
 		// ccem 저장
@@ -1221,7 +1013,7 @@ const getAddInfoCondition = () => {
 }
 
 /**
- * TODO OB관련 데이터 value check
+ * OB관련 데이터 value check
  * @param {string|number} ticket_id
  */
 const getObCondition = async (ticket_id) => {
@@ -1560,7 +1352,22 @@ const getCustomData = () => {
 	    procDeptIdNm    : $("#textbox26").val(),	// 연계부서명
         lcName 		    : $("#textbox9").val(),		// 러닝센터명(센터명)
 		reclCntct 	    : $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : "", // 상담결과 구분이 재통화예약일경우
-		ageCde 			: $("#hiddenbox13").val(),	// 연령코드
-		brandId			: $("#hiddenbox14").val(),	// 브랜드ID
+		ageCde 			: $("#hiddenbox13").val().trim(),	// 연령코드
+		brandId			: $("#hiddenbox14").val(),			// 브랜드ID
     }
+}
+
+/**
+ * 티켓생성버튼
+ */
+const onNewTicket = async () => {
+	const CUST_ID = $("#hiddenbox6").val();
+	const CUST_NAME = $("#textbox21").val();
+	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
+	const target = (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
+
+	const user_id = await checkUser(target, CUST_ID, CUST_NAME);
+	if (!user_id) return false;
+
+	return await createTicket(user_id);
 }

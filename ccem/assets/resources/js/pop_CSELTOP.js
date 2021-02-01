@@ -3,12 +3,8 @@ $(function () {
 	// grid refreshLayout
 	$('.nav-link').on('shown.bs.tab', refreshGrid);
 	
+	// set ifram src
 	$('.nav-link').on('click', ev => {
-
-		// insert hash
-		window.location.hash = ev.target.hash;
-
-		// insert ifram src
 		const navId = ev.target.id;
 		if (navId == "entrRgtrNav") {
 			if (!$("#CCEMPRO031").attr("src")) $("#CCEMPRO031").attr("src", "./pop_CCEMPRO031.html");
@@ -17,7 +13,6 @@ $(function () {
 		} else {
 			if (!$("#CCEMPRO022").attr("src")) $("#CCEMPRO022").attr("src", "./pop_CCEMPRO022.html");
 		} 
-
 	});
 
 	// select tab

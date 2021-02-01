@@ -267,7 +267,7 @@ const openCCEMPRO042 = (keyCode) => {
  * @param {array} EMP_ID_LIST 연계대상자리스트
  * @param {string} type SET, UP
  */
-const getFollowers = async (EMP_ID_LIST, type) => {
+const getFollowers = async (EMP_ID_LIST = [], type) => {
 	const followerData = new Array();
 	for (const EMP_ID of EMP_ID_LIST) {
 		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
@@ -311,14 +311,14 @@ const updateTicket = async (cselData, customData, EMP_ID_LIST) => {
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_MK"],				value: `csel_mk_${cselData.CSEL_MK}` }, 					// 상담구분   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"],			value: `csel_chnl_mk_${cselData.CSEL_CHNL_MK}` }, 			// 상담채널   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"],			value: `cust_resp_mk_${cselData.CUST_RESP_MK}` },			// 고객반응   
-					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"],			value: `call_rst_mk_${counselData.CALL_RST_MK}` },				// 통화결과(O/B결과)
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"],			value: `call_rst_mk_${cselData.CALL_RST_MK}` },				// 통화결과(O/B결과)
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"],			value: `csel_rst_mk_${cselData.CSEL_RST_MK1}` },			// 상담결과   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"],				value: `proc_mk_${cselData.PROC_MK}` },						// 처리구분   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"],				value: `cust_mk_${cselData.CUST_MK}`.toLowerCase() },		// 고객구분   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],			value: `proc_sts_mk_${cselData.PROC_STS_MK}` },				// 처리상태   
-					// { id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],				value: `std_motive_cde_${counselData.MOTIVE_CDE}` },			// 입회사유   
+					// { id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],				value: `std_motive_cde_${cselData.MOTIVE_CDE}` },			// 입회사유   
 					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK_OB"],			value: `call_rst_mk_ob_${?}` },									// OB결과   
-					{ id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: `${customData.ageCde}::${counselData.GRADE_CDE}`.toLowerCase() },// 학년(연령::학년)
+					{ id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: `${customData.ageCde}::${cselData.GRADE_CDE}`.toLowerCase() },// 학년(연령::학년)
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["PRDT"],					value: customData.prdtList },								// 과목   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"],				value: customData.deptIdNm },								// 지점부서명(사업국명)   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"],				value: `div_cde_${cselData.DIV_CDE}`.toLowerCase() },		// 지점본부명(본부코드)   
@@ -387,40 +387,40 @@ const updateTicket = async (cselData, customData, EMP_ID_LIST) => {
 
 /**
  * Zendesk 티켓필드 입력
- * @param {object} counselData 상담정보
+ * @param {object} cselData 상담정보
  * @param {obejct} customData  커스텀필드정보
  * @param {obejct} EMP_ID_LIST 연계대상자ID
  */
-const setTicket = async (counselData, customData, EMP_ID_LIST) => {
+const setTicket = async (cselData, customData, EMP_ID_LIST) => {
 
-	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(counselData.CSEL_DATE)}_${counselData.CSEL_NO}_${counselData.CSEL_SEQ}`;
+	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
 	const followerData = await getFollowers(EMP_ID_LIST, "SET");
 
 	let req = new Object()
-	req["ticket.subject"] = counselData.CSEL_TITLE;
+	req["ticket.subject"] = cselData.CSEL_TITLE;
 	req["ticket.externalId"] = CSEL_DATE_NO_SEQ;
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] 		 = CSEL_DATE_NO_SEQ;										 // 상담번호
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"]}`]          = counselData.CSEL_LTYPE_CDE;                               // 상담분류(대)  
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MTYPE_CDE"]}`]          = counselData.CSEL_MTYPE_CDE;                               // 상담분류(중)  
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_STYPE_CDE"]}`]          = counselData.CSEL_STYPE_CDE;                               // 상담분류(소)  
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MK"]}`]                 = `csel_mk_${counselData.CSEL_MK}`;                         // 상담구분   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"]}`]            = `csel_chnl_mk_${counselData.CSEL_CHNL_MK}`;               // 상담채널   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"]}`]            = `cust_resp_mk_${counselData.CUST_RESP_MK}`;               // 고객반응   
-	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"]}`]             = `call_rst_mk_${counselData.CALL_RST_MK}`;                 // 통화결과(O/B결과)
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"]}`]             = `csel_rst_mk_${counselData.CSEL_RST_MK1}`;                // 상담결과   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"]}`]                 = `proc_mk_${counselData.PROC_MK}`;                         // 처리구분   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"]}`]                 = `cust_mk_${counselData.CUST_MK}`.toLowerCase();           // 고객구분   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"]}`]             = `proc_sts_mk_${counselData.PROC_STS_MK}`;                 // 처리상태   
-	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"]}`]              = `std_motive_cde_${counselData.MOTIVE_CDE}`;               // 입회사유
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"]}`]          = cselData.CSEL_LTYPE_CDE;                               // 상담분류(대)  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MTYPE_CDE"]}`]          = cselData.CSEL_MTYPE_CDE;                               // 상담분류(중)  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_STYPE_CDE"]}`]          = cselData.CSEL_STYPE_CDE;                               // 상담분류(소)  
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MK"]}`]                 = `csel_mk_${cselData.CSEL_MK}`;                         // 상담구분   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"]}`]            = `csel_chnl_mk_${cselData.CSEL_CHNL_MK}`;               // 상담채널   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"]}`]            = `cust_resp_mk_${cselData.CUST_RESP_MK}`;               // 고객반응   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"]}`]             = `call_rst_mk_${cselData.CALL_RST_MK}`;                 // 통화결과(O/B결과)
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"]}`]             = `csel_rst_mk_${cselData.CSEL_RST_MK1}`;                // 상담결과   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"]}`]                 = `proc_mk_${cselData.PROC_MK}`;                         // 처리구분   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"]}`]                 = `cust_mk_${cselData.CUST_MK}`.toLowerCase();           // 고객구분   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"]}`]             = `proc_sts_mk_${cselData.PROC_STS_MK}`;                 // 처리상태   
+	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"]}`]              = `std_motive_cde_${cselData.MOTIVE_CDE}`;               // 입회사유
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK_OB"]}`]          = `call_rst_mk_ob_${?}`;                                    // OB결과
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"]}`]           = `${customData.ageCde}::${counselData.GRADE_CDE}`.toLowerCase(); // 학년
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"]}`]           = `${customData.ageCde}::${cselData.GRADE_CDE}`.toLowerCase(); // 학년
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PRDT"]}`]                    = customData.customPrdtList;                                // 과목   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"]}`]               = customData.customDeptIdNm;                                // 지점부서명(사업국명)   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"]}`]                 = `div_cde_${counselData.DIV_CDE}`.toLowerCase();           // 지점본부명(본부코드)   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"]}`]                 = `div_cde_${cselData.DIV_CDE}`.toLowerCase();           // 지점본부명(본부코드)   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AREA_CDENM"]}`]              = customData.customAeraCdeNm;                               // 지역코드명  
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["FST_CRS_CDE"]}`]             = findCodeName("STD_CRS_CDE", counselData.FST_CRS_CDE);     // 첫상담경로   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["VOC_MK"]}`]                  = counselData.VOC_MK == "Y" ? true : false;                 // VOC여부   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_GRD"]}`]                = `csel_grd_${counselData.CSEL_GRD}`;                       // 상담등급   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["FST_CRS_CDE"]}`]             = findCodeName("STD_CRS_CDE", cselData.FST_CRS_CDE);     // 첫상담경로   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["VOC_MK"]}`]                  = cselData.VOC_MK == "Y" ? true : false;                 // VOC여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_GRD"]}`]                = `csel_grd_${cselData.CSEL_GRD}`;                       // 상담등급   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_DEPT_IDNM"]}`]          = customData.customProcDeptIdNm;                            // 연계부서명   
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TRANS_CHNL_MK"]}`]           = `trans_chnl_mk_${?}`;                                     // 현장연계 연계방법
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RTN_FLAG"]}`]                = `rtn_flag_${?}`;                                          // 회신여부
@@ -459,24 +459,23 @@ const setTicket = async (counselData, customData, EMP_ID_LIST) => {
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]}`]             = "";                                                       // 콜백번호
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LIST_MK"]}`]                 = `list_mk_${?}`;                                           // 리스트구분
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LC_NAME"]}`]                 = customData.customLcName;                                  // 러닝센터명(센터)
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LC_MK"]}`]                   = counselData.LC_MK == "Y" ? true : false;                  // LC여부   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HL_MK"]}`]                   = counselData.HL_MK == "Y" ? true : false;                  // HL여부   
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["YC_MK"]}`]                   = counselData.YC_MK == "Y" ? true : false;                  // YC여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LC_MK"]}`]                   = cselData.LC_MK == "Y" ? true : false;                  // LC여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["HL_MK"]}`]                   = cselData.HL_MK == "Y" ? true : false;                  // HL여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["YC_MK"]}`]                   = cselData.YC_MK == "Y" ? true : false;                  // YC여부   
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["VISIT_CHNL"]}`]              = "";                                                       // 방문채널
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TCH_NM"]}`]                  = "";                                                       // 교사명
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TCH_NO"]}`]                  = "";                                                       // 교사사번
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["TCH_WRK_MNT"]}`]             = Number;                                                   // 교사근무개월수
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RE_PROC"]}`]                 = counselData.RE_PROC == "1" ? true : false;                // 재확인여부   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RE_PROC"]}`]                 = cselData.RE_PROC == "1" ? true : false;                // 재확인여부   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RECL_CNTCT"]}`]              = customData.customReclCntct;                               // 재통화 연락처   
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["RECL_CMPLT"]}`]              = Boolean;                                                  // 재통화 완료         
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OFCL_RSPN"]}`]               = "";                                                       // 직책 
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["JOB"]}`]                     = "";                                                       // 직무 
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_KIND_CDE"]}`]            = `div_kind_cde_${customData.brandId}`;						// 브랜드  
 	
-	
 	await sidebarClient.set(req);											 // 티켓필드 입력
 	await sidebarClient.set("comment.type", "internalNote");				 // 내부메모로 변경
-	await sidebarClient.invoke('comment.appendText', counselData.CSEL_CNTS); // 코멘트입력
+	await sidebarClient.invoke('comment.appendText', cselData.CSEL_CNTS); // 코멘트입력
 	for (follower of followerData) {
 		await sidebarClient.invoke('ticket.collaborators.add', follower);	 // 팔로워세팅
 	}
@@ -522,4 +521,206 @@ const checkTicket = async (jobType, ZEN_TICKET_ID) => {
 
     return ticket.id;
 
+}
+
+/**
+ * 티켓생성 전 사용자가 있는지 체크하고 없으면 생성.
+ * @return {number|boolean} Zendesk user id
+ */
+const checkUser = async (target, CUST_ID, CUST_NAME) => {
+
+	if (!CUST_ID || !CUST_NAME) {
+		alert("조회된 고객이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+
+	let sMsg = "";
+	sMsg += "\n * 고객번호 : " + CUST_ID;
+	sMsg += "\n * 고객명   : " + CUST_NAME;
+	sMsg += "\n\n 위 항목으로 티켓을 생성 하시겠습니까?";
+	if (confirm(sMsg) == false) return false;
+
+	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${CUST_ID}`);
+	let user_id = "";
+	
+	// 젠데스크 사용자가 없으면 사용자생성
+	if (users.length === 0) {
+		const custInfo = await getCustInfo(target, CUST_ID);
+		const { user } = await createUser(target, custInfo);
+		user_id = user.id;
+	} else {
+		user_id = users[0].id;
+	}
+
+	return user_id;
+}
+
+/**
+ * 고객정보조회 for createUser()
+ */
+const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
+	
+	let service, condition;
+
+	// 고객
+	if (target == "C") {
+		service = "/cns.getCustInfo.do";
+		condition = { CUST_ID: custId };
+	// 선생님
+	} else if (target == "T") {
+		service = "/cns.getTchrInfoDtl.do";
+		condition = { EMP_ID: custId };
+	}
+
+	const settings = {
+		global: false,
+		url: `${API_SERVER + service}`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [condition],
+		}),
+		errMsg: "고객정보조회 중 오류가 발생하였습니다.",
+	}
+	$.ajax(settings)
+		.done(data => {
+			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
+			return resolve(data.dsRecv[0]);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
+
+/**
+ * 사용자생성
+ * @param {string} target 
+ * @param {object} data 
+ */
+const createUser = async (target, data) => {
+
+	let mobilnoMbr	= "";	// 휴대폰번호(엄마)	
+	let mobilnoFat	= "";	// 휴대폰번호(아빠)
+	let mobilnoLaw	= "";	// 휴대폰번호(법정대리인)
+	let telpno		= "";	// 자택 전화번호
+	let custMk		= "";	// 고객구분
+	let gradeNm		= "";	
+	let fatRelNm	= "";	
+
+	// set user_fields data
+	if (target == "C") {
+		if (!data || !data.NAME || !data.CUST_ID) throw new Error("젠데스크 사용자 생성시 필수 값이 존재하지 않습니다.");
+		mobilnoMbr = data.MOBILNO_MBR ? data.MOBILNO_MBR.replace(/[^0-9]/gi, "") : "";
+		mobilnoFat = data.MOBILNO_FAT ? data.MOBILNO_FAT.replace(/[^0-9]/gi, "") : "";
+		mobilnoLaw = data.MOBILNO_LAW ? data.MOBILNO_LAW.replace(/[^0-9]/gi, "") : "";
+		telpno 	   = (data.DDD || "") + (data.TELPNO1 || "") + (data.TELPNO2 || "");
+		custMk 	   = "고객";
+		gradeNm    = findCodeName("GRADE_CDE", data.GRADE_CDE);
+		fatRelNm   = findCodeName("FAT_REL", data.FAT_REL);
+	} else {
+		if (!data || !data.NAME || !data.EMP_ID) throw new Error("젠데스크 사용자 생성시 필수 값이 존재하지 않습니다.");
+		custMk = "교사";
+	}
+
+	// get organization_id
+	const orgId = await checkOrg(telpno, data.FAT_RSDNO);
+	
+	// create user
+    const option = {
+		url: '/api/v2/users',
+		method: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({
+			user: {
+				name				: data.NAME,			// 고객명
+				external_id			: data.CUST_ID,			// 고객번호
+				organization_id		: orgId,				// 조직ID
+				role				: "end-user",			// 최종 사용자로 통일
+				email				: data.EMAIL,			// 이메일
+				phone				: data.MOBILNO,			// 핸드폰번호
+				user_fields	: {
+					bonbu				: data.UPDEPTNAME,	// 본부
+					dept				: data.DEPT_NAME,	// 사업국	
+					center				: data.LC_NAME,		// 센터
+					grade				: gradeNm,			// 학년	
+					mobilno_mother		: mobilnoMbr,		// 휴대폰번호(엄마)	
+					mobilno_father		: mobilnoFat,		// 휴대폰번호(아빠)
+					mobile_legal		: mobilnoLaw,		// 휴대폰번호(법정대리인)	
+					home_tel			: telpno,			// 자택 전화번호
+					custom_no			: data.MBR_ID,		// 회원번호	
+					fml_connt_cde		: fatRelNm,			// 가족관계
+					fml_seq				: data.FAT_RSDNO,	// 관계번호
+					cust_mk				: custMk,			// 고객구분
+				}
+			},
+		}),
+	}
+	return await topbarClient.request(option);
+}
+
+/**
+ * 사용자생성 전 조직이 있는지 체크하고 없으면 생성.
+ * @param {string} TELNO 	 자택번호
+ * @param {string} FAT_RSDNO 관계번호
+ * @return {number} organization_id
+ */
+const checkOrg = async (TELNO, FAT_RSDNO) => {
+
+	let orgId = "";
+
+	// get organization_id
+	if (FAT_RSDNO) {
+		const { organizations } = await topbarClient.request(`/api/v2/organizations/search?external_id=${FAT_RSDNO}`);
+		orgId = (organizations.length > 0) ? organizations[0].id : "";
+	}
+
+	// create organization
+	if (!orgId && TELNO && FAT_RSDNO) {
+		const option = {
+			url: '/api/v2/organizations/create_or_update',
+			method: 'POST',
+			contentType: "application/json",
+			data: JSON.stringify({
+				organization: {
+					name		: `${TELNO}_${FAT_RSDNO}`,	// 자택번호_관계번호
+					external_id : FAT_RSDNO,				// 관계번호
+				},
+			}),
+		}
+		const { organization } = await topbarClient.request(option);
+		orgId = organization.id;
+	}
+
+	return orgId;
+}
+
+/**
+ * 티켓생성
+ * @param {string|number} user_id Zendesk user id
+ * @return {object} response
+ */
+const createTicket = async (user_id) => {
+
+	const option = {
+		url: '/api/v2/tickets.json',
+		method: 'POST',
+		contentType: "application/json",
+		data: JSON.stringify({ 
+			ticket: {
+				subject			: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",	 // 제목
+				ticket_form_id	: ZDK_INFO[_SPACE]["ticketForm"]["CNSLT_INQRY"], 	 // 양식 : 상담문의 고정
+				requester_id	: user_id,  				// 젠데스크 고객번호
+				assignee_id		: currentUser.id,			// 젠데스크 상담원번호
+				status			: "open",					// 젠데스크 티켓 상태
+				tags            : ["AUTO_FROM_CCEM"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
+				comment: {
+					public		: false,					// 내부메모
+					body		: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",
+				},
+			} 
+		}),
+	}
+
+	return await topbarClient.request(option);
 }

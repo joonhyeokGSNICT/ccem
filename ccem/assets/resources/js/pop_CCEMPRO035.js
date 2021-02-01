@@ -831,7 +831,7 @@ const onResult = () => {
  */
 const onModify = () => {
 
-	if (opener.PopupUtil.contains("CCEMPRO022")) {
+	if (opener.PopupUtil.contains("CSELTOP")) {
 		alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
 		return;
 	}

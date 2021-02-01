@@ -22,7 +22,7 @@
 		<div class="text-right">
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="">저 장</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="openPopup('CCEMPRO033')">고객조회</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="" disabled>입회연계</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="openPopup('CCEMPRO028')" disabled>입회연계</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="addCsel()" disabled>추가등록</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button5" onclick="openPopup('CCEMPRO029')" disabled>관계회원</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button6" onclick="parent.close()">닫 기</button>&nbsp;
@@ -199,7 +199,11 @@
 			<tr>
 				<th>안내문구</th>
 				<td>
-					<select class="form-control form-control-sm" id="selectbox6" name="CSEL_PREFACE">
+					<select class="form-control form-control-sm" id="selectbox6" name="CSEL_PREFACE" onchange="
+						const text = this.options[this.selectedIndex].innerHTML;
+						const org = document.querySelector('#textbox25').value;
+						document.querySelector('#textbox25').value = text + ' ' + org;
+					">
 						<option value=""></option>
 					</select>
 				</td>
@@ -292,6 +296,10 @@
 	<input type="hidden" id="hiddenbox7">
 	<!-- 연계대상자(EMP_ID_LIST) -->
 	<input type="hidden" id="hiddenbox8">
+	<!-- 연령코드(AGE_CDE) -->			
+	<input type="hidden" id="hiddenbox9">
+	<!-- 브랜드ID(DIV_KIND_CDE) -->			
+	<input type="hidden" id="hiddenbox10">
 	
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
