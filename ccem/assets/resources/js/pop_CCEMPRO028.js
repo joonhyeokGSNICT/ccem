@@ -223,6 +223,16 @@ const onStart = async (openerNm) => {
 		sCSEL_NO    = opener.document.getElementById("textbox28").value;
 		setDisPlay();
 		getCselTrans();
+	// 입회등록 화면에서 오픈했을때.
+	} else if (openerNm.includes("CCEMPRO031")) {
+		currentUser = opener.currentUser;
+		topbarClient = opener.topbarClient;
+		setCodeData(opener.codeData);
+		sPROC_MK 	= "5";
+		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar3");
+		sCSEL_NO    = opener.document.getElementById("textbox7").value;
+		setDisPlay();
+		getCselTrans();
 	}
 
 }
