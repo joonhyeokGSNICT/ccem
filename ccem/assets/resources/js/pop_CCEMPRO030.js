@@ -266,6 +266,7 @@ const getCounselRst = () => {
             $("#textbox13").val(DS_COUNSEL.LC_REP_EMP_HP);       // 센터장 HP
             // DS_COUNSEL.LC_REP_EMPID        // 센터장 사번
             $("#textbox12").val(DS_COUNSEL.LC_REP_EMP);          // 센터장
+            // DS_COUNSEL.ZEN_TICKET_ID        // 티켓ID
             
             setText(DS_COUNSEL.CUST_MK);          // 고객 또는 선생님 셋팅
             setButton(DS_COUNSEL.PROC_STS_MK);    // 버튼 셋팅
@@ -1705,9 +1706,12 @@ const getSaveCondition = (sBtnMk) => {
             GIFT_CDE         : $("#selectbox6").val(),                   // 사은품코드       
             GIFT_PRICE       : calendarUtil.getImaskValue("textbox30"),  // 사은품가격       
             SEND_DATE        : calendarUtil.getImaskValue("calendar1"),  // 발송일       
-            GIFT_CHNL_MK     : $("#selectbox7").val(),                   // 전달경로구분           
+            GIFT_CHNL_MK     : $("#selectbox7").val(),                   // 전달경로구분
             PASS_USER        : $("#textbox31").val().trim(),             // 전달자       
             INVOICENUM       : $("#textbox32").val().trim(),             // 택배송장번호       
+            ZEN_TICKET_ID    : DS_COUNSEL.ZEN_TICKET_ID,                 // 티켓ID      (for updateTicket)
+            GIFT_CHNL_MKNM   : $("#selectbox7 option:selected").text(),  // 전달경로이름 (for updateTicket)
+            GIFT_NAME       : $("#selectbox6 option:selected").text(),   // 사은품명(for updateTicket)
         } 
     }
 
@@ -1797,6 +1801,42 @@ const saveCselResult = (condition) => {
 	}
 	$.ajax(settings).done(res => {
         if (!checkApi(res, settings)) return;
-        onSearch();
+        
+        // 저장성공시 
+        updateTicket(condition.DS_GIFT); // 티켓업데이트(사은품정보)
+        onSearch(); // 재조회
+
     });
+}
+
+/**
+ * Zendesk 티켓 업데이트 for 사은품정보
+ * @param {object} giftData 사은품정보
+ */
+const updateTicket = async (giftData) => {
+
+    // 신규 또는 수정 저장시에만 티켓업데이트한다.
+    if (giftData.ROW_TYPE != "I" && giftData.ROW_TYPE != "U") return;
+    if (!giftData.ZEN_TICKET_ID) return;
+
+    const option = {
+        url: `/api/v2/tickets/${giftData.ZEN_TICKET_ID}`,
+        method: 'PUT',
+        contentType: "application/json",
+        data: JSON.stringify({ 
+            ticket: {
+                custom_fields: [
+                    { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_NAME"],	     value: giftData.GIFT_NAME },                   // 사은품명   
+                    { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_PRICE"],	 value: giftData.GIFT_PRICE },					// 사은품 가격   
+                    { id: ZDK_INFO[_SPACE]["ticketField"]["SEND_DATE"],		 value: FormatUtil.date(giftData.SEND_DATE) },	// 사은품 발송일자   
+                    { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_CHNL_MKNM"], value: giftData.GIFT_CHNL_MKNM },				// 사은품 발송경로   
+                    { id: ZDK_INFO[_SPACE]["ticketField"]["PASS_USER"],	     value: giftData.PASS_USER },					// 사은품 전달자명   
+                    { id: ZDK_INFO[_SPACE]["ticketField"]["INVOICENUM"],	 value: giftData.INVOICENUM },					// 사은품 송장번호   
+                ],
+            }
+        }),
+    }
+    
+    return await topbarClient.request(option);
+
 }
