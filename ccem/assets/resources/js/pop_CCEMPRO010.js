@@ -219,13 +219,15 @@ function getAccInfo(){
 			if(response.errcode == "0"){
 				console.log(response.recv1);
 				//currentAccountInfo = response.recv1[0];
-				$("#accTransferDtl_TRS_ACCT_NAME").val(response.recv1[0].TRS_ACCT_NAME);
-				$("#accTransferDtl_BANK_NAME").val(response.recv1[0].BANK_NAME);
-				$("#accTransferDtl_TRS_ACCT_ID").val(accountFormat(response.recv1[0].TRS_ACCT_ID));
-				$("#accTransferDtl_TRS_ACCT_DAY").val(response.recv1[0].TRS_ACCT_DAY);
-				$("#calendar1").val(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));
-				$("#calendar2").val(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));
-				getAccTransInfo();
+				if(response.recv1.length > 0){
+					$("#accTransferDtl_TRS_ACCT_NAME").val(response.recv1[0].TRS_ACCT_NAME);
+					$("#accTransferDtl_BANK_NAME").val(response.recv1[0].BANK_NAME);
+					$("#accTransferDtl_TRS_ACCT_ID").val(accountFormat(response.recv1[0].TRS_ACCT_ID));
+					$("#accTransferDtl_TRS_ACCT_DAY").val(response.recv1[0].TRS_ACCT_DAY);
+					$("#calendar1").val(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));
+					$("#calendar2").val(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));
+					getAccTransInfo();
+				}
 			}else {
 				loading.out();
 				client.invoke("notify", response.errmsg, "error", 60000);

@@ -312,14 +312,16 @@ function getAutoTrasferInfo(){
 			if(response.errcode == "0"){
 				console.log(response.recv1);
 				currentAccountInfo = response.recv1[0];
-				$("#autoTransDtl_TRS_RSD_NM").val(response.recv1[0].TRS_RSD_NM);
-				$("#autoTransDtl_TRS_CARD_NM").val(response.recv1[0].TRS_CARD_NM);
-				$("#autoTransDtl_TRS_CARD_NO").val(accountFormat(response.recv1[0].TRS_CARD_NO));
-				$("#autoTransDtl_TRS_ACCT_DT").val(response.recv1[0].TRS_ACCT_DT);
-				$("#calendar1").val(FormatUtil.date(response.recv1[0].TRS_ACCT_STDT));
-				$("#calendar2").val(FormatUtil.date(response.recv1[0].TRS_ACCT_ENDT));
-				
-				getAutoTransferAmount(); // 카드 자동이체 금액조회
+				if(response.recv1.length > 0){
+					$("#autoTransDtl_TRS_RSD_NM").val(response.recv1[0].TRS_RSD_NM);
+					$("#autoTransDtl_TRS_CARD_NM").val(response.recv1[0].TRS_CARD_NM);
+					$("#autoTransDtl_TRS_CARD_NO").val(accountFormat(response.recv1[0].TRS_CARD_NO));
+					$("#autoTransDtl_TRS_ACCT_DT").val(response.recv1[0].TRS_ACCT_DT);
+					$("#calendar1").val(FormatUtil.date(response.recv1[0].TRS_ACCT_STDT));
+					$("#calendar2").val(FormatUtil.date(response.recv1[0].TRS_ACCT_ENDT));
+					
+					getAutoTransferAmount(); // 카드 자동이체 금액조회
+				}
 			}else {
 				loading.out();
 				client.invoke("notify", response.errmsg, "error", 60000);

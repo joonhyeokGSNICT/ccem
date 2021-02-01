@@ -154,6 +154,8 @@ var currentDueInfo;								// 현재 선택된 회비정보
 var currentSubDueInfo;							// 현재 선택된 과목별입금내역 정보
 var currentTchrInfo;							// 현재 선택된 선생님의 정보
 
+var tempCustInfo;
+
 var existCustInfo;								// 기존 존재하는 고객의 정보
 var existCustName;								// 기존 존재하는 고객의 이름
 var existCustTelNo;								// 기존 존재하는 고객의 전화번호
@@ -438,10 +440,8 @@ var mask;
  * 21-01-07 최준혁
  */
 function newCustomerInsert(){
-	var tempCustInfo = currentCustInfo;								// 고객정보 임시저장
+	tempCustInfo = currentCustInfo;								// 고객정보 임시저장
 	initAll();														// 전체 초기화
-	currentCustInfo = tempCustInfo;									// 임시저장된 고객정보를 다시 세팅
-	
 	setStatus(1);													// 신규 상태로 다시한번 변경 ( 고객정보 유무 체크 )
 }
 
@@ -452,6 +452,7 @@ function newCustomerInsert(){
  */
 function cancelCustInfo(){
 	initSemi();
+	currentCustInfo = tempCustInfo;									// 임시저장된 고객정보를 다시 세팅
 	if(currentCustInfo.CUST_ID != ""){
 		loadCustInfoMain();												// 고객 정보 재 조회
 	}else {
@@ -595,6 +596,10 @@ $(function(){
 			$("#csel_t_tchr").css("display","none");
 			break;
 		case 'teacherTab':
+			$("#csel_cust").css("display","none");
+			$("#csel_tchr").css("display","");
+			$("#csel_t_cust").css("display","none");
+			$("#csel_t_tchr").css("display","");
 			$("#assignMemberbtn").css("display","none");
 			$("#transferCallbtn").css("display","");
 			counselMainTeacher_counselHist_grid.refreshLayout();
@@ -658,7 +663,9 @@ $(function(){
 					success: function (response) {
 						console.log(response);
 						if(response.errcode == "0"){
-							$("#memDue_cashNo").text(response.recv1[0].BILL_NUM);
+							if(response.recv1.length > 0){
+								$("#memDue_cashNo").text(response.recv1[0].BILL_NUM);
+							}
 						}
 					}
 				});
@@ -827,7 +834,7 @@ $(function(){
 	});
 	
 	// 팝업 버튼
-	$(".popup-btn").click(function() {
+	/*$(".popup-btn").click(function() {
 		var popDepth = $(this).attr('id').split('_').length;
 		if(popDepth == '2'){
 			var popName = $(this).attr('id').split('_')[0];
@@ -852,7 +859,7 @@ $(function(){
 				openUnPop(popName,w,h);
 			}
 		}
-	});
+	});*/
 	
 	// 관계번호 생성 이벤트
 	$("#custInfo_FAT_RSDNO").keyup(function(e){
@@ -2612,7 +2619,9 @@ function setCustChangeData(){
     if($("#custInfo_FAT_RSDNO").val() != currentCustInfo.FAT_RSDNO) isFatAddrChanged = "Y";   /* 학부모 주민번호 변경시         */
 	
 	//회원모핸드폰변경여부 판단한다.
-	if($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val() != currentCustInfo.MOBILNO_MBR.replace(/-/gi,"")) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
+    if(currentCustInfo.MOBILNO_MBR != null){
+    	if($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val() != currentCustInfo.MOBILNO_MBR.replace(/-/gi,"")) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
+    }
 
     //고객변경정보를 셋팅한다.
 	var returnObject = {
