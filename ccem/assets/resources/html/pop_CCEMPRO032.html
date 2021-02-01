@@ -21,7 +21,7 @@
 	<div style="background: #123f8a; height: 35px;">
 		<div class="text-right">
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="">저 장</button>&nbsp;
-			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="">소계연계</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="">소개연계</button>&nbsp;
 			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button3" onclick="parent.close()">닫 기</button>&nbsp;
 		</div>
 	</div>
@@ -167,7 +167,11 @@
 					<th>접수번호</th>
 					<td><input type="text" class="form-control form-control-sm" id="textbox6" readonly></td>
 					<th>순번</th>
-					<td><select class="form-control form-control-sm" id="selectbox2"></select></td>
+					<td>
+						<select class="form-control form-control-sm" id="selectbox2" onchange="onSearch(this.value)">
+							<option value="1" data-job-type="I">1</option>
+						</select>
+					</td>
 				</tr>
 				<tr>
 					<th>상담시간</th>

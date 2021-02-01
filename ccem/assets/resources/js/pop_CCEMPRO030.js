@@ -596,7 +596,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
             // DS_DEPT_PROC.PROC_HOPE_DATE    // 처리희망일자    
             // DS_DEPT_PROC.DEPT_ACP_ID       // 지점접수자사번
             $("#textbox18").val(DS_DEPT_PROC.DEPT_ACP_NAME);    // 지점접수자성명   
-            calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE || "");     // 지점접수일자(접수일자)
+            calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE);     // 지점접수일자(접수일자)
             $("#timebox1").val(DS_DEPT_PROC.DEPT_ACP_TIME);     // 지점접수시간(접수시간)
             // DS_DEPT_PROC.PROC_STS_MK       // 처리상태구분
             // DS_DEPT_PROC.RTN_FLAG          // 회신여부구분
@@ -925,15 +925,15 @@ const setDisplay = (PROC_STS_MK, CSEL_RST_MK) => {
  */
 const setDeptEorD = (bWrite) => {
     if (bWrite){
-        $("#calendar2").prop("disabled", false);
-        $("#timebox1").prop("readonly", false);
-        $("#textbox18").prop("readonly", false);
+        // $("#calendar2").prop("disabled", false);
+        // $("#timebox1").prop("readonly", false);
+        // $("#textbox18").prop("readonly", false);
         $("#textbox19").prop("readonly", false);
         $("#textbox34").prop("readonly", false);
     } else {
-        $("#calendar2").prop("disabled", true);
-        $("#timebox1").prop("readonly", true);
-        $("#textbox18").prop("readonly", true);
+        // $("#calendar2").prop("disabled", true);
+        // $("#timebox1").prop("readonly", true);
+        // $("#textbox18").prop("readonly", true);
         $("#textbox19").prop("readonly", true);
         $("#textbox20").prop("readonly", true);
         $("#textbox22").prop("readonly", true);
@@ -1485,21 +1485,21 @@ const onSave = (sBtnMk) => {
  * - as-is : cns2700.getDeptValidityCheck()
  */
 const getDeptValidityCheck = () => {
-    if(calendarUtil.getImaskValue("calendar2").length < 8){
-        alert("접수일자를 정확히 입력하십시요.");
-        $("#calendar2").focus();
-        return false;            
-    }
-    if($("#timebox1").val().length < 6){
-        alert("접수시간을 정확히 입력하십시요.");
-        $("#timebox1").focus();
-        return false;
-    }
-    if($("#textbox18").val().trim().length < 1){
-        alert("접수자를 입력하십시요.");
-        $("#textbox18").focus();
-        return false;
-    }
+    // if(calendarUtil.getImaskValue("calendar2").length < 8){
+    //     alert("접수일자를 정확히 입력하십시요.");
+    //     $("#calendar2").focus();
+    //     return false;            
+    // }
+    // if($("#timebox1").val().length < 6){
+    //     alert("접수시간을 정확히 입력하십시요.");
+    //     $("#timebox1").focus();
+    //     return false;
+    // }
+    // if($("#textbox18").val().trim().length < 1){
+    //     alert("접수자를 입력하십시요.");
+    //     $("#textbox18").focus();
+    //     return false;
+    // }
     if($("#textbox19").val().trim().length < 1){
         alert("처리자를 입력하십시요.");
         $("#textbox19").focus();
@@ -1657,9 +1657,9 @@ const getSaveCondition = (sBtnMk) => {
             RTN_USER_ID      : currentUser.external_id,                 // 피드백접수자ID
             RTN_DATE         : DS_DEPT_PROC.RTN_DATE,                   // 피드백일자
             RTN_TIME         : DS_DEPT_PROC.RTN_TIME,                   // 피드백시간
-            // DEPT_ACP_NAME   : $("#textbox18").val().trim(),
-            // DEPT_ACP_DATE   : calendarUtil.getImaskValue("calendar2"),
-            // DEPT_ACP_TIME   : $("#timebox1").val(),
+            // DEPT_ACP_NAME   : $("#textbox18").val().trim(),             // 지점접수자 
+            // DEPT_ACP_DATE   : calendarUtil.getImaskValue("calendar2"),  // 지점점수일자
+            // DEPT_ACP_TIME   : $("#timebox1").val(),                     // 지점접수시간 
         },
         // 해피콜1차 정보 데이터
         DS_HPCALL1: {

@@ -218,11 +218,6 @@ const openPopup = (key) => {
 		case "CCEMPRO029":	// 관계회원
 			PopupUtil.open(key, 728, 410);
 			break;
-		case "CCEMPRO030":	// 결과등록
-			const PROC_MK = $("#selectbox4").val();
-			if (PROC_MK == "3" || PROC_MK == "4") PopupUtil.open(key, 1098, 810);
-			else if (PROC_MK == "2") PopupUtil.open("CCEMPRO095", 1110, 603);
-			break;
 		case "CCEMPRO033":	// 고객조회
 			PopupUtil.open(key, 1184, 650);
 			break;

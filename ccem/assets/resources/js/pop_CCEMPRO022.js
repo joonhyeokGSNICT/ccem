@@ -1374,6 +1374,26 @@ const openCselRst = code => {
 }
 
 /**
+ * 결과등록
+ */
+const onResult = () => {
+	const PROC_MK = $("#selectbox4").val();
+
+	switch(PROC_MK){
+        case "2":       //상담원처리 = 고객의견
+			PopupUtil.open("CCEMPRO095", 1110, 603);
+            break;
+        case "3":       //상담연계 = 결과등록
+        case "4":       //시정처리 = 결과등록
+			PopupUtil.open("CCEMPRO030", 1098, 810);
+            break;
+        default:
+			break;
+	}
+	
+}
+
+/**
  * 상담결과 팝업 저장 data를 초기화한다.
  * - as-is : cns5810.setInitCselRstMkDS()
  */
