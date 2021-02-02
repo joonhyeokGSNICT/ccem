@@ -698,9 +698,27 @@ const checkOrg = async (TELNO, FAT_RSDNO) => {
 /**
  * 티켓생성
  * @param {string|number} user_id Zendesk user id
- * @return {object} response
+ * @param {string|number} parent_id Zendesk ticket id
+ * @return {object} ticket response
  */
-const createTicket = async (user_id) => {
+const createTicket = async (user_id, parent_id) => {
+
+	// 추가등록/관계회원의 티켓생성일 경우 1번째 순번 티켓의 OB관련 데이터를 가져와서 추가한다.
+	const new_fields = new Array();
+	if (parent_id) {
+
+		const { ticket } = await topbarClient.request(`/api/v2/tickets/${parent_id}`);
+
+		if (ticket?.custom_fields?.length > 0) {
+			const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+			const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
+			const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], 			value: fOB_MK.value});				// OB구분   		
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"], 	value: fLIST_CUST_ID.value});		// 리스트ID_고객번호
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"], 	value: fCALLBACK_ID.value});		// 콜백번호   
+		}		
+	
+	}
 
 	const option = {
 		url: '/api/v2/tickets.json',
@@ -718,6 +736,7 @@ const createTicket = async (user_id) => {
 					public		: false,					// 내부메모
 					body		: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",
 				},
+				custom_fields: new_fields,
 			} 
 		}),
 	}

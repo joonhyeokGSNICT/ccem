@@ -2,7 +2,7 @@ var grid1;	// 상담등록 > 과목 grid
 var grid2;	// 상담등록 > 상담과목 grid
 var grid3;	// 상담등록 > 학습중인과목 grid
 
-var DS_COUNSEL	= [];	// 상담정보
+var DS_COUNSEL = [];	// 상담정보
 
 var DS_DM_RECEIPT  = {};		// DM 사은품 접수 정보 저장 data
 var DS_DROP_TEMP2  = {};		// 개인정보동의 정보 저장 data
@@ -416,7 +416,7 @@ const getCounsel = (sCSEL_SEQ) => {
 	$.ajax(settings).done(res => {
 		if (!checkApi(res, settings)) return;
 
-		const DS_COUNSEL = res.dsRecv; // 상담정보
+		DS_COUNSEL = res.dsRecv; // 상담정보
 
 		if (DS_COUNSEL.length >= 1) {
 			
@@ -593,12 +593,12 @@ const onSave = async () => {
 	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
 
 	// 상담정보 value check
-	const counselData = await getCounselCondition(sJobType);
-	if (!counselData) return false;
-	const addInfoData = getAddInfoCondition();
-	if (!addInfoData) return false;
+	const cselData = await getCounselCondition(sJobType);
+	if (!cselData) return false;
+	const addData = getAddInfoCondition();
+	if (!addData) return false;
 	const customData  = getCustomData();
-	const EMP_ID_LIST = $("#hiddenbox11").val().split(",");
+	const empData = $("#hiddenbox11").val().split(",");
 
 	let resSave;	// CCEM저장 결과
 
@@ -606,43 +606,43 @@ const onSave = async () => {
 	if (sJobType == "I" && selectedSeq > 1) {
 		
 		// 티켓생성
-		const { ticket } = await onNewTicket();
+		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
 		if (!ticket) return false;
 
 		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticket.id;
-		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(counselData, addInfoData, obData);
+		cselData.ZEN_TICKET_ID = ticket.id;
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveCounsel(cselData, addData, obData);
 	
 		// 티켓 업데이트
-		counselData.CSEL_NO = resSave.CSEL_NO;
-		await updateTicket(counselData, customData, EMP_ID_LIST);
+		cselData.CSEL_NO = resSave.CSEL_NO;
+		await updateTicket(cselData, customData, empData);
 
 	// 추가등록 또는 관계회원 수정
 	} else if (sJobType == "U" && selectedSeq > 1) {
 
 		// ccem 저장
-		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(counselData, addInfoData, obData);
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveCounsel(cselData, addData, obData);
 
 		// 티켓 업데이트
-		await updateTicket(counselData, customData, EMP_ID_LIST);
+		await updateTicket(cselData, customData, empData);
 		
 	// 상담순번이 1이고, 신규 또는 수정일떄.
 	} else if (sJobType == "I" || sJobType == "U") {
 
 		// 티켓이 유효한지 체크.
-		const ticketCondition = await checkTicket(sJobType, counselData.ZEN_TICKET_ID);
+		const ticketCondition = await checkTicket(sJobType, cselData.ZEN_TICKET_ID);
 		if (!ticketCondition) return false;
 
 		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticketCondition;
-		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(counselData, addInfoData, obData);
+		cselData.ZEN_TICKET_ID = ticketCondition;
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveCounsel(cselData, addData, obData);
 
 		// 티켓필드 입력
-		counselData.CSEL_NO = resSave.CSEL_NO;
-		await setTicket(counselData, customData, EMP_ID_LIST);
+		cselData.CSEL_NO = resSave.CSEL_NO;
+		await setTicket(cselData, customData, empData);
 
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
@@ -1038,7 +1038,7 @@ const getObCondition = async (ticket_id) => {
 	const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
 
 	// OB리스트구분에 따라 값세팅
-	data.OBLIST_CDE = fOB_MK?.value || "";
+	data.OBLIST_CDE = fOB_MK?.value?.split("_")[2] || ""; // oblist_cde_${OBLIST_CDE}
 	if (data.OBLIST_CDE == "60") {
 		data.CALLBACK_ID = fCALLBACK_ID?.value || "";
 	} else {
@@ -1361,8 +1361,9 @@ const getCustomData = () => {
 
 /**
  * 티켓생성버튼
+ * @param {string|number} parent_id Zendesk ticket id
  */
-const onNewTicket = async () => {
+const onNewTicket = async (parent_id) => {
 	const CUST_ID = $("#hiddenbox6").val();
 	const CUST_NAME = $("#textbox21").val();
 	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
@@ -1371,5 +1372,5 @@ const onNewTicket = async () => {
 	const user_id = await checkUser(target, CUST_ID, CUST_NAME);
 	if (!user_id) return false;
 
-	return await createTicket(user_id);
+	return await createTicket(user_id, parent_id);
 }
