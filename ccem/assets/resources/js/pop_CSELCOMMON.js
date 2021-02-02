@@ -1,6 +1,7 @@
 var topbarObject;		// tobar window
 var topbarClient;		// tobar client
 var sidebarClient;		// sidebar client
+var currentTicket;		// 현재 사용중인 티켓정보
 var currentUser;		// 현재 사용중인 유저의 정보(ZENDESK)
 var codeData = [];		// 공통코드-전체
 var prods	 = [];		// 과목리스트
@@ -269,7 +270,7 @@ const openCCEMPRO042 = (keyCode) => {
  */
 const openCCEMPRO042_2 = (keyCode) => {
 	if (keyCode == 13) {
-		PopupUtil.open("openCCEMPRO042_2", 870, 400);
+		PopupUtil.open("CCEMPRO042_2", 870, 400);
 	}
 }
 
@@ -495,43 +496,57 @@ const setTicket = async (cselData, customData, EMP_ID_LIST) => {
 
 /**
  * 티켓이 유효한지 체크
- * @param {string} jobType       저장구분(I, U)
- * @param {string} ZEN_TICKET_ID 티켓ID
  */
-const checkTicket = async (jobType, ZEN_TICKET_ID) => {
+const checkTicket = async () => {
     
-    sidebarClient = topbarObject.sidebarClient;	// 현재 활성화된 티켓을 가져온다.
+    // sidebarClient = topbarObject.sidebarClient;	// 현재 활성화된 티켓을 가져온다.
 
-    if (!sidebarClient) {
-        alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-        return false;
-    }
+    // if (!sidebarClient) {
+    //     alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+    //     return false;
+    // }
 
-    const { ticket } = await sidebarClient.get("ticket");
-    if (!ticket) {
-        alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-        return false;
-    }
+    // const { ticket } = await sidebarClient.get("ticket");
+    // if (!ticket) {
+    //     alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+    //     return false;
+    // }
 
-    // 신규일때
-    if (jobType == "I") {
+    // // 신규일때
+    // if (jobType == "I") {
 
-        if (ticket.externalId) {
-            alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
-            return false;
-        }
-    }
-    // 수정일때
-    else {
+    //     if (ticket.externalId) {
+    //         alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+    //         return false;
+    //     }
+    // }
+    // // 수정일때
+    // else {
 
-        if (ZEN_TICKET_ID && ZEN_TICKET_ID != ticket.id) {
-            alert(`현재 상담정보의 티켓이 아닙니다. \n\n#${ZEN_TICKET_ID} 티켓을 다시 오픈해 주시기 바랍니다.`);
-            return false;
-        }
-    }
+    //     if (ZEN_TICKET_ID && ZEN_TICKET_ID != ticket.id) {
+    //         alert(`현재 상담정보의 티켓이 아닙니다. \n\n#${ZEN_TICKET_ID} 티켓을 다시 오픈해 주시기 바랍니다.`);
+    //         return false;
+    //     }
+	// }
 
-    return ticket.id;
+	// 티켓생성버튼으로 티켓을 생성했을 경우.
+	if (!currentTicket) {
+		sidebarClient = topbarObject.sidebarClient;
+		const origin  = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+	}
 
+	if (!currentTicket) {
+		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+	
+	if (currentTicket.externalId) {
+		alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
+
+    return currentTicket.id;
 }
 
 /**

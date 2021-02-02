@@ -168,7 +168,7 @@ const createGrids = () => {
 /**
  * 오픈되는 곳에 따라 분기처리
  */
-const onStart = () => {
+const onStart = async () => {
 
 	// init
 	$("#selectbox6").val("2");				// 고객반응
@@ -194,6 +194,10 @@ const onStart = () => {
 		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
 		getBaseData("C", custId);
 
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+
 	}
 	// 탑바 > 고객정보 > 선생님 > 상담등록 버튼으로 오픈
 	else if (opener_name.includes("top_bar") && hash.includes("by_tchr")) {	
@@ -207,6 +211,10 @@ const onStart = () => {
 		// 고객기본정보 조회
 		const empId = topbarObject.document.getElementById("tchrInfo_EMP_ID").value;	// 사원번호
 		getBaseData("T", empId);
+		
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
 
 	} 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
@@ -602,9 +610,25 @@ const onSave = async () => {
 
 	let resSave;	// CCEM저장 결과
 
-	// 추가등록 또는 관계회원 신규
-	if (sJobType == "I" && selectedSeq > 1) {
-		
+	// 상담순번이 1이고, 신규저장일떄.
+	if (sJobType == "I" && selectedSeq == 1) {
+
+		// 티켓이 유효한지 체크.
+		const ticket_id = await checkTicket();
+		if (!ticket_id) return false;
+
+		// ccem 저장
+		cselData.ZEN_TICKET_ID = ticket_id;
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveCounsel(cselData, addData, obData);
+
+		// 티켓필드 입력
+		cselData.CSEL_NO = resSave.CSEL_NO;
+		await updateTicket(cselData, customData, empData);
+
+	// 추가등록/관계회원 신규저장일때.
+	} else if (sJobType == "I" && selectedSeq > 1) {
+
 		// 티켓생성
 		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
 		if (!ticket) return false;
@@ -618,31 +642,15 @@ const onSave = async () => {
 		cselData.CSEL_NO = resSave.CSEL_NO;
 		await updateTicket(cselData, customData, empData);
 
-	// 추가등록 또는 관계회원 수정
-	} else if (sJobType == "U" && selectedSeq > 1) {
-
+	// 수정저장일떄.
+	} else if (sJobType == "U") {
+		
 		// ccem 저장
 		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
 		resSave = await saveCounsel(cselData, addData, obData);
 
 		// 티켓 업데이트
 		await updateTicket(cselData, customData, empData);
-		
-	// 상담순번이 1이고, 신규 또는 수정일떄.
-	} else if (sJobType == "I" || sJobType == "U") {
-
-		// 티켓이 유효한지 체크.
-		const ticketCondition = await checkTicket(sJobType, cselData.ZEN_TICKET_ID);
-		if (!ticketCondition) return false;
-
-		// ccem 저장
-		cselData.ZEN_TICKET_ID = ticketCondition;
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(cselData, addData, obData);
-
-		// 티켓필드 입력
-		cselData.CSEL_NO = resSave.CSEL_NO;
-		await setTicket(cselData, customData, empData);
 
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
