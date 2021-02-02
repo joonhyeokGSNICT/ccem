@@ -199,23 +199,21 @@ const createGrids = () => {
 	});
 
 	grid1.on("click", ev => {
-		grid1.clickSort(ev);
+		ev.instance.clickSort(ev);
 	});
 
 	grid1.on("dblclick", ev => {
-		if(ev.targetType == "cell"){
-			// 티켓오픈
-			const ZEN_TICKET_ID = grid1.getValue(ev.rowKey, "ZEN_TICKET_ID");
-			if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);	
-		}
+		// 티켓오픈
+		if (ev.targetType != "cell") return;
+		const ZEN_TICKET_ID = ev.instance.getValue(ev.rowKey, "ZEN_TICKET_ID");
+		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);
 	});
 
-	grid1.on("onGridUpdated", () => {
-
-		$("#textbox4").val(grid1.getPaginationTotalCount());	// 조회건수
+	grid1.on("onGridUpdated", ev => {
+		$("#textbox4").val(ev.instance.getPaginationTotalCount());	// 조회건수
 
 		// 조회 결과가 없으면 모두 disabled
-		if(!grid1.focus(0)) {
+		if(!ev.instance.focus(0)) {
 			$("#button4").prop("disabled", true);	// 녹취매핑
 			$("#button5").prop("disabled", true);	// 녹취청취
 			$("#button6").prop("disabled", true);	// 결과
@@ -663,6 +661,7 @@ const getCselSubj = condition => {
 	if(!condition) return;
 
 	const settings = {
+		global: false,
 		url: `${API_SERVER}/cns.getCselSubj.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -675,10 +674,12 @@ const getCselSubj = condition => {
 		errMsg:  "상담조회중 오류가 발생하였습니다.",
 	}
 
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-		grid2.resetData(data.dsRecv);
-	});	
+	$.ajax(settings)
+		.done(data => {
+			if (!checkApi(data, settings)) return;
+			grid2.resetData(data.dsRecv);
+		})
+		.fail((jqXHR) => alert(settings.errMsg + "\n\n" + getErrMsg(jqXHR.statusText)));
 }
 
 /**
