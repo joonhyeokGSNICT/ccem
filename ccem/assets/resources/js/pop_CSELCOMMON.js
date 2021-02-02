@@ -252,13 +252,24 @@ function openCCEMPRO043(keyCode){
 }
 
 /**
- * 상담 분류 팝업
+ * 상담 분류 팝업 for 상담등록
  * - as-is : cns5810.onCselTypePopUp()
  * @param {number} keyCode 
  */
 const openCCEMPRO042 = (keyCode) => {
 	if (keyCode == 13) {
 		PopupUtil.open("CCEMPRO042", 870, 610);
+	}
+}
+
+/**
+ * 상담 분류 팝업 for 입회등록/선생님소개
+ * - as-is : cns4700.GRD_MBRINFO.OnPopup()
+ * @param {number} keyCode 
+ */
+const openCCEMPRO042_2 = (keyCode) => {
+	if (keyCode == 13) {
+		PopupUtil.open("openCCEMPRO042_2", 870, 400);
 	}
 }
 
