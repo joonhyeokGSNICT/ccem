@@ -87,7 +87,7 @@ const createGrids = () => {
 			{ header: '팩스발송일시',                   name: "FAX_DATETIME",          width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '녹취ID',                         name: "RECORD_ID",             width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '상담입력시각',                   name: "CSEL_STTIME",           width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	  formatter: columnInfo => FormatUtil.time(columnInfo.value)	  },
-			{ header: 'TICKET ID',                      name: "TICKET_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
+			{ header: 'TICKET ID',                      name: "ZEN_TICKET_ID",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '상담경로',                       name: "FST_CRS_CDE_NM",        width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '상담제품',                       name: "PRDT_NAME",             width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '업무정직도',                     name: "CNT_NGPROC",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
@@ -205,8 +205,8 @@ const createGrids = () => {
 	grid1.on("dblclick", ev => {
 		if(ev.targetType == "cell"){
 			// 티켓오픈
-			const TICKET_ID = grid1.getValue(ev.rowKey, "TICKET_ID");
-			if(TICKET_ID) topbarClient.invoke('routeTo', 'ticket', TICKET_ID);	
+			const ZEN_TICKET_ID = grid1.getValue(ev.rowKey, "ZEN_TICKET_ID");
+			if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);	
 		}
 	});
 

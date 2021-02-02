@@ -130,7 +130,7 @@ const createGrids = () => {
 			{ header: '센터장휴대폰',     name: 'LC_EMP_MOBILNO',  	 width: 100,    align: "center",    sortable: false, ellipsis: true, hidden: true, },
 			{ header: '고객구분',         name: 'CUST_MK',           width: 100,    align: "center",    sortable: false, ellipsis: true, hidden: true, },
 			{ header: '처리희망일',       name: 'PROC_HOPE_DATE',	 width: 100,    align: "center",    sortable: false, ellipsis: true, hidden: true, },
-			{ header: 'TICKET_ID',       name: 'ZEN_TICKET_ID',		 width: 100,    align: "center",    sortable: false, ellipsis: true, hidden: true, },
+			{ header: 'TICKET ID',       name: 'ZEN_TICKET_ID',		 width: 100,    align: "center",    sortable: false, ellipsis: true, hidden: true, },
 			
 		],
 	});

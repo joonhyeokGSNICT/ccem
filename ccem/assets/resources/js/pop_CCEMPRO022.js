@@ -2,6 +2,8 @@ var grid1;	// 상담등록 > 과목 grid
 var grid2;	// 상담등록 > 상담과목 grid
 var grid3;	// 상담등록 > 학습중인과목 grid
 
+var DS_COUNSEL	= [];	// 상담정보
+
 var DS_DM_RECEIPT  = {};		// DM 사은품 접수 정보 저장 data
 var DS_DROP_TEMP2  = {};		// 개인정보동의 정보 저장 data
 var DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
@@ -221,8 +223,8 @@ const onStart = () => {
 		const cselDate 		= counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
 		const cselNo 		= counselGrid.getValue(rowKey, "CSEL_NO");		// 상담번호
 		const cselSeq 		= counselGrid.getValue(rowKey, "CSEL_SEQ");		// 상담순번
-		const TICKET_ID 	= counselGrid.getValue(rowKey, "TICKET_ID");	// 티켓ID
-		if(TICKET_ID) topbarClient.invoke('routeTo', 'ticket', TICKET_ID);  // 티켓오픈
+		const ZEN_TICKET_ID = counselGrid.getValue(rowKey, "ZEN_TICKET_ID");	// 티켓ID
+		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);  // 티켓오픈
 
 		// 상담정보 조회
 		calendarUtil.setImaskValue("textbox27", cselDate);
