@@ -27,29 +27,13 @@ var tempBot;				// 소분류 임시저장
 var tempSub;				// 제목 임시저장
 
 
+
 $(function(){
 	console.log(opener.name)
 	// opener 의 탭 ID 에 따라 참조하는 부분이 달라진다.
 	switch(opener.name){
-	case 'CCEMPRO022':
-		cselCode = $("#selectbox3", opener.document).val();
-    	openerTop = $.trim($("#textbox14", opener.document).val());
-    	openerMid = $.trim($("#textbox16", opener.document).val());
-    	openerBot = $.trim($("#textbox18", opener.document).val());
-    	openerSub = $.trim($("#textbox12", opener.document).val());
-    	
-    	openerTop_ID = "textbox14";
-    	openerMid_ID = "textbox16";
-    	openerBot_ID = "textbox18";
-    	openerSub_ID = "textbox12";
-    	
-    	openerTop_NAME = "textbox15";
-    	openerMid_NAME = "textbox17";
-    	openerBot_NAME = "textbox19";
-    	openerSub_NAME = "";
-		break;
 	case 'CCEMPRO031':
-		cselCode = "";
+		cselCode = "3";
     	openerTop = $.trim($("#textbox19", opener.document).val());
     	openerMid = $.trim($("#textbox21", opener.document).val());
     	openerBot = $.trim($("#textbox23", opener.document).val());
@@ -114,9 +98,23 @@ $(function(){
 		if(ev.targetType == 'cell'){
 			topGrid.addSelection(ev);
 			topGrid.clickSort(ev);
-			topGrid.clickCheck(ev);
 			topSelet = topGrid.getRow(ev.rowKey);
-			searchFunc2("CSEL_MTYPE_CDE",topSelet,midGrid);
+
+			// 초기 대분류 조회 func
+			var codeList = opener.codeData.filter(el => "CSEL_MTYPE_CDE".includes(el.CODE_MK));
+			var midList = [];
+			var upCode = topSelet.CODE_ID;
+			for(d of codeList){
+				console.log(d);
+				if(cselCode == '3'){
+					if(d.CODE_ID.substring(0,3) == upCode){
+						midList.push(d);
+					}
+				}
+			}
+			console.log(midList);
+			midGrid.resetData(midList);
+
 			botGrid.clear();
 			subjectGrid.clear();
 			
@@ -228,56 +226,40 @@ $(function(){
 			});
 		}
     });
-	
-	// 상담제목 LIST
-	subjectGrid = new Grid({
-		el: document.getElementById('subjectGrid'),
-		bodyHeight: 130,
-		scrollX: false,
-		columns: [
-			{
-				header: '분류코드',
-				name: 'CSEL_TITLE_SEQ',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				width: 80,
-				formatter: function(e){
-					return e.value.slice(-2);
-				}
-            },
-            {
-				header: '제목',
-				name: 'CSEL_TITLE',
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-            }
-		],
-	});
-	subjectGrid.on('click', (ev) => {
-		if(ev.targetType == 'cell'){
-			subjectGrid.addSelection(ev);
-			subjectGrid.clickSort(ev);
-			subjectGrid.clickCheck(ev);
-			
-			subSelet = subjectGrid.getRow(ev.rowKey);
-			tempSub = subSelet;
-		}
-    });
-	
 	// GRID END ===
 	
 	// 초기 대분류 조회 func
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"CODE_MK": "CSEL_LTYPE_CDE",
-		    	"CSEL_MK": cselCode,
-		    	"CSEL_TITLE": ""
-		    		 }]
-		};
+	var codeList = opener.codeData.filter(el => "CSEL_LTYPE_CDE".includes(el.CODE_MK));
+	var topList = [];
+	for(d of codeList){
+		console.log(d);
+		if(cselCode == '3'){
+			if(d.CODE_ID == '301' || d.CODE_ID == '302' || d.CODE_ID == '344'){
+				topList.push(d);
+			}
+		}else if(cselCode == '6'){
+			if(d.CODE_ID == '961' || d.CODE_ID == '962' || d.CODE_ID == '964'){
+				topList.push(d);
+			}
+		}
+	}
+	console.log(topList);
+	topGrid.resetData(topList);
+	//var lvlMk = "<%=S_USER_LVL_MK%>";
+	/*if(gubun=="Y") {
+		// 슈퍼바이저 이상이면
+		if(lvlMk<=3){
+			if(DS_CNS4717.NameValue(row,"CODE_ID")=="301" || DS_CNS4717.NameValue(row,"CODE_ID")=="302" || DS_CNS4717.NameValue(row,"CODE_ID")=="341"||DS_CNS4717.NameValue(row,"CODE_ID")=="342"||DS_CNS4717.NameValue(row,"CODE_ID")=="343" || DS_CNS4717.NameValue(row, "CODE_ID")=="344" || DS_CNS4717.NameValue(row, "CODE_ID")=="345" || DS_CNS4717.NameValue(row, "CODE_ID")=="346") return true;
+			else return false;			
+		}
+		else {
+			if(DS_CNS4717.NameValue(row,"CODE_ID")=="341"||DS_CNS4717.NameValue(row,"CODE_ID")=="342"||DS_CNS4717.NameValue(row,"CODE_ID")=="343" || DS_CNS4717.NameValue(row, "CODE_ID")=="344" || DS_CNS4717.NameValue(row, "CODE_ID")=="345" || DS_CNS4717.NameValue(row, "CODE_ID")=="346") return true;
+			else return false;
+		}
+	} else {
+		if(DS_CNS4717.NameValue(row,"CODE_ID")=="301"|| DS_CNS4717.NameValue(row,"CODE_ID")=="302") return true;
+		else return false;
+	}*/
 	
 	$.ajax({
 	    url: API_SERVER + '/cns.getCounselType.do',
@@ -463,73 +445,3 @@ $(function(){
 });
 
 
-
-
-
-
-
-// 제목 검색
-function searchFunc(title, csCode) {
-	var param = {
-		    senddataids: ["send1"],
-		    recvdataids: ["recv1"],
-		    send1: [{
-		    	"CODE_MK": "CSEL_LTYPE_CDE",
-		    	"CSEL_MK": csCode,
-		    	"CSEL_TITLE": title
-		    		 }]
-		};
-	
-	$.ajax({
-	    url: API_SERVER + '/cns.getCounselType.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        console.log(response);
-	        if(response.errcode == "0"){
-	        	topGrid.clear();
-	        	midGrid.clear();
-				botGrid.clear();
-				subjectGrid.clear();
-	        	topGrid.resetData(response.recv1);
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
-}
-
-function searchFunc2(type, select, grid){
-	var param = {
-			senddataids: ["send1"],
-			recvdataids: ["recv1"],
-			send1: [{
-				"CODE_MK": type,
-				"CSEL_MK": select.CODE_ID,
-				"CSEL_TITLE": searchTitle
-			}]
-	};
-	
-	$.ajax({
-		url: API_SERVER + '/cns.getCounselType.do',
-		type: 'POST',
-		dataType: 'json',
-		contentType: "application/json",
-		data: JSON.stringify(param),
-		success: function (response) {
-			console.log(response);
-			if(response.errcode == "0"){
-				grid.clear();
-				grid.resetData(response.recv1);
-			}else {
-				loading.out();
-				client.invoke("notify", response.errmsg, "error", 60000);
-			}
-		}, error: function (response) {
-		}
-	});
-}
