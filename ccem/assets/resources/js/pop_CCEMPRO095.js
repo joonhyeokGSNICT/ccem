@@ -573,6 +573,7 @@ const saveCselProc = (condition) => {
         // 저장성공후
         updateTicket(condition.DS_GIFT);    // 티켓업데이트(사은품정보)
         getCselProc();  // 재조회
+        alert("저장 되었습니다.");
     })
 }
 
