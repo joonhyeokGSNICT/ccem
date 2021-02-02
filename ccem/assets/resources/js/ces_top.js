@@ -36,6 +36,8 @@ var currentPop = { name : null };
 var currentUnPop = { name : null };
 
 var codeData;									// 전체 공통코드 정보
+var tableList;									// 전체 통합코드 정보
+var faxUrl = "";								// FAX URL
 
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo = {
@@ -179,6 +181,15 @@ var custInfoStatus;
 //sideBar client 받기
 client.on("getSidebarClient", function(sidebarClient_d) {
 	sidebarClient = client.instance(sidebarClient_d);
+	initAll();
+	setTimeout(function(){
+		$("#customerSearch").click();
+		userSearch();
+	}, 500);
+});
+// 티켓이 열림
+client.on("ticketReady", function(){
+	
 });
 client.on("getCodeData", function(d){
 	codeData = d;
@@ -190,6 +201,26 @@ client.on("getCodeData", function(d){
 	$("#custInfo_CUST_MK").val("CM");
 });
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
+function userSearch() {
+	sidebarClient.get('ticket.requester').then(function(data){
+		var phone = "";
+		console.log(data)
+		for(d of data['ticket.requester'].identities){
+			if(d.type == 'phone_number'){
+				phone = d.value.slice(-4);
+			}
+		}
+		setTimeout(function(){
+			if(phone != ''){
+				$("#customerPhone").val(phone);
+				$("#customerPhoneCheck").prop('checked',true);
+			}
+			$("#customerName").val(data['ticket.requester'].name);
+			$("#customerNameCheck").prop('checked',true);
+			$("#custSearchDivBtn").click();
+		}, 500);
+	});
+}
 /**
  * 페이지의 모든 요소 초기화
  * @returns
@@ -461,6 +492,28 @@ function cancelCustInfo(){
 }
 
 $(function(){
+	
+	var settings = {
+			url: `https://devccem.daekyo.co.kr/sys.getList.do`,
+			method: 'POST',
+			contentType: "application/json; charset=UTF-8",
+			dataType: "json",
+			data: JSON.stringify({
+				senddataids: ["dsSend"],
+				recvdataids: ["dsRecv"],
+				dsSend: [{CD_TBL : "TB_PROGRAM"}],
+			}),
+		}
+
+		$.ajax(settings)
+			.done(data => {
+				tableList = data.dsRecv;
+				faxUrl = tableList.filter(el => ["ETC2000"].includes(el.PGM_ID))[0].PATH;		// fax url 가져오기
+			})
+			.fail(error => {
+				
+			});
+	
 	// === === === === === === === === === === === === === === === === === === === //// INITIALIZING //// === === === === === === === === === === === === === === === === === === === 
 	initAll();
 	
@@ -1380,6 +1433,8 @@ function loadCustInfoMain() {
 	if(currentCustInfo.BL_BLACK_YN == "Y"){
 		$("#blackAndVipArea").css("display","");
 		$("#blackAndVipDT").text(currentCustInfo.BLACK_CUST_MK_NAME);
+	}else {
+		$("#blackAndVipArea").css("display","none");
 	}
 	
 		
@@ -2081,10 +2136,20 @@ function isCustDataChanged() {
 			console.log(currentCustInfo.FAT_REL);
 			return true;
 		}
-	}
-	if($("#custInfo_FAT_RSDNO").val().replace(/-/gi, "") != currentCustInfo.FAT_RSDNO){		// 관계번호
-		console.log(currentCustInfo.FAT_RSDNO);
+	}else if($("#custInfo_FAT_REL").val() != ""){
+		console.log(currentCustInfo.FAT_REL);
 		return true;
+	}
+	if(currentCustInfo.FAT_RSDNO != null){
+		if($("#custInfo_FAT_RSDNO").val().replace(/-/gi, "") != currentCustInfo.FAT_RSDNO){		// 관계번호
+			console.log(currentCustInfo.FAT_RSDNO);
+			return true;
+		}
+	}else {
+		if($("#custInfo_FAT_RSDNO").val().replace(/-/gi, "") != ""){							// 관계번호
+			console.log(currentCustInfo.FAT_RSDNO);
+			return true;
+		}
 	}
 	if(currentCustInfo.UPDEPTNAME != null){
 		if($("#custInfo_UPDEPTNAME").val() != currentCustInfo.UPDEPTNAME){						// 본부

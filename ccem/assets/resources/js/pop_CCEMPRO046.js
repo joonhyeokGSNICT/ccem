@@ -43,7 +43,7 @@ $(function(){
             {
 				header: '메시지',
 				name: 'SMS_CNTS',
-				align: "center",
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 				width: 700
@@ -90,7 +90,7 @@ $(function(){
             {
 				header: '발신번호',
 				name: 'ETC',
-				align: "center",
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 			},

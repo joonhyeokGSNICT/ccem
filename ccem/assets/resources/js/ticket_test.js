@@ -8,6 +8,7 @@ $(function(){
 		for ( var instanceGuid in instances) {
 			if (instances[instanceGuid].location === 'top_bar') {
 				topBarClient =  client.instance(instanceGuid);
+				topBarClient.invoke("popover");
 				topBarClient.trigger("getSidebarClient", client._instanceGuid);
 			}
 		}

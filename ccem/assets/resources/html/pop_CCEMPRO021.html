@@ -16,6 +16,8 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
 	<!-- toastGrid -->
 	<link href="../lib/toast-grid/css/tui-grid.css" rel="stylesheet" type="text/css" />
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
 	<!-- main.css -->
 	<link rel="stylesheet" href="../css/ces_top.css">
 	<!-- fancy tree -->
@@ -28,7 +30,7 @@
 			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
 				<div class="row" style="background: #123f8a; height: 35px;">
 					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저장</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="saveBlack()">저장</button>&nbsp;
 						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫기</button>&nbsp;
 					</div>
 				</div>
@@ -43,25 +45,28 @@
 						</colgroup>
 						<tr>
 							<th>고객번호</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="black_CUST_ID" readonly></td>
 							<th>정성여부</th>
-							<td colspan="1"><select class="form-control form-control-sm"></select></td>
+							<td colspan="1"><select class="form-control form-control-sm" id="black_BLACK_YN">
+								<option value="Y">Y</option>
+								<option value="N">N</option>
+							</select></td>
 						</tr>
 						<tr>
 							<th>등록일자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="black_REGDATE" disabled></td>
 							<th>등록자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="black_REG_USER_NAME" disabled></td>
 						</tr>
 						<tr>
 							<th>수정일자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="black_CHGDATE" disabled></td>
 							<th>수정자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="black_CHG_USER_NAME" disabled></td>
 						</tr>
 						<tr>
 							<th>정성구분</th>
-							<td colspan="3"><select class="form-control form-control-sm"></select></td>
+							<td colspan="3"><select class="form-control form-control-sm" id="black_BLACK_CUST_MK" name="BLACK_CUST_MK"></select></td>
 						</tr>
 					</table>
 					<table class="table table-sm table-bordered mt-2">
@@ -71,7 +76,8 @@
 						</colgroup>
 						<tr>
 							<th>내용</th>
-							<td colspan="3"><textarea class="form-control" rows="15" cols=""></textarea></td>
+							<td colspan="3"><textarea class="form-control" rows="15" cols="" id="black_REMARK"></textarea>
+							<input type="hidden" id="calByte"></td>
 						</tr>
 					</table>
 				</div>
@@ -83,6 +89,7 @@
 	<script src="../lib/fancytree/jquery.fancytree.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/client.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>
