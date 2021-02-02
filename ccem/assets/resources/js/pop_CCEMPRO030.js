@@ -1730,7 +1730,7 @@ const getSaveCondition = (sBtnMk) => {
             GIFT_NO          : DS_GIFT.GIFT_NO,                          // 사은품번호   
             GIFT_SEQ         : DS_GIFT.GIFT_SEQ,                         // 사은품순번       
             DTL_MK           : "1",                                      // 내역구분(사은품내역구분 '1'은 상담임.)  
-            CUST_ID          : DS_GIFT.CUST_ID,                          // 고객번호   
+            CUST_ID          : DS_COUNSEL.CUST_ID,                       // 고객번호   
             GIFT_TYPE_CDE    : $("#selectbox5").val(),                   // 사은품분류코드           
             GIFT_CDE         : $("#selectbox6").val(),                   // 사은품코드       
             GIFT_PRICE       : calendarUtil.getImaskValue("textbox30"),  // 사은품가격       
