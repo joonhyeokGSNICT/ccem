@@ -295,12 +295,12 @@ const getFollowers = async (EMP_ID_LIST = [], type) => {
  * Zendesk 티켓 업데이트 for 추가등록/관계회원
  * @param {object} cselData    상담정보
  * @param {object} customData  커스텀필드정보
- * @param {object} EMP_ID_LIST 연계대상자ID
+ * @param {object} empData 	   연계대상자ID
  */
-const updateTicket = async (cselData, customData, EMP_ID_LIST) => {
+const updateTicket = async (cselData, customData, empData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
-	const followerData = await getFollowers(EMP_ID_LIST, "UP");
+	const followerData = await getFollowers(empData, "UP");
 
 	const option = {
 		url: `/api/v2/tickets/${cselData.ZEN_TICKET_ID}`,
@@ -401,12 +401,12 @@ const updateTicket = async (cselData, customData, EMP_ID_LIST) => {
  * Zendesk 티켓필드 입력
  * @param {object} cselData 상담정보
  * @param {obejct} customData  커스텀필드정보
- * @param {obejct} EMP_ID_LIST 연계대상자ID
+ * @param {obejct} empData 연계대상자ID
  */
-const setTicket = async (cselData, customData, EMP_ID_LIST) => {
+const setTicket = async (cselData, customData, empData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
-	const followerData = await getFollowers(EMP_ID_LIST, "SET");
+	const followerData = await getFollowers(empData, "SET");
 
 	let req = new Object()
 	req["ticket.subject"] = cselData.CSEL_TITLE;

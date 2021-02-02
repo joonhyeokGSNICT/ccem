@@ -551,54 +551,37 @@ const onSave = async () => {
 	if (!transData) return false;
 	const customData  = getCustomData();
 
-	let resSave;	// CCEM저장 결과
+	// 상담순번이 1이고, 신규저장일떄.
+	if (sJobType == "I" && selectedSeq == 1) {
 
-	// 추가등록 또는 관계회원 신규
-	if (sJobType == "I" && selectedSeq > 1) {
-		
+		// 티켓이 유효한지 체크.
+		const ticket_id = await checkTicket();
+		if (!ticket_id) return false;
+		cselData.ZEN_TICKET_ID = ticket_id;
+
+	// 추가등록/관계회원 신규저장일때.
+	} else if (sJobType == "I" && selectedSeq > 1) {
+
 		// 티켓생성
 		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
 		if (!ticket) return false;
-
-		// ccem 저장
 		cselData.ZEN_TICKET_ID = ticket.id;
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveEnterInfo(cselData, transData, obData);
 	
-		// 티켓 업데이트
-		cselData.CSEL_NO = resSave.CSEL_NO;
-		await updateTicket(cselData, customData);
-
-	// 추가등록 또는 관계회원 수정
-	} else if (sJobType == "U" && selectedSeq > 1) {
-
-		// ccem 저장
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveEnterInfo(cselData, transData, obData);
-
-		// 티켓 업데이트
-		await updateTicket(cselData, customData);
-		
-	// 상담순번이 1이고, 신규 또는 수정일떄.
-	} else if (sJobType == "I" || sJobType == "U") {
-
-		// 티켓이 유효한지 체크.
-		const ticketCondition = await checkTicket(sJobType, cselData.ZEN_TICKET_ID);
-		if (!ticketCondition) return false;
-
-		// ccem 저장
-		cselData.ZEN_TICKET_ID = ticketCondition;
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveEnterInfo(cselData, transData, obData);
-
-		// 티켓필드 입력
-		cselData.CSEL_NO = resSave.CSEL_NO;
-		await setTicket(cselData, customData);
+	// 수정저장일떄.
+	} else if (sJobType == "U") {
 
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
 	}
+
+	// CCEM 저장
+	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+	const resSave = await saveEnterInfo(cselData, transData, obData);
+	
+	// 티켓 업데이트
+	cselData.CSEL_NO = resSave.CSEL_NO;
+	await updateTicket(cselData, customData);
 	
 	// 저장성공후
 	$("#textbox7").val(resSave.CSEL_NO);	// 접수번호 세팅
@@ -627,7 +610,8 @@ const getCounselCondition = (sJobType) => {
 		CSEL_MK				: "3", 											// 상담구분(3으로 고정)	
 		CSEL_LTYPE_CDE		: $("#textbox19").val(), 						// 상담대분류코드			
 		CSEL_MTYPE_CDE		: $("#textbox21").val(), 						// 상담중분류코드			
-		CSEL_STYPE_CDE		: $("#textbox23").val(), 						// 상담소분류코드			
+		CSEL_STYPE_CDE		: $("#textbox23").val(), 						// 상담소분류코드	
+		CSEL_TITLE			: "입회등록",									 // 상담제목
 		CSEL_CNTS			: $("#textbox25").val().trim(), 				// 상담상세내용		
 		LIMIT_MK			: "", // 처리시한구분		
 		PROC_HOPE_DATE		: "", // 처리희망일자			

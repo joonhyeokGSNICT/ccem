@@ -211,7 +211,7 @@ const onStart = async () => {
 		// 고객기본정보 조회
 		const empId = topbarObject.document.getElementById("tchrInfo_EMP_ID").value;	// 사원번호
 		getBaseData("T", empId);
-		
+
 		// 오픈된 티켓세팅
 		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
 		currentTicket = origin?.ticket;
@@ -608,23 +608,13 @@ const onSave = async () => {
 	const customData  = getCustomData();
 	const empData = $("#hiddenbox11").val().split(",");
 
-	let resSave;	// CCEM저장 결과
-
 	// 상담순번이 1이고, 신규저장일떄.
 	if (sJobType == "I" && selectedSeq == 1) {
 
 		// 티켓이 유효한지 체크.
 		const ticket_id = await checkTicket();
 		if (!ticket_id) return false;
-
-		// ccem 저장
 		cselData.ZEN_TICKET_ID = ticket_id;
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(cselData, addData, obData);
-
-		// 티켓필드 입력
-		cselData.CSEL_NO = resSave.CSEL_NO;
-		await updateTicket(cselData, customData, empData);
 
 	// 추가등록/관계회원 신규저장일때.
 	} else if (sJobType == "I" && selectedSeq > 1) {
@@ -632,30 +622,23 @@ const onSave = async () => {
 		// 티켓생성
 		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
 		if (!ticket) return false;
-
-		// ccem 저장
 		cselData.ZEN_TICKET_ID = ticket.id;
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(cselData, addData, obData);
-	
-		// 티켓 업데이트
-		cselData.CSEL_NO = resSave.CSEL_NO;
-		await updateTicket(cselData, customData, empData);
 
 	// 수정저장일떄.
 	} else if (sJobType == "U") {
 		
-		// ccem 저장
-		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
-		resSave = await saveCounsel(cselData, addData, obData);
-
-		// 티켓 업데이트
-		await updateTicket(cselData, customData, empData);
-
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
 	}
+
+	// CCEM저장
+	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+	const resSave = await saveCounsel(cselData, addData, obData);
+
+	// 티켓필드 입력
+	cselData.CSEL_NO = resSave.CSEL_NO;
+	await updateTicket(cselData, customData, empData);
 	
 	// 저장성공후
 	$("#textbox28").val(resSave.CSEL_NO); 	// 접수번호 세팅
