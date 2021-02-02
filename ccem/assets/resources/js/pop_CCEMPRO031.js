@@ -1,6 +1,8 @@
 var grid4;	// 입회등록 > 과목 grid
 var grid5;	// 입회등록 > 입회과목 grid
 
+var DS_COUNSEL = [];	// 상담정보
+
 $(function () {
 	
 	createGrids();
@@ -356,7 +358,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		.done(res => {
 			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
 			
-			const DS_COUNSEL = res.dsRecv;
+			DS_COUNSEL = res.dsRecv;
 			if(DS_COUNSEL.length == 0) {
 				alert(settings.errMsg + "\n\n검색 결과가 없습니다.");
 				return reject(new Error(settings.errMsg + "\n\n검색 결과가 없습니다."));
@@ -543,8 +545,8 @@ const onSave = async () => {
 	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
 
 	// 저장 validation check
-	const counselData = getCounselCondition(sJobType);
-	if (!counselData) return false;
+	const cselData = getCounselCondition(sJobType);
+	if (!cselData) return false;
 	const transData = getTransCondition();
 	if (!transData) return false;
 	const customData  = getCustomData();
@@ -555,43 +557,43 @@ const onSave = async () => {
 	if (sJobType == "I" && selectedSeq > 1) {
 		
 		// 티켓생성
-		const { ticket } = await onNewTicket();
+		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
 		if (!ticket) return false;
 
 		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticket.id;
-		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
-		resSave = await saveEnterInfo(counselData, transData, obData);
+		cselData.ZEN_TICKET_ID = ticket.id;
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveEnterInfo(cselData, transData, obData);
 	
 		// 티켓 업데이트
-		counselData.CSEL_NO = resSave.CSEL_NO;
-		await updateTicket(counselData, customData);
+		cselData.CSEL_NO = resSave.CSEL_NO;
+		await updateTicket(cselData, customData);
 
 	// 추가등록 또는 관계회원 수정
 	} else if (sJobType == "U" && selectedSeq > 1) {
 
 		// ccem 저장
-		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
-		resSave = await saveEnterInfo(counselData, transData, obData);
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveEnterInfo(cselData, transData, obData);
 
 		// 티켓 업데이트
-		await updateTicket(counselData, customData);
+		await updateTicket(cselData, customData);
 		
 	// 상담순번이 1이고, 신규 또는 수정일떄.
 	} else if (sJobType == "I" || sJobType == "U") {
 
 		// 티켓이 유효한지 체크.
-		const ticketCondition = await checkTicket(sJobType, counselData.ZEN_TICKET_ID);
+		const ticketCondition = await checkTicket(sJobType, cselData.ZEN_TICKET_ID);
 		if (!ticketCondition) return false;
 
 		// ccem 저장
-		counselData.ZEN_TICKET_ID = ticketCondition;
-		const obData = await getObCondition(counselData.ZEN_TICKET_ID);
-		resSave = await saveEnterInfo(counselData, transData, obData);
+		cselData.ZEN_TICKET_ID = ticketCondition;
+		const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+		resSave = await saveEnterInfo(cselData, transData, obData);
 
 		// 티켓필드 입력
-		counselData.CSEL_NO = resSave.CSEL_NO;
-		await setTicket(counselData, customData);
+		cselData.CSEL_NO = resSave.CSEL_NO;
+		await setTicket(cselData, customData);
 
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
@@ -611,7 +613,7 @@ const onSave = async () => {
  */
 const getCounselCondition = (sJobType) => {
 
-	const DS_COUNSEL = {
+	const data = {
 		ROW_TYPE			: sJobType, 									// 저장구분(I/U/D)		
 		CSEL_DATE			: calendarUtil.getImaskValue("calendar3"), 		// 상담일자		
 		CSEL_NO				: $("#textbox7").val(), 						// 상담번호	
@@ -659,14 +661,14 @@ const getCounselCondition = (sJobType) => {
 	}
 
 	// 날짜 및 시간 유효성 체크
-	DS_COUNSEL.CSEL_DATE 	  = DS_COUNSEL.CSEL_DATE.length != 8 ? "" 	: DS_COUNSEL.CSEL_DATE;
-	DS_COUNSEL.TRANS_DATE	  = DS_COUNSEL.TRANS_DATE.length != 8 ? "" 	: DS_COUNSEL.TRANS_DATE;
-	DS_COUNSEL.CSEL_STTIME	  = DS_COUNSEL.CSEL_STTIME.length != 6 ? "" : DS_COUNSEL.CSEL_STTIME;
+	data.CSEL_DATE 	  = data.CSEL_DATE.length != 8 ? "" 	: data.CSEL_DATE;
+	data.TRANS_DATE	  = data.TRANS_DATE.length != 8 ? "" 	: data.TRANS_DATE;
+	data.CSEL_STTIME	  = data.CSEL_STTIME.length != 6 ? "" : data.CSEL_STTIME;
 
 	// 병행과목코드리스트 세팅
 	const plProd = getPlProd(grid5);
-	DS_COUNSEL.PLURAL_PRDT_LIST = plProd.ids.join("_");
-	DS_COUNSEL.PLURAL_PRDT_NAME = plProd.names.join(",");
+	data.PLURAL_PRDT_LIST = plProd.ids.join("_");
+	data.PLURAL_PRDT_NAME = plProd.names.join(",");
 
 	// TODO CTI사용여부가 Y이면, 통화시간정보를 셋팅한다.
 	/* if( "<%=S_CTI_USE_YN%>" == "Y" ){ */
@@ -683,21 +685,21 @@ const getCounselCondition = (sJobType) => {
 	// 	}
 	// }
 
-	if (!DS_COUNSEL.MBR_ID) { 
+	if (!data.MBR_ID) { 
 		alert("고객을 선택하여 주십시오."); 
 		return false;
 	}
-	if (!DS_COUNSEL.TRANS_DATE) { 
+	if (!data.TRANS_DATE) { 
 		alert("연계일시를 입력하여 주십시오"); 
 		$("#calendar4").focus();
 		return false;
 	 }
-	if (!DS_COUNSEL.MOTIVE_CDE) { 
+	if (!data.MOTIVE_CDE) { 
 		alert("입회사유를 선택하여 주십시오"); 
 		$("#selectbox7").focus();
 		return false; 
 	}
-	if (!DS_COUNSEL.FST_CRS_CDE) { 
+	if (!data.FST_CRS_CDE) { 
 		alert("입회경로를 선택하여 주십시오"); 
 		$("#selectbox8").focus();
 		return false; 
@@ -707,7 +709,7 @@ const getCounselCondition = (sJobType) => {
 		$("#selectbox5").focus();
 		return false;
 	}
-	if (!DS_COUNSEL.PLURAL_PRDT_LIST) {
+	if (!data.PLURAL_PRDT_LIST) {
 		alert("입회과목을 선택하여 주십시오"); 
 		return false;
 	}
@@ -716,36 +718,36 @@ const getCounselCondition = (sJobType) => {
 	const lvlMk = currentUser.user_fields.user_lvl_mk;
 	const isLowLvl = (lvlMk != "user_lvl_mk_1" && lvlMk != "user_lvl_mk_2" && lvlMk != "user_lvl_mk_3") ? true : false;
 	if (chkGroup() && isLowLvl) {
-		if (!DS_COUNSEL.CSEL_LTYPE_CDE) {
+		if (!data.CSEL_LTYPE_CDE) {
 			alert("대분류를 선택하여 주십시오"); 
 			$("#textbox20").focus();
 			return false;
 		}
-		if (!DS_COUNSEL.CSEL_MTYPE_CDE) {
+		if (!data.CSEL_MTYPE_CDE) {
 			alert("중분류를 선택하여 주십시오"); 
 			$("#textbox22").focus();
 			return false;
 		}
-		if (!DS_COUNSEL.CSEL_STYPE_CDE) {
+		if (!data.CSEL_STYPE_CDE) {
 			alert("소분류코드를 선택하여 주십시오"); 
 			$("#textbox24").focus();
 			return false;
 		}
 	// 기타 상담원 및 슈퍼바이저이상 의 경우 중분류 코드까지 입력 받음
 	} else { 
-		if (!DS_COUNSEL.CSEL_LTYPE_CDE) {
+		if (!data.CSEL_LTYPE_CDE) {
 			alert("대분류를 선택하여 주십시오"); 
 			$("#textbox20").focus();
 			return false;
 		}
-		if (!DS_COUNSEL.CSEL_MTYPE_CDE) {
+		if (!data.CSEL_MTYPE_CDE) {
 			alert("중분류를 선택하여 주십시오"); 
 			$("#textbox22").focus();
 			return false;
 		}
 	}
 
-	return DS_COUNSEL;
+	return data;
 
 }
 
@@ -754,7 +756,7 @@ const getCounselCondition = (sJobType) => {
  */
 const getTransCondition = () => {
 
-	const DS_TRANS = {
+	const data = {
 		TRANS_DATE		: calendarUtil.getImaskValue("calendar4"), // 연계일시	
 		TRANS_NO		: $("#hiddenbox7").val(), 				   // 연계번호	
 		TRANS_MK		: "", // 연계구분	
@@ -764,7 +766,7 @@ const getTransCondition = () => {
 		TRANS_CHNL_MK	: $("#selectbox5").val(), 				   // 연계방법구분		
 	}
 
-	return DS_TRANS;
+	return data;
 
 }
 
@@ -792,7 +794,7 @@ const getObCondition = async (ticket_id) => {
 	const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
 
 	// OB리스트구분에 따라 값세팅
-	data.OBLIST_CDE = fOB_MK?.value || "";
+	data.OBLIST_CDE = fOB_MK?.value?.split("_")[2] || ""; // oblist_cde_${OBLIST_CDE}
 	if (data.OBLIST_CDE == "60") {
 		data.CALLBACK_ID = fCALLBACK_ID?.value || "";
 	} else {
@@ -899,8 +901,9 @@ var addCselByFamily = (data) => {
 
 /**
  * 티켓생성버튼
+ * @param {string|number} parent_id Zendesk ticket id
  */
-const onNewTicket = async () => {
+const onNewTicket = async (parent_id) => {
 	const CUST_ID = $("#hiddenbox3").val();
 	const CUST_NAME = $("#textbox2").val();
 	const target = "C";	// 대상구분(고객 : C, 선생님 : T)
@@ -908,7 +911,7 @@ const onNewTicket = async () => {
 	const user_id = await checkUser(target, CUST_ID, CUST_NAME);
 	if (!user_id) return false;
 
-	return await createTicket(user_id);
+	return await createTicket(user_id, parent_id);
 }
 
 /**
