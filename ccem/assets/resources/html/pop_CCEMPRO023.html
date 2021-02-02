@@ -21,9 +21,12 @@
 <body>
 	<div class="container customBody">
 		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col text-left">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">호전환중단</button>&nbsp;
+			</div>
 			<div class="col text-right">
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">저 장</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="btn.sendOpener()">저 장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="btn.onClose()">닫 기</button>
 			</div>
 		</div>
 		<table class="table table-xs table-bordered mt-2">
@@ -63,8 +66,8 @@
 			</colgroup>
 			<tr>
 				<th class="text-center">대리인명</th>
-				<td><input class="form-control form-control-sm" /></td>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><input id="textbox7" class="form-control form-control-sm" /></td>
+				<td><select id="selectbox1" name="FAT_REL" class="form-control form-control-sm"></select></td>
 			</tr>
 		</table>
 		<table class="table table-xs table-bordered">
@@ -74,11 +77,18 @@
 			</colgroup>
 			<tr>
 				<th class="text-center">동의결과</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><select id="selectbox2" class="form-control form-control-sm">
+					<option value="2">동의완료</option>
+					<option value="4">동의실패</option>
+					<option value="9">동의요청취소</option>
+				</select></td>
 			</tr>
 			<tr>
 				<th class="text-center">약관안내</th>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><select id="selectbox3" class="form-control form-control-sm">
+					<option value="Y">안내</option>
+					<option value="N">미안내</option>
+				</select></td>
 			</tr>
 		</table>
 		<hr>
@@ -93,32 +103,48 @@
 			<tr>
 				<th class="text-center"><a href="#">①필수</a></th>
 				<td><input class="form-control form-control-sm"/></td>
-				<td><select class="form-control form-control-sm"></select></td>
-				<td><button class="btn btn-primary btn-sm ccemBtn w-100">일괄처리</button></td>
+				<td><select id="selectbox4" class="form-control form-control-sm" onchange="changeVal(this)">
+					<option value=""></option>
+					<option value="Y">동의</option>
+					<option value="N">거부</option>
+				</select></td>
+				<td><button class="btn btn-primary btn-sm ccemBtn w-100" onclick="btn.onIVRCertify('5')">일괄처리</button></td>
 			</tr>
 			<tr>
 				<th class="text-center"><a href="#">②마케팅</a></th>
 				<td><input class="form-control form-control-sm"/></td>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><select id="selectbox5" class="form-control form-control-sm" onchange="changeVal(this)">
+					<option value=""></option>
+					<option value="Y">동의</option>
+					<option value="N">거부</option>
+				</select></td>
 				<td><button class="btn btn-primary btn-sm ccemBtn w-100">②~④ 처리</button></td>
 			</tr>
 			<tr>
 				<th class="text-center"><a href="#">③보존 및 마케팅</a></th>
 				<td><input class="form-control form-control-sm"/></td>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><select id="selectbox6" class="form-control form-control-sm" onchange="changeVal(this)">
+					<option value=""></option>
+					<option value="Y">동의</option>
+					<option value="N">거부</option>
+				</select></td>
 				<td><button class="btn btn-primary btn-sm ccemBtn w-100">③~④ 처리</button></td>
 			</tr>
 			<tr>
 				<th class="text-center"><a href="#">④제3자 제공 동의</a></th>
-				<td><input class="form-control form-control-sm"/></td>
-				<td><select class="form-control form-control-sm"></select></td>
+				<td><input id="selectbox7" class="form-control form-control-sm"/></td>
+				<td><select class="form-control form-control-sm" onchange="changeVal(this)">
+					<option value=""></option>
+					<option value="Y">동의</option>
+					<option value="N">거부</option>
+				</select></td>
 				<td><button class="btn btn-primary btn-sm ccemBtn w-100">④ 처리</button></td>
 			</tr>
 		</table>
 		<div class="font-weight-bold"><i class="fas fa-caret-square-right subjectArrow"></i> 메모</div>
 		<div class="row" style="height: 250px;">
 			<div class="col">
-				<textarea class="form-control w-100 h-100"></textarea>
+				<textarea id="textbox8" class="form-control w-100 h-100"></textarea>
 			</div>
 		</div>
 	</div>
