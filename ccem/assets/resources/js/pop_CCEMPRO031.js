@@ -96,7 +96,7 @@ const createGrids = () => {
 /**
  * 오픈되는 곳에 따라 분기처리
  */
-const onStart = () => {
+const onStart = async () => {
 
 	const opener_name = parent.opener.name;
 
@@ -114,6 +114,10 @@ const onStart = () => {
 
 		setDate();
 		getCust(sCUST_ID);
+
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	} else if (opener_name.includes("CCEMPRO035")) {	
