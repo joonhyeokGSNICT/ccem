@@ -596,6 +596,9 @@ const onSave = async () => {
 	$("#textbox7").val(resSave.CSEL_NO);	// 접수번호 세팅
 	onSearch(selectedSeq)					// 입회 재조회	
 
+	// topbar 숨김
+	topbarClient.invoke("popover", "hide");
+
 	return true;
 }
 
