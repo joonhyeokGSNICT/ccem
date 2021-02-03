@@ -5,6 +5,8 @@ var subjectGrid;
 var cselCode = ""; 			// 상담등록에서 보낸 상담구분
 var searchTitle = "";		// 검색 제목
 
+var codeDataPop;
+
 //부모창 값 가져오기
 var openerTop = "";
 var openerMid = "";
@@ -50,20 +52,20 @@ $(function(){
     	openerSub_NAME = "";
 		break;
 	case 'CCEMPRO032':
-		cselCode = "6";
-    	openerTop = $.trim($("#textbox14", opener.document).val());
-    	openerMid = $.trim($("#textbox16", opener.document).val());
-    	openerBot = $.trim($("#textbox18", opener.document).val());
-    	openerSub = $.trim($("#textbox12", opener.document).val());
+		cselCode = "9";
+    	openerTop = $.trim($("#textbox20", opener.document).val());
+    	openerMid = $.trim($("#textbox22", opener.document).val());
+    	openerBot = $.trim($("#textbox24", opener.document).val());
+    	openerSub = "";
     	
-    	openerTop_ID = "textbox14";
-    	openerMid_ID = "textbox16";
-    	openerBot_ID = "textbox18";
-    	openerSub_ID = "textbox12";
+    	openerTop_ID = "textbox20";
+    	openerMid_ID = "textbox22";
+    	openerBot_ID = "textbox24";
+    	openerSub_ID = "";
     	
-    	openerTop_NAME = "textbox15";
-    	openerMid_NAME = "textbox17";
-    	openerBot_NAME = "textbox19";
+    	openerTop_NAME = "textbox21";
+    	openerMid_NAME = "textbox23";
+    	openerBot_NAME = "textbox25";
     	openerSub_NAME = "";
 		break;
 	}
@@ -82,7 +84,11 @@ $(function(){
 				ellipsis: true,
 				width: 80,
 				formatter: function(e){
-					return e.value.slice(-2);
+					if(cselCode != '3'){
+						return e.value.slice(-2);
+					}else {
+						return e.value;
+					}
 				}
             },
             {
@@ -95,29 +101,20 @@ $(function(){
 		],
 	});
 	topGrid.on('click', (ev) => {
+		topGrid.addSelection(ev);
+		topGrid.clickSort(ev);
 		if(ev.targetType == 'cell'){
-			topGrid.addSelection(ev);
-			topGrid.clickSort(ev);
 			topSelet = topGrid.getRow(ev.rowKey);
-
-			// 초기 대분류 조회 func
-			var codeList = opener.codeData.filter(el => "CSEL_MTYPE_CDE".includes(el.CODE_MK));
+			var codeListPop = codeDataPop.filter(el => "CSEL_MTYPE_CDE".includes(el.CODE_MK));
 			var midList = [];
 			var upCode = topSelet.CODE_ID;
-			for(d of codeList){
-				console.log(d);
-				if(cselCode == '3'){
+			for(d of codeListPop){
 					if(d.CODE_ID.substring(0,3) == upCode){
 						midList.push(d);
-					}
 				}
 			}
-			console.log(midList);
 			midGrid.resetData(midList);
-
 			botGrid.clear();
-			subjectGrid.clear();
-			
 			tempTop = topSelet;
 		}
     });
@@ -136,7 +133,11 @@ $(function(){
 				ellipsis: true,
 				width: 80,
 				formatter: function(e){
-					return e.value.slice(-2);
+					if(cselCode != '3'){
+						return e.value.slice(-2);
+					}else {
+						return e.value;
+					}
 				}
             },
             {
@@ -153,11 +154,16 @@ $(function(){
 			midGrid.addSelection(ev);
 			midGrid.clickSort(ev);
 			midGrid.clickCheck(ev);
-			
 			midSelet = midGrid.getRow(ev.rowKey);
-			searchFunc2("CSEL_STYPE_CDE",midSelet,botGrid);
-			subjectGrid.clear();
-			
+			var codeListPop = codeDataPop.filter(el => "CSEL_STYPE_CDE".includes(el.CODE_MK));
+			var botList = [];
+			var upCode = midSelet.CODE_ID;
+			for(d of codeListPop){
+					if(d.CODE_ID.substring(0,5) == upCode){
+						botList.push(d);
+					}
+			}
+			botGrid.resetData(botList);
 			tempMid = midSelet;
 		}
     });
@@ -176,7 +182,11 @@ $(function(){
 				ellipsis: true,
 				width: 80,
 				formatter: function(e){
-					return e.value.slice(-2);
+					if(cselCode != '3'){
+						return e.value.slice(-2);
+					}else {
+						return e.value;
+					}
 				}
             },
             {
@@ -192,250 +202,65 @@ $(function(){
 		if(ev.targetType == 'cell'){
 			botGrid.addSelection(ev);
 			botGrid.clickSort(ev);
-			botGrid.clickCheck(ev);
-			
 			botSelet = botGrid.getRow(ev.rowKey);
 			tempBot = botSelet;
-			
-			var param = {
-					senddataids: ["send1"],
-					recvdataids: ["recv1"],
-					send1: [{
-						"CSEL_MK": botSelet.CODE_ID,
-						"CSEL_TITLE": searchTitle
-					}]
-			};
-			
-			$.ajax({
-				url: API_SERVER + '/cns.getCounselTitle.do',
-				type: 'POST',
-				dataType: 'json',
-				contentType: "application/json",
-				data: JSON.stringify(param),
-				success: function (response) {
-					console.log(response);
-					if(response.errcode == "0"){
-						subjectGrid.clear();
-						subjectGrid.resetData(response.recv1);
-					}else {
-						loading.out();
-						client.invoke("notify", response.errmsg, "error", 60000);
-					}
-				}, error: function (response) {
-				}
-			});
 		}
     });
 	// GRID END ===
 	
-	// 초기 대분류 조회 func
-	var codeList = opener.codeData.filter(el => "CSEL_LTYPE_CDE".includes(el.CODE_MK));
-	var topList = [];
-	for(d of codeList){
-		console.log(d);
-		if(cselCode == '3'){
-			if(d.CODE_ID == '301' || d.CODE_ID == '302' || d.CODE_ID == '344'){
-				topList.push(d);
-			}
-		}else if(cselCode == '6'){
-			if(d.CODE_ID == '961' || d.CODE_ID == '962' || d.CODE_ID == '964'){
-				topList.push(d);
-			}
+	// 코드 가져오기
+	settings = {
+			url: `${API_SERVER}/sys.getCommCode.do`,
+			method: 'POST',
+			contentType: "application/json; charset=UTF-8",
+			dataType: "json",
+			data: JSON.stringify({
+				senddataids: ["dsSend"],
+				recvdataids: ["dsRecv"],
+				dsSend: [{}],
+			}),
 		}
-	}
-	console.log(topList);
-	topGrid.resetData(topList);
-	//var lvlMk = "<%=S_USER_LVL_MK%>";
-	/*if(gubun=="Y") {
-		// 슈퍼바이저 이상이면
-		if(lvlMk<=3){
-			if(DS_CNS4717.NameValue(row,"CODE_ID")=="301" || DS_CNS4717.NameValue(row,"CODE_ID")=="302" || DS_CNS4717.NameValue(row,"CODE_ID")=="341"||DS_CNS4717.NameValue(row,"CODE_ID")=="342"||DS_CNS4717.NameValue(row,"CODE_ID")=="343" || DS_CNS4717.NameValue(row, "CODE_ID")=="344" || DS_CNS4717.NameValue(row, "CODE_ID")=="345" || DS_CNS4717.NameValue(row, "CODE_ID")=="346") return true;
-			else return false;			
-		}
-		else {
-			if(DS_CNS4717.NameValue(row,"CODE_ID")=="341"||DS_CNS4717.NameValue(row,"CODE_ID")=="342"||DS_CNS4717.NameValue(row,"CODE_ID")=="343" || DS_CNS4717.NameValue(row, "CODE_ID")=="344" || DS_CNS4717.NameValue(row, "CODE_ID")=="345" || DS_CNS4717.NameValue(row, "CODE_ID")=="346") return true;
-			else return false;
-		}
-	} else {
-		if(DS_CNS4717.NameValue(row,"CODE_ID")=="301"|| DS_CNS4717.NameValue(row,"CODE_ID")=="302") return true;
-		else return false;
-	}*/
+
+		$.ajax(settings)
+			.done(data => {
+				codeDataPop = data.dsRecv;
+				init();
+			})
+			.fail(error => {
+				console.error(error);
+				return reject(error);
+			});
 	
-	$.ajax({
-	    url: API_SERVER + '/cns.getCounselType.do',
-	    type: 'POST',
-	    dataType: 'json',
-	    contentType: "application/json",
-	    data: JSON.stringify(param),
-	    success: function (response) {
-	        console.log(response);
-	        if(response.errcode == "0"){
-	        	topGrid.clear();
-	        	midGrid.clear();
-				botGrid.clear();
-				subjectGrid.clear();
-	        	topGrid.resetData(response.recv1);
-	        	
-	        	tempTop = topGrid.findRows({
-			        	    CODE_ID: cselCode + openerTop
-			        	})[0];
-	        	
-	        	if(tempTop == "" || tempTop == null || tempTop == undefined){return;}
-	        	
-	        	tempMid = null;
-	        	tempBot = null;
-	        	tempSub = null;
-	        	
-	        	console.log(tempTop);
-	        	topGrid.addSelection(tempTop);
-	        	
-	        	$.ajax({
-	        	    url: API_SERVER + '/cns.getCounselType.do',
-	        	    type: 'POST',
-	        	    dataType: 'json',
-	        	    contentType: "application/json",
-	        	    data: JSON.stringify({
-	        		    senddataids: ["send1"],
-	        		    recvdataids: ["recv1"],
-	        		    send1: [{
-	        		    	"CODE_MK": "CSEL_MTYPE_CDE",
-	        		    	"CSEL_MK": tempTop.CODE_ID,
-	        		    	"CSEL_TITLE": ""
-	        		    		 }]
-	        		}),
-	        	    success: function (response) {
-	        	        console.log(response);
-	        	        if(response.errcode == "0"){
-	        	        	midGrid.resetData(response.recv1);
-	        	        	tempMid = midGrid.findRows({
-	        			        	    CODE_ID: cselCode + openerTop + openerMid
-	        			        	})[0];
-	        	        	if(tempMid == "" || tempMid == null || tempMid == undefined){return;}
-	        	        	
-	        	        	tempBot = null;
-	        	        	tempSub = null;
-	        	        	
-	        	        	console.log(tempMid);
-	        	        	midGrid.addSelection(tempMid);
-	        	        	
-	        	        	$.ajax({
-	        	        	    url: API_SERVER + '/cns.getCounselType.do',
-	        	        	    type: 'POST',
-	        	        	    dataType: 'json',
-	        	        	    contentType: "application/json",
-	        	        	    data: JSON.stringify({
-	        	        		    senddataids: ["send1"],
-	        	        		    recvdataids: ["recv1"],
-	        	        		    send1: [{
-	        	        		    	"CODE_MK": "CSEL_STYPE_CDE",
-	        	        		    	"CSEL_MK": tempMid.CODE_ID,
-	        	        		    	"CSEL_TITLE": ""
-	        	        		    		 }]
-	        	        		}),
-	        	        	    success: function (response) {
-	        	        	        console.log(response);
-	        	        	        if(response.errcode == "0"){
-	        	        	        	botGrid.resetData(response.recv1);
-	        	        	        	
-	        	        	        	tempBot = botGrid.findRows({
-	        	        			        	    CODE_ID: cselCode + openerTop + openerMid + openerBot
-	        	        			        	})[0];
-	        	        	        	if(tempBot == "" || tempBot == null || tempBot == undefined){return;}
-	        	        	        	
-	        	        	        	tempSub = null;
-	        	        	        	
-	        	        	        	console.log(tempBot);
-	        	        	        	botGrid.addSelection(tempBot);
-	        	        	        	
-	        	        	        	$.ajax({
-	        	        	        	    url: API_SERVER + '/cns.getCounselTitle.do',
-	        	        	        	    type: 'POST',
-	        	        	        	    dataType: 'json',
-	        	        	        	    contentType: "application/json",
-	        	        	        	    data: JSON.stringify({
-	        	        	        		    senddataids: ["send1"],
-	        	        	        		    recvdataids: ["recv1"],
-	        	        	        		    send1: [{
-	        	        	        		    	"CSEL_MK": tempBot.CODE_ID,
-	        	        	        		    	"CSEL_TITLE": ""
-	        	        	        		    		 }]
-	        	        	        		}),
-	        	        	        	    success: function (response) {
-	        	        	        	        console.log(response);
-	        	        	        	        if(response.errcode == "0"){
-	        	        	        	        	subjectGrid.resetData(response.recv1);
-	        	        	        	        	
-	        	        	        	        	if(openerSub == ""){
-	        	        	        	        		return;
-	        	        	        	        	}
-	        	        	        	        	
-	        	        	        	        	tempSub = subjectGrid.findRows({
-	        	        	        			        	    CSEL_TITLE: openerSub
-	        	        	        			        	})[0];
-	        	        	        	        	console.log(tempSub);
-	        	        	        	        	subjectGrid.addSelection(tempSub);
-	        	        	        	        }else {
-	        	        	        	        	loading.out();
-	        	        	        	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        	        	        	        }
-	        	        	        	    }, error: function (response) {
-	        	        	        	    }
-	        	        	        	});
-	        	        	        	
-	        	        	        }else {
-	        	        	        	loading.out();
-	        	        	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        	        	        }
-	        	        	    }, error: function (response) {
-	        	        	    }
-	        	        	});
-	        	        	
-	        	        }else {
-	        	        	loading.out();
-	        	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        	        }
-	        	    }, error: function (response) {
-	        	    }
-	        	});
-	        	
-	        	
-	        }else {
-	        	loading.out();
-	        	client.invoke("notify", response.errmsg, "error", 60000);
-	        }
-	    }, error: function (response) {
-	    }
-	});
 	
 	// BUTTON EVENT
-	// 조회버튼
-	$("#search").click(function() {
-		searchTitle = $.trim($("#subjectSearchInput").val());
-		searchFunc($.trim($("#subjectSearchInput").val()), cselCode);
-	});
-	
-	// 제목검색
-	$("#subjectSearchInput").keyup(function(e){v
-		var keyCode = e.which;
-		if(keyCode === 13){
-			searchTitle = $.trim($("#subjectSearchInput").val());
-			searchFunc($.trim($("#subjectSearchInput").val()), cselCode);
-		}
-	});
-	
 	// 확인 버튼
 	$("#confirm").click(function() {
 		if(tempTop != null && tempTop != undefined){
+			$("#" + openerTop_ID, opener.document).val("");
+			$("#" + openerTop_NAME, opener.document).val("");
 			$("#" + openerTop_ID, opener.document).val(tempTop.CODE_ID.slice(-2));
 			$("#" + openerTop_NAME, opener.document).val(tempTop.CODE_NAME);
+		}else {
+			$("#" + openerTop_ID, opener.document).val("");
+			$("#" + openerTop_NAME, opener.document).val("");
 		}
 		if(tempMid != null && tempMid != undefined){
+			$("#" + openerMid_ID, opener.document).val("");
+			$("#" + openerMid_NAME, opener.document).val("");
 			$("#" + openerMid_ID, opener.document).val(tempMid.CODE_ID.slice(-2));
 			$("#" + openerMid_NAME, opener.document).val(tempMid.CODE_NAME);
+		}else{
+			$("#" + openerMid_ID, opener.document).val("");
+			$("#" + openerMid_NAME, opener.document).val("");
 		}
 		if(tempBot != null && tempBot != undefined){
+			$("#" + openerBot_ID, opener.document).val("");
+			$("#" + openerBot_NAME, opener.document).val("");
 			$("#" + openerBot_ID, opener.document).val(tempBot.CODE_ID.slice(-2));
 			$("#" + openerBot_NAME, opener.document).val(tempBot.CODE_NAME);
+		}else{
+			$("#" + openerBot_ID, opener.document).val("");
+			$("#" + openerBot_NAME, opener.document).val("");
 		}
 		if(tempSub != null && tempSub != undefined){
 			$("#" + openerSub_ID, opener.document).val(tempSub.CSEL_TITLE);
@@ -444,4 +269,87 @@ $(function(){
 	});
 });
 
+//초기 대분류 조회 func
+function init(){
+	var codeListPop = codeDataPop.filter(el => "CSEL_LTYPE_CDE".includes(el.CODE_MK));
+	var topList = [];
+	for(d of codeListPop){
+		if(cselCode == '3'){
+			if(d.CODE_ID == '301' || d.CODE_ID == '302' || d.CODE_ID == '344'){
+				topList.push(d);
+			}
+		}else if(cselCode == '9'){
+			if(d.CODE_ID == '961' || d.CODE_ID == '962' || d.CODE_ID == '964'){
+				topList.push(d);
+			}
+		}
+	}
+	topGrid.clear();
+	topGrid.resetData(topList);
+	
+	tempTop = topGrid.findRows({
+	    CODE_ID: cselCode + openerTop
+	})[0];
+	console.log(cselCode + openerTop);
+	if(tempTop == "" || tempTop == null || tempTop == undefined){return;}
+	
+	tempMid = null;
+	tempBot = null;
+	tempSub = null;
+	
+	topGrid.addSelection(tempTop);
+	
+	codeListPop = codeDataPop.filter(el => "CSEL_MTYPE_CDE".includes(el.CODE_MK));
+	var midList = [];
+	var upCode = cselCode + openerTop;
+	for(d of codeListPop){
+			if(d.CODE_ID.substring(0,3) == upCode){
+				midList.push(d);
+		}
+	}
+	midGrid.resetData(midList);
+	
+	tempMid = midGrid.findRows({
+	    CODE_ID: cselCode + openerTop + openerMid
+	})[0];
 
+	if(tempMid == "" || tempMid == null || tempMid == undefined){return;}
+	
+	tempBot = null;
+	tempSub = null;
+	
+	midGrid.addSelection(tempMid);
+	
+	codeListPop = codeDataPop.filter(el => "CSEL_STYPE_CDE".includes(el.CODE_MK));
+	var botList = [];
+	var upCode = cselCode + openerTop + openerMid;
+	for(d of codeListPop){
+			if(d.CODE_ID.substring(0,5) == upCode){
+				botList.push(d);
+		}
+	}
+	botGrid.resetData(botList);
+	
+	tempBot = botGrid.findRows({
+	    CODE_ID: cselCode + openerTop + openerMid + openerBot
+	})[0];
+
+	if(tempBot == "" || tempBot == null || tempBot == undefined){return;}
+	
+	botGrid.addSelection(tempBot);
+}
+//var lvlMk = "<%=S_USER_LVL_MK%>";
+/*if(gubun=="Y") {
+	// 슈퍼바이저 이상이면
+	if(lvlMk<=3){
+		if(DS_CNS4717.NameValue(row,"CODE_ID")=="301" || DS_CNS4717.NameValue(row,"CODE_ID")=="302" || DS_CNS4717.NameValue(row,"CODE_ID")=="341"||DS_CNS4717.NameValue(row,"CODE_ID")=="342"||DS_CNS4717.NameValue(row,"CODE_ID")=="343" || DS_CNS4717.NameValue(row, "CODE_ID")=="344" || DS_CNS4717.NameValue(row, "CODE_ID")=="345" || DS_CNS4717.NameValue(row, "CODE_ID")=="346") return true;
+		else return false;			
+	}
+	else {
+		if(DS_CNS4717.NameValue(row,"CODE_ID")=="341"||DS_CNS4717.NameValue(row,"CODE_ID")=="342"||DS_CNS4717.NameValue(row,"CODE_ID")=="343" || DS_CNS4717.NameValue(row, "CODE_ID")=="344" || DS_CNS4717.NameValue(row, "CODE_ID")=="345" || DS_CNS4717.NameValue(row, "CODE_ID")=="346") return true;
+		else return false;
+	}
+} else {
+	if(DS_CNS4717.NameValue(row,"CODE_ID")=="301"|| DS_CNS4717.NameValue(row,"CODE_ID")=="302") return true;
+	else return false;
+}*/

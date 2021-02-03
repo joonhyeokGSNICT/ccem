@@ -1004,46 +1004,49 @@ function customerSearch(currentDiv){
 		if($("#customerNameCheck").is(":checked")){				// 고객명
 			param.send1[0].CHK_NAME = "Y";
 			param.send1[0].NAME = $("#customerName").val();
-		}
+		}else
 		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
 			param.send1[0].CHK_TELNO = "Y";
 			param.send1[0].TELPNO = $("#customerPhone").val();
-		}
+		}else
 		if($("#customerEmailCheck").is(":checked")){			// EMAIL
 			param.send1[0].CHK_EMAIL = "Y";
 			param.send1[0].EMAIL = $("#customerEmail").val();
-		}
+		}else
 		if($("#customerGradeCheck").is(":checked")){			// 학년
 			param.send1[0].CHK_GRADE = "Y";
 			param.send1[0].GRADE_CDE = $("#customerGrade").val();
-		}
+		}else
 		if($("#customerMNumCheck").is(":checked")){				// 회원번호
 			param.send1[0].CHK_CUSTID = "Y";
 			param.send1[0].MBR_ID = $("#customerMNum").val();
-		}
+		}else
 		if($("#customerBirthCheck").is(":checked")){			// 생년월일
 			param.send1[0].CHK_RSDNO = "Y";
 			param.send1[0].RSDNO = $("#customerBirth").val();
-		}
+		}else
 		if($("#customerAddrCheck").is(":checked")){				// 주소
 			param.send1[0].CHK_ADDR = "Y";
 			param.send1[0].ADDR = $("#customerAddr").val();
-		}
+		}else
 		if($("#customerSubjectCheck").is(":checked")){			// 과목
 			param.send1[0].CHK_PROD = "Y";
 			param.send1[0].PRDT_ID = $("#customerSubject").val();
-		}
+		}else
 		if($("#customerSpotCheck").is(":checked")){				// 사업국
 			param.send1[0].CHK_DEPT = "Y";
 			param.send1[0].DEPT_NAME = $("#customerSpot").val();
-		}
+		}else
 		if($("#customerDeptCheck").is(":checked")){				// 본부
 			param.send1[0].CHK_UP_DEPT = "Y";
 			param.send1[0].UPDEPTID = $("#customerDept").val();
-		}
+		}else
 		if($("#customerLCCheck").is(":checked")){				// LC 센터
 			param.send1[0].CHL_LCID = "Y";
 			param.send1[0].LC_NM = $("#customerLC").val();
+		}else{
+			client.invoke("notify", "조회조건을 하나 선택해야 합니다.", "error", 6000);
+			return;
 		}
 		
 		$.ajax({
