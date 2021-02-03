@@ -226,15 +226,17 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;
 		setCodeData();
 
-		const counselGrid = parent.opener.grid1;	// 상담조회 grid
-		const rowKey 		= counselGrid.getSelectedRowKey();
+		const counselGrid = parent.opener.grid1;				// 상담조회 grid
+		const rowKey 	  = counselGrid.getSelectedRowKey();    // grid rowKey
+		
+		// 티켓오픈
+		const ZEN_TICKET_ID = counselGrid.getValue(rowKey, "ZEN_TICKET_ID");	// 티켓ID
+		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);  
+
+		// 상담정보 조회
 		const cselDate 		= counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
 		const cselNo 		= counselGrid.getValue(rowKey, "CSEL_NO");		// 상담번호
 		const cselSeq 		= counselGrid.getValue(rowKey, "CSEL_SEQ");		// 상담순번
-		const ZEN_TICKET_ID = counselGrid.getValue(rowKey, "ZEN_TICKET_ID");	// 티켓ID
-		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);  // 티켓오픈
-
-		// 상담정보 조회
 		calendarUtil.setImaskValue("textbox27", cselDate);
 		$("#textbox28").val(cselNo);
 		getCounsel(cselSeq);

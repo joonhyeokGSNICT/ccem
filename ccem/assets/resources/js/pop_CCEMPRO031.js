@@ -109,11 +109,11 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;	
 		setCodeData();
 
+		// 고객정보 조회
 		const sCUST_ID = topbarObject.document.getElementById("custInfo_CUST_ID").value; // 고객번호
 		const sMBR_ID  = topbarObject.document.getElementById("custInfo_MBR_ID").value;	 // 회원번호
-
-		setDate();
 		getCust(sCUST_ID);
+		setDate();
 
 		// 오픈된 티켓세팅
 		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
@@ -128,12 +128,17 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;
 		setCodeData();
 
-		const counselGrid  = parent.opener.grid1;	// 상담조회 grid
-		const rowKey 	   = counselGrid.getSelectedRowKey();
+		const counselGrid  = parent.opener.grid1;				// 상담조회 grid
+		const rowKey 	   = counselGrid.getSelectedRowKey();	// grid rowKey
+		
+		// 티켓오픈
+		const ZEN_TICKET_ID = counselGrid.getValue(rowKey, "ZEN_TICKET_ID");	// 티켓ID
+		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);  
+
+		// 상담조회
 		const sCSEL_DATE   = counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
 		const sCSEL_NO      = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
 		const sCSEL_SEQ    = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
-
 		calendarUtil.setImaskValue("calendar3", sCSEL_DATE); 
 		$("#textbox7").val(sCSEL_NO); 				   	
 		onSearch(sCSEL_SEQ);
@@ -448,8 +453,8 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.LC_ID					// 센터코드			
 			// cselData.LC_EMP_ID				// 센터장사번				
 			// cselData.LC_NAME					// 센터명				
-			// cselData.TELPNO_LC				// 센터전화번호				
-			// cselData.ZEN_TICKET_ID			// ZEN_티켓 ID					
+			// cselData.TELPNO_LC				// 센터전화번호		
+			$("#hiddenbox5").val(cselData.ZEN_TICKET_ID);			// ZEN_티켓 ID					
 			// cselData.EVT_NM					// 이벤트명			
 			// cselData.AGE_CDE					// 연령코드				
 			// cselData.DEPT_EMP_NAME			// 지점장명					
