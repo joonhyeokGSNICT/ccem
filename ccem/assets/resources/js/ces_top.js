@@ -181,10 +181,21 @@ var custInfoStatus;
 //sideBar client 받기
 client.on("getSidebarClient", function(sidebarClient_d) {
 	sidebarClient = client.instance(sidebarClient_d);
-	initAll();
+	initAll();															// 전체 초기화
 	setTimeout(function(){
-		$("#customerSearch").click();
-		userSearch();
+		sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+			if(data.ticket.externalId != null){								// 티켓의 externalId 가 null - > 신규 전화 인입
+				if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
+					for(d of data.ticket.tags){								// 티켓의 태그에 in 이 포함 되어 있으면 전화인입
+						if(d == 'in'){
+							topBarClient.invoke("popover");					// 탑바 열기
+							$("#customerSearch").click();					// 고객조회 탭 이동
+							userSearch();									// 고객 검색
+						}
+					}
+				};
+			}
+			});
 	}, 500);
 });
 // 티켓이 열림
@@ -201,24 +212,38 @@ client.on("getCodeData", function(d){
 	$("#custInfo_CUST_MK").val("CM");
 });
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
+
+/** 
+ * 젠데스크에서 티켓 열린 후 고객 조회 부분
+ * @returns
+ */
 function userSearch() {
+	$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
+	$("#custSearchDiv").find("input[type=text]").val("");
+	$("#custSearchDiv").find("select").val("");
 	sidebarClient.get('ticket.requester').then(function(data){
 		var phone = "";
 		console.log(data)
-		for(d of data['ticket.requester'].identities){
-			if(d.type == 'phone_number'){
-				phone = d.value.slice(-4);
+		client.request(`/api/v2/users/${data['ticket.requester'].id}.json`).then(function(idPhone){
+			for(d of data['ticket.requester'].identities){
+				if(d.type == 'phone_number'){
+					phone = d.value;
+				}
 			}
-		}
-		setTimeout(function(){
-			if(phone != ''){
-				$("#customerPhone").val(phone);
-				$("#customerPhoneCheck").prop('checked',true);
+			console.log(idPhone.user.phone);
+			if(phone == ''){
+				phone = idPhone.user.phone;
 			}
-			$("#customerName").val(data['ticket.requester'].name);
-			$("#customerNameCheck").prop('checked',true);
-			$("#custSearchDivBtn").click();
-		}, 500);
+			setTimeout(function(){
+				if(phone != ''){
+					$("#customerPhone").val(phone);
+					$("#customerPhoneCheck").prop('checked',true);
+				}
+				/*$("#customerName").val(data['ticket.requester'].name);
+				$("#customerNameCheck").prop('checked',true);*/
+				customerSearch("custSearchDiv","1");
+			}, 500);
+		});
 	});
 }
 /**
@@ -955,7 +980,7 @@ function getCurrentUserInfo(){
  * @returns
  * 20-12-17 최준혁
  */
-function customerSearch(currentDiv){
+function customerSearch(currentDiv, type){
 	switch(currentDiv){
 	case 'custSearchDiv' : 															// 고객 조회
 		var param = {
@@ -1000,51 +1025,63 @@ function customerSearch(currentDiv){
 		    	"MACADAMIA_ID"	:"",
 		    }]
 		};
-		
+		var validationBool = false;
 		if($("#customerNameCheck").is(":checked")){				// 고객명
 			param.send1[0].CHK_NAME = "Y";
 			param.send1[0].NAME = $("#customerName").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
 			param.send1[0].CHK_TELNO = "Y";
 			param.send1[0].TELPNO = $("#customerPhone").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerEmailCheck").is(":checked")){			// EMAIL
 			param.send1[0].CHK_EMAIL = "Y";
 			param.send1[0].EMAIL = $("#customerEmail").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerGradeCheck").is(":checked")){			// 학년
 			param.send1[0].CHK_GRADE = "Y";
 			param.send1[0].GRADE_CDE = $("#customerGrade").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerMNumCheck").is(":checked")){				// 회원번호
 			param.send1[0].CHK_CUSTID = "Y";
 			param.send1[0].MBR_ID = $("#customerMNum").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerBirthCheck").is(":checked")){			// 생년월일
 			param.send1[0].CHK_RSDNO = "Y";
 			param.send1[0].RSDNO = $("#customerBirth").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerAddrCheck").is(":checked")){				// 주소
 			param.send1[0].CHK_ADDR = "Y";
 			param.send1[0].ADDR = $("#customerAddr").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerSubjectCheck").is(":checked")){			// 과목
 			param.send1[0].CHK_PROD = "Y";
 			param.send1[0].PRDT_ID = $("#customerSubject").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerSpotCheck").is(":checked")){				// 사업국
 			param.send1[0].CHK_DEPT = "Y";
 			param.send1[0].DEPT_NAME = $("#customerSpot").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerDeptCheck").is(":checked")){				// 본부
 			param.send1[0].CHK_UP_DEPT = "Y";
 			param.send1[0].UPDEPTID = $("#customerDept").val();
-		}else
+			validationBool = true;
+		}
 		if($("#customerLCCheck").is(":checked")){				// LC 센터
 			param.send1[0].CHL_LCID = "Y";
 			param.send1[0].LC_NM = $("#customerLC").val();
-		}else{
+			validationBool = true;
+		}
+		if(validationBool == false){
 			client.invoke("notify", "조회조건을 하나 선택해야 합니다.", "error", 6000);
 			return;
 		}
@@ -1060,13 +1097,13 @@ function customerSearch(currentDiv){
 		        if(response.errcode == "0"){
 		        	customerSearchList_grid.resetData(response.recv1);
 		        	
-		        	// 조회된 수가 1명 일 경우 자동 조회
-		        	/*if(response.recv1.length == "1"){
+		        	// 조회된 수가 1명 일 경우 자동 조회, 전화인입일경우 
+		        	if(response.recv1.length == "1" && type == '1'){
 		        		initAll(); 													// 기존 정보 초기화
 		        		custInfo = customerSearchList_grid.getRow(0);
 		        		onAutoSearch(custInfo.CUST_ID);
 		        		
-		        	}*/
+		        	}
 		        	
 		        }else {
 		        	loading.out();
