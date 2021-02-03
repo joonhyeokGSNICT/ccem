@@ -206,18 +206,18 @@
 					</div>
 				</td>
 				<th>본부전화</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox7"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox7" readonly></td>
 				<th>본부FAX</th>
 				<td>
 					<div class="input-group">
-						<input type="text" class="form-control form-control-sm" id="textbox8">
-						<input type="text" class="form-control form-control-sm" id="textbox9">
-						<input type="text" class="form-control form-control-sm" id="textbox10">
+						<input type="text" class="form-control form-control-sm" id="textbox8" readonly>
+						<input type="text" class="form-control form-control-sm" id="textbox9" readonly>
+						<input type="text" class="form-control form-control-sm" id="textbox10" readonly>
 					</div>
 				</td>
 				<th>연계방법</th>
 				<td>
-					<select class="form-control form-control-sm" id="selectbox10" name="TRANS_CHNL_MK">
+					<select class="form-control form-control-sm" id="selectbox10" name="TRANS_CHNL_MK" readonly>
 						<option value=""></option>
 					</select>
 				</td>
@@ -225,19 +225,14 @@
 			<tr>
 				<th>연계본부</th>
 				<td>
-					<div class="input-group">
-						<input type="text" class="form-control form-control-sm" id="textbox12" onkeydown="openCCEMPRO044(event.keyCode)">
-						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO044(13)">
-							<img src="../img/popBtn.svg" alt="팝업">
-						</button>
-					</div>
+					<input type="text" class="form-control form-control-sm" id="textbox12" readonly>
 				</td>
 				<th>본부접수자</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox13"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox13" readonly></td>
 				<th>상담원</th>
 				<td><input type="text" class="form-control form-control-sm" id="textbox14" readonly></td>
 				<th>연계대상자</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox15"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox15" readonly></td>
 			</tr>
 			<tr>
 				<th>FAX양식</th>
@@ -336,7 +331,8 @@
 			</tr>
 		</table>
 	</div>
-	<!-- FAX구분(FAX_TYPE_CDE) --><select id="hiddenbox1" name="FAX_TYPE_CDE" hidden>
+	<!-- 티켓ID(ZEN_TICKET_ID) --><input type="hidden" id="hiddenbox1"/>
+	<!-- 고객구분(CUST_MK) --><input type="hidden" id="hiddenbox2"/>
 	
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>

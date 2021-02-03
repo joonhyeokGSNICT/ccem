@@ -9,6 +9,23 @@ $(function () {
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 	$("#textbox26").inputmask("99년99월99일", { autoUnmask: true, });
 
+	// 날짜와 시간 초기값 세팅
+	calendarUtil.setImaskValue("calendar1", getDateFormat());
+	$("#timebox1").val(getTimeFormat());
+
+	// 저장 버튼
+	$("#button1").on("click", ev => {
+		loading = new Loading(getLoadingSet('상담등록중 입니다.'));
+		onSave()
+			.then((succ) => { if (succ) alert("저장 되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`상담등록중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 	onStart();
 
 });
@@ -34,7 +51,7 @@ const onStart = async () => {
 		const sCSEL_CHNL_MK = "1";	// 접수채널구분        
 		const sCSEL_TYPE 	= "T";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
 		const sCUST_ID 		= $("#custInfo_CUST_ID", topbarObject.document).val(); // 고객번호
-		getTchInfo(sCUST_ID, sCSEL_TYPE);
+		getTchInfo(sCUST_ID, sCSEL_TYPE, "I");
 
 		// 오픈된 티켓세팅
 		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
@@ -53,7 +70,7 @@ const onStart = async () => {
 		const sCSEL_CHNL_MK = "1";	//접수채널구분        
 		const sCSEL_TYPE 	= "T";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
 		const sEMP_ID 		= $("#tchrInfo_EMP_ID", topbarObject.document).val(); // 사원번호
-		getTchInfo(sEMP_ID, sCSEL_TYPE);
+		getTchInfo(sEMP_ID, sCSEL_TYPE, "I");
 
 		// 오픈된 티켓세팅
 		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
@@ -103,8 +120,6 @@ const setCodeData = () => {
 		"PROC_STS_MK",		// 처리상태
 		"CSEL_MK",			// 상담구분
 		"PROC_MK",			// 처리구분
-		"FAX_TYPE_CDE",		// FAX구분
-
 		"INTEREST_MK",		// 관심부분
 		"RE_ACTIVITY_MK",	// 재사업시기
 	];
@@ -124,7 +139,7 @@ const setCodeData = () => {
 		if (CODE_MK == "INTEREST_MK" || CODE_MK == "RE_ACTIVITY_MK") {
 			$(`div.${CODE_MK}`).append(
 				`<div class="form-check mb-2">
-					<input class="form-check-input" type="radio" name="${CODE_MK}" id="${CODE_MK}_${CODE_ID}">
+					<input class="form-check-input" type="radio" name="${CODE_MK}" id="${CODE_MK}_${CODE_ID}" value="${CODE_ID}">
 					<label class="form-check-label" for="${CODE_MK}_${CODE_ID}">${CODE_NAME}</label>
 				</div>`
 			);
@@ -155,7 +170,7 @@ const onSearch = async (sCSEL_SEQ) => {
 	// 선생님정보 조회
 	const sCUST_MK 	 = cselData.CUST_MK;								
 	const sCSEL_TYPE = (sCUST_MK=="TC" || sCUST_MK=="PE") ? "T" : "C";		// 대상구분 ( "C" : 고객, "T" : 선생님 )
-	getTchInfo(cselData.CUST_ID, sCSEL_TYPE);
+	getTchInfo(cselData.CUST_ID, sCSEL_TYPE, "U");
 
 }
 
@@ -163,8 +178,9 @@ const onSearch = async (sCSEL_SEQ) => {
  * 선생님정보 조회
  * @param {string} sCUST_ID 	고객번호 or 사원번호
  * @param {string} sCSEL_TYPE 	고객구분(C:고객, T: 선생님/직원)
+ * @param {string} sJobType 	저장구분(I/U)
  */
-const getTchInfo = (sCUST_ID, sCSEL_TYPE) => new Promise((resolve, reject) => {
+const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, reject) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getTchrCselIntro.do`,
 		method: 'POST',
@@ -193,11 +209,11 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE) => new Promise((resolve, reject) => {
 
 			// 선생님정보 세팅
 			const tchrData = DS_TCHR[0];
-			$("#textbox2").val(EMP_ID);				// 선생님ID		txtEmpId
-			$("#textbox1").val(TCHR_NAME);			// 선생님성함	txtTchrName		
+			$("#textbox2").val(tchrData.EMP_ID);				// 선생님ID		txtEmpId
+			$("#textbox1").val(tchrData.TCHR_NAME);				// 선생님성함	txtTchrName		
 			// tchrData.EMP_MK			// 교사직원구분		
 			// tchrData.RSDNO			// 주민번호		
-			$("#textbox26").val(BIRTHDAY);			// 생년월일		MSK_BIRTHDAY
+			$("#textbox26").val(tchrData.BIRTHDAY);				// 생년월일		MSK_BIRTHDAY
 			// tchrData.SEX				// 성별	
 			// tchrData.SEX_NM			// 성별명		
 			// tchrData.AGE				// 나이	
@@ -207,9 +223,9 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE) => new Promise((resolve, reject) => {
 			// tchrData.DUTY_CDE		// 직책코드			
 			// tchrData.STS_CDE			// 상태코드		
 			// tchrData.PS_PUB_FLAG		// 신상공개여부			
-			$("#textbox4").val(ZIPCDE);				// 우편번호		MSK_ZIPCDE
-			$("#textbox5").val(ADDR);  				// 주소			txtAddr
-			$("#textbox3").val(TELNO);				// 전화번호		txtTelNo
+			$("#textbox4").val(tchrData.ZIPCDE);				// 우편번호		MSK_ZIPCDE
+			$("#textbox5").val(tchrData.ADDR);  				// 주소			txtAddr
+			$("#textbox3").val(tchrData.TELNO);					// 전화번호		txtTelNo
 			// tchrData.MOBILNO			// 휴대폰번호		
 			// tchrData.DEPT_NAME		// 부서명			
 			// tchrData.DEPT_FAX_DDD	// 부서팩스국번				
@@ -220,6 +236,7 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE) => new Promise((resolve, reject) => {
 			// tchrData.DIV_NAME		// 본부명			
 			// tchrData.AREA_CDE		// 지역코드			
 			// tchrData.DEPT_EMP_ID		// 지점장사번
+			$("#hiddenbox2").val(sCSEL_TYPE == "T" ? "TC" : "CM"); // 고객구분(선생님인경우: 'TC', 신규선생님인경우: 'CM')
 
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
@@ -272,7 +289,7 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			// cselData.CSEL_NO				// 상담번호		
 			// cselData.CSEL_SEQ			// 상담수번		
 			// cselData.CUST_ID				// 고객번호		
-			// cselData.CUST_MK				// 고객구분		
+			$("#hiddenbox2").val(cselData.CUST_MK);											// 고객구분		
 			// cselData.CSEL_USER_ID		// 상담원ID			
 			// cselData.CSEL_STTIME			// 상담시작시간(처리시작시간)			
 			// cselData.CSEL_EDTIME			// 상담종료시간(처리종료시간)	
@@ -340,7 +357,8 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			$("#textbox7").val(cselData.DEPT_TELNO);										// 전화번호					txtDeptTelNo
 			$("#timebox2").val(cselData.TRANS_TIME);										// 연계시간					MSK_TRANS_TIME
 			$("#textbox13").val(cselData.DEPT_ACP_NAME);        							// 본부접수자				txtCntAcp
-
+			$("#hiddenbox1").val(cselData.ZEN_TICKET_ID);									// 티켓ID
+			
 			// setBtnCtrlAtLoadComp();				// TODO 버튼제어
 
 			return resolve(cselData);
@@ -418,4 +436,123 @@ const getIntervalTime = (fromTime, toTime) => {
 
 		return result;
 	}
+}
+
+/**
+ * 저장
+ * - as-is : clm3110.onSave()
+ */
+const onSave = async () => {
+
+	// 저장구분(I: 신규, U: 수정)
+	const selectbox = document.getElementById("selectbox2");
+	const selectedSeq = selectbox.value;
+	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
+
+	const cselData = getCounselCondition(sJobType);
+	if (!cselData) return false;
+
+	if (!confirm("저장 하시겠습니까?")) return false;
+
+
+
+}
+
+/**
+ * 저장 validation check
+ * - as-is : clm3110.SaveValidCheck(), setDSInit()
+ */
+const getCounselCondition = (sJobType) => {
+	const data = {
+		ROW_TYPE			: sJobType, 											// 저장구분(I/U)			
+		CSEL_DATE			: calendarUtil.getImaskValue("calendar1"), 				// 상담일자(형식 YYYYMMDD, 신규: 현재일)			
+		CSEL_NO				: $("#textbox6").val(), 								// 상담번호(신규입력시 '')		
+		CSEL_SEQ			: $("#selectbox2").val(), 								// 상담순번(신규입력시 1)			
+		CUST_ID				: $("#textbox2").val(), 								// 고객번호		
+		CUST_MK				: $("#hiddenbox2").val(), 								// 고객구분
+		EXTERNAL_ID			: currentUser.external_id, 								// 상담원ID			
+		CSEL_STTIME			: $("#timebox1").val(), 								// 상담시작시간
+		// CSEL_EDTIME			: "", // 상담종료시간(신규입력시 '')			
+		CSEL_CHNL_MK		: $("#selectbox3").val(), 								// 상담채널구분				
+		CSEL_MK				: $("#selectbox8").val(), 								// 상담구분
+		CSEL_LTYPE_CDE		: $("#textbox20").val(), 								// 상담대분류코드				
+		CSEL_MTYPE_CDE		: $("#textbox22").val(), 								// 상담중분류코드				
+		CSEL_STYPE_CDE		: $("#textbox24").val(), 								// 상담소분류코드				
+		CSEL_TITLE			: $("#textbox18").val().trim(), 						// 상담제목			
+		CSEL_CNTS			: $("#textbox19").val().trim(), 						// 상담내용			
+		PROC_MK				: $("#selectbox9").val(), 								// 처리구분	
+		// DEPT_ID			: "", // 지점(부서코드)		
+		// DIV_CDE			: "", // 지점(본부코드)		
+		// AREA_CDE			: "", // 지역코드			
+		PROC_STS_MK			: "99",					 								// 처리상태구분			
+		// DEPT_EMP_ID		: "", // 지점장사번			
+		// CALL_STTIME		: "", // 통화시작시간			
+		// CALL_EDTIME		: "", // 통화종료시간(신규입력시 '')			
+		INTEREST_MK			: $("input[name='INTEREST_MK']:checked")[0]?.value, 	// 관심부분 			
+		RE_ACTIVITY_MK		: $("input[name='RE_ACTIVITY_MK']:checked")[0]?.value,  // 재사업시기				
+		CANCELLATION_CDE	: $("#selectbox4").val(), 								// 해지사유					
+		RE_ACTIVITY_CRS		: $("#selectbox5").val(), 								// 재사업경로				
+		ACTIVITY_MK			: $("#selectbox6").val(), 								// 사업구분			
+		ZEN_TICKET_ID		: $("#hiddenbox1").val(), 								// 티켓ID				
+		// WORK_STYL_MK		: "", // 근무형태구분(신규입력시 '')		
+	}
+
+	// 관심부분
+	if (!data.INTEREST_MK) {
+		alert("관심부분을 선택해 주십시요.");
+		return false;
+	}
+	// 재사업시기
+	if (!data.RE_ACTIVITY_MK) {
+		alert("재사업시기를 선택해 주십시요.");
+		return false;
+	}
+	// 제목
+	if (!data.CSEL_TITLE) {
+		alert("제목을 입력하여 주십시요.");
+		$("#textbox18").focus();
+		return false;
+	}
+	// 기타요구사항
+	if (!data.CSEL_CNTS) {
+		alert("기타요구사항을 입력하여 주십시요.");
+		$("#textbox19").focus();
+		return false;
+	}
+	if (data.ACTIVITY_MK != "7A") {
+		// 해지사유
+		if (!data.CANCELLATION_CDE) {
+			alert("해지사유를 선택하여 주십시요.");
+			$("#selectbox4").focus();
+			return false;
+		}
+		// 재사업경로
+		if (!data.RE_ACTIVITY_CRS) {
+			alert("재사업경로를 선택하여 주십시요.");
+			$("#selectbox5").focus();
+			return false;
+		}
+	}
+	// 사업구분
+	if (!data.ACTIVITY_MK) {
+		alert("사업구분을 선택하여 주십시요.");
+		$("#selectbox6").focus();
+		return false;
+	}
+	// 분류(대)
+	if (!data.CSEL_LTYPE_CDE) {
+		alert("분류를 입력해 주십시요.");
+		$("#textbox20").focus();
+		return false;
+	}
+
+	return data;
+}
+
+/**
+ * TODO 선생님소개 저장
+ * /cns.saveTchrCounsel.do
+ */
+const saveTchrCounsel = () => {
+
 }
