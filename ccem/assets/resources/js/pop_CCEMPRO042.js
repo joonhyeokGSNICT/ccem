@@ -265,6 +265,11 @@ $(function(){
 			tempSub = subSelet;
 		}
     });
+	subjectGrid.on('dblclick', (ev) => {
+		if(ev.targetType == 'cell'){
+			$("#confirm").click();
+		}
+    });
 	
 	// GRID END ===
 	

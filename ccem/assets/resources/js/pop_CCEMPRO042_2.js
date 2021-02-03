@@ -206,6 +206,12 @@ $(function(){
 			tempBot = botSelet;
 		}
     });
+	botGrid.on('dblclick', (ev) => {
+		if(ev.targetType == 'cell'){
+			$("#confirm").click();
+		}
+    });
+	
 	// GRID END ===
 	
 	// 코드 가져오기
