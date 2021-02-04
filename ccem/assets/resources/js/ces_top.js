@@ -158,6 +158,8 @@ var currentTchrInfo;							// 현재 선택된 선생님의 정보
 
 var tempCustInfo;
 
+var currentTicketInfo;							// 현재 열려있는 티켓의 정보
+
 var existCustInfo;								// 기존 존재하는 고객의 정보
 var existCustName;								// 기존 존재하는 고객의 이름
 var existCustTelNo;								// 기존 존재하는 고객의 전화번호
@@ -184,18 +186,19 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 	initAll();															// 전체 초기화
 	setTimeout(function(){
 		sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-			if(data.ticket.externalId != null){								// 티켓의 externalId 가 null - > 신규 전화 인입
+			console.log(data);
+			currentTicketInfo = data;
+			userSearch();												// 고객 검색
+			if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
 				if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
 					for(d of data.ticket.tags){								// 티켓의 태그에 in 이 포함 되어 있으면 전화인입
 						if(d == 'in'){
 							topBarClient.invoke("popover");					// 탑바 열기
-							$("#customerSearch").click();					// 고객조회 탭 이동
-							userSearch();									// 고객 검색
 						}
 					}
 				};
 			}
-			});
+		});
 	}, 500);
 });
 // 티켓이 열림
@@ -218,31 +221,44 @@ client.on("getCodeData", function(d){
  * @returns
  */
 function userSearch() {
-	$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
-	$("#custSearchDiv").find("input[type=text]").val("");
-	$("#custSearchDiv").find("select").val("");
-	sidebarClient.get('ticket.requester').then(function(data){
-		var phone = "";
-		console.log(data)
-		client.request(`/api/v2/users/${data['ticket.requester'].id}.json`).then(function(idPhone){
-			for(d of data['ticket.requester'].identities){
-				if(d.type == 'phone_number'){
-					phone = d.value;
+	sidebarClient.get('ticket').then(function(data){
+	var phone = "";
+		client.request(`/api/v2/users/${data['ticket'].requester.id}.json`).then(function(reqUser){
+			if(reqUser.user.user_fields.tchr_mk_cde == "선생님" || reqUser.user.user_fields.tchr_mk_cde == "직원"){
+				$("#teacherSearchTab").click();													// 선생님 탭 이동
+				$("#teacherSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
+				$("#teacherSearchDiv").find("input[type=text]").val("");
+				$("#teacherSearchDiv").find("select").val("");
+				setTimeout(function(){
+					console.log(reqUser);
+					if(reqUser.user.external_id != null){
+						$("#teacherDNum").val(reqUser.user.external_id);
+						$("#teacherDNumCheck").prop('checked',true);
+					}
+					customerSearch("teacherSearchDiv","1");
+				}, 500);
+			}else {
+				console.log(reqUser);
+				$("#customerSearchTab").click();												// 고객조회 탭 이동
+				$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
+				$("#custSearchDiv").find("input[type=text]").val("");
+				$("#custSearchDiv").find("select").val("");
+				for(d of data['ticket'].requester.identities){
+					if(d.type == 'phone_number'){
+						phone = d.value;
+					}
 				}
-			}
-			console.log(idPhone.user.phone);
-			if(phone == ''){
-				phone = idPhone.user.phone;
-			}
-			setTimeout(function(){
-				if(phone != ''){
-					$("#customerPhone").val(phone);
-					$("#customerPhoneCheck").prop('checked',true);
+				if(phone == ""){
+					phone = reqUser.user.phone;
 				}
-				/*$("#customerName").val(data['ticket.requester'].name);
-				$("#customerNameCheck").prop('checked',true);*/
-				customerSearch("custSearchDiv","1");
-			}, 500);
+				setTimeout(function(){
+					if(phone != '' && phone != null){
+						$("#customerPhone").val(phone);
+						$("#customerPhoneCheck").prop('checked',true);
+					}
+					customerSearch("custSearchDiv","1");
+				}, 500);
+			}
 		});
 	});
 }
@@ -1096,7 +1112,7 @@ function customerSearch(currentDiv, type){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	customerSearchList_grid.resetData(response.recv1);
-		        	
+		        	customerSearchList_grid.refreshLayout();
 		        	// 조회된 수가 1명 일 경우 자동 조회, 전화인입일경우 
 		        	if(response.recv1.length == "1" && type == '1'){
 		        		initAll(); 													// 기존 정보 초기화
@@ -1140,30 +1156,40 @@ function customerSearch(currentDiv, type){
 		    			}
 		    		]
 		};
-		
+		var validationBool = false;
 		if($("#teacherNameCheck").is(":checked")){			// 선생님명
 			param.send1[0].CHK_TCHR_NAME = "Y";
 			param.send1[0].TCHR_NAME = $("#teacherName").val();
+			validationBool = true;
 		}
 		if($("#teacherDNumCheck").is(":checked")){			// 사원번호
 			param.send1[0].CHK_EMP_ID = "Y";
 			param.send1[0].EMP_ID = $("#teacherDNum").val();
+			validationBool = true;
 		}
 		if($("#teacherStatCheck").is(":checked")){			// 재직구분
 			param.send1[0].CHK_STS_CDE = "Y";
 			param.send1[0].STS_CDE = $("#teacherStat").val();
+			validationBool = true;
 		}
 		if($("#teacherLCNameCheck").is(":checked")){		// 센터
 			param.send1[0].CHK_LC_NM = "Y";
 			param.send1[0].LC_NM = $("#teacherLCName").val();
+			validationBool = true;
 		}
 		if($("#teacherDeptNameCheck").is(":checked")){		// 사업국
 			param.send1[0].CHK_DEPT_NAME = "Y";
 			param.send1[0].DEPT_NAME = $("#teacherDeptName").val();
+			validationBool = true;
 		}
 		if($("#teacherUpDeptNameCheck").is(":checked")){	// 본부
 			param.send1[0].CHK_DIV_CDE = "Y";
 			param.send1[0].DIV_CDE = $("#teacherUpDeptName").val();
+			validationBool = true;
+		}
+		if(validationBool == false){
+			client.invoke("notify", "조회조건을 하나 선택해야 합니다.", "error", 6000);
+			return;
 		}
 		
 		$.ajax({
@@ -1177,6 +1203,13 @@ function customerSearch(currentDiv, type){
 		        if(response.errcode == "0"){
 		        	teacherSearchList_grid.resetData(response.recv1);
 		        	teacherSearchList_grid.refreshLayout();
+		        	// 조회된 수가 1명 일 경우 자동 조회, 전화인입일경우 
+		        	if(response.recv1.length == "1" && type == '1'){
+		        		initAll(); 													// 기존 정보 초기화
+		        		tchrInfo = teacherSearchList_grid.getRow(0);
+		        		onAutoSearchTeacher(tchrInfo.EMP_ID);
+		        		
+		        	}
 		        }else {
 		        	loading.out();
 		        	client.invoke("notify", response.errmsg, "error", 60000);
@@ -1194,7 +1227,7 @@ function customerSearch(currentDiv, type){
  * @returns
  * 21-01-11 최준혁
  */
-function onAutoSearch(sCustId){
+function onAutoSearch(sCustId, type){
 	if(sCustId != ""){
 		var param = {
 				userid: currentUserInfo.user.external_id,
@@ -1214,7 +1247,36 @@ function onAutoSearch(sCustId){
 			success: function (response) {
 				if(response.errcode == "0"){
 					currentCustInfo = response.recv1[0];				// 고객정보 상주
-					loadCustInfoMain();									// 고객정보 로드 함수
+					if(type != '1'){
+						loadCustInfoMain();									// 고객정보 로드 함수
+					}
+					// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
+					client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
+						console.log(d);
+						if(d.count >= 1){					
+							if(currentTicketInfo.ticket.externalId == null){
+								// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
+								$.ajax({
+									url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+									type: 'POST',
+									dataType: 'json',
+									contentType: "application/json",
+									data: JSON.stringify({
+										"user": {
+											"external_id": d.results[0].id,
+										}
+									}),
+									success: function (response) {
+										client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+									}	
+								});
+							}else {
+								updateUserforZen();
+							}
+						}else {
+							updateUserforZen();
+						}
+					});
 					sOrgFAT_RSDNO = currentCustInfo.FAT_RSDNO; 			// 학부모 주민번호 변경여부 체크 변수
 				}else {
 					loading.out();
@@ -1234,7 +1296,7 @@ function onAutoSearch(sCustId){
  * @returns
  * 21-01-19 최준혁
  */
-function onAutoSearchTeacher(sEmpId){
+function onAutoSearchTeacher(sEmpId, type){
 	if(sEmpId != ""){
 		var param = {
 				userid: currentUserInfo.user.external_id,
@@ -1255,7 +1317,36 @@ function onAutoSearchTeacher(sEmpId){
 				if(response.errcode == "0"){
 					currentTchrInfo = response.recv1[0];				// 선생님정보 상주
 					console.log(currentTchrInfo);
-					loadTeacherInfoMain();									// 선생님정보 로드 함수
+					if(type != "1"){
+						loadTeacherInfoMain();									// 선생님정보 로드 함수
+					}
+					// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
+					client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
+						console.log(d);
+						if(d.count >= 1){					
+							if(currentTicketInfo.ticket.externalId == null){
+								// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
+								$.ajax({
+									url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+									type: 'POST',
+									dataType: 'json',
+									contentType: "application/json",
+									data: JSON.stringify({
+										"user": {
+											"external_id": d.results[0].id,
+										}
+									}),
+									success: function (response) {
+										client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+									}	
+								});
+							}else {
+								updateTchrforZen();
+							}
+						}else {
+							updateTchrforZen();
+						}
+					});
 				}else {
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);
@@ -1486,9 +1577,11 @@ function loadCustInfoMain() {
 	loadList('currentStudy', counselMain_studyProgressList_grid);	// 학습진행정보 목록 불러오기			//OLD >> currentStudyLoad();	// 학습진행정보 목록 불러오기
 
 	setStatus(2);													// 조회 상태로 변경
-	
-	// === === === ZENDESK
-	// 젠데스크에 사용자 정보 저장 ccem과의 데이터 무결성을 위해 조회시마다 젠데스크 user Update.
+}
+
+// === === === ZENDESK
+// 젠데스크에 사용자 정보 저장 ccem과의 데이터 무결성을 위해 조회시마다 젠데스크 user Update.
+function updateUserforZen(){
 	var option = {
 			url: '/api/v2/users/create_or_update.json',
 			method: 'POST',
@@ -1516,6 +1609,39 @@ function loadCustInfoMain() {
 						"sts_cde" : "",
 					},
 					"name": currentCustInfo.NAME,
+					 "role": "end-user"
+				}
+			}),
+	}
+	client.request(option).then(function() {
+		client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
+	});		// 사용자 생성
+}
+function updateTchrforZen(){
+	var option = {
+			url: '/api/v2/users/create_or_update.json',
+			method: 'POST',
+			contentType: "application/json",
+			data: JSON.stringify({
+				"user": {
+					"external_id": currentTchrInfo.EMP_ID,
+					//"email": $("#custInfo_EMAIL").val(),
+					"phone": currentTchrInfo.MOBILNO,
+					"user_fields": 
+					{
+						"bonbu": currentTchrInfo.DIV_NM,
+						"dept" : currentTchrInfo.DEPT_NM,
+						"center" : currentTchrInfo.LC_NM,
+						"grade" : "",
+						"home_tel" : currentTchrInfo.HOME_TEL,
+						"custom_no" : "",
+						"fml_connt_cde" : "",
+						"fml_seq" : currentTchrInfo.RSDNO,
+						"cust_mk" : "",
+						"tchr_mk_cde" : currentTchrInfo.TCHR_MK_NM == null?"선생님":currentTchrInfo.TCHR_MK_NM,
+						"sts_cde" : "",
+					},
+					"name": currentTchrInfo.NAME,
 					 "role": "end-user"
 				}
 			}),

@@ -8,7 +8,11 @@ function accountFormat(string){
 }
 
 $(function(){
-
+	window.onkeydown = (e) => {
+		if(e.keyCode == 13){
+			getAccInfo();
+		};
+	}
 	
 	// input mask
 	/*calendarUtil.init("calendar1");
