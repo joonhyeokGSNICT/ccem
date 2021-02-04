@@ -182,7 +182,7 @@ $(function(){
 								contentType: "application/json",
 								data: JSON.stringify({
 									"user": {
-										"external_id": d.results[0].id,
+										"id": d.results[0].id,
 									}
 								}),
 								success: function (response) {
