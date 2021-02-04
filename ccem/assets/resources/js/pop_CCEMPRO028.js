@@ -238,7 +238,7 @@ const onStart = async (openerNm) => {
 		currentUser = opener.currentUser;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
-		sPROC_MK 	= pener.document.getElementById("selectbox9").value;
+		sPROC_MK 	= opener.document.getElementById("selectbox9").value;
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar1");
 		sCSEL_NO    = opener.document.getElementById("textbox6").value;
 		setDisPlay();
