@@ -7,7 +7,7 @@ $(function () {
 
 	// input mask
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
-	$("#textbox26").inputmask("99년99월99일", { autoUnmask: true, });
+	$("#textbox26").inputmask("99.99.99", { autoUnmask: true, });
 
 	// 날짜와 시간 초기값 세팅
 	calendarUtil.setImaskValue("calendar1", getDateFormat());
@@ -447,22 +447,59 @@ const onSave = async () => {
 	// 저장구분(I: 신규, U: 수정)
 	const selectbox = document.getElementById("selectbox2");
 	const selectedSeq = selectbox.value;
-	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
+	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
 
-	const cselData = getCounselCondition(sJobType);
+	const cselData = getCselCondition(sJobType);
 	if (!cselData) return false;
-
+	const customData = getCustomData();
 	if (!confirm("저장 하시겠습니까?")) return false;
 
+	// 상담순번이 1이고, 신규저장일떄.
+	if (sJobType == "I" && selectedSeq == 1) {
 
+		// 티켓이 유효한지 체크.
+		const ticket_id = await checkTicket();
+		if (!ticket_id) return false;
+		cselData.ZEN_TICKET_ID = ticket_id;
 
+	// 추가등록/관계회원 신규저장일때.
+	} else if (sJobType == "I" && selectedSeq > 1) {
+
+		// 티켓생성
+		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
+		if (!ticket) return false;
+		cselData.ZEN_TICKET_ID = ticket.id;
+	
+	// 수정저장일떄.
+	} else if (sJobType == "U") {
+
+	} else {
+		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
+		return false;
+	}
+
+	// CCEM 저장
+	const resSave = await saveTchrCounsel(cselData);
+
+	// 티켓 업데이트
+	cselData.CSEL_NO = resSave.CSEL_NO;
+	await updateTicket(cselData, customData);
+
+	// 저장성공후
+	$("#textbox6").val(resSave.CSEL_NO);	// 접수번호 세팅
+	onSearch(resSave.CSEL_SEQ)				// 상담 재조회	
+	
+	// topbar 숨김
+	topbarClient.invoke("popover", "hide");
+
+	return true;
 }
 
 /**
  * 저장 validation check
  * - as-is : clm3110.SaveValidCheck(), setDSInit()
  */
-const getCounselCondition = (sJobType) => {
+const getCselCondition = (sJobType) => {
 	const data = {
 		ROW_TYPE			: sJobType, 											// 저장구분(I/U)			
 		CSEL_DATE			: calendarUtil.getImaskValue("calendar1"), 				// 상담일자(형식 YYYYMMDD, 신규: 현재일)			
@@ -550,9 +587,45 @@ const getCounselCondition = (sJobType) => {
 }
 
 /**
- * TODO 선생님소개 저장
- * /cns.saveTchrCounsel.do
+ * 선생님소개 저장
  */
-const saveTchrCounsel = () => {
+const saveTchrCounsel = (cselData)  => new Promise((resolve, reject) => {
 
+	const settings = {
+		global: false,
+		url: `${API_SERVER}/cns.saveTchrCounsel.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids	: ["dsSend"],
+			recvdataids	: ["dsRecv"],
+			dsSend		: [cselData],
+		}),
+	}
+	
+	$.ajax(settings)
+		.done(data => {
+			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
+			if (data.dsRecv.length == 0) return reject(new Error("저장 결과 데이터가 존재하지 않습니다."));
+			return resolve(data.dsRecv[0]);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
+
+/**
+ * TODO 티켓필드에 들어갈 내용 반환.
+ */
+const getCustomData = () => {
+    return {
+	    prdtList 	    : "", // 과목리스트(ex. ["11::2k", "11::k","10::m"])
+		deptIdNm 	    : "", // 지점부서명(사업국명)
+	    aeraCdeNm 	    : "", // 지역코드명
+	    procDeptIdNm    : "", // 연계부서명
+        lcName 		    : "", // 러닝센터명(센터명)
+		reclCntct 	    : "", // 재통화예약연락처
+		ageCde 			: "", // 연령코드
+		brandId			: "", // 브랜드ID
+    }
 }

@@ -292,7 +292,7 @@ const getFollowers = async (EMP_ID_LIST = [], type) => {
 }
 
 /**
- * Zendesk 티켓 업데이트 for 추가등록/관계회원
+ * Zendesk 티켓 업데이트 for 상담등록/입회등록/선생님소개
  * @param {object} cselData    상담정보
  * @param {object} customData  커스텀필드정보
  * @param {object} empData 	   연계대상자ID
@@ -398,10 +398,10 @@ const updateTicket = async (cselData, customData, empData) => {
 }
 
 /**
- * Zendesk 티켓필드 입력
- * @param {object} cselData 상담정보
- * @param {obejct} customData  커스텀필드정보
- * @param {obejct} empData 연계대상자ID
+ * Zendesk 티켓필드 입력 - 사용안함
+ * @param {object} cselData 	상담정보
+ * @param {obejct} customData   커스텀필드정보
+ * @param {obejct} empData 		연계대상자ID
  */
 const setTicket = async (cselData, customData, empData) => {
 

@@ -594,7 +594,7 @@ const onSave = async () => {
 	
 	// 저장성공후
 	$("#textbox7").val(resSave.CSEL_NO);	// 접수번호 세팅
-	onSearch(selectedSeq)					// 입회 재조회	
+	onSearch(resSave.CSEL_SEQ)				// 입회 재조회	
 
 	// topbar 숨김
 	topbarClient.invoke("popover", "hide");
