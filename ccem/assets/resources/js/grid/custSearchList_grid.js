@@ -177,7 +177,7 @@ $(function(){
 							// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
 							$.ajax({
 								url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-								type: 'POST',
+								type: 'PUT',
 								dataType: 'json',
 								contentType: "application/json",
 								data: JSON.stringify({
