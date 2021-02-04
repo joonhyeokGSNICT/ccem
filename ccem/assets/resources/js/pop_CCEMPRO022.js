@@ -359,8 +359,8 @@ var getBaseData = (target, targetId, sJobType) => {
 			// baseData.LC_NAME			// 센터명		
 			// baseData.TELPNO_LC		// 센터전화번호		
 			// baseData.LC_EMP_ID		// 센터장사번		
-			$("#hiddenbox13").val(baseData.AGE_CDE);			// 연령코드		
-			$("#hiddenbox14").val(baseData.DIV_KIND_CDE);		// 브랜드ID		
+			// baseData.AGE_CDE			// 연령코드		
+			// baseData.DIV_KIND_CDE	// 브랜드ID		
 			$("#hiddenbox6").val(targetId); 					// 고객번호
 			$("#hiddenbox11").val("");							// 연계담당자ID
 			$("#hiddenbox12").val("");							// 연계담당자이름
@@ -378,7 +378,9 @@ var getBaseData = (target, targetId, sJobType) => {
 				$("#textbox9").val(baseData.LC_NAME);				// 센터명		
 				$("#hiddenbox1").val(baseData.LC_ID);				// 센터ID
 				$("#textbox10").val(baseData.TELPNO_LC);			// 센터전화번호	
-				$("#hiddenbox4").val(baseData.LC_EMP_ID);			// 센터장사번		
+				$("#hiddenbox4").val(baseData.LC_EMP_ID);			// 센터장사번	
+				$("#hiddenbox13").val(baseData.AGE_CDE);			// 연령코드		
+				$("#hiddenbox14").val(baseData.DIV_KIND_CDE);		// 브랜드ID		
 			}
 			
 			setInitCselRstMkDS();	// 상담결과 저장정보 초기화
@@ -556,8 +558,8 @@ const getCounsel = (sCSEL_SEQ) => {
 			$("#hiddenbox7").val(cselData.DM_MATCHCD);											// DM매치코드	
 			$("#hiddenbox8").val(cselData.DM_LIST_ID);											// DM목록ID	
 			$("#selectbox16").val(cselData.DM_TYPE_CDE);										// DM종류		(지급사유)
-			// cselData.AGE_CDE			// 연령코드	
-			// cselData.DIV_KIND_CDE	// 브랜드ID		
+			$("#hiddenbox13").val(cselData.AGE_CDE);											// 연령코드		
+			$("#hiddenbox14").val(cselData.DIV_KIND_CDE);										// 브랜드ID		
 			$("#textbox7").val(cselData.TELPNO_DEPT);											// 지점(부서) 전화번호	(사업국전화번호) TODO 컬럼요청하기
 
 			setBtnCtrlAtLoadComp();	// 버튼제어
@@ -1391,6 +1393,7 @@ var setDisPlayUp = (data) => {
 	$("#textbox7").val(data.TELPNO_DEPT);		// 사업국전화번호
 	$("#textbox9").val(data.LC_NAME);			// 센터이름
 	$("#textbox10").val(data.TELPNO_LC);		// 센터전화번호
+	$("#hiddenbox14").val(data.DIV_KIND_CDE);	// 브랜드ID		
 }
 
 /**
@@ -1439,5 +1442,5 @@ const onNewTicket = async (parent_id) => {
 
 	// 티켓생성
 	return await createTicket(user_id, parent_id);
-	
+
 }
