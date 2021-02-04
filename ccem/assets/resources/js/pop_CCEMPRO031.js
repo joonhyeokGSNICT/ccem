@@ -496,7 +496,7 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 			
 			// 지점연계정보 세팅
 			if (!DS_TRANS || DS_TRANS.length == 0) return resolve(null);
-			calendarUtil.setImaskValue("calendar4", DS_TRANS[0].TRANS_DATE || ""); // 연계일자
+			calendarUtil.setImaskValue("calendar4", DS_TRANS[0].TRANS_DATE); // 연계일자
 			$("#hiddenbox7").val(DS_TRANS[0].TRANS_NO);					     	   // 연계번호
 			$("#timebox3").val(DS_TRANS[0].TRANS_TIME);				    		   // 연계일시
 			$("#selectbox5").val(DS_TRANS[0].TRANS_CHNL_MK);					   // 연계방법	
@@ -504,7 +504,7 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 			// DS_TRANS[0].DEPT_ACP_ID			// 접수자사번
 			$("#textbox14").val(DS_TRANS[0].DEPT_ACP_NAME);						   // 접수자	
 			// DS_TRANS[0].TRANS_CNTS			// 상담내용
-			calendarUtil.setImaskValue("calendar5", DS_TRANS[0].DEPT_ACP_DATE || ""); // 접수일자	
+			calendarUtil.setImaskValue("calendar5", DS_TRANS[0].DEPT_ACP_DATE); // 접수일자	
 			$("#timebox4").val(DS_TRANS[0].DEPT_ACP_TIME);					 		  // 접수시간	
 
 			// 지점연계대상자정보 세팅

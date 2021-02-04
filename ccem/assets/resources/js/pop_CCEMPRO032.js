@@ -170,7 +170,10 @@ const onSearch = async (sCSEL_SEQ) => {
 	// 선생님정보 조회
 	const sCUST_MK 	 = cselData.CUST_MK;								
 	const sCSEL_TYPE = (sCUST_MK=="TC" || sCUST_MK=="PE") ? "T" : "C";		// 대상구분 ( "C" : 고객, "T" : 선생님 )
-	getTchInfo(cselData.CUST_ID, sCSEL_TYPE, "U");
+	await getTchInfo(cselData.CUST_ID, sCSEL_TYPE, "U");
+	
+	// 연계정보 조회
+	getEnterData(cselData.TRANS_DATE, cselData.TRANS_NO);
 
 }
 
@@ -368,6 +371,54 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 });
 
 /**
+ * 연계정보 조회
+ * @param {string} TRANS_DATE 연계일자
+ * @param {string} TRANS_NO 연계번호
+ */
+const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => {
+	const settings = {
+		url: `${API_SERVER}/cns.getEnterData.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv1", "dsRecv2"],
+			dsSend: [{ TRANS_DATE, TRANS_NO }],
+		}),
+		errMsg: "연계정보 조회중 오류가 발생하였습니다.",
+	}
+	$.ajax(settings)
+		.done(res => {
+			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
+			
+			const DS_TRANS 	   = res.dsRecv1;
+			const DS_TRANS_EMP = res.dsRecv2;
+			
+			// 지점연계정보 세팅
+			if (!DS_TRANS || DS_TRANS.length == 0) return resolve(null);
+			calendarUtil.setImaskValue("calendar2", DS_TRANS[0].TRANS_DATE); 	// 연계일자
+			// DS_TRANS[0].TRANS_NO				// 연계번호
+			$("#timebox2").val(DS_TRANS[0].TRANS_TIME);				    		// 연계일시
+			$("#selectbox10").val(DS_TRANS[0].TRANS_CHNL_MK);					// 연계방법	
+			// DS_TRANS[0].TRANS_DEPT_ID		// 지점코드	
+			// DS_TRANS[0].DEPT_ACP_ID			// 접수자사번
+			// DS_TRANS[0].DEPT_ACP_NAME		// 접수자	
+			// DS_TRANS[0].TRANS_CNTS			// 상담내용
+			// DS_TRANS[0].DEPT_ACP_DATE 		// 접수일자	
+			// DS_TRANS[0].DEPT_ACP_TIME		// 접수시간	
+
+			// 지점연계대상자정보 세팅
+			if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) return resolve(null);
+			const names = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+			$("#textbox15").val(names);
+
+			return resolve({DS_TRANS, DS_TRANS_EMP});
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
+
+/**
  * 시간간의 차이를 계산하는 함수
  * - as-is : clm3110.getIntervalTime()
  * @param {*} fromTime 
@@ -488,7 +539,7 @@ const onSave = async () => {
 	// 저장성공후
 	$("#textbox6").val(resSave.CSEL_NO);	// 접수번호 세팅
 	onSearch(resSave.CSEL_SEQ)				// 상담 재조회	
-	
+
 	// topbar 숨김
 	topbarClient.invoke("popover", "hide");
 
