@@ -233,6 +233,16 @@ const onStart = async (openerNm) => {
 		sCSEL_NO    = opener.document.getElementById("textbox7").value;
 		setDisPlay();
 		getCselTrans();
+	// 선생님소개 화면에서 오픈했을때.
+	} else if (openerNm.includes("CCEMPRO032")) {
+		currentUser = opener.currentUser;
+		topbarClient = opener.topbarClient;
+		setCodeData(opener.codeData);
+		sPROC_MK 	= pener.document.getElementById("selectbox9").value;
+		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar1");
+		sCSEL_NO    = opener.document.getElementById("textbox6").value;
+		setDisPlay();
+		getCselTrans();
 	}
 
 }
