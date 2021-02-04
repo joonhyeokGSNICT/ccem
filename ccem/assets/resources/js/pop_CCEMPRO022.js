@@ -480,9 +480,9 @@ const getCounsel = (sCSEL_SEQ) => {
 			// cselData.CSEL_EDTIME		// 상담종료시간		
 			$("#selectbox15").val(cselData.CSEL_CHNL_MK);										// 상담채널구분		
 			$("#selectbox3").val(cselData.CSEL_MK);												// 상담구분	
-			$("#textbox14").val(cselData.CSEL_LTYPE_CDE);										// 상담대분류코드		
-			$("#textbox16").val(cselData.CSEL_MTYPE_CDE);										// 상담중분류코드		
-			$("#textbox18").val(cselData.CSEL_STYPE_CDE);										// 상담소분류코드		
+			// cselData.CSEL_LTYPE_CDE	// 상담대분류코드		
+			// cselData.CSEL_MTYPE_CDE	// 상담중분류코드		
+			// cselData.CSEL_STYPE_CDE	// 상담소분류코드		
 			$("#textbox12").val(cselData.CSEL_TITLE);											// 상담제목	
 			$("#textbox13").val(cselData.CSEL_CNTS);											// 상담상세내용	
 			// cselData.OCCUR_DATE		// 문제발생일자	
@@ -521,13 +521,13 @@ const getCounsel = (sCSEL_SEQ) => {
 			$("#checkbox4").prop("checked", cselData.RE_PROC == "1" ? true : false);			// 재확인여부	
 			// cselData.CALL_STTIME		// 통화시작시간		
 			// cselData.CALL_EDTIME		// 통화종료시간		
-			// cselData.TELPNO			// 지점전화번호
+			$("#textbox7").val(cselData.TELPNO_DEPT);											// 지점전화번호	(사업국전화번호)
 			$("#textbox6").val(cselData.DEPT_NAME);												// 지점명	(사업국명)
 			$("#textbox2").val(cselData.UP_DEPT_NAME);											// 본부명		
 			$("#textbox4").val(cselData.AREA_NAME);												// 지역코드	(지역명)
-			// cselData.CSEL_LTYPE_CDE_D// 분류(대)			
-			// cselData.CSEL_MTYPE_CDE_D// 분류(중)			
-			// cselData.CSEL_STYPE_CDE_D// 분류(소)			
+			$("#textbox14").val(cselData.CSEL_LTYPE_CDE_D);										// 분류(대) 2자리
+			$("#textbox16").val(cselData.CSEL_MTYPE_CDE_D);										// 분류(중) 2자리
+			$("#textbox18").val(cselData.CSEL_STYPE_CDE_D);										// 분류(소) 2자리						
 			$("#textbox15").val(cselData.CSEL_LTYPE_NAME);										// 분류(대) 명			
 			$("#textbox17").val(cselData.CSEL_MTYPE_NAME);										// 분류(중) 명			
 			$("#textbox19").val(cselData.CSEL_STYPE_NAME);										// 분류(소) 명			
@@ -560,7 +560,6 @@ const getCounsel = (sCSEL_SEQ) => {
 			$("#selectbox16").val(cselData.DM_TYPE_CDE);										// DM종류		(지급사유)
 			$("#hiddenbox13").val(cselData.AGE_CDE);											// 연령코드		
 			$("#hiddenbox14").val(cselData.DIV_KIND_CDE);										// 브랜드ID		
-			$("#textbox7").val(cselData.TELPNO_DEPT);											// 지점(부서) 전화번호	(사업국전화번호) TODO 컬럼요청하기
 
 			setBtnCtrlAtLoadComp();	// 버튼제어
 			
@@ -821,6 +820,11 @@ const getCounselCondition = async (sJobType) => {
 	data.PLURAL_PRDT_LIST = plProd.ids.join("_");
 	data.PLURAL_PRDT_NAME = plProd.names.join(",");
 
+	// 상담분류세팅
+	data.CSEL_LTYPE_CDE = data.CSEL_MK + data.CSEL_LTYPE_CDE;
+	data.CSEL_MTYPE_CDE = data.CSEL_LTYPE_CDE + data.CSEL_MTYPE_CDE;
+	data.CSEL_STYPE_CDE = data.CSEL_MTYPE_CDE + data.CSEL_STYPE_CDE;
+
 	const sLtype = data.CSEL_LTYPE_CDE;
     const sMtype = data.CSEL_MTYPE_CDE;
     const sStype = data.CSEL_STYPE_CDE;
@@ -852,17 +856,17 @@ const getCounselCondition = async (sJobType) => {
 		$("#textbox13").focus();
 		return false;
 	}
-	if (!data.CSEL_LTYPE_CDE) {
+	if (!$("#textbox14").val()) {
 		alert("상담분류(대)를 선택하여 주십시요.");
 		$("#textbox14").focus();
 		return false;
 	}
-	if (!data.CSEL_MTYPE_CDE) {
+	if (!$("#textbox16").val()) {
 		alert("상담분류(중)를 선택하여 주십시요.");
 		$("#textbox16").focus();
 		return false;
 	}
-	if (!data.CSEL_STYPE_CDE) {
+	if (!$("#textbox18").val()) {
 		alert("상담분류(소)를 선택하여 주십시요.");
 		$("#textbox18").focus();
 		return false;

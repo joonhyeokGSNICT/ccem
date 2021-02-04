@@ -584,6 +584,11 @@ const getCselCondition = (sJobType) => {
 		ZEN_TICKET_ID		: $("#hiddenbox1").val(), 								// 티켓ID				
 		// WORK_STYL_MK		: "", // 근무형태구분(신규입력시 '')		
 	}
+	
+	// 상담분류세팅
+	data.CSEL_LTYPE_CDE = data.CSEL_MK + data.CSEL_LTYPE_CDE;
+	data.CSEL_MTYPE_CDE = data.CSEL_LTYPE_CDE + data.CSEL_MTYPE_CDE;
+	data.CSEL_STYPE_CDE = data.CSEL_MTYPE_CDE + data.CSEL_STYPE_CDE;
 
 	// 관심부분
 	if (!data.INTEREST_MK) {
@@ -633,7 +638,7 @@ const getCselCondition = (sJobType) => {
 		return false;
 	}
 	// 분류(대)
-	if (!data.CSEL_LTYPE_CDE) {
+	if (!$("#textbox20").val()) {
 		alert("분류를 입력해 주십시요.");
 		$("#textbox20").focus();
 		return false;

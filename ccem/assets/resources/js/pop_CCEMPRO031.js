@@ -396,9 +396,6 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.CSEL_EDTIME				// 상담종료시간					
 			$("#selectbox4").val(cselData.CSEL_CHNL_MK);			// 상담채널구분					
 			// cselData.CSEL_MK					// 상담구분				
-			$("#textbox19").val(cselData.CSEL_LTYPE_CDE);			// 상담대분류코드					
-			$("#textbox21").val(cselData.CSEL_MTYPE_CDE);			// 상담중분류코드					
-			$("#textbox23").val(cselData.CSEL_STYPE_CDE);			// 상담소분류코드					
 			// cselData.CSEL_TITLE				// 상담제목				
 			$("#textbox25").val(cselData.CSEL_CNTS);				// 상담상세내용				
 			// cselData.OCCUR_DATE				// 문제발생일자				
@@ -435,10 +432,10 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.TELPNO					// 지점전화번호			
 			// cselData.DEPT_NAME				// 지점명				
 			// cselData.UP_DEPT_NAME			// 본부명					
-			// cselData.AREA_NAME				// 지역코드				
-			// cselData.CSEL_LTYPE_CDE_D		// 분류(대)						
-			// cselData.CSEL_MTYPE_CDE_D		// 분류(중)						
-			// cselData.CSEL_STYPE_CDE_D		// 분류(소)						
+			// cselData.AREA_NAME				// 지역코드		
+			$("#textbox19").val(cselData.CSEL_LTYPE_CDE_D);			// 분류(대)	2자리	
+			$("#textbox21").val(cselData.CSEL_MTYPE_CDE_D);			// 분류(중)	2자리	
+			$("#textbox23").val(cselData.CSEL_STYPE_CDE_D);			// 분류(소)	2자리			
 			$("#textbox20").val(cselData.CSEL_LTYPE_NAME);			// 분류(대) 명						
 			$("#textbox22").val(cselData.CSEL_MTYPE_NAME);			// 분류(중) 명						
 			$("#textbox24").val(cselData.CSEL_STYPE_NAME);			// 분류(소) 명						
@@ -666,6 +663,11 @@ const getCounselCondition = (sJobType) => {
 	data.PLURAL_PRDT_LIST = plProd.ids.join("_");
 	data.PLURAL_PRDT_NAME = plProd.names.join(",");
 
+	// 상담분류세팅
+	data.CSEL_LTYPE_CDE = data.CSEL_MK + data.CSEL_LTYPE_CDE;
+	data.CSEL_MTYPE_CDE = data.CSEL_LTYPE_CDE + data.CSEL_MTYPE_CDE;
+	data.CSEL_STYPE_CDE = data.CSEL_MTYPE_CDE + data.CSEL_STYPE_CDE;
+
 	// TODO CTI사용여부가 Y이면, 통화시간정보를 셋팅한다.
 	/* if( "<%=S_CTI_USE_YN%>" == "Y" ){ */
 	// if (objSys1100.objSysCALL != "") {
@@ -719,29 +721,29 @@ const getCounselCondition = (sJobType) => {
 	const lvlMk = currentUser.user_fields.user_lvl_mk;
 	const isLowLvl = (lvlMk != "user_lvl_mk_1" && lvlMk != "user_lvl_mk_2" && lvlMk != "user_lvl_mk_3") ? true : false;
 	if (chkGroup() && isLowLvl) {
-		if (!data.CSEL_LTYPE_CDE) {
+		if (!$("#textbox19").val()) {
 			alert("대분류를 선택하여 주십시오"); 
 			$("#textbox20").focus();
 			return false;
 		}
-		if (!data.CSEL_MTYPE_CDE) {
+		if (!$("#textbox21").val()) {
 			alert("중분류를 선택하여 주십시오"); 
 			$("#textbox22").focus();
 			return false;
 		}
-		if (!data.CSEL_STYPE_CDE) {
+		if (!$("#textbox23").val()) {
 			alert("소분류코드를 선택하여 주십시오"); 
 			$("#textbox24").focus();
 			return false;
 		}
 	// 기타 상담원 및 슈퍼바이저이상 의 경우 중분류 코드까지 입력 받음
 	} else { 
-		if (!data.CSEL_LTYPE_CDE) {
+		if (!$("#textbox19").val()) {
 			alert("대분류를 선택하여 주십시오"); 
 			$("#textbox20").focus();
 			return false;
 		}
-		if (!data.CSEL_MTYPE_CDE) {
+		if (!$("#textbox21").val()) {
 			alert("중분류를 선택하여 주십시오"); 
 			$("#textbox22").focus();
 			return false;
