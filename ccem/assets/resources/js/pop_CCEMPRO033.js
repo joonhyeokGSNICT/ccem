@@ -222,7 +222,7 @@ $(function(){
 			// 상담등록 화면에서 오픈했을때.
 			if (openerNm == "CCEMPRO022") {
 				const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
-				opener.getBaseData("C", CUST_ID);
+				opener.getBaseData("C", CUST_ID, "I");
 				window.close();
 			// 입회등록 화면에서 오픈했을때.
 			} else if (openerNm == "CCEMPRO031") {
@@ -385,7 +385,7 @@ $(function(){
 			// 상담등록 화면에서 오픈했을때.
 			if (openerNm == "CCEMPRO022") {
 				const EMP_ID = teacherSearchList_grid.getValue(ev.rowKey, "EMP_ID");  // 사원번호                           
-				opener.getBaseData("T", EMP_ID);
+				opener.getBaseData("T", EMP_ID, "I");
 				window.close();
 			// 부모창이 존재하지 않을때.
 			} else {
