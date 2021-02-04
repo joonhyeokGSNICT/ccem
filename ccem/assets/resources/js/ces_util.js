@@ -544,6 +544,19 @@ var calendarUtil = {
         $("#" + id).inputmask(format, option);
     },
     /**
+     * tel mask : 기본 숫자4자리
+     * @param {string} id 
+     * @param {strimg} format 
+     */
+    telMask(id, format = "9999") {
+        $("#" + id).inputmask(format, {
+            placeholder: "", 
+            insertMode: true, 
+            showMaskOnHover: false,
+            autoUnmask: true,
+        });
+    },
+    /**
      * 외부에서 imask 변경시 updateValue() 호출.
      * @param {string} id 
      */

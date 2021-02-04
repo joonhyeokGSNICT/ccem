@@ -607,6 +607,11 @@ const getCselCondition = (sJobType) => {
 		$("#textbox19").focus();
 		return false;
 	}
+	if (!checkByte(data.CSEL_CNTS, 4000)) {
+		alert("기타요구사항은 4000Byte를 초과할 수 없습니다.");
+		$("#textbox19").focus();
+		return false;
+	}
 	if (data.ACTIVITY_MK != "7A") {
 		// 해지사유
 		if (!data.CANCELLATION_CDE) {

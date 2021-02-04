@@ -41,7 +41,7 @@
 			</colgroup>
 			<tr>
 				<th>과목검색</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox20" oninput="searchProd(grid1, 'PRDT_NAME', this.value)"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox20" oninput="searchProd(grid1, 'PRDT_NAME', this.value)" autocomplete="off"></td>
 			</tr>
 			<tr>
 				<th>과목군</th>
@@ -110,7 +110,7 @@
 					<td colspan="4">
 						<div class="input-group">
 							<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox3" readonly>
-							<input type="text" class="form-control form-control-sm" style="width: 55%;" id="textbox4" onkeydown="openCCEMPRO043(event.keyCode)">
+							<input type="text" class="form-control form-control-sm" style="width: 55%;" id="textbox4" onkeydown="openCCEMPRO043(event.keyCode)" maxlength="50" autocomplete="off">
 							<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO043(13)">
 								<img src="../img/popBtn.svg" alt="팝업">
 							</button>
@@ -122,7 +122,7 @@
 					<td>
 						<div class="input-group">
 							<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox5" readonly>
-							<input type="text" class="form-control form-control-sm" style="width: 55%;" id="textbox6" onkeydown="openCCEMPRO044(event.keyCode, '#disPlayUp')">
+							<input type="text" class="form-control form-control-sm" style="width: 55%;" id="textbox6" onkeydown="openCCEMPRO044(event.keyCode, '#disPlayUp')" maxlength="50" autocomplete="off">
 							<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO044(13, '#disPlayUp')">
 								<img src="../img/popBtn.svg" alt="팝업">
 							</button>
@@ -135,7 +135,7 @@
 					<th>센터</th>
 					<td>
 						<div class="input-group">
-							<input type="text" class="form-control form-control-sm" id="textbox9" onkeydown="openCCEMPRO044(event.keyCode, '#disPlayUp')">
+							<input type="text" class="form-control form-control-sm" id="textbox9" onkeydown="openCCEMPRO044(event.keyCode, '#disPlayUp')" maxlength="50" autocomplete="off">
 							<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO044(13, '#disPlayUp')">
 								<img src="../img/popBtn.svg" alt="팝업">
 							</button>
@@ -149,7 +149,7 @@
 					<td>
 						<div class="input-group">
 							<input type="text" class="form-control form-control-sm" id="textbox11" style="width: 30%;" readonly>
-							<input type="text" class="form-control form-control-sm" id="textbox26" style="width: 55%;" onkeydown="openCCEMPRO044(event.keyCode, '#disPlayDn')">
+							<input type="text" class="form-control form-control-sm" id="textbox26" style="width: 55%;" onkeydown="openCCEMPRO044(event.keyCode, '#disPlayDn')" maxlength="50" autocomplete="off">
 							<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO044(13, '#disPlayDn')">
 								<img src="../img/popBtn.svg" alt="팝업">
 							</button>
@@ -222,7 +222,7 @@
 			</tr>
 			<tr>
 				<th>상담내용</th>
-				<td colspan="7" style="height:130px;"><textarea class="form-control w-100 h-100" id="textbox13" onkeyup="checkTextLengh()"></textarea></td>
+				<td colspan="7" style="height:130px;"><textarea class="form-control w-100 h-100" id="textbox13"></textarea></td>
 			</tr>
 			<tr>
 				<th>개인정보</th>
@@ -233,7 +233,7 @@
 				<td colspan="3">
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox14" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox15" onkeydown="openCCEMPRO042(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox15" onkeydown="openCCEMPRO042(event.keyCode)" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>
@@ -251,7 +251,7 @@
 				<td colspan="3">
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox16" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox17" onkeydown="openCCEMPRO042(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox17" onkeydown="openCCEMPRO042(event.keyCode)" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>
@@ -271,7 +271,7 @@
 				<td colspan="3">
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox18" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox19" onkeydown="openCCEMPRO042(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox19" onkeydown="openCCEMPRO042(event.keyCode)" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>

@@ -764,7 +764,7 @@ const getCounselCondition = async (sJobType) => {
 		alert("상담제목은 100Byte를 초과할 수 없습니다.");
 		return false;
 	}
-	if (data.CSEL_CNTS.length > 4000) {
+	if (!checkByte(data.CSEL_CNTS, 4000)) {
 		alert("상담내용은 4000Byte를 초과할 수 없습니다.");
 		$("#textbox13").focus();
 		return false;
@@ -1290,22 +1290,6 @@ const setBtnCtrlAtLoadComp = () => {
 	} else {
 		$("#selectbox16").prop("disabled", true); // 지급사유 selectbox 비활성화
 		$("#selectbox16").val("");
-	}
-
-}
-
-/**
- * 상담내용 현재 입력 bytes 체크하기
- * - as-is : cns5810.onTextAreaKeyUp()
- */
-const checkTextLengh = () => {
-
-	const el = $("#textbox13");
-	const value = el.val();
-	const sCnt = value.length + (escape(value) + "%u").match(/%u/g).length - 1;
-	if (sCnt > 4000) {
-		alert("상담 내용은 4000Byte이상 저장할 수 없습니다.\n\n다시 입력해 주십시요.");
-		el.focus();
 	}
 
 }

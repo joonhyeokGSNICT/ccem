@@ -247,3 +247,16 @@ const openLogen = (invoiceNum) => {
     const baseUrl = "http://www.ilogen.com/d2d/delivery/invoice_search_popup.jsp?viewType=type2&invoiceNum=";
     window.open(baseUrl + invoiceNum, "logen", "width=730, height=600");
 }
+
+/**
+ * byte 체크
+ * - as-is : cns5810.onTextAreaKeyUp()
+ * @param {string} value 
+ * @param {number} limit 
+ */
+const checkByte = (value, limit) => {
+
+	const byteCnt = value.length + (escape(value) + "%u").match(/%u/g).length - 1;
+	return byteCnt < limit;
+
+}

@@ -37,7 +37,7 @@
 			</colgroup>
 			<tr>
 				<th>과목검색</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox1" oninput="searchProd(grid4, 'PRDT_NAME', this.value)"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox1" oninput="searchProd(grid4, 'PRDT_NAME', this.value)" autocomplete="off"></td>
 			</tr>
 			<tr>
 				<th>과목군</th>
@@ -132,7 +132,7 @@
 					</div>
 				</td>
 				<th>전화번호</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox10"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox10" maxlength="30" autocomplete="30"></td>
 				<th>연계대상자</th>
 				<td><input type="text" class="form-control form-control-sm" id="textbox11" readonly></td>
 			</tr>
@@ -141,7 +141,7 @@
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox12" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox13" onkeydown="openCCEMPRO044(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox13" onkeydown="openCCEMPRO044(event.keyCode)" maxlength="50" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO044(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>
@@ -154,13 +154,13 @@
 					</select>
 				</td>
 				<th>접수자</th>
-				<td><input type="text" class="form-control form-control-sm" id="textbox14"></td>
+				<td><input type="text" class="form-control form-control-sm" id="textbox14" maxlength="50" autocomplete="off"></td>
 			</tr>
 			<tr>
 				<th>연계센터</th>
 				<td>
 					<div class="input-group">
-						<input type="text" class="form-control form-control-sm" id="textbox15" onkeydown="openCCEMPRO044(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" id="textbox15" onkeydown="openCCEMPRO044(event.keyCode)" maxlength="50" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO044(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>
@@ -214,7 +214,7 @@
 			</tr>
 			<tr>
 				<th>이벤트명</th>
-				<td colspan="5"><input type="text" class="form-control form-control-sm" id="textbox18"></td>
+				<td colspan="5"><input type="text" class="form-control form-control-sm" id="textbox18" maxlength="200" autocomplete="off"></td>
 			</tr>
 			<tr>
 				<th>기타<br>요구사항</th>
@@ -239,7 +239,7 @@
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox19" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox20" onkeydown="openCCEMPRO042_2(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox20" onkeydown="openCCEMPRO042_2(event.keyCode)" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042_2(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>
@@ -257,7 +257,7 @@
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox21" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox22" onkeydown="openCCEMPRO042_2(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox22" onkeydown="openCCEMPRO042_2(event.keyCode)" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042_2(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>
@@ -271,7 +271,7 @@
 				<td>
 					<div class="input-group">
 						<input type="text" class="form-control form-control-sm" style="width: 30%;" id="textbox23" readonly>
-						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox24" onkeydown="openCCEMPRO042_2(event.keyCode)">
+						<input type="text" class="form-control form-control-sm" style="width: 60%;" id="textbox24" onkeydown="openCCEMPRO042_2(event.keyCode)" autocomplete="off">
 						<button class="btn btn-sm popBtn" style="width: 20px;" onclick="openCCEMPRO042_2(13)">
 							<img src="../img/popBtn.svg" alt="팝업">
 						</button>

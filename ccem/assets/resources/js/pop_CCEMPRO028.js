@@ -17,6 +17,7 @@ $(function () {
 	// input mask
 	calendarUtil.dateMask("calendar1");
 	calendarUtil.timeMask("time1");
+    $(".imask-tel").each((i, el) => calendarUtil.telMask(el.id));
 
 	// 앱알림 버튼 event
 	$("#button1").on("click", ev => {

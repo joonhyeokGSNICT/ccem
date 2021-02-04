@@ -709,6 +709,11 @@ const getCounselCondition = (sJobType) => {
 		alert("입회과목을 선택하여 주십시오"); 
 		return false;
 	}
+	if (!checkByte(data.CSEL_CNTS, 4000)) {
+		alert("기타요구사항은 4000Byte를 초과할 수 없습니다.");
+		$("#textbox25").focus();
+		return false;
+	}
 
 	// 상담원 그룹일 경우 중,소 분류코드까지 입력을 받아야 함
 	const lvlMk = currentUser.user_fields.user_lvl_mk;

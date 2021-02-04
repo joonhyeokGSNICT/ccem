@@ -17,6 +17,7 @@ $(function() {
     
     // input mask
     calendarUtil.timeMask("time1", "hh:mm");
+    $(".imask-tel").each((i, el) => calendarUtil.telMask(el.id));
 
     // 연락처 구분 radio
     $("input[name='tel'").on("change", ev => {

@@ -1540,6 +1540,11 @@ const getDeptValidityCheck = () => {
         $("#textbox34").focus();
         return false;
     }
+    if(!checkByte($("#textbox34").val().trim(), 4000)){
+        alert("처리내용은 4000Byte를 초과할 수 없습니다.");
+        $("#textbox34").focus();
+        return false;
+    }
     return true;
 }
 
@@ -1565,6 +1570,11 @@ const getHpCall2ValidityCheck = () => {
     }
     if (!$("#textbox36").val().trim()) {
         alert("해피콜 내용을 입력하십시요.");
+        $("#textbox36").focus();
+        return false;
+    }
+    if (!checkByte($("#textbox36").val().trim(), 4000)) {
+        alert("해피콜내용은 4000Byte를 초과할 수 없습니다.");
         $("#textbox36").focus();
         return false;
     }
@@ -1603,6 +1613,11 @@ const getHpCall1ValidityCheck = () => {
     }
     if (!$("#textbox35").val().trim()) {
         alert("해피콜 내용을 입력하십시요.");
+        $("#textbox35").focus();
+        return false;
+    }
+    if (!checkByte($("#textbox35").val().trim(), 4000)) {
+        alert("해피콜내용은 4000Byte를 초과할 수 없습니다.");
         $("#textbox35").focus();
         return false;
     }

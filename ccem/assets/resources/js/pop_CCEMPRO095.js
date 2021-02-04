@@ -463,12 +463,21 @@ const onSave = () => {
  * - as-is : cns6000.onChkProc()
  */
 const onChkProc = () => {
-    if (DS_CSEL_PROC.PROC_USER_ID && $("#textbox24").val().trim().length > 0) {
-        return true;
-    } else {
+    if (!DS_CSEL_PROC.PROC_USER_ID) {
         alert("지점 처리 내용을 입력하세요.");
         return false;
     }
+    if (!$("#textbox24").val().trim()) {
+        alert("지점처리내용을 입력하세요.");
+		$("#textbox24").focus();
+        return false;
+    }
+    if (!checkByte($("#textbox24").val().trim(), 4000)) {
+		alert("지점처리내용은 4000Byte를 초과할 수 없습니다.");
+		$("#textbox24").focus();
+		return false;
+	}
+    return true;
 }
 
 /**
