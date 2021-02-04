@@ -362,7 +362,7 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			$("#textbox13").val(cselData.DEPT_ACP_NAME);        							// 본부접수자				txtCntAcp
 			$("#hiddenbox1").val(cselData.ZEN_TICKET_ID);									// 티켓ID
 			
-			// setBtnCtrlAtLoadComp();				// TODO 버튼제어
+			setBtnCtrlAtLoadComp();				// 버튼제어
 
 			return resolve(cselData);
 		})
@@ -679,4 +679,13 @@ const getCustomData = () => {
 		ageCde 			: "", // 연령코드
 		brandId			: "", // 브랜드ID
     }
+}
+
+/**
+ * 저장이 완료 되었거나, 팝업되어 수정 상황일때 버튼 컨트롤 하는 함수.
+ */
+const setBtnCtrlAtLoadComp = () => {
+
+	$("#button2").prop("disabled", false);	// 입회연계 활성화
+
 }
