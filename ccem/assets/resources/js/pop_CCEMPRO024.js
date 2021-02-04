@@ -187,12 +187,25 @@ const getRefundPrdt = (REFUND_SEQ) => {
 
 /**
  * key에 따라 해당하는 팝업 띄우기
+ * - as-is : cns4640.onSms(), onDreams()
  * @param {string} key 
  */
 const openPopup = async (key) => {
 	switch (key) {
 		case "SMS":
-			PopupUtil.open("CCEMPRO046", 980, 600);
+			const rowKey = grid1.getSelectedRowKey();
+			const sendData = new Array();
+			sendData[0] = grid1.getValue(rowKey,"CUST_ID");  	// 회원번호
+			sendData[1] = grid1.getValue(rowKey,"CUST_NAME");	// 회원명
+			sendData[2] = grid1.getValue(rowKey,"MOBILNO");  	// 회원휴대폰
+			sendData[3] = "";  // 회원/모 휴대폰
+			sendData[4] = "";  // 회원/부 휴대폰
+			sendData[5] = "1"; // 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
+			sendData[6] = grid1.getValue(rowKey,"MBR_ID");		// 회원번호
+			sendData[7] = sCSEL_DATE;	// 상담일자
+			sendData[8] = sCSEL_NO;		// 상담번호
+			sendData[9] = sCSEL_SEQ;	// 상담순번
+			PopupUtil.open("CCEMPRO046", 980, 600, "", sendData);
 			break;
 		case "DREAMS":
 			const basUrl = await getBasicList("7");
