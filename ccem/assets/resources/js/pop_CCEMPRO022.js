@@ -1199,11 +1199,15 @@ const getSaveChk = (custId) => new Promise((resolve, reject) => {
  */
 const openCselRst = code => {
 
-	const mbrId = $("#textbox22").val();	// 회원번호
-	const custId = $("#hiddenbox6").val();	// 고객번호
+	const sMBR_ID 		= $("#textbox22").val();					// 회원번호
+	const sCUST_ID 		= $("#hiddenbox6").val();					// 고객번호
+	const sCUST_MK 		= $("#hiddenbox2").val();					// 고객구분
+	const sCSEL_DATE 	= calendarUtil.getImaskValue("textbox27"); 	// 상담일자
+	const sCSEL_NO 		= $("#textbox28").val();		  			// 상담번호
+	const sCSEL_SEQ 	= $("#selectbox14").val();		  			// 상담순번
 
 	// 고객정보가 있는지 체크
-	if (!custId) {
+	if (!sCUST_ID) {
 		alert("상담대상이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
 		$("#selectbox8").val("");
 		return;
@@ -1220,11 +1224,9 @@ const openCselRst = code => {
 		case "01":	// 재통화예약
 			PopupUtil.open("CCEMPRO025", 500, 330);
 			break;
-		case "06":	// TODO 상담성공
-			
+		case "06":	// 상담성공
 			break;
-		case "07":	// TODO 상담실패
-			
+		case "07":	// 상담실패
 			break;
 		case "12":	// 사은품접수
 			$("#selectbox16").prop("disabled", false); // 지급사유 selectbox 활성화
@@ -1233,17 +1235,22 @@ const openCselRst = code => {
 			PopupUtil.open("CCEMPRO023", 594, 670);
 			break;
 		case "20":	// 고객직접퇴회
-			if (mbrId == "") {
+			if (sMBR_ID == "") {
 				alert("회원번호가 없습니다.\n\n고객직접퇴회 신청을 할 수 없습니다.");
 				return;
 			}
 			PopupUtil.open("CCEMPRO024", 670, 800);
 			break;
 		case "MOS문의답변":		// TODO MOS문의답변
-			PopupUtil.open("CCEMPRO094", 570, 720);
-			break;
-		case "MOS(커뮤니티)":	// TODO MOS커뮤니티
-			
+		case "22":	// MOS커뮤니티
+			const param = {
+				CUST_MK: sCUST_MK, 
+				CUST_ID: sCUST_ID,
+				CSEL_DATE: sCSEL_DATE,
+				CSEL_NO: sCSEL_NO,
+				CSEL_SEQ: sCSEL_SEQ,
+			};
+			PopupUtil.open("CCEMPRO094", 570, 720, "", param);
 			break;
 		default:
 			break;
