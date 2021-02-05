@@ -271,8 +271,8 @@ const setCodeData = () => {
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
 
 	// sorting
-	const sortKey = "CODE_ID";
-	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+	// const sortKey = "CODE_ID";
+	// codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
 	// create select options
 	for (const code of codeList) {
