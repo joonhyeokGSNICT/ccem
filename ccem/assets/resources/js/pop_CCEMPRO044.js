@@ -1061,6 +1061,7 @@ const _btn = {
 			 */
 			if ( opener.name == 'CCEMPRO022' ) {
 				if ( _selectedNode.data.LV =="3" ) {
+					orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
 					orgList.LC_ID = _selectedNode.data.DEPT_ID;
 					orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
 					orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
@@ -1074,6 +1075,38 @@ const _btn = {
 					orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
 					orgList.TELPNO_LC = _selectedNode.data.TELPNO;
 				} else if ( _selectedNode.data.LV =="2" ) {
+					orgList.DIV_KIND_CDE = _selectedNode.parent.data.BRAND_ID;
+					orgList.LC_ID = "";
+					orgList.LC_EMP_ID = "";
+					orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
+					orgList.UPDEPTNAME = _selectedNode.parent.data.DEPT_NAME;
+					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+					orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+					orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
+					orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+					orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+					orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
+					orgList.LC_NAME = "";
+					orgList.TELPNO_LC = "";
+				} 
+				opener.setDisPlayUp(orgList);
+			} else if ( opener.name == 'CCEMPRO031' ) {
+				if ( _selectedNode.data.LV =="3" ) {
+					orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
+					orgList.LC_ID = _selectedNode.data.DEPT_ID;
+					orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
+					orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
+					orgList.UPDEPTNAME = _selectedNode.parent.parent.data.DEPT_NAME;
+					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+					orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
+					orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
+					orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
+					orgList.TELPNO_DEPT = _selectedNode.parent.data.TELPNO;
+					orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
+					orgList.TELPNO_LC = _selectedNode.data.TELPNO;
+				} else if ( _selectedNode.data.LV =="2" ) {
+					orgList.DIV_KIND_CDE = _selectedNode.parent.data.BRAND_ID;
 					orgList.LC_ID = "";
 					orgList.LC_EMP_ID = "";
 					orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;

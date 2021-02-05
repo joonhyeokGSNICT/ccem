@@ -18,45 +18,15 @@ var codeData = opener.codeData;
 function init(){
     setCodeData();
     sJobType = openInfo.save();
-    // sJobType = 'U';
     var dept_ID = opener.$('#textbox5').val();
     var lc_ID = opener.$('#hiddenbox1').val();
     var cust_ID = opener.$('#hiddenbox6').val();
-    // console.log(cust_ID);
-
-    // 저장구분에 따라 값 가져오기
-    if(sJobType == 'U') {
-        api.getOrgInfo( {   "CUST_ID" : cust_ID, 
-                            "CSEL_DATE": opener.calendarUtil.getImaskValue("textbox27"),
-                            "CSEL_NO" : opener.$('#textbox28').val(),
-                            "CSEL_SEQ" : opener.$('#selectbox14').val() }, 
-                         '/cns.getInfoAgree.do', 
-                         ["dsRecv1", "dsRecv2"] ).then( function(data){
-
-            console.log(data);
-            var tempArray = {};
-
-            // tempArray.CSEL_DATE = data.CUST_ID; // 상담일자
-            // tempArray.CSEL_NO = "";	// 상담번호
-            // tempArray.CSEL_SEQ = ""; //	상담순번
-            // tempArray.MBR_ID = data.MBR_ID; //	고객번호
-            // tempArray.CUST_ID = cust_ID; //	고객번호
-            // tempArray.RST_MK = ""; //	동의결과
-            // tempArray.ENT_YN = data.ENT_YN; //	회원입회약관
-            // tempArray.INFO_YN = data.INFO_YN; //	개인정보수집이용동의
-            // tempArray.SMS_YN = data.SMS_YN; //	마케팅동의
-            // tempArray.SMS_SAVE_YN = data.SMS_SAVE_YN; //	보존및마케팅
-            // tempArray.THIRD_YN = data.THIRD_YN; //	제3자제공동의
-            // tempArray.CSEL_CNTS = $('#textbox8').val(); //	메모
-            // tempArray.FAT_NAME = $('#textbox7').val(); //	대리인명
-            // tempArray.FAT_REL = $('#selectbox1').val(); //	대리인관계
-            // tempArray.CTI_CHGDATE = ""; //	변경일
-        });
-    }
+    // var cust_ID = opener.$('#textbox22').val();
+    var tempArray = {}; // 
 
     // 사업국 정보 입력
     api.getOrgInfo( { "DEPT_ID" : dept_ID }, '/cns.getDeptInfo.do', ["dsRecv"] ).then( function(data){
-        console.log(data);
+        // console.log(data);
         deptInfo = data.dsRecv[0];
         $('#textbox1').val(deptInfo.DEPT_NAME); // 사업국 삽입
         $('#textbox2').val(deptInfo.DEPT_EMP_NAME ? deptInfo.DEPT_EMP_NAME : ""); // 사업국 국장 삽입
@@ -66,7 +36,7 @@ function init(){
     // 센터 정보 입력
     if (! isEmpty(lc_ID) ){
         api.getOrgInfo( { "LC_ID" : lc_ID }, '/cns.getLCInfo.do', ["dsRecv"] ).then( function(data){
-            console.log(data);
+            // console.log(data);
             lcInfo = data.dsRecv[0];
             $('#textbox4').val(lcInfo.LC_NAME); // 센터 삽입
             $('#textbox5').val(lcInfo.LC_EMP_NAME ? lcInfo.LC_EMP_NAME : ""); // 센터장 삽입
@@ -76,15 +46,61 @@ function init(){
     
     // 대리인 정보 입력
     api.getOrgInfo( { "CUST_ID" : cust_ID }, '/cns.getCustFatInfo.do', ["dsRecv"] ).then( function(data){
-        console.log(data);
+        // console.log(cust_ID);
+        // console.log(data);
         attorneyInfo = data.dsRecv[0];
-        $('#textbox7').val(attorneyInfo.FAT_NAME ? attorneyInfo.FAT_NAME : "" ); // 대리인명 삽입
-        $("#selectbox1").val(attorneyInfo.FAT_REL ? attorneyInfo.FAT_REL : "" ); // 대리인 관계 설정
+        if ( data.dsRecv.length > 0 ) {
+            $('#textbox7').val(attorneyInfo.FAT_NAME ? attorneyInfo.FAT_NAME : "" ); // 대리인명 삽입
+            $("#selectbox1").val(attorneyInfo.FAT_REL ? attorneyInfo.FAT_REL : "" ); // 대리인 관계 설정
+    
+            tempArray.FAT_NAME = attorneyInfo.FAT_NAME ? attorneyInfo.FAT_NAME : ""; //	대리인명
+            tempArray.FAT_REL = attorneyInfo.FAT_REL ? attorneyInfo.FAT_REL : ""; //	대리인관계
+        }
     })
+
+    // 저장구분에 따라 값 가져오기
+    if(sJobType == 'U') {
+        api.getOrgInfo( {   "CUST_ID" : cust_ID, 
+                            "CSEL_DATE": opener.calendarUtil.getImaskValue("textbox27"),
+                            "CSEL_NO" : opener.$('#textbox28').val(),
+                            "CSEL_SEQ" : opener.$('#selectbox14').val() }, 
+                         '/cns.getInfoAgree.do', 
+                         ["dsRecv2", "dsRecv1"] ).then( function(data){
+            // console.log(data);
+            tempArray.MBR_ID = cust_ID; //	고객번호
+            if ( data.dsRecv1.length > 0 ) {
+                tempArray.CSEL_DATE = data.dsRecv1[0].CSEL_DATE; // 상담일자
+                tempArray.CSEL_NO = data.dsRecv1[0].CSEL_NO;	// 상담번호
+                tempArray.CSEL_SEQ = data.dsRecv1[0].CSEL_SEQ; //	상담순번
+                tempArray.CUST_ID = data.dsRecv1[0].CUST_ID; //	고객번호
+                tempArray.RST_MK = data.dsRecv1[0].RST_MK; //	동의결과
+                tempArray.ENT_YN = data.dsRecv1[0].ENT_YN; //	회원입회약관
+                tempArray.INFO_YN = data.dsRecv1[0].INFO_YN; //	개인정보수집이용동의
+                tempArray.SMS_YN = data.dsRecv1[0].SMS_YN; //	마케팅동의
+                tempArray.SMS_SAVE_YN = data.dsRecv1[0].SMS_SAVE_YN; //	보존및마케팅
+                tempArray.CSEL_CNTS = data.dsRecv1[0].CSEL_CNTS //	메모
+                tempArray.THIRD_YN = data.dsRecv1[0].THIRD_YN; //	제3자제공동의
+            } 
+            tempArray.CTI_CHGDATE = ""; //	변경일
+
+            // 화면에 보이기
+            $('#selectbox2').val(tempArray.RST_MK); // 동의결과
+            $('#selectbox3').val(tempArray.ENT_YN); // 약관안내
+            $('#selectbox4').parent().prev().children().eq(0).val(tempArray.INFO_YN); // 필수
+            $('#selectbox4').val(tempArray.INFO_YN); 
+            $('#selectbox5').parent().prev().children().eq(0).val(tempArray.SMS_YN); // 마케팅동의
+            $('#selectbox5').val(tempArray.SMS_YN);
+            $('#selectbox6').parent().prev().children().eq(0).val(tempArray.SMS_SAVE_YN); // 보존 및 마케팅
+            $('#selectbox6').val(tempArray.SMS_SAVE_YN);
+            $('#selectbox7').parent().prev().children().eq(0).val(tempArray.THIRD_YN); // 제3자 제공동의
+            $('#selectbox7').val(tempArray.THIRD_YN);
+            $('#textbox8').val(tempArray.CSEL_CNTS); // 메모
+        });
+        tempData = tempArray;
+    }
 };
 
 const openInfo = {
-    
     /**
      * 상담 저장구분 조회(I:신규, U:수정)
      */
@@ -92,7 +108,6 @@ const openInfo = {
         const selectbox = opener.document.getElementById("selectbox14");
         const selectedSeq = selectbox.value;
         const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
-        console.log(sJobType);
         return sJobType;
     },
     getWiseNtalk() {
@@ -100,8 +115,8 @@ const openInfo = {
             var instances = instancesData.instances;
             for ( var instanceGuid in instances) {
                 if (instances[instanceGuid].location === 'WiseN Talk') {
-                    callClient =  client.instance(instanceGuid);
-                    callClient.trigger("getSidebarClient", client._instanceGuid);
+                    callClient = client.instance(instanceGuid);
+                    // callClient.trigger("getSidebarClient", client._instanceGuid);
                 }
             }
         });
@@ -113,7 +128,7 @@ const api = {
      * 사업국, 센터 정보 조회
      * @param {string} orgId 사업국/센터ID
      * @param {string} apiURL 사업국/센터조회 API전송 
-     * @param {string} apiURL 사업국/센터조회 API전송 
+     * @param {string} recv recv파일그룹 설정 
      */
     getOrgInfo(orgId, apiURL, recv) {
         return new Promise(function(resolve, reject){
@@ -140,63 +155,138 @@ const api = {
 }
 
 var btn = {
+     /*****************************************
+	*	CCEMPRO002에 개인정보동의 배열 전송
+	*****************************************/	
     sendOpener(prop) {
-        // CCEMPRO022에 보낼 값 정보
-        var tempArray = {};
+        var sConfMsg = "";
+        if ( ( $('#selectbox4 option:selected').val() == '' ) && $('#selectbox2 option:selected').val() == '2' ) {
+            sConfMsg = "필수 동의를 받으셔야 저장하실 수 있습니다.";
+            ModalUtil.modalPop("알림",sConfMsg);
+            return;
+        } else if ( $('#selectbox4 option:selected').val() == 'N' && $('#selectbox2 option:selected').val() == '2' ) {
+            sConfMsg = "필수동의가 '거부'이면 동의결과는<br>[동의실패] 혹은 [동의요청취소]로<br>변경되어야 합니다.";
+            ModalUtil.modalPop("알림",sConfMsg);
+            $('#selectbox2').focus();
+            $('#selectbox2').val('');
+            return;
+        }
 
-        tempArray.CSEL_DATE = opener.calendarUtil.getImaskValue("textbox27"); // 상담일자
-        tempArray.CSEL_NO = opener.$('#textbox28').val();	// 상담번호
-        tempArray.CSEL_SEQ = opener.$('#selectbox14').val(); //	상담순번
-        tempArray.CUST_ID = opener.$('#hiddenbox6').val(); //	고객번호
-        tempArray.RST_MK = $('#selectbox2').val(); //	동의결과
-        tempArray.ENT_YN = $('#selectbox3').val(); //	회원입회약관
-        tempArray.INFO_YN = $('#selectbox4').val() ? $('#selectbox4').val() : "N"; //	개인정보수집이용동의
-        tempArray.SMS_YN = $('#selectbox5').val() ? $('#selectbox5').val() : "N"; //	마케팅동의
-        tempArray.SMS_SAVE_YN = $('#selectbox6').val() ? $('#selectbox6').val() : "N"; //	보존및마케팅
-        tempArray.THIRD_YN = $('#selectbox7').val() ? $('#selectbox7').val() : "N"; //	제3자제공동의
-        tempArray.CSEL_CNTS = $('#textbox8').val(); //	메모
-        tempArray.FAT_NAME = $('#textbox7').val() ? $('#textbox7').val() : ""; //	대리인명
-        tempArray.FAT_REL = $('#selectbox1').val(); //	대리인관계
-        tempArray.CTI_CHGDATE = opener.calendarUtil.getImaskValue("textbox27"); //	변경일
-        // console.log(tempArray);
-        opener.DS_DROP_TEMP2 = tempArray;
-        // console.log(opener.DS_DROP_TEMP2);
-        window.close();
+        sConfMsg = "[ "+$('#selectbox2 option:selected').text()+" ] 로 저장하시겠습니까?";
+        ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
+            var tempArray = {};
+
+            tempArray.CSEL_DATE = opener.calendarUtil.getImaskValue("textbox27"); // 상담일자
+            tempArray.CSEL_NO = opener.$('#textbox28').val();	// 상담번호
+            tempArray.CSEL_SEQ = opener.$('#selectbox14').val(); //	상담순번
+            tempArray.CUST_ID = opener.$('#hiddenbox6').val(); //	고객번호
+            tempArray.RST_MK = $('#selectbox2').val(); //	동의결과
+            tempArray.ENT_YN = $('#selectbox3').val(); //	회원입회약관
+            tempArray.INFO_YN = $('#selectbox4').val() ? $('#selectbox4').val() : "N"; //	개인정보수집이용동의
+            tempArray.SMS_YN = $('#selectbox5').val() ? $('#selectbox5').val() : "N"; //	마케팅동의
+            tempArray.SMS_SAVE_YN = $('#selectbox6').val() ? $('#selectbox6').val() : "N"; //	보존및마케팅
+            tempArray.THIRD_YN = $('#selectbox7').val() ? $('#selectbox7').val() : "N"; //	제3자제공동의
+            tempArray.CSEL_CNTS = $('#textbox8').val(); //	메모
+            tempArray.FAT_NAME = $('#textbox7').val() ? $('#textbox7').val() : ""; //	대리인명
+            tempArray.FAT_REL = $('#selectbox1').val(); //	대리인관계
+            tempArray.CTI_CHGDATE = opener.calendarUtil.getImaskValue("textbox27"); //	변경일
+            
+            opener.DS_DROP_TEMP2 = tempArray;
+            window.close();
+        }, function() {
+            return;
+        });
     },
     
     /*****************************************
 	*	닫기 버튼 클릭시
 	*****************************************/	
     onClose(){
-    	var sConfMsg = "동의결과를 저장하지 않고 닫으시겠습니까?";
-        if (confirm(sConfMsg)== false) return;    	
-        
-		if( sJobType=="U" ){
-			btn.sendOpener("C");
-		}else{
-			// window.returnValue = "N"; // 'Y' 인경우 유효함, 'N'인경우는 안유효함.
-		    window.close();
-		}
+        var sConfMsg = "저장하지 않고 창을 닫으시겠습니까?";
+        ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
+            window.close();
+        }, function() {
+            return;
+        });
     },
 
     //============================================================================
     // IVR을 통해 주민번호를 가져오는 함수
     //============================================================================    
     onIVRCertify(cs){
-        topbarObject.testtop(window);
-        // if(gf_isWorking()) return;        
-        // if( confirm("IVR을 통해 증빈번호를 가져오시겠습니까?") ){               	
-        //     gf_setBlock(true);
-        //     objCNS5810.objSys1100.gf_onIVRCertify(cs+"",this);
-        //     // IVR 상태값
-        //     sIVR = cs+"";
-        // }        
+        // window // 현재 윈도우 값
+
+        // if( callClient.isWorking() ) return; // Wise N talk에서 현재 통화중인지 확인        
+        var sConfMsg = "IVR을 통해 증빙번호를 가져오시겠습니까?"
+        ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
+            // callClient.setBlock(true); // ???
+            
+            //============================================================================
+            // IVR과 3자통화하는 함수(AS-IS)
+            //============================================================================
+            // param1(cs) : 1 = 6111(주민번호 입력)
+            //              2 = 6112(현금영수증 증빙번호 입력)
+            //              3 = 6113(MOL 전화결재)
+            //              4 = 6114(강원심층수 전화결재)
+            //              5 = 6115(개인정보 동의 전체1~4)
+            //              6 = 6116(개인정보 동의 전체2~4)
+            //              7 = 6117(개인정보 동의 전체3~4)
+            //              8 = 6118(필수동의)
+            //              9 = 6119(마케팅동의)
+            //             10 = 6120(보존동의)
+            //             11 = 6121(제3자 제공동의)
+            // param2(window) : 호출한 윈도우의 객체
+            //============================================================================
+
+            // callClient.onIVRCertify(cs,window); // wiseNtalk으로 전환 확인
+            console.log("onIVRCertify >> ",cs);
+        }, function() {
+            return;
+        });
 
         // ces-top에 넣은 내용
         // function testtop(window){
         // 	console.log("ccem-top");
         // 	window.testtop();
         // }
+    },
+
+    //============================================================================
+    // IVR을 통해 호전환 중단 요청
+    //============================================================================    
+    cancelTran() {
+        // callClient.cancelTran(); // wiseNtalk로 호전환중단 요청
+        console.log("cancleTran >> 클릭");
+    },
+
+    //============================================================================
+    // sms버튼 클릭 이벤트
+    //============================================================================    
+    smsOnClick(prop){
+        var arrInData = new Array();
+        arrInData[0] = "";  // 회원번호
+        if ( prop == 'dept' ) {
+            // if ( isEmpty( $('#textbox2').val() ) ) return;
+            arrInData[1] = $('#textbox2').val();  // 사업국장
+            arrInData[2] = $('#textbox3').val();  // 휴대폰번호    
+        } else if ( prop == 'lc') {
+            // if ( isEmpty( $('#textbox5').val() ) ) return;
+            arrInData[1] = $('#textbox5').val();  // 센터장
+            arrInData[2] = $('#textbox6').val();  // 휴대폰번호
+        } else {
+            arrInData[1] = "";  // 회원명
+            arrInData[2] = "";  // 회원휴대폰
+        }
+        arrInData[3] = "";  // 회원/모 휴대폰
+        arrInData[4] = ""; // 회원/부 휴대폰
+        arrInData[5] = "1";   // 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
+        arrInData[6] = opener.$('#hiddenbox6').val(); //	고객번호
+        arrInData[7] = opener.calendarUtil.getImaskValue("textbox27"); // 상담일자
+        arrInData[8] = opener.$('#textbox28').val();   // 상담번호
+        arrInData[9] = opener.$('#selectbox14').val(); //	상담순번
+
+        console.log(arrInData);
+        PopupUtil.open('CCEMPRO046', 1000, 600 ,"", arrInData);
     }
 }
 
@@ -234,13 +324,8 @@ const setCodeData = () => {
 	}
 }
 
-
 function changeVal(temp) {
     temp.parentNode.previousSibling.previousSibling.firstChild.value = temp.value;
-}
-
-function testtop(){
-    console.log("ccem-pro-023");
 }
 
 init();
