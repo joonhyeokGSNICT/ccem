@@ -1,11 +1,5 @@
 var codeData;
 
-$(async function () {
-	codeData = await getCommCode();
-	tobbarPreloadPane();
-	navbarPreloadPane();
-});
-
 client.on("getCodeList", function (target_guid) {
 	const target = client.instance(target_guid);
 	target.trigger('getCodeData', codeData);
@@ -68,3 +62,12 @@ const navbarPreloadPane = async () => {
 		}
 	}
 }
+
+/**
+ * 익명함수 실행
+ */
+(async function () {
+	codeData = await getCommCode();
+	tobbarPreloadPane();
+	navbarPreloadPane();
+})();
