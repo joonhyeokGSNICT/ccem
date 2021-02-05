@@ -16,6 +16,9 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
 	<!-- toastGrid -->
 	<link href="../lib/toast-grid/css/tui-grid.css" rel="stylesheet" type="text/css" />
+	<!-- loading -->
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
 	<!-- main.css -->
 	<link rel="stylesheet" href="../css/ces_top.css">
 	<!-- fancy tree -->
@@ -28,9 +31,10 @@
 			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
 				<div class="row" style="background: #123f8a; height: 35px;">
 					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">임시저장</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">최종제출</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫기</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" disabled>임시저장</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" disabled>처리내역저장</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" disabled>최종제출</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" onclick="window.close()">닫기</button>&nbsp;
 					</div>
 				</div>
 				
@@ -121,6 +125,7 @@
 	<script src="../lib/fancytree/jquery.fancytree.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/client.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>

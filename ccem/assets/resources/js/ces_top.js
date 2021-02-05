@@ -191,10 +191,8 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 			userSearch();												// 고객 검색
 			if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
 				if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
-					for(d of data.ticket.tags){								// 티켓의 태그에 in 이 포함 되어 있으면 전화인입
-						if(d == 'in'){
-							topBarClient.invoke("popover");					// 탑바 열기
-						}
+					if(currentTicketInfo.ticket.tags.includes("in")){
+						topBarClient.invoke("popover");					// 탑바 열기
 					}
 				};
 			}
@@ -224,20 +222,7 @@ function userSearch() {
 	sidebarClient.get('ticket').then(function(data){
 	var phone = "";
 		client.request(`/api/v2/users/${data['ticket'].requester.id}.json`).then(function(reqUser){
-			if(reqUser.user.user_fields.tchr_mk_cde == "선생님" || reqUser.user.user_fields.tchr_mk_cde == "직원"){
-				$("#teacherSearchTab").click();													// 선생님 탭 이동
-				$("#teacherSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
-				$("#teacherSearchDiv").find("input[type=text]").val("");
-				$("#teacherSearchDiv").find("select").val("");
-				setTimeout(function(){
-					console.log(reqUser);
-					if(reqUser.user.external_id != null){
-						$("#teacherDNum").val(reqUser.user.external_id);
-						$("#teacherDNumCheck").prop('checked',true);
-					}
-					customerSearch("teacherSearchDiv","1");
-				}, 500);
-			}else {
+			if(currentTicketInfo.ticket.externalId == null && (currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.tags.includes("zopim_chat"))){
 				console.log(reqUser);
 				$("#customerSearchTab").click();												// 고객조회 탭 이동
 				$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
@@ -258,6 +243,32 @@ function userSearch() {
 					}
 					customerSearch("custSearchDiv","1");
 				}, 500);
+			}else {
+				if(reqUser.user.user_fields.tchr_mk_cde == "선생님" || reqUser.user.user_fields.tchr_mk_cde == "직원"){
+					$("#teacherSearchTab").click();													// 선생님 탭 이동
+					$("#teacherSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
+					$("#teacherSearchDiv").find("input[type=text]").val("");
+					$("#teacherSearchDiv").find("select").val("");
+					setTimeout(function(){
+						console.log(reqUser);
+						if(reqUser.user.external_id != null){
+							$("#teacherDNum").val(reqUser.user.external_id);
+							$("#teacherDNumCheck").prop('checked',true);
+						}
+						customerSearch("teacherSearchDiv","1");
+					}, 500);
+				}else {
+					console.log(reqUser);
+					$("#customerSearchTab").click();												// 고객조회 탭 이동
+					$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
+					$("#custSearchDiv").find("input[type=text]").val("");
+					$("#custSearchDiv").find("select").val("");
+					setTimeout(function(){
+						$("#customerMNum").val(reqUser.user.external_id);
+						$("#customerMNumCheck").prop('checked',true);
+						customerSearch("custSearchDiv","1");
+					}, 500);
+				}
 			}
 		});
 	});
@@ -535,7 +546,7 @@ function cancelCustInfo(){
 $(function(){
 	
 	var settings = {
-			url: `https://devccem.daekyo.co.kr/sys.getList.do`,
+			url: `${API_SERVER}/sys.getList.do`,
 			method: 'POST',
 			contentType: "application/json; charset=UTF-8",
 			dataType: "json",
@@ -1251,12 +1262,12 @@ function onAutoSearch(sCustId, type){
 						loadCustInfoMain();									// 고객정보 로드 함수
 					}
 					// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-					client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
+					/*client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
 						console.log(d);
 						if(d.count >= 1){					
 							if(currentTicketInfo.ticket.externalId == null){
 								// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-								$.ajax({
+								var option = {
 									url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
 									type: 'PUT',
 									dataType: 'json',
@@ -1265,10 +1276,10 @@ function onAutoSearch(sCustId, type){
 										"user": {
 											"id": d.results[0].id,
 										}
-									}),
-									success: function (response) {
-										client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-									}	
+									})
+								}
+								client.request(option).then(function(d) {
+									client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
 								});
 							}else {
 								updateUserforZen();
@@ -1276,8 +1287,9 @@ function onAutoSearch(sCustId, type){
 						}else {
 							updateUserforZen();
 						}
-					});
+					});*/
 					sOrgFAT_RSDNO = currentCustInfo.FAT_RSDNO; 			// 학부모 주민번호 변경여부 체크 변수
+					updateUserforZen();
 				}else {
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);
@@ -1321,32 +1333,33 @@ function onAutoSearchTeacher(sEmpId, type){
 						loadTeacherInfoMain();									// 선생님정보 로드 함수
 					}
 					// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-					client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
+					/*client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
 						console.log(d);
 						if(d.count >= 1){					
-							if(currentTicketInfo.ticket.externalId == null){
+							if(currentTicketInfo.ticket.externalId == null && (currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.tags.includes("zopim_chat"))){
 								// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-								$.ajax({
-									url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-									type: 'PUT',
-									dataType: 'json',
-									contentType: "application/json",
-									data: JSON.stringify({
-										"user": {
-											"id": d.results[0].id,
-										}
-									}),
-									success: function (response) {
+								var option = {
+										url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+										type: 'PUT',
+										dataType: 'json',
+										contentType: "application/json",
+										data: JSON.stringify({
+											"user": {
+												"id": d.results[0].id,
+											}
+										})
+									}
+									client.request(option).then(function(d) {
 										client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-									}	
-								});
+									});
 							}else {
 								updateTchrforZen();
 							}
 						}else {
 							updateTchrforZen();
 						}
-					});
+					});*/
+					updateTchrforZen();
 				}else {
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);

@@ -1,6 +1,11 @@
 var topBarClient;
 var navBarClient;
 
+client.on('app.activated', function(){
+	topBarClient.trigger("getSidebarClient", client._instanceGuid);
+	topBarClient.invoke("hide");								// 탑바 열기
+});
+
 client.get('instances').then(function (instancesData) {
 	var instances = instancesData.instances;
 	for (var instanceGuid in instances) {
