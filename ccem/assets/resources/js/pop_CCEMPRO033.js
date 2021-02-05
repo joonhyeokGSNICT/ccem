@@ -223,11 +223,13 @@ $(function(){
 			if (openerNm == "CCEMPRO022") {
 				const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
 				opener.getBaseData("C", CUST_ID, "I");
+				opener.topbarObject.onAutoSearch(CUST_ID, "1");
 				window.close();
 			// 입회등록 화면에서 오픈했을때.
 			} else if (openerNm == "CCEMPRO031") {
 				const CUST_ID = customerSearchList_grid.getValue(ev.rowKey, "CUST_ID");  // 고객번호                           
 				opener.getCust(CUST_ID, "I");
+				opener.topbarObject.onAutoSearch(CUST_ID, "1");
 				window.close();
 			}
 		}
@@ -383,6 +385,7 @@ $(function(){
 			if (openerNm == "CCEMPRO022") {
 				const EMP_ID = teacherSearchList_grid.getValue(ev.rowKey, "EMP_ID");  // 사원번호                           
 				opener.getBaseData("T", EMP_ID, "I");
+				opener.topbarObject.onAutoSearchTeacher(EMP_ID, "1");
 				window.close();
 			// 부모창이 존재하지 않을때.
 			} else {
