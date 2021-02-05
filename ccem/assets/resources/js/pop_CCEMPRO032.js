@@ -520,9 +520,9 @@ const onSave = async () => {
 	} else if (sJobType == "I" && selectedSeq > 1) {
 
 		// 티켓생성
-		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
-		if (!ticket) return false;
-		cselData.ZEN_TICKET_ID = ticket.id;
+		const ticket_id = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
+		if (!ticket_id) return false;
+		cselData.ZEN_TICKET_ID = ticket_id;
 	
 	// 수정저장일떄.
 	} else if (sJobType == "U") {
@@ -722,5 +722,26 @@ const getCustomData = async () => {
 const setBtnCtrlAtLoadComp = () => {
 
 	$("#button2").prop("disabled", false);	// 입회연계 활성화
+
+}
+
+/**
+ * 티켓생성버튼
+ * @param {string|number} parent_id Zendesk ticket id
+ */
+const onNewTicket = async (parent_id) => {
+	
+	// 사용자 체크
+	const CUST_ID = $("#textbox2").val();
+	const CUST_NAME = $("#textbox1").val();
+	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
+	const target = (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
+	const user_id = await checkUser(target, CUST_ID, CUST_NAME);
+	if (!user_id) return false;
+
+	// 티켓생성
+	const origin = await createTicket(user_id, parent_id);
+	currentTicket = origin.ticket;
+	return currentTicket.id;
 
 }

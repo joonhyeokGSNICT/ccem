@@ -18,9 +18,9 @@ $(function () {
 	$("#button10").on("click", ev => {
 		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
 		onNewTicket()
-			.then( async (data) => { 
-				if (data)  {
-					await topbarClient.invoke('routeTo', 'ticket', data.ticket.id);	// 티켓오픈
+			.then( async (ticket_id) => { 
+				if (ticket_id)  {
+					await topbarClient.invoke('routeTo', 'ticket', ticket_id);	// 티켓오픈
 					alert("티켓생성이 완료되었습니다."); 
 				}
 			})
@@ -704,9 +704,9 @@ const onSave = async () => {
 	} else if (sJobType == "I" && selectedSeq > 1) {
 
 		// 티켓생성
-		const { ticket } = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
-		if (!ticket) return false;
-		cselData.ZEN_TICKET_ID = ticket.id;
+		const ticket_id = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
+		if (!ticket_id) return false;
+		cselData.ZEN_TICKET_ID = ticket_id;
 
 	// 수정저장일떄.
 	} else if (sJobType == "U") {
@@ -1462,9 +1462,6 @@ const getCustomData = async () => {
  */
 const onNewTicket = async (parent_id) => {
 	
-	// 티켓정보 초기화
-	currentTicket = null;	
-
 	// 사용자 체크
 	const CUST_ID = $("#hiddenbox6").val();
 	const CUST_NAME = $("#textbox21").val();
@@ -1474,6 +1471,8 @@ const onNewTicket = async (parent_id) => {
 	if (!user_id) return false;
 
 	// 티켓생성
-	return await createTicket(user_id, parent_id);
+	const origin = await createTicket(user_id, parent_id);
+	currentTicket = origin.ticket;
+	return currentTicket.id;
 
 }

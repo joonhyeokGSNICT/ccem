@@ -535,13 +535,6 @@ const checkTicket = async () => {
     //     }
 	// }
 
-	// 티켓생성버튼으로 티켓을 생성했을 경우.
-	if (!currentTicket) {
-		sidebarClient = topbarObject.sidebarClient;
-		const origin  = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
-	}
-
 	if (!currentTicket) {
 		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
 		return false;
