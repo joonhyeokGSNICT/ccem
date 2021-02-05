@@ -572,7 +572,8 @@ const onSave = async () => {
 	if (!cselData) return false;
 	const transData = getTransCondition();
 	if (!transData) return false;
-	const customData  = getCustomData();
+	const customData  = await getCustomData();
+	if (!customData) return false;
 
 	// 상담순번이 1이고, 신규저장일떄.
 	if (sJobType == "I" && selectedSeq == 1) {
@@ -598,6 +599,9 @@ const onSave = async () => {
 		return false;
 	}
 
+	// 티켓 요청자 체크
+	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
+	
 	// CCEM 저장
 	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
 	const resSave = await saveEnterInfo(cselData, transData, obData);
@@ -935,10 +939,11 @@ const onNewTicket = async (parent_id) => {
 }
 
 /**
- * 티켓필드에 들어갈 내용 반환.
+ * 티켓정보 value check
  */
-const getCustomData = () => {
-    return {
+const getCustomData = async () => {
+
+    const data = {
 	    prdtList 	    : grid5.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
 		deptIdNm 	    : $("#textbox13").val(),			// 지점부서명(사업국명)
 	    aeraCdeNm 	    : "",	// 지역코드명
@@ -947,7 +952,25 @@ const getCustomData = () => {
 		reclCntct 	    : "", // 재통화예약연락처
 		ageCde 			: $("#hiddenbox9").val().trim(),	// 연령코드
 		brandId			: $("#hiddenbox10").val(),			// 브랜드ID
-    }
+		empList    		: [], // 연계대상자
+		requesterId		: undefined, // requester_id
+	}
+
+	// 고객번호가 있을경우에만 requesterId 세팅
+	const sCUST_ID = $("#hiddenbox3").val();
+	if (sCUST_ID) {
+		const { users } = await zendeskUserSearch(sCUST_ID.trim());
+
+		if (users.length === 0) {
+			alert("젠데스크 사용자를 생성중입니다.\n\n잠시후 다시 시도해 주세요.");
+			return false;
+		}
+
+		data.requesterId = users[0].id;
+	}
+	
+	return data;
+	
 }
 
 /**

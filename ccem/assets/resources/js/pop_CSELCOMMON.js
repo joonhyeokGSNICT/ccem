@@ -275,6 +275,12 @@ const openCCEMPRO042_2 = (keyCode) => {
 }
 
 /**
+ * Zendesk 사용자정보 조회
+ * @param {string} external_id 고객번호
+ */
+const zendeskUserSearch = (external_id) => topbarClient.request(`/api/v2/users/search.json?external_id=${external_id}`);
+
+/**
  * 팔로워 정보 반환
  * @param {array} EMP_ID_LIST 연계대상자리스트
  * @param {string} type SET, UP
@@ -282,7 +288,7 @@ const openCCEMPRO042_2 = (keyCode) => {
 const getFollowers = async (EMP_ID_LIST = [], type) => {
 	const followerData = new Array();
 	for (const EMP_ID of EMP_ID_LIST) {
-		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
+		const { users } = await zendeskUserSearch(EMP_ID.trim());
 		if (users.length > 0) {
 			if (type == "UP") followerData.push({ user_id: users[0].id, action: "put" }); 
 			else followerData.push({ id: users[0].id});
@@ -294,13 +300,12 @@ const getFollowers = async (EMP_ID_LIST = [], type) => {
 /**
  * Zendesk 티켓 업데이트 for 상담등록/입회등록/선생님소개
  * @param {object} cselData    상담정보
- * @param {object} customData  커스텀필드정보
- * @param {object} empData 	   연계대상자ID
+ * @param {object} customData  티켓정보
  */
-const updateTicket = async (cselData, customData, empData) => {
+const updateTicket = async (cselData, customData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
-	const followerData = await getFollowers(empData, "UP");
+	const followerData = await getFollowers(customData.empList, "UP");
 
 	const option = {
 		url: `/api/v2/tickets/${cselData.ZEN_TICKET_ID}`,
@@ -308,12 +313,13 @@ const updateTicket = async (cselData, customData, empData) => {
 		contentType: "application/json",
 		data: JSON.stringify({ 
 			ticket: {
-				external_id		: CSEL_DATE_NO_SEQ,
+				external_id		: CSEL_DATE_NO_SEQ,		 // 티켓 external_id (0000-00-00_0_0)
 				subject			: cselData.CSEL_TITLE,	 // 제목
 				comment: {
 					public		: false,				 // 내부메모
 					body		: cselData.CSEL_CNTS,	 // 상담내용
 				},
+				requester_id	: customData.requesterId,// 요청자ID
 				followers		: followerData,			 // 팔로워
 				custom_fields: [
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"], 		value: CSEL_DATE_NO_SEQ }, 									// 상담번호
@@ -400,18 +406,18 @@ const updateTicket = async (cselData, customData, empData) => {
 /**
  * Zendesk 티켓필드 입력 - 사용안함
  * @param {object} cselData 	상담정보
- * @param {obejct} customData   커스텀필드정보
- * @param {obejct} empData 		연계대상자ID
+ * @param {obejct} customData   티켓정보
  */
-const setTicket = async (cselData, customData, empData) => {
+const setTicket = async (cselData, customData) => {
 
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
-	const followerData = await getFollowers(empData, "SET");
+	const followerData = await getFollowers(customData.empList, "SET");
 
 	let req = new Object()
-	req["ticket.subject"] = cselData.CSEL_TITLE;
-	req["ticket.externalId"] = CSEL_DATE_NO_SEQ;
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] 		 = CSEL_DATE_NO_SEQ;										 // 상담번호
+	req["ticket.requester"] = { id: customData.requesterId };	// 요청자ID
+	req["ticket.subject"] = cselData.CSEL_TITLE;				// 제목
+	req["ticket.externalId"] = CSEL_DATE_NO_SEQ;				// 티켓 external_id (0000-00-00_0_0)
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] 		 = CSEL_DATE_NO_SEQ;									  // 상담번호
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"]}`]          = cselData.CSEL_LTYPE_CDE;                               // 상담분류(대)  
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_MTYPE_CDE"]}`]          = cselData.CSEL_MTYPE_CDE;                               // 상담분류(중)  
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_STYPE_CDE"]}`]          = cselData.CSEL_STYPE_CDE;                               // 상담분류(소)  
@@ -566,19 +572,25 @@ const checkUser = async (target, CUST_ID, CUST_NAME) => {
 	sMsg += "\n\n 위 항목으로 티켓을 생성 하시겠습니까?";
 	if (confirm(sMsg) == false) return false;
 
-	const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${CUST_ID}`);
-	let user_id = "";
+	const { users } = await zendeskUserSearch(CUST_ID.trim());
 	
 	// 젠데스크 사용자가 없으면 사용자생성
+	// let user_id = "";
+	// if (users.length === 0) {
+	// 	const custInfo = await getCustInfo(target, CUST_ID);
+	// 	const { user } = await createUser(target, custInfo);
+	// 	user_id = user.id;
+	// } else {
+	// 	user_id = users[0].id;
+	// }
+
+	// 젠데스크 사용자생성은 topbar에서 처리함.
 	if (users.length === 0) {
-		const custInfo = await getCustInfo(target, CUST_ID);
-		const { user } = await createUser(target, custInfo);
-		user_id = user.id;
-	} else {
-		user_id = users[0].id;
+		alert("젠데스크 사용자를 생성중입니다.\n\n잠시후 다시 시도해 주세요.");
+		return false;
 	}
 
-	return user_id;
+	return users[0].id;
 }
 
 /**
@@ -768,4 +780,43 @@ const createTicket = async (user_id, parent_id) => {
 	}
 
 	return await topbarClient.request(option);
+}
+
+ /**
+  * 사용자 병합
+  * @param {string|number} temp_requester_id 
+  * @param {string|number} requester_id 
+  */
+const zendeskUserMerge = (temp_requester_id, requester_id) => {
+
+	const option = {
+		url: `/api/v2/users/${temp_requester_id}/merge.json`,
+		type: 'PUT',
+		dataType: 'json',
+		contentType: "application/json",
+		data: JSON.stringify({
+			user: { id: requester_id }
+		})
+	}
+	
+	return topbarClient.request(option);
+}
+
+/**
+ * 티켓 요청자가 임시사용자일경우 현재 요청자로 병합한다.
+ * @param {string|number} ticket_id 
+ * @param {string|number} requester_id 
+ */
+const checkTicketRequester = async (ticket_id, requester_id) => {
+
+	if (!requester_id) return;
+
+	const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+	const { user } = await topbarClient.request(`/api/v2/users/${ticket.requester_id}`);
+	
+	// 사용자의 external_id가 없을경우 임시사용자이므로 현재 요청자로 병합한다.
+	if (!user.external_id) {
+		await zendeskUserMerge(ticket.requester_id, requester_id);
+	}
+
 }

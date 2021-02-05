@@ -689,8 +689,8 @@ const onSave = async () => {
 	if (!cselData) return false;
 	const addData = getAddInfoCondition();
 	if (!addData) return false;
-	const customData  = getCustomData();
-	const empData = $("#hiddenbox11").val().split(",");
+	const customData  = await getCustomData();
+	if (!customData) return false;
 
 	// 상담순번이 1이고, 신규저장일떄.
 	if (sJobType == "I" && selectedSeq == 1) {
@@ -716,17 +716,20 @@ const onSave = async () => {
 		return false;
 	}
 
-	// CCEM저장
+	// 티켓 요청자 체크
+	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
+
+	// CCEM 저장
 	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
 	const resSave = await saveCounsel(cselData, addData, obData);
 
-	// 티켓필드 입력
+	// 티켓 업데이트
 	cselData.CSEL_NO = resSave.CSEL_NO;
-	await updateTicket(cselData, customData, empData);
+	await updateTicket(cselData, customData);
 	
 	// 저장성공후
 	$("#textbox28").val(resSave.CSEL_NO); 	// 접수번호 세팅
-	getCounsel(resSave.CSEL_SEQ);				// 상담 재조회
+	getCounsel(resSave.CSEL_SEQ);			// 상담 재조회
 
 	// topbar 숨김
 	topbarClient.invoke("popover", "hide");
@@ -1419,19 +1422,38 @@ var setDisPlayDn = (data) => {
 }
 
 /**
- * 티켓필드에 들어갈 내용 반환.
+ * 티켓정보 value check
  */
-const getCustomData = () => {
-    return {
-	    prdtList 	    : grid2.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
+const getCustomData = async () => {
+
+    const data = {
+		prdtList 	    : grid2.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
 	    deptIdNm 	    : $("#textbox6").val(),		// 지점부서명(사업국명)
 	    aeraCdeNm 	    : $("#textbox4").val(),		// 지역코드명
 	    procDeptIdNm    : $("#textbox26").val(),	// 연계부서명
         lcName 		    : $("#textbox9").val(),		// 러닝센터명(센터명)
 		reclCntct 	    : $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : "", // 상담결과 구분이 재통화예약일경우
-		ageCde 			: $("#hiddenbox13").val().trim(),	// 연령코드
-		brandId			: $("#hiddenbox14").val(),			// 브랜드ID
-    }
+		ageCde 			: $("#hiddenbox13").val().trim(),		// 연령코드
+		brandId			: $("#hiddenbox14").val(),				// 브랜드ID
+		empList    		: $("#hiddenbox11").val().split(","),	// 연계대상자
+		requesterId		: undefined, // requester_id
+	}
+
+	// 고객번호가 있을경우에만 requesterId 세팅
+	const sCUST_ID = $("#hiddenbox6").val();
+	if (sCUST_ID) {
+		const { users } = await zendeskUserSearch(sCUST_ID.trim());
+
+		if (users.length === 0) {
+			alert("젠데스크 사용자를 생성중입니다.\n\n잠시후 다시 시도해 주세요.");
+			return false;
+		}
+
+		data.requesterId = users[0].id;
+	}
+
+	return data;
+
 }
 
 /**
