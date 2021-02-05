@@ -361,6 +361,8 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			$("#timebox2").val(cselData.TRANS_TIME);										// 연계시간					MSK_TRANS_TIME
 			$("#textbox13").val(cselData.DEPT_ACP_NAME);        							// 본부접수자				txtCntAcp
 			$("#hiddenbox1").val(cselData.ZEN_TICKET_ID);									// 티켓ID
+			$("#hiddenbox3").val(cselData.DIV_KIND_CDE);									// 브랜드ID
+			$("#textbox16").val(findCodeName("FAX_TYPE_CDE", "DS27"));						// FAX양식 - 교사소개의뢰서
 			
 			setBtnCtrlAtLoadComp();				// 버튼제어
 
@@ -687,7 +689,7 @@ const getCustomData = () => {
         lcName 		    : "", // 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
 		ageCde 			: "", // 연령코드
-		brandId			: "", // 브랜드ID
+		brandId			: $("#hiddenbox3").val(), // 브랜드ID
     }
 }
 

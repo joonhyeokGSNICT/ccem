@@ -293,7 +293,12 @@ const setDisPlay = () => {
 		$("#hiddenbox1").val("DS10");
 		$("#textbox16").val($("#hiddenbox1 option:selected").text());	// FAX 양식명(입회상담 의뢰서)
 	}
-	else {                // 위의 3가지 경우외에는 연계할 수 없다.
+	else if (sPROC_MK == "6") { // 소개연계
+		$("#textbox11").val("소개연계");
+		$("#hiddenbox1").val("DS27");
+		$("#textbox16").val($("#hiddenbox1 option:selected").text());	// FAX 양식명(교사소개의뢰서)
+	}
+	else {                // 위의 4가지 경우외에는 연계할 수 없다.
 		$("#textbox11").val("연계건이 아닙니다.");
 		$("#textbox16").val("연계건이 아닙니다.");
 	}

@@ -637,7 +637,7 @@ const getCounselCondition = (sJobType) => {
 		CSEL_LTYPE_CDE		: $("#textbox19").val(), 						// 상담대분류코드			
 		CSEL_MTYPE_CDE		: $("#textbox21").val(), 						// 상담중분류코드			
 		CSEL_STYPE_CDE		: $("#textbox23").val(), 						// 상담소분류코드	
-		CSEL_TITLE			: "입회등록",									 // 상담제목
+		CSEL_TITLE			: "입회상담",									 // 상담제목
 		CSEL_CNTS			: $("#textbox25").val().trim(), 				// 상담상세내용		
 		// LIMIT_MK			: "", // 처리시한구분		
 		// PROC_HOPE_DATE	: "", // 처리희망일자			
