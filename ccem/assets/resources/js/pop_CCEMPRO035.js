@@ -618,7 +618,7 @@ const getCsel = (sPage) => {
 			grid1.resetData(cselData, {
 				pageState: {
 					page: sPage,		// Target page number.
-					totalCount: cselData[0].totalCnt,	// The total pagination count.
+					totalCount: cselData[0].TOTALCNT,	// The total pagination count.
 					perPage: sPerPage,	// Number of rows per page.
 				}
 			});
