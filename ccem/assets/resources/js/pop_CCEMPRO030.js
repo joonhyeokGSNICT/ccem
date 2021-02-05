@@ -482,7 +482,7 @@ const getHappy1 = () => {
         // DS_HPCALL1.GIFT_DATE        // 사은품접수일자       
         // DS_HPCALL1.GIFT_NO          // 사은품접수번호   
         // DS_HPCALL1.CTI_CHGDATE      // CTI변경일자    
-        $("#textbox25").val(DS_HPCALL1.HPCALL_NAME);        // 해피콜담당자명 // TODO 서비스목록에 없음, 실제로 오는지 확인하고 안오면 요청.
+        $("#textbox25").val(DS_HPCALL1.HPCALL_NAME);        // 해피콜담당자명
 
         getHappy2(isHappy1);
 
