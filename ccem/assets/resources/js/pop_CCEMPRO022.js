@@ -10,40 +10,6 @@ var DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
 var DS_SCHEDULE	   = {};		// 재통화예약 정보 저장 data
 
 $(function () {
-	
-	createGrids();
-	getProd(grid1);
-
-	// 티켓생성 버튼 
-	$("#button10").on("click", ev => {
-		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
-		onNewTicket()
-			.then( async (ticket_id) => { 
-				if (ticket_id)  {
-					await topbarClient.invoke('routeTo', 'ticket', ticket_id);	// 티켓오픈
-					alert("티켓생성이 완료되었습니다."); 
-				}
-			})
-			.catch((error) => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
-
-	// 저장 버튼
-	$("#button8").on("click", ev => {
-		loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
-		onSave()
-			.then((succ) => { if (succ) alert("저장 되었습니다."); })
-			.catch((error) => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`상담정보 저장중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
 
 	// 날짜와 시간 초기값 세팅
 	$("#textbox27").val(getDateFormat());
@@ -61,6 +27,9 @@ $(function () {
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
+	createGrids();
+	getProd(grid1);
+	setElmEvent();
 	onStart();
 
 });
@@ -163,6 +132,54 @@ const createGrids = () => {
 		grid3.addSelection(ev);
 		grid3.clickSort(ev);
 	});
+}
+
+const setElmEvent = () => {
+
+	// 티켓생성 버튼 
+	$("#button10").on("click", ev => {
+		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		onNewTicket()
+			.then( async (ticket_id) => { 
+				if (ticket_id)  {
+					await topbarClient.invoke('routeTo', 'ticket', ticket_id);	// 티켓오픈
+					alert("티켓생성이 완료되었습니다."); 
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
+	// 저장 버튼
+	$("#button8").on("click", ev => {
+		loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
+		onSave()
+			.then((succ) => { if (succ) alert("저장 되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`상담정보 저장중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
+	// 상담결과 콤보박스 - 이미 선택한 옵션을 다시 선택했을때 이벤트 발생
+	const $selectbox8 = $('#selectbox8');
+    $selectbox8.on("click", ev => {
+        const $this = $(ev.target);
+        if ($this.hasClass('open')) {
+            openCselRst($this.val());
+            $this.removeClass('open');
+        } else {
+            $this.addClass('open');
+        }
+    });
+    $selectbox8.on("blur", ev => $(ev.target).removeClass('open'));
+
 }
 
 /**

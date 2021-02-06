@@ -5,9 +5,6 @@ var DS_COUNSEL = [];	// 상담정보
 
 $(function () {
 	
-	createGrids();
-	getProd(grid4);
-
 	// create calendar
 	$(".calendar").each((i, el) =>  calendarUtil.init(el.id));
 
@@ -28,6 +25,8 @@ $(function () {
 			.finally(() => loading.out());
 	});
 
+	createGrids();
+	getProd(grid4);
 	onStart();
 
 });
