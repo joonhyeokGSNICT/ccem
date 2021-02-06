@@ -170,14 +170,6 @@ const createGrids = () => {
  */
 const onStart = async () => {
 
-	// init
-	$("#selectbox6").val("2");				// 고객반응
-	$("#selectbox10").val("99");			// 처리상태
-	$("#button4").prop("disabled", true);	// 상담연계
-	$("#button5").prop("disabled", true);	// 추가등록
-	$("#button6").prop("disabled", true);	// 관계회원
-	$("#button7").prop("disabled", true);	// 결과등록
-
 	const opener_name = parent.opener.name;
 	const hash = parent.location.hash;
 
@@ -188,15 +180,17 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;	
+
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+
+		// 콤보박스 세팅
 		setCodeData();
 
 		// 고객기본정보 조회
 		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
 		getBaseData("C", custId, "I");
-
-		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
 
 	}
 	// 탑바 > 고객정보 > 선생님 > 상담등록 버튼으로 오픈
@@ -206,15 +200,17 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;	
+
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+
+		// 콤보박스 세팅
 		setCodeData();
 
 		// 고객기본정보 조회
 		const empId = topbarObject.document.getElementById("tchrInfo_EMP_ID").value;	// 사원번호
 		getBaseData("T", empId, "I");
-
-		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
 
 	} 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
@@ -224,6 +220,8 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;
+
+		// 콤보박스 세팅
 		setCodeData();
 
 		const counselGrid = parent.opener.grid1;				// 상담조회 grid
@@ -291,6 +289,19 @@ const setCodeData = () => {
 
 		// set
 		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
+	}
+
+	// init setting
+	$("#selectbox1").val("0");				// 개인정보 : 비공개
+	$("#selectbox2").val("01");				// 내담자 : 모
+	$("#selectbox6").val("2");				// 고객반응 : 보통
+	$("#selectbox10").val("99");			// 처리상태 : 완료
+	$("#button4").prop("disabled", true);	// 상담연계
+	$("#button5").prop("disabled", true);	// 추가등록
+	$("#button6").prop("disabled", true);	// 관계회원
+	$("#button7").prop("disabled", true);	// 결과등록
+	if (currentTicket?.via?.channel == "chat") {
+		$("#selectbox15").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
 	}
 }
 

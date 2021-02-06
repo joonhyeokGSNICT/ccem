@@ -45,17 +45,19 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;	
-		setCodeData();
-		
-		// 선생님정보 조회
-		const sCSEL_CHNL_MK = "1";	// 접수채널구분        
-		const sCSEL_TYPE 	= "T";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
-		const sCUST_ID 		= $("#custInfo_CUST_ID", topbarObject.document).val(); // 고객번호
-		getTchInfo(sCUST_ID, sCSEL_TYPE, "I");
 
 		// 오픈된 티켓세팅
 		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
 		currentTicket = origin?.ticket;
+
+		// 콤보박스 세팅
+		setCodeData();
+		
+		// 선생님정보 조회
+		const sCSEL_CHNL_MK = "1";	// 접수채널구분        
+		const sCSEL_TYPE 	= "C";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
+		const sCUST_ID 		= $("#custInfo_CUST_ID", topbarObject.document).val(); // 고객번호
+		getTchInfo(sCUST_ID, sCSEL_TYPE, "I");
 			
 	// 탑바 > 고객정보 > 선생님 > 선생님소개 버튼으로 오픈
 	} else if (opener_name.includes("top_bar") && hash.includes("by_tchr")) {
@@ -64,6 +66,12 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;	
+
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+
+		// 콤보박스 세팅
 		setCodeData();
 		
 		// 선생님정보 조회
@@ -71,10 +79,6 @@ const onStart = async () => {
 		const sCSEL_TYPE 	= "T";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
 		const sEMP_ID 		= $("#tchrInfo_EMP_ID", topbarObject.document).val(); // 사원번호
 		getTchInfo(sEMP_ID, sCSEL_TYPE, "I");
-
-		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
 		
 	}
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
@@ -84,6 +88,8 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;
+
+		// 콤보박스 세팅
 		setCodeData();
 
 		const counselGrid	= parent.opener.grid1;				// 상담조회 grid
@@ -152,6 +158,9 @@ const setCodeData = () => {
 	$("#selectbox7").val("01");	// 처리상태 : 접수
 	$("#selectbox8").val("9");	// 상담구분 : 교사소개
 	$("#selectbox9").val("6");	// 처리구분 : 소개연계
+	if (currentTicket?.via?.channel == "chat") {
+		$("#selectbox3").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
+	}
 
 }
 
@@ -184,6 +193,7 @@ const onSearch = async (sCSEL_SEQ) => {
  * @param {string} sJobType 	저장구분(I/U)
  */
 const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, reject) => {
+
 	const settings = {
 		url: `${API_SERVER}/cns.getTchrCselIntro.do`,
 		method: 'POST',
@@ -208,10 +218,9 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, rej
 			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
 
 			const DS_TCHR = res.dsRecv1;
-			if (DS_TCHR.length == 0) return reject(new Error(settings.errMsg + "\n\n검색 결과가 없습니다."));
+			const tchrData = (DS_TCHR.length > 0) ? DS_TCHR[0] : new Object();
 
 			// 선생님정보 세팅
-			const tchrData = DS_TCHR[0];
 			$("#textbox2").val(tchrData.EMP_ID);				// 선생님ID		txtEmpId
 			$("#textbox1").val(tchrData.TCHR_NAME);				// 선생님성함	txtTchrName		
 			// tchrData.EMP_MK			// 교사직원구분		
@@ -240,6 +249,8 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, rej
 			// tchrData.AREA_CDE		// 지역코드			
 			// tchrData.DEPT_EMP_ID		// 지점장사번
 			$("#hiddenbox2").val(sCSEL_TYPE == "T" ? "TC" : "CM"); // 고객구분(선생님인경우: 'TC', 신규선생님인경우: 'CM')
+
+			return resolve(tchrData);
 
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));

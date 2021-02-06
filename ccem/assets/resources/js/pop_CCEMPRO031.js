@@ -107,6 +107,12 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;	
+
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+		
+		// 콤보박스 세팅
 		setCodeData();
 
 		// 고객정보 조회
@@ -115,10 +121,6 @@ const onStart = async () => {
 		getCust(sCUST_ID, "I");
 		setDate();
 
-		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
-
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	} else if (opener_name.includes("CCEMPRO035")) {	
 		topbarObject  = parent.opener.topbarObject;
@@ -126,6 +128,8 @@ const onStart = async () => {
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;
+
+		// 콤보박스 세팅
 		setCodeData();
 
 		const counselGrid  = parent.opener.grid1;				// 상담조회 grid
@@ -184,6 +188,9 @@ const setCodeData = () => {
 	else $("#selectbox4").val("1");		// 상담채널 : 착신
 	$("#selectbox9").val("01");			// 내담자 : 모
 	$("#selectbox5").val("3");			// 연계방법 : FAX
+	if (currentTicket?.via?.channel == "chat") {
+		$("#selectbox4").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
+	}
 }
 
 /**
