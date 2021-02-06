@@ -67,7 +67,7 @@ const createGrids = () => {
 		checkProd(grid2, grid1.getRow(ev.rowKey));
 	});
 	grid1.on("uncheck", ev => {
-		uncheckProd(grid2, grid1.getRow(ev.rowKey));
+		uncheckProd(grid2, grid1, ev.rowKey);
 	});
 
 	// 상담등록 > 상담과목 grid
@@ -87,6 +87,19 @@ const createGrids = () => {
 			{ header: '제품순번',     name: 'PRDT_SEQ',    align: "left", sortable: true, ellipsis: true, hidden: true    },
 			{ header: '사용여부',     name: 'USE_FLAG',    align: "left", sortable: true, ellipsis: true, hidden: true    },
 			{ header: '선택',         name: 'USE',         align: "left", sortable: true, ellipsis: true, hidden: true    },
+			{ header: ' ',         	  name: 'PRDT_ID',     align: "center", sortable: false, ellipsis: true, hidden: false, 
+				minWidth: 22, width: 22, 
+				renderer: {
+					type: CustomIconRenderer,
+					options: {
+						src: "../img/delBtn.svg",
+						width: 15,
+						height: 15,
+						title: "삭제",
+						onClick: (props) => deleteProd(grid1, grid2, props.rowKey),
+					}
+				}
+			},
 		],
 	});
 	grid2.on('click', (ev) => {

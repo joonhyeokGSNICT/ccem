@@ -64,7 +64,7 @@ const createGrids = () => {
 		checkProd(grid5, grid4.getRow(ev.rowKey));
 	});
 	grid4.on("uncheck", ev => {
-		uncheckProd(grid5, grid4.getRow(ev.rowKey));
+		uncheckProd(grid5, grid4, ev.rowKey);
 	});
 
 	// 입회등록 > 입회과목 grid
@@ -84,6 +84,19 @@ const createGrids = () => {
 			{ header: '제품순번',     name: 'PRDT_SEQ',     align: "left", sortable: true, ellipsis: true, hidden: true    },
 			{ header: '사용여부',     name: 'USE_FLAG',     align: "left", sortable: true, ellipsis: true, hidden: true    },
 			{ header: '선택',         name: 'USE',          align: "left", sortable: true, ellipsis: true, hidden: true    },
+			{ header: ' ',         	  name: 'PRDT_ID',     align: "center", sortable: false, ellipsis: true, hidden: false, 
+				minWidth: 22, width: 22, 
+				renderer: {
+					type: CustomIconRenderer,
+					options: {
+						src: "../img/delBtn.svg",
+						width: 15,
+						height: 15,
+						title: "삭제",
+						onClick: (props) => deleteProd(grid4, grid5, props.rowKey),
+					}
+				}
+			},
 		],
 	});
 	grid5.on('click', (ev) => {

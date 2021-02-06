@@ -135,6 +135,37 @@ class CustomRenderer {
   }
 }
 
+/**
+ * Grid Custom Renderer
+ */
+class CustomIconRenderer {
+    constructor(props) {
+        const { src, width, height, title } = props.columnInfo.renderer.options;
+
+        const aEl = document.createElement('a');
+        aEl.style = "cursor: pointer;"
+
+        const imgEl = document.createElement('img');
+        imgEl.src = src;
+        imgEl.width = width || "15";
+        imgEl.height = height || "15";
+        imgEl.title = title;
+
+        aEl.append(imgEl);
+
+        this.el = aEl;
+        this.render(props);
+    }
+
+    getElement() {
+        return this.el;
+    }
+
+    render(props) {
+        const { onClick } = props.columnInfo.renderer.options;
+        this.el.onclick = () => onClick(props);
+    }
+}
 
 /**
  * Customizing TOAST UI Grid

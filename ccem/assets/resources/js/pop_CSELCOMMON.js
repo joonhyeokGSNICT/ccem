@@ -119,19 +119,38 @@ const checkProd = (grid, data) => {
 
 /**
  * 과목선택 해제
- * @param {object} grid 
- * @param {object} data 
+ * @param {object} removeGrid 	상담과목, 입회과목 grid
+ * @param {object} unCheckGrid 	과목 grid
+ * @param {object} unCheckRowKey 
  */
-const uncheckProd = (grid, data) => {
+const uncheckProd = (removeGrid, unCheckGrid, unCheckRowKey) => {
 
-	let id = data.PRDT_ID;
-	let gridData = grid.getData();
+	const findId = unCheckGrid.getValue(unCheckRowKey, "PRDT_ID");
+	const removeGridData = removeGrid.getData();
+	const findData = removeGridData.find(el => el.PRDT_ID == findId);
+	if (findData) {
+		removeGrid.removeRow(findData.rowKey);
+	} else {
+		// unCheckGrid.uncheck(unCheckRowKey);
+	}
 
-	for (let row of gridData) {
-		if (row.PRDT_ID == id) {
-			grid.removeRow(row.rowKey);
-			break;
-		}
+}
+
+/**
+ * 과목선택 삭제
+ * @param {object} unCheckGrid 	 과목 grid
+ * @param {object} removeGrid 	 상담과목, 입회과목 grid
+ * @param {object} removeRowKey 
+ */
+const deleteProd = (unCheckGrid, removeGrid, removeRowKey) => {
+
+	const findId = removeGrid.getValue(removeRowKey, "PRDT_ID");
+	const unCheckGridData = unCheckGrid.getData();
+	const findData = unCheckGridData.find(el => el.PRDT_ID == findId);
+	if (findData) {
+		unCheckGrid.uncheck(findData.rowKey);
+	} else {
+		removeGrid.removeRow(removeRowKey);
 	}
 
 }
