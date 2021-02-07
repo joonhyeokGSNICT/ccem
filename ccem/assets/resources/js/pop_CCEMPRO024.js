@@ -208,10 +208,12 @@ const openPopup = async (key) => {
 			PopupUtil.open("CCEMPRO046", 980, 600, "", sendData);
 			break;
 		case "DREAMS":
-			const basUrl = await getBasicList("7");
+			const sGbn 	 = "ES";
 			const sId 	 = currentUser.external_id;
-			const sUrl   = `${basUrl}?zsite=ES&zlogin_id=${sId}&zpasswd=${sId}&move=drop`;
-			window.open(sUrl, 'Refund');	// IE Tab 사용을 위해 팝업이 아닌 새탭에서 실행
+			const sPwd 	 = currentUser.external_id;
+			const basUrl = await getBasicList("9");
+			const sUrl   = `${basUrl}?zsite=${sGbn}&zlogin_id=${sId}&zpasswd=${sPwd}&move=drop`;
+			window.open(sUrl, 'Refund', 'width=1024,height=768,menubar=yes,resizable=yes,scrollbars=yes,toolbar=yes');
 			break;
 		default:
 			break;

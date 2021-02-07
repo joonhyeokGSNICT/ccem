@@ -158,6 +158,9 @@ const isEmpty = (param) => {
 
 /**
  * 녹취청취
+ * - as-is : cns6200.onRecPlay()
+ * - Test recordId : "202102031640157898"
+ * @param {string} recordId 녹취ID
  */
 const recordPlay = recordId => {
 
@@ -168,7 +171,7 @@ const recordPlay = recordId => {
 	}
 
 	const url = `${REC_SERVER}?date=${recordId.substr(0, 8)}&keycode=${recordId}&local=${recordId.substr(14, 4)}`;
-	window.open(url, "VoiceRecPlayA", "width=570, height=240, top=0, left=0, ");
+	window.open(url, "VoiceRecPlayA", "width=1000, height=730, top=0, left=0, tool=no,location=no,scrollbars=yes,directories=no,resizable=yes");
 
 }
 

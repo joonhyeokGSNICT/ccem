@@ -800,7 +800,6 @@ const saveExcelCsel = async () => {
  * 녹취청취
  */
 const onRecordPlay = () => {
-	// const TestRecordId  = "202009101330577815";
 	const rowKey = grid1.getSelectedRowKey();
 	const recordId = grid1.getValue(rowKey, "RECORD_ID");
 	recordPlay(recordId);

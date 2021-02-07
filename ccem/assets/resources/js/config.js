@@ -19,11 +19,11 @@ const _SPACE = "ops";
 const API_INFO = {
     ops: {
         url: "",
-        recPlayer: "http://20.100.2.81/player/player.jsp",
+        recPlayer: "https://rec.daekyo.co.kr/player/player.jsp",
     },
     dev: {
         url: "https://devccem.daekyo.co.kr",
-        recPlayer: 'http://20.100.2.81/player/player.jsp'
+        recPlayer: "https://rec.daekyo.co.kr/player/player.jsp",
     },
 }
 
