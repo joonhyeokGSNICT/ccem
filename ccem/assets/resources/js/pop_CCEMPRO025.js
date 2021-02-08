@@ -20,7 +20,7 @@ $(function() {
     $(".imask-tel").each((i, el) => calendarUtil.telMask(el.id));
 
     // 연락처 구분 radio
-    $("input[name='tel'").on("change", ev => {
+    $("input[name='tel']").on("change", ev => {
         const targetId = ev.target.id;
         switch(targetId) {
             case "radio1": 
