@@ -3,6 +3,7 @@ window.resizeTo(1100, 853);
 var topbarObject;			// topbar window
 var topbarClient;			// topbar client
 var currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
+var codeData;
 
 var grid1;	// 상담이력 grid
 var grid2;	// 상담과목 grid
@@ -32,8 +33,9 @@ const onStart = () => {
 	topbarObject = opener;
 	topbarClient = topbarObject.client;
 	currentUser = topbarObject.currentUserInfo.user;
+	codeData 	= topbarObject.codeData;
 	createGrids();
-	setCodeData(topbarObject.codeData);
+	setCodeData();
 	getProd();
 	getUser();
 }
@@ -325,7 +327,7 @@ const checkDate = () => {
 /**
  * 콤보박스 세팅
  */
-const setCodeData = (codeData) => {
+const setCodeData = () => {
 
 	const CODE_MK_LIST = [
 		"TRANS_MK", 		// 연계여부
