@@ -84,6 +84,10 @@
   background-position: right center;
 }
 
+.tui-grid-rside-area .tui-grid-table{
+  border-right: 1px solid rgb(187, 187, 187);
+}
+
 .tui-select-box-dropdown,
 .tui-select-box-item-group {
   margin: 0;

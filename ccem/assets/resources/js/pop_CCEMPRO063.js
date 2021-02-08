@@ -2,6 +2,8 @@ var client = opener.topBarClient;
 // const ZD_TYPE = 'SANDBOX';   // 샌드박스 반영 시 
 const ZD_TYPE = 'OPS';   // 운영 반영시 'OPS'
 
+var articleList;
+
 const ZD = {
     SANDBOX : {
         formID : {
@@ -56,23 +58,37 @@ boardGrid = new Grid({
         {
             header: '제목',
             name: 'title',
-            width: 120,
+            width: 448,
             align: "center",
             sortable: true,
             ellipsis: true,
         },
         {
             header: '첨부자료',
-            name: 'files',
+            name: 'files_url',
             width: 100,
             align: "center",
             sortable: true,
             ellipsis: true,
+            formatter: function(data){
+                console.log(data);
+                var text = ``;
+                if ( data.value.length > 0 ) {
+                    var tempList = data.value;
+                    for( var i=0; i<tempList.length; i++ ) {
+                        text += `<a onclick="fileDownload('`+tempList[i].content_url+`')"><img src="../img/download.png" style="width:15px; height:13px"></a>`
+                    }
+                    console.log(text);
+                    return text;
+                } else {
+                    return text;
+                } 
+            }
         },
         {
             header: '작성일',
             name: 'updated_at',
-            width: 140,
+            width: 150,
             align: "center",
             sortable: true,
             ellipsis: true,
@@ -80,79 +96,95 @@ boardGrid = new Grid({
     ],
 });
 boardGrid.on('dblclick', (ev) => {
-    console.log()
+    console.log(ev)
 });
-
-
-var app = {
-    name : 'ccem',
-    id : '900001439303',
-    articleCount : 0,
-    getList : function(){
-        return new Promise(function (resolve, reject) {	
-            client.request(`/api/v2/apps.json`).then(function(result) {
-                resolve(result.apps.filter(data=>data.name == this.name)[0]);
-            });
-        });
-    },
-    update_installation : function(count){
-        var options = {
-            url : `/api/v2/apps/installations/${app.id}.json`,
-            method : 'PUT',
-            ContentType : 'application/json',
-            data : {"settings": {"articleCount": count}}
-        }
-        client.request(options).then(function(result) {
-            console.log('update_installation >>> ',result);
-            ZD[ZD_TYPE]['setting']['articleCount'] = result.settings.articleCount;
-            console.log('setting >>> ', ZD[ZD_TYPE]['setting']);
-        });
-    },
-    get_installation : function(){
-        return new Promise(function (resolve, reject) {	
-            client.request(`/api/v2/apps/installations/${app.id}.json`).then(function(result) {
-                resolve(result.settings);
-            });
-        });
-    },
-    get_articleCount : function(){
-        return new Promise(function (resolve, reject) {	
-            app.get_installation().then(function(data){
-                console.log('get_articleCount() >>> ', data);
-                resolve(data.articleCount);
-            });
-        });
-    }
-}
 
 var getArticles = function () {
 	return new Promise(function (resolve, reject) {	
 		client.request(`/api/v2/help_center/sections/${ZD[ZD_TYPE]['article_section']['notice']}/articles`).then(function(result) {
-            resolve(result.articles);
-            for(item of result.articles) getUserName(item.author_id);
-
+            console.log(result.articles);
+            getFileFunction(result.articles).then(function(){
+                getUserName().then(function(){
+                    resolve("");
+                });
+            });
 		});
 	});
 }
 
-var getUserName = function (userId) {
-    client.request(`/api/v2/users/${userId}.json`).then(function(result) {
-        var arr = articles.list.filter(data=>data.author_id == result.user.id);
-        for(index in arr){
-            arr[index]['author_name'] = result.user.name;
-            $(`td.${result.user.id}`).text(result.user.name);
+/* 이름 가져오기 */
+var getUserName = function () {
+    return new Promise(function (resolve, reject) {	
+        for ( index in articleList ) {
+            client.request(`/api/v2/users/`+articleList[index].author_id+`.json`).then(function(temp) {
+                console.log(temp);
+                var arr = articleList.filter(data=>data.author_id == temp.user.id);
+                for(index in arr){
+                    arr[index]['author_name'] = temp.user.name;
+                }
+                if ( Number(index) == articleList.length-1 ) {
+                    resolve("");
+                }
+            });
         }
     });
 }
+
+/* 첨부파일 가져오기 */
+var getFileFunction = function (data) {
+    return new Promise(function (resolve, reject) {	
+        articleList = data;
+        tempArr = [];
+        for ( index in articleList ) {
+            tempArr.push( getFile(articleList[index].id) );
+        }
+        Promise.all(tempArr).then((values) => {
+            console.log(values);
+            for ( index in values ) {
+                articleList[index].files_url = values[index];
+            }
+            resolve("");
+        });
+    });
+}
+
+/* 첨부파일 가져오기 상세내역 promise */
+var getFile = function (id) {
+    return new Promise(function (resolve, reject) {	
+        client.request(`/api/v2/help_center/articles/`+id+`/attachments`).then(function(result) {
+            console.log(result);
+            resolve(result.article_attachments);
+        });
+    });
+}
+
+/* 파일 다운로드 */
+var fileDownload = function (url) {
+    $.fileDownload(url);
+}
+
+
 
 var articles = {
     list : null,
     get : function(){
         console.log('articles.get() >>> ');
-        getArticles().then(function(result){
-            console.log(result);
-            articles.list = result;
-            
+        getArticles().then(function(){
+            console.log(articleList);
+            articles.list = articleList;
+            if ( articles.list.length > 0 ) {
+                temp = articles.list.map(el => {
+                    return {
+                        author_name : el.author_name,
+                        title : el.title,
+                        files_url : el.files_url,
+                        updated_at : formatDateTime(el.updated_at)
+                    };
+                });
+                boardGrid.resetData(temp);
+            } else {
+
+            }
         });
     },
     set: function (page) {
@@ -204,6 +236,16 @@ var _styleChanger = {
 		boardGrid.setHeight(heightSize);
 	}
 }
+
+/**
+ * 빈값 확인
+ * @param {빈값확인하는 데이터} data 
+ */
+function isEmpty(data) {
+	if (!data || data == "" || data == undefined || Object.keys(data).length === 0 ) return true;
+	else return false;
+}
+
 _styleChanger.resizeWidth();
 _styleChanger.resizeHeight();
 $('.tui-pagination.tui-grid-pagination').attr('style','margin-top:10px; margin-bottom:0px;');	// 그리드 페이징 높이 조절

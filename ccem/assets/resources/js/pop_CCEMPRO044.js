@@ -33,6 +33,7 @@ if ( opener.name == 'CCEMPRO022' ) {
 	else if (hash ==="#disPlayDn") _mode ="plainTree";
 }
 else if ( opener.name == 'CCEMPRO028' ) _mode ="plainTree";
+else if ( opener.name == 'CCEMPRO031' ) _mode ="plainTreeSelOrg";
 else if ( opener.name == 'app_CCEM_top_bar_38e2ab2c-665c-4ac5-be58-65f649da8317') _mode="search";
 
 var _modeSelect = {
@@ -1120,7 +1121,7 @@ const _btn = {
 					orgList.LC_NAME = "";
 					orgList.TELPNO_LC = "";
 				} 
-				opener.setDisPlayUp(orgList);
+				opener.setDisPlay(orgList);
 			} else {
 				if ( _selectedNode.data.LV =="3" ) {
 					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
