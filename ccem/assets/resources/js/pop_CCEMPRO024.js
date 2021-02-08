@@ -1,5 +1,5 @@
-let sidebarClient;
 let currentUser;
+let currentTicket;
 
 let grid1, grid2;
 
@@ -12,8 +12,9 @@ $(async function () {
 	const openerNm = opener ? opener.name : "";
 
 	if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
-		sidebarClient 	= opener.sidebarClient;
+		topbarClient	= opener.topbarClient;
 		currentUser 	= opener.currentUser;
+		currentTicket	= opener.currentTicket;
 
 		const selectSeq = opener.document.getElementById("selectbox14");				// 순번 selectbox
 		sFLAG 			= selectSeq.options[selectSeq.selectedIndex].dataset.jobType;	// 저장구분(I: 신규, U: 수정)
@@ -113,10 +114,19 @@ const createGrids = () => {
  * 티켓필드에 입력된 리스트ID_고객번호를 반환.
  */
 const getListCustId = async () => {
-	if(!sidebarClient) return "";
-	const ticketFieldPath = `ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]}`;
-	const res = await sidebarClient.get(ticketFieldPath);
-	return res[ticketFieldPath] ? res[ticketFieldPath] : "";
+
+	let fResult = "";
+
+	if (!currentTicket || !topbarClient) return fResult;
+
+	const { ticket } = await topbarClient.request(`/api/v2/tickets/${currentTicket.id}`);
+
+	if (ticket?.custom_fields?.length > 0) {
+		const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
+		fResult = fLIST_CUST_ID?.value || "";
+	}
+
+	return fResult;
 }
 
 /**
@@ -135,7 +145,7 @@ const getRefund = (FLAG, LIST_CUST_ID, CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
 	if (FLAG == "I") {
 		if (!LIST_CUST_ID) return;
 		condition = { FLAG, LIST_CUST_ID };
-		// 기존(U)
+	// 기존(U)
 	} else {
 		if (!CSEL_DATE || !CSEL_NO || !CSEL_SEQ) return;
 		condition = { FLAG, CSEL_DATE, CSEL_NO, CSEL_SEQ };
@@ -233,7 +243,7 @@ const onSave = () => {
 		opener.DS_DROP_CHG.CSEL_NO 	  	= sCSEL_NO;		// 상담번호
 		opener.DS_DROP_CHG.CSEL_SEQ 	= sCSEL_SEQ;	// 상담순번
 		opener.DS_DROP_CHG.CUST_ID 	  	= sCUST_ID;		// 고객번호
-		opener.DS_DROP_CHG.LIST_ID	  	= sLIST_CUST_ID ? sLIST_CUST_ID.split("_")[0] : "";	// 리스트아이디
+		opener.DS_DROP_CHG.LIST_ID	  	= sLIST_CUST_ID?.split("_")[0] || "";				// 리스트아이디
 		opener.DS_DROP_CHG.RFD_PROC_MK  = $("input[name='RFD_PROC_MK']:checked").val();		// 퇴회처리구분
 		opener.DS_DROP_CHG.CTI_CHGDATE  = "";			// 변경일
 	
