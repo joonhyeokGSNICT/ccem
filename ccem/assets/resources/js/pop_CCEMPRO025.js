@@ -1,3 +1,5 @@
+let currentUser;    // 현재 사용중인 유저의 정보(ZENDESK)
+
 const TEL_LIST = {
     home  : [],   // 자택
     work  : [],   // 직장
@@ -61,9 +63,10 @@ const onStart = async () => {
     const openerNm = opener ? opener.name : "";
     
     if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
-        const CUST_ID = opener.document.getElementById("hiddenbox6").value;
-
+        currentUser = opener.currentUser;
+        
         // 자택, 직장, 회원모, 회원 전화번호 가져오기
+        const CUST_ID = opener.document.getElementById("hiddenbox6").value;
         const telNoData = await getTelNo(CUST_ID);
         if (telNoData) {
             TEL_LIST.home    = FormatUtil.tel(telNoData.TEL_HOME        || "").split("-");
@@ -88,6 +91,8 @@ const getTelNo = (CUST_ID) => new Promise((resolve, reject) => {
         contentType: "application/json; charset=UTF-8",
         dataType: "json",
         data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "재통화예약",
             senddataids: ["dsSend"],
             recvdataids: ["dsRecv"],
             dsSend: [{ CUST_ID }],

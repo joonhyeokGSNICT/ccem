@@ -157,6 +157,8 @@ const getRefund = (FLAG, LIST_CUST_ID, CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "고객직접퇴회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
@@ -184,6 +186,8 @@ const getRefundPrdt = (REFUND_SEQ) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "고객직접퇴회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ REFUND_SEQ }],

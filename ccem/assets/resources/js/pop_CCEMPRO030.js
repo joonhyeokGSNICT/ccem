@@ -140,6 +140,8 @@ const getGiftList = () => new Promise((resolve, reject) => {
         contentType: "application/json; charset=UTF-8",
         dataType: "json",
         data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
             senddataids: ["dsSend"],
             recvdataids: ["dsRecv"],
             dsSend: [{}],
@@ -209,6 +211,8 @@ const getCounselRst = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -295,6 +299,8 @@ const getCharge = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -338,6 +344,8 @@ const getDeptProcVoc = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -382,6 +390,8 @@ const getGift = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -440,6 +450,8 @@ const getHappy1 = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -502,6 +514,8 @@ const getHappy2 = (isHappy1) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -556,6 +570,8 @@ const getHappy2 = (isHappy1) => {
 // 		contentType: "application/json; charset=UTF-8",
 // 		dataType: "json",
 // 		data: JSON.stringify({
+// 			userid: currentUser?.external_id,
+// 			menuname: "상담결과등록",
 // 			senddataids: ["dsSend"],
 // 			recvdataids: ["dsRecv"],
 //             dsSend: [{ 
@@ -600,6 +616,8 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ CSEL_DATE, CSEL_NO, CSEL_SEQ }],
@@ -1404,6 +1422,8 @@ const addSMSData = (sendData) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids : ["dsSend"],
             recvdataids : ["dsRecv"],
             dsSend      : sendData
@@ -1834,6 +1854,8 @@ const saveCselResult = (condition) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids : ["DS_TRANS", "DS_HPCALL1", "DS_HPCALL2", "DS_GIFT"],
 			recvdataids : ["dsRecv"],
             DS_TRANS    : [condition.DS_TRANS],

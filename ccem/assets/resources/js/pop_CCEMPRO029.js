@@ -1,4 +1,5 @@
-let grid;
+let currentUser;    // 현재 사용중인 유저의 정보(ZENDESK)
+let grid;           // 관계회원 grid
 
 $(function () {
     createGrids();
@@ -69,34 +70,37 @@ const createGrids = () => {
  */
 const onStart = (openerName) => {
 
-    let custId = "";
 
     // 상담등록 > 관계회원 버튼으로 오픈했을 때.
     if (openerName.includes("CCEMPRO022")) {
-        custId = opener.document.getElementById("hiddenbox6").value;
+        currentUser = opener.currentUser;
+        const sCUST_ID = opener.document.getElementById("hiddenbox6").value;
+        getFamily(sCUST_ID);
     }
     // 입회등록 > 관계회원 버튼으로 오픈했을 때.
     else if (openerName.includes("CCEMPRO031")) {
-        custId = opener.document.getElementById("hiddenbox3").value;
+        const sCUST_ID = opener.document.getElementById("hiddenbox3").value;
+        getFamily(sCUST_ID);
     }
     
-    getFamily(custId);
 }
 
 /**
  * 관계회원 조회
- * @param {string} custId 고객번호
+ * @param {string} CUST_ID 고객번호
  */
-const getFamily = (custId) => {
+const getFamily = (CUST_ID) => {
     const settings = {
 		url: `${API_SERVER}/cns.getFamilyInfo.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "관계회원",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
-			dsSend: [{ CUST_ID: custId}],
+			dsSend: [{ CUST_ID }],
         }),
         errMsg: "관계회원 조회중 오류가 발생하였습니다.",
 	}

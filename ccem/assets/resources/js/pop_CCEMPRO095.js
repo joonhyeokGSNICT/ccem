@@ -116,6 +116,8 @@ const getGiftList = () => new Promise((resolve, reject) => {
         contentType: "application/json; charset=UTF-8",
         dataType: "json",
         data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
             senddataids: ["dsSend"],
             recvdataids: ["dsRecv"],
             dsSend: [{}],
@@ -172,6 +174,8 @@ const getCselProc = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -567,6 +571,8 @@ const saveCselProc = (condition) => {
         contentType: "application/json; charset=UTF-8",
         dataType: "json",
         data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
             senddataids : ["DS_CHKDATA", "DS_PROC", "DS_HPCALL", "DS_GIFT"],
             recvdataids : ["dsRecv"],
             DS_CHKDATA  : [condition.DS_CHKDATA],

@@ -1,12 +1,18 @@
+let currentUser;		// 현재 사용중인 유저의 정보(ZENDESK)
 let grid;
 let cselGrid, rowKey;	// 상담정보 Grid
 
 $(function () {
 
-	// 초기값 세팅
-	if (window.opener) {
+	createGrids();
+	
+	const opener_name = opener.name;
+	if (opener_name == "CCEMPRO035") {
+
+		currentUser = opener.currentUser;
 		cselGrid = opener.grid1;
 		rowKey = cselGrid.getSelectedRowKey();
+
 		$("#calendar1").val(cselGrid.getFormattedValue(rowKey, "CSEL_DATE"));	// 상담일자
 		$("#calendar2").val(cselGrid.getFormattedValue(rowKey, "CSEL_DATE"));	// 상담일자
 		$("#textbox8").val(cselGrid.getFormattedValue(rowKey, "CSEL_DATE"));	// 상담일자
@@ -16,7 +22,9 @@ $(function () {
 		$("#textbox4").val(cselGrid.getFormattedValue(rowKey, "CUST_ID"));	// 고객번호
 		$("#textbox5").val(cselGrid.getFormattedValue(rowKey, "RECORD_ID"));	// 녹취키코드					
 		$("#textbox6").val(cselGrid.getFormattedValue(rowKey, "CALL_STTIME"));// 통화시작시각				
-		$("#textbox7").val(cselGrid.getFormattedValue(rowKey, "CALL_EDTIME"));// 통화종료시각				
+		$("#textbox7").val(cselGrid.getFormattedValue(rowKey, "CALL_EDTIME"));// 통화종료시각
+			
+		getBadRecord();
 	}
 
 	// create calendar
@@ -24,9 +32,6 @@ $(function () {
 
 	// input mask
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
-
-	createGrids();
-	getBadRecord();
 
 });
 
@@ -103,6 +108,8 @@ const getBadRecord = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "녹취매핑",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{
@@ -181,6 +188,8 @@ const upBadRecord = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "녹취매핑",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],

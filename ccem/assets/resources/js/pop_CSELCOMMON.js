@@ -10,25 +10,28 @@ var prods	 = [];		// 과목리스트
  * 상담 과목 리스트 조회
  * @param {object} grid grid1, grid4
  */
-const getProd = (grid) => {
+const getProd = () => new Promise((resolve, reject) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getProd.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{}],
 		}),
 		errMsg: "상담과목 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-		prods = data.dsRecv;
-		grid.resetData(data.dsRecv);
-	});
-}
+	$.ajax(settings)
+		.done(data => {
+			if (!checkApi(data, settings)) return reject(new Error(getApiMsg(data, settings)));
+			return resolve(data.dsRecv || []);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
 
 /**
  * 과목검색
@@ -629,6 +632,8 @@ const getCustInfo = (target, custId) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],

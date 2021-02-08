@@ -347,6 +347,8 @@ const getCselTrans = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv1", "dsRecv2"],
 			dsSend: [{ 
@@ -392,6 +394,8 @@ const getCselProd = (DS_TRANS) => {
 			contentType: "application/json; charset=UTF-8",
 			dataType: "json",
 			data: JSON.stringify({
+				userid: currentUser?.external_id,
+				menuname: "상담연계",
 				senddataids: ["dsSend"],
 				recvdataids: ["dsRecv"],
 				dsSend: [{ 
@@ -595,6 +599,8 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
 			senddataids		: ["DS_TRANS"],
 			recvdataids		: ["dsRecv"],
 			DS_TRANS		: transData,	// 상담/입회연계 정보
@@ -761,6 +767,8 @@ const getSmsCheck = (row) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{
@@ -791,6 +799,8 @@ const saveTransSms = (sendData) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: sendData,
@@ -930,6 +940,8 @@ const addTransSendFax = (faxData) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
 			senddataids		: ["DS_FAX"],
 			recvdataids		: ["dsRecv"],
 			DS_FAX			: faxData 		// 팩스 정보

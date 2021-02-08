@@ -133,8 +133,6 @@ const createGrids = () => {
 			{ header: '재확인여부',                     name: "RE_PROC",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '연계구분',                       name: "TRANS_MK",              width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '환불상태코드',                   name: "REFUND_FLAG",           width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
-			{ header: '이벤트년월',                     name: "CAMP_TG_YM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
-			{ header: '이벤트명',                       name: "CAMP_MK_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '처리구분',                       name: "PROC_MK_NM",            width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '처리구분',                       name: "PROC_STS_MK_NM",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '매체구분',                       name: "MEDIA_CDE_NM",          width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
@@ -411,6 +409,8 @@ const getProd = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{}],
@@ -433,6 +433,8 @@ const getUser = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ USER_GRP_CDE: "" }],	// 상담원그룹코드
@@ -455,6 +457,7 @@ const getUser = () => {
 		$("#selectbox2").val(currentUser.external_id);
 		$("#checkbox4").prop("checked", true);
 		$("#checkbox8").prop("checked", true);
+		
 		// 사용자권한에 따라 사용여부 결정
 		// 권한이 낮은 사용자
 		if (isLowLvl) {
@@ -605,6 +608,8 @@ const getCsel = (sPage) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
@@ -641,6 +646,8 @@ const getCselExcel = () => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
@@ -669,6 +676,8 @@ const getCselSubj = condition => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
@@ -930,6 +939,8 @@ const delCounsel = () => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],

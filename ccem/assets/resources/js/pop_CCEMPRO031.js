@@ -26,7 +26,6 @@ $(function () {
 	});
 
 	createGrids();
-	getProd(grid4);
 	onStart();
 
 });
@@ -125,7 +124,7 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 		
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		// 고객정보 조회
 		const sCUST_ID = topbarObject.document.getElementById("custInfo_CUST_ID").value; // 고객번호
@@ -142,7 +141,7 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		const counselGrid  = parent.opener.grid1;				// 상담조회 grid
 		const rowKey 	   = counselGrid.getSelectedRowKey();	// grid rowKey
@@ -167,7 +166,7 @@ const onStart = async () => {
  * 콤보박스 세팅
  * - as-is : cns4700.setCombo()
  */
-const setCodeData = () => {
+const setCodeData = async () => {
 
 	const CODE_MK_LIST = [
 		"PRDT_GRP",			// 과목군
@@ -183,6 +182,8 @@ const setCodeData = () => {
 
 	// get code
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+	prods = await getProd();
+	grid4.resetData(prods);
 
 	// sorting
 	const sortKey = "CODE_ID";
@@ -232,6 +233,8 @@ const getSysdate = () => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "입회등록",
 			senddataids	: ["dsSend"],
 			recvdataids	: ["dsRecv"],
 			dsSend		: [{}]
@@ -267,6 +270,8 @@ var getCust = (CUST_ID, sJobType) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "입회등록",
 			senddataids	: ["dsSend"],
 			recvdataids	: ["dsRecv"],
 			dsSend		: [{ CUST_ID }]
@@ -355,6 +360,8 @@ const saveEnterInfo = (counselData, transData, obData) => new Promise((resolve, 
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "입회등록",
 			senddataids	: ["DS_COUNSEL", "DS_TRANS", "DS_OB"],
 			recvdataids	: ["dsRecv"],
 			DS_COUNSEL	: [counselData],
@@ -387,6 +394,8 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "입회등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{
@@ -514,6 +523,8 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "입회등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv1", "dsRecv2"],
 			dsSend: [{ TRANS_DATE, TRANS_NO }],

@@ -200,6 +200,8 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, rej
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "선생님소개",
 			senddataids: ["dsSend1", "dsSend2"],
 			recvdataids: ["dsRecv1", "dsRecv2"],
 			dsSend1: [{
@@ -269,6 +271,8 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "선생님소개",
 			senddataids: ["dsSend1", "dsSend2"],
 			recvdataids: ["dsRecv1", "dsRecv2"],
 			dsSend1: [{
@@ -395,6 +399,8 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "선생님소개",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv1", "dsRecv2"],
 			dsSend: [{ TRANS_DATE, TRANS_NO }],
@@ -676,6 +682,8 @@ const saveTchrCounsel = (cselData)  => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "선생님소개",
 			senddataids	: ["dsSend"],
 			recvdataids	: ["dsRecv"],
 			dsSend		: [cselData],

@@ -30,7 +30,6 @@ $(function () {
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
 	createGrids();
-	getProd(grid1);
 	setElmEvent();
 	onStart();
 
@@ -218,7 +217,7 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		// 고객기본정보 조회
 		const custId = topbarObject.document.getElementById("custInfo_CUST_ID").value;	// 고객번호
@@ -238,7 +237,7 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		// 고객기본정보 조회
 		const empId = topbarObject.document.getElementById("tchrInfo_EMP_ID").value;	// 사원번호
@@ -254,7 +253,7 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		const counselGrid = parent.opener.grid1;				// 상담조회 grid
 		const rowKey 	  = counselGrid.getSelectedRowKey();    // grid rowKey
@@ -278,7 +277,7 @@ const onStart = async () => {
  * 콤보박스 세팅
  * - as-is : cns5810.setCodeData()
  */
-const setCodeData = () => {
+const setCodeData = async () => {
 
 	const CODE_MK_LIST = [
 		"PRDT_GRP",			// 과목군
@@ -299,6 +298,8 @@ const setCodeData = () => {
 
 	// get code
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+	prods = await getProd();
+	grid1.resetData(prods);
 
 	// sorting
 	// const sortKey = "CODE_ID";
@@ -369,6 +370,8 @@ var getBaseData = (target, targetId, sJobType) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
@@ -455,6 +458,8 @@ const getStudy = (id) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ MBR_ID: id }],
@@ -491,6 +496,8 @@ const getCounsel = (sCSEL_SEQ) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{
@@ -1199,6 +1206,8 @@ const saveCounsel = async (counselData, addInfoData, obData) => new Promise((res
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid		: currentUser?.external_id,
+			menuname	: "상담등록",
 			senddataids	: ["DS_COUNSEL", "DS_ADDINFO", "DS_OB"],
 			recvdataids	: ["dsRecv"],
 			DS_COUNSEL	: [counselData],			// 상담정보
@@ -1231,6 +1240,8 @@ const getSaveChk = (custId) => new Promise((resolve, reject) => {
 		contentType: "application/json; charset=UTF-8",
 		dataType: "json",
 		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ CUST_ID: custId }],
