@@ -647,10 +647,12 @@ const getCselExcel = () => new Promise((resolve, reject) => {
 		}),
 		errMsg: "상담조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return reject("");
-		return resolve(data.dsRecv);
-	});	
+	$.ajax(settings)
+		.done(data => {
+			if (!checkApi(data, settings)) return reject(new Error(getApiMsg(data, settings)));
+			return resolve(data.dsRecv || []);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
 
 /**
@@ -671,7 +673,7 @@ const getCselSubj = condition => {
 			recvdataids: ["dsRecv"],
 			dsSend: [condition],
 		}),
-		errMsg:  "상담조회중 오류가 발생하였습니다.",
+		errMsg:  "상담제품 조회 중 오류가 발생하였습니다.",
 	}
 
 	$.ajax(settings)
@@ -709,7 +711,7 @@ const setCselDetail = row => {
 
 /**
  * 상담조회 엑셀저장용 table 생성
- * @param {object} data 
+ * @param {array} data 
  * @return table element
  */
 const createCselTable = data => {
