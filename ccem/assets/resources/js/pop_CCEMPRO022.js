@@ -9,6 +9,8 @@ var DS_DROP_TEMP2  = {};		// 개인정보동의 정보 저장 data
 var DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
 var DS_SCHEDULE	   = {};		// 재통화예약 정보 저장 data
 
+var procStsList = [];	// 처리상태 리스트
+
 $(function () {
 
 	// 날짜와 시간 초기값 세팅
@@ -316,16 +318,20 @@ const setCodeData = () => {
 		if (codeType == "PROC_MK") { // 처리구분
 			if (codeVal == "5" || codeVal == "6") continue;
 		}
+		if (codeType == "PROC_STS_MK") {
+			procStsList.push(code);
+		}
 
 		// set
 		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
 	}
 
 	// init setting
+	$("#selectbox3").val("1");				// 상담구분 : 문의
 	$("#selectbox1").val("0");				// 개인정보 : 비공개
 	$("#selectbox2").val("01");				// 내담자 : 모
 	$("#selectbox6").val("2");				// 고객반응 : 보통
-	$("#selectbox10").val("99");			// 처리상태 : 완료
+	$("#selectbox4").val("1");				// 처리구분 : 단순상담
 	$("#button4").prop("disabled", true);	// 상담연계
 	$("#button5").prop("disabled", true);	// 추가등록
 	$("#button6").prop("disabled", true);	// 관계회원
@@ -333,6 +339,9 @@ const setCodeData = () => {
 	if (currentTicket?.via?.channel == "chat") {
 		$("#selectbox15").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
 	}
+
+	changeCselType();	// 상담구분 chage event
+	changeProcMk();		// 처리구분 chage event
 }
 
 /**
@@ -1382,6 +1391,9 @@ const changeCselType =() => {
 		$("#selectbox6").val("2");						// 고객반응 (보통)
 		$("#selectbox2").focus();
 	} else {
+		if(!calendarUtil.getImaskValue("calendar2")) {
+			calendarUtil.setImaskValue("calendar2", getDateFormat());
+		}
 		$("#selectbox5").val("");	// 처리시한           
 		$("#selectbox6").val("");	// 고객반응                  
 	}
@@ -1391,6 +1403,47 @@ const changeCselType =() => {
 	const selectSeq = document.getElementById("selectbox14")
 	const jobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;
 	if (jobType == "I") $("#selectbox10").val("01");
+
+}
+
+/**
+ * 처리구분 변경시 호출되는 함수
+ * - as-is : cns5810.CMB_PROC_MK.OnSelChange()
+ */
+const changeProcMk = () => {
+
+	const sPROC_MK = $("#selectbox4").val();
+	let fData = [];
+	let sData = [];
+
+	// 처리구분에 따라 처리상태 filtering data 처리
+	switch (sPROC_MK) {
+		case "1": // 단순상담
+			sData = ["99"];
+			break;
+		case "2": // 상담원처리
+			sData = ["01", "04", "15", "99"];
+			break;
+		case "3": // 상담연계
+			sData = ["01", "03", "04", "12", "15", "99"];
+			break;
+		case "4": // 시정처리
+			sData = ["01", "02", "03", "04", "12", "15", "99"];	
+			break;
+		default:
+			break;
+	}
+	
+	// filtering
+	fData = procStsList.filter(el => sData.includes(el.CODE_ID));
+
+	// sort
+	const sortKey = "CODE_ID";
+	fData.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+
+	// create select options
+	$("#selectbox10").empty();
+	fData.forEach(el => $("#selectbox10").append(new Option(el.CODE_NAME, el.CODE_ID)));
 
 }
 
