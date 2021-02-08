@@ -319,7 +319,7 @@ const setCodeData = async () => {
 		if (codeType == "PROC_MK") { // 처리구분
 			if (codeVal == "5" || codeVal == "6") continue;
 		}
-		if (codeType == "PROC_STS_MK") {
+		if (codeType == "PROC_STS_MK") { // 처리상태
 			procStsList.push(code);
 		}
 
@@ -561,7 +561,7 @@ const getCounsel = (sCSEL_SEQ) => {
 			// cselData.MEDIA_CDE		// 매체구분코드	
 			// cselData.TRANS_DATE		// 연계일자	
 			// cselData.TRANS_NO		// 연계번호	
-			$("#selectbox10").val(cselData.PROC_STS_MK);										// 처리상태구분		
+			changeProcMk(cselData.PROC_STS_MK);													// 처리상태구분
 			$("#hiddenbox9").val(cselData.PROC_STS_MK);											// 처리상태구분 for 저장시 체크
 			// cselData.VENDER_CDE		// 동종업체코드	
 			// cselData.PRDT_ID			// 동종업체제품코드	
@@ -619,6 +619,7 @@ const getCounsel = (sCSEL_SEQ) => {
 			$("#hiddenbox14").val(cselData.DIV_KIND_CDE);										// 브랜드ID		
 
 			setBtnCtrlAtLoadComp();	// 버튼제어
+			
 			
 			// 고객 기본정보조회
 			const CUST_MK	= cselData.CUST_MK;			// 고객구분
@@ -1409,11 +1410,10 @@ const changeCselType =() => {
 		$("#selectbox6").val("");	// 고객반응                  
 	}
     
-    //처리구분이 변경되면,
-	//신규(I)일때 처리상태를 접수(01)로 선택한다.
+	//신규(I)일때 처리상태를 첫번째 옵션을 선택.
 	const selectSeq = document.getElementById("selectbox14")
 	const jobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;
-	if (jobType == "I") $("#selectbox10").val("01");
+	if (jobType == "I") $("#selectbox10 option:eq(0)").prop("selected", true);
 
 }
 
@@ -1421,7 +1421,7 @@ const changeCselType =() => {
  * 처리구분 변경시 호출되는 함수
  * - as-is : cns5810.CMB_PROC_MK.OnSelChange()
  */
-const changeProcMk = () => {
+const changeProcMk = (sPROC_STS_MK) => {
 
 	const sPROC_MK = $("#selectbox4").val();
 	let fData = [];
@@ -1455,6 +1455,7 @@ const changeProcMk = () => {
 	// create select options
 	$("#selectbox10").empty();
 	fData.forEach(el => $("#selectbox10").append(new Option(el.CODE_NAME, el.CODE_ID)));
+	if (sPROC_STS_MK) $("#selectbox10").val(sPROC_STS_MK);
 
 }
 
