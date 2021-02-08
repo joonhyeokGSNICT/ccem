@@ -354,17 +354,19 @@ const setCodeData = (codeData) => {
 		let codeNm = code.CODE_NAME;
 		let codeId = code.CODE_ID;
 
-		// 상담분류 세팅
+		// 상담분류 코드리스트 세팅
 		if (codeMk == "CSEL_LTYPE_CDE" || codeMk == "CSEL_MTYPE_CDE" || codeMk == "CSEL_STYPE_CDE") {
-			if (cselType[codeMk]) {
-				cselType[codeMk].push(code);
-			} else {
-				cselType[codeMk] = new Array();
-			}
+			if (!cselType[codeMk]) cselType[codeMk] = new Array();
+			cselType[codeMk].push(code);
 			continue;
 		}
 
-		// append option
+		// filtering
+		if (codeMk == "PROC_STS_MK") {	// 처리상태
+			if (codeId != "01" && codeId != "02" && codeId != "03" && codeId != "04" && codeId != "15" && codeId != "12" && codeId != "99") continue;
+		}
+
+		// create select option
 		codeNm = (codeMk == "STD_MON_CDE" || codeMk == "RENEW_POTN" || codeMk == "USER_GRP_CDE") ?
 			`[${codeId}] ${codeNm}` : codeNm;
 		$(`select[name='${codeMk}']`).append(new Option(codeNm, codeId));
