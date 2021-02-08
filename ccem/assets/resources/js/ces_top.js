@@ -933,9 +933,28 @@ $(function(){
 		}
 	});
 	
-	// 관계회원 콤보 change 이벤트
-	$("#custInfo_FAMILY_CMB").change(function() {
+	/*$("#custInfo_FAMILY_CMB").change(function() {
 		relCustChange();
+	});*/
+	
+	// 관계회원 콤보 change 이벤트
+	$('#custInfo_FAMILY_CMB').click(function(){
+	    var $this = $(this);
+	    
+	    if ($this.hasClass('openSelect')) {
+	        relCustChange();
+	        $this.removeClass('openSelect');
+	    }else {
+	        $this.addClass('openSelect');
+	    }  
+	})
+
+	$(document).click(function(e){
+	    var $select = $('#custInfo_FAMILY_CMB');
+
+	    if (!$select.is(e.target)){
+	        $select.removeClass('openSelect');
+	    }
 	});
 	
 	// 팝업 버튼
@@ -1602,7 +1621,7 @@ function updateUserforZen(){
 			data: JSON.stringify({
 				"user": {
 					"external_id": currentCustInfo.CUST_ID,
-					//"email": $("#custInfo_EMAIL").val(),
+					//"email": $("#custInfo_REP_EMAIL_ADDR").val(),
 					"phone": currentCustInfo.MOBILNO,
 					"user_fields": 
 					{
@@ -1638,7 +1657,7 @@ function updateTchrforZen(){
 			data: JSON.stringify({
 				"user": {
 					"external_id": currentTchrInfo.EMP_ID,
-					//"email": $("#custInfo_EMAIL").val(),
+					//"email": $("#custInfo_REP_EMAIL_ADDR").val(),
 					"phone": currentTchrInfo.MOBILNO,
 					"user_fields": 
 					{
@@ -1705,6 +1724,7 @@ function familyInfoLoad() {
         				$("#custInfo_FAMILY_CMB").prepend(`<option value='${custId}' data-FML_NAME='${custName}'>${custWhere} ${custName} ${custRel} ${custGrade} ${custMbr} ${custId}</option>`);
 	        		}
 	        		$("#custInfo_FAMILY_CMB option:eq(0)").prop("selected", true);
+	        		$("#custInfo_FAMILY_CMB option:eq(0)").addClass('openSelect');
 	        	}
 	        }else {
 	        	loading.out();
@@ -2784,7 +2804,7 @@ function onSave(){
 	    				data: JSON.stringify({
 	    					  "user": {
 	    						  	"external_id": response.recv1[0].CUST_ID,
-	    						    "email": $("#custInfo_EMAIL").val(),
+	    						    "email": $("#custInfo_REP_EMAIL_ADDR").val(),
 	    						    "phone": $("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val(),
 	    						    "user_fields": 
 								    {
@@ -2964,7 +2984,7 @@ function smsOnClick(){
 	getBasicList("10").then(function(d){	// 드림스 url 가져오기
 		surl = d;
 		var param = surl + "?zsite="+zsite+"&zlogin_id="+slogin_id+"&zpasswd="+zpasswd;
-		window.open(param);
+		window.open(param,'cashBill','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');
 	});				
  }
  
@@ -2979,6 +2999,6 @@ function smsOnClick(){
  	}
 	var surl = "http://web.iocs.co.kr:8080/daekyo/popup/member/"+sMbrId;           //태블릿 url				
 	var param = surl;
-	window.open(param);        
+	window.open(param,'tabletDelPop','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');        
   }
 

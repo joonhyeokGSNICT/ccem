@@ -3,7 +3,7 @@ var navBarClient;
 
 client.on('app.activated', function(){
 	topBarClient.trigger("getSidebarClient", client._instanceGuid);
-	topBarClient.invoke("hide");								// 탑바 열기
+	topBarClient.invoke('popover','hide');								// 탑바 열기
 });
 
 client.get('instances').then(function (instancesData) {

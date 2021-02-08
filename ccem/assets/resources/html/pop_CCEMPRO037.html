@@ -16,6 +16,8 @@
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
 	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet"/>
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet"/>
 	<link rel="stylesheet" href="../css/ces_top.css">
 </head>
 <body>
@@ -55,107 +57,137 @@
 					<tr>
 						<th>
 							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox1">
+								<input class="form-check-input" type="checkbox" id="calendarDateCheck">
 								<label class="form-check-label" for="checkbox1">입회일자</label>
 							</div>
 						</th>
 						<td colspan="2">
 							<div class="input-group">
-								<input type="text" class="form-control form-control-sm calendar" id="calendar1">
+								<input type="text" class="form-control form-control-sm calendar searchInputCheck_dt" id="calendar_st">
 								<span class="ml-1 mr-1">~</span> 
-								<input type="text" class="form-control form-control-sm calendar" id="calendar2"/>
+								<input type="text" class="form-control form-control-sm calendar searchInputCheck_dt" id="calendar_ed"/>
 							</div>
 						</td>
 						<th></th>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox2">
-								<label class="form-check-label" for="checkbox2">상담원그룹</label>
-							</div>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_cselGrpCheck">상담원그룹
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox3">
-								<label class="form-check-label" for="checkbox3">상담원</label>
-							</div>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_cselGrp" name="USER_GRP_CDE">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_cselCheck">상담원
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_csel" name="">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
 						<th colspan="2"></th>
 					</tr>
 					<tr>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox4">
-								<label class="form-check-label" for="checkbox4">센터</label>
-							</div>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_lcCheck">센터
+							</label>
 						</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox5">
-								<label class="form-check-label" for="checkbox5">사업국</label>
-							</div>
+						<td>
+							<input type="text" class="form-control form-control-sm searchInputCheck" id="asignList_lc" name="searchInputCheck" maxlength="20" autocomplete="off">
+							<!-- INPUT -->
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_deptCheck">사업국
+							</label>
 						</th>
-						<td><input type="text" class="form-control form-control-sm"></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox6">
-								<label class="form-check-label" for="checkbox6">본부</label>
-							</div>
+						<td>
+							<input type="text" class="form-control form-control-sm searchInputCheck" id="asignList_dept" name="searchInputCheck" maxlength="20" autocomplete="off">
+							<!-- INPUT -->
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_updeptCheck">본부
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox7">
-								<label class="form-check-label" for="checkbox7">결과</label>
-							</div>
+						<td>
+							<input type="text" class="form-control form-control-sm searchInputCheck" id="asignList_updept" name="searchInputCheck" maxlength="20" autocomplete="off">
+							<!-- INPUT -->
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_rsltCheck">결과
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox8">
-								<label class="form-check-label" for="checkbox8">입회경로</label>
-							</div>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_rslt" name="ENTER_RST_FLAG">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_joinTypeCheck">입회경로
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_joinType" name="STD_CRS_CDE">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
 					</tr>
 					<tr>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox9">
-								<label class="form-check-label" for="checkbox9">대분류</label>
-							</div>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_topPrdtCheck">대분류
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox10">
-								<label class="form-check-label" for="checkbox10">중분류</label>
-							</div>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_topPrdt" name="CSEL_LTYPE_CDE">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_midPrdtCheck">중분류
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox11">
-								<label class="form-check-label" for="checkbox11">접수채널</label>
-							</div>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_midPrdt" name="CSEL_MTYPE_CDE">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_inChnlCheck">접수채널
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox12">
-								<label class="form-check-label" for="checkbox12">과목군</label>
-							</div>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_inChnl" name="CSEL_CHNL_MK">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_prdtGrpCheck">과목군
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
-						<th>
-							<div class="form-check ml-1">
-								<input class="form-check-input" type="checkbox" id="checkbox13">
-								<label class="form-check-label" for="checkbox13">과목</label>
-							</div>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_prdtGrp" name="PRDT_GRP">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="asignList_prdtCheck">과목
+							</label>
 						</th>
-						<td><select class="form-control form-control-sm"></select></td>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="asignList_prdt" name="PRDT_ID">
+								<!-- INPUT -->
+								<option></option>
+							</select>
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -171,6 +203,7 @@
 	<script src="../lib/imask.js"></script>
     <script src="../lib/moment.min.js"></script>
 	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO037.js"></script>

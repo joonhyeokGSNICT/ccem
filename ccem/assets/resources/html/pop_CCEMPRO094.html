@@ -19,6 +19,8 @@
 	<!-- loading -->
 	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
 	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
+	<!-- datepicker -->
+	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
 	<!-- main.css -->
 	<link rel="stylesheet" href="../css/ces_top.css">
 	<!-- fancy tree -->
@@ -31,9 +33,9 @@
 			<div class="container customBody pb-2 rounded-lg" style="border: 1px solid #dee2e6;">
 				<div class="row" style="background: #123f8a; height: 35px;">
 					<div class="col text-right">
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" disabled>임시저장</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" disabled>처리내역저장</button>&nbsp;
-						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" disabled>최종제출</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" onclick='onBtnClick(0)' id="tempSave">임시저장</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" onclick='onBtnClick(1)' id="procSave">처리내역저장</button>&nbsp;
+						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" onclick='onBtnClick(2)' id="finalSave">최종제출</button>&nbsp;
 						<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" style="width: 15%; padding: 0;" onclick="window.close()">닫기</button>&nbsp;
 					</div>
 				</div>
@@ -48,19 +50,19 @@
 						</colgroup>
 						<tr>
 							<th>제목</th>
-							<td colspan="3"><input type="text" class="form-control form-control-sm" disabled></td>
+							<td colspan="3"><input type="text" class="form-control form-control-sm" id="mos_TITLE" disabled></td>
 						</tr>
 						<tr>
 							<th>작성자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm" disabled></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="mos_EMP_NM" disabled></td>
 							<th>사번</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm" disabled></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="mos_EMP_ID" disabled></td>
 						</tr>
 						<tr>
 							<th>지점명</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm" disabled></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="mos_DEPT_NM" disabled></td>
 							<th>등록일</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm imask-date" disabled></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="mos_ZERDAT" disabled></td>
 						</tr>
 					</table>
 				</div>
@@ -71,7 +73,7 @@
 				</div>
 				<div class="row">
 					<div class="col">
-						<textarea rows="" cols="" class="form-control" style="height:130px;"></textarea>
+						<textarea rows="" cols="" class="form-control" style="height:130px;" id="mos_QUESTION" readonly></textarea>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -81,7 +83,7 @@
 				</div>
 				<div class="row">
 					<div class="col">
-						<textarea rows="" cols="" class="form-control" style="height:130px;"></textarea>
+						<textarea rows="" cols="" class="form-control" style="height:130px;" id="mos_ANSWER"></textarea>
 					</div>
 				</div>
 				<div class="row mt-2">
@@ -99,13 +101,13 @@
 						</colgroup>
 						<tr>
 							<th>처리일자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm imask-date"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm imask-date" id="mos_PROC_DATE"></td>
 							<th>처리자</th>
-							<td colspan="1"><input type="text" class="form-control form-control-sm"></td>
+							<td colspan="1"><input type="text" class="form-control form-control-sm" id="mos_PROC_USER_NM" readonly></td>
 						</tr>
 						<tr>
 							<th>처리내용</th>
-							<td colspan="3"><textarea rows="" cols="" class="form-control" style="height:140px;"></textarea></td>
+							<td colspan="3"><textarea rows="" cols="" class="form-control" style="height:140px;" id="mos_PROC_CNTS"></textarea></td>
 						</tr>
 						<tr>
 							<th>해피콜내용</th>
@@ -123,11 +125,16 @@
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/fancytree/jquery.fancytree.ui-deps.js"></script>
 	<script src="../lib/fancytree/jquery.fancytree.js"></script>
+	<!-- moment.js/2.18.0 -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.0/moment.min.js"></script>
+	<script src="../lib/imask.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
 	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/client.js"></script>
 	<script src="../js/config.js"></script>
+	<script src="../js/ces_common.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/pop_CCEMPRO094.js"></script>
 
