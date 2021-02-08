@@ -330,7 +330,7 @@ var getCust = (CUST_ID, sJobType) => new Promise((resolve, reject) => {
 			if (sJobType == "I") {
 				$("#textbox8").val(custData.UP_DEPT_ID);		// 상위지점(부서)코드(연계본부코드)
 				$("#textbox9").val(custData.UPDEPTNAME);		// 상위지점(부서)코드명(연계본부명)
-				$("#textbox10").val(custData.TELPNO_LC);		// 연계본부 전화번호(센터전화번호)	
+				$("#textbox10").val(custData.TELPNO_LC || custData.TELPNO_DEPT);		// 연계본부 전화번호(사업국/센터 전화번호)	
 				$("#textbox12").val(custData.DEPT_ID);			// 지점(부서)코드(연계사업국코드)	
 				$("#textbox13").val(custData.DEPT_NAME);		// 지점(부서)코드명(연계사업국명)		
 				$("#hiddenbox1").val(custData.LC_ID)			// 센터ID	(연계센터코드)
@@ -472,7 +472,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.RE_PROC					// 재확인여부				
 			// cselData.CALL_STTIME				// 통화시작시간					
 			// cselData.CALL_EDTIME				// 통화종료시간					
-			// cselData.TELPNO					// 지점전화번호	
+			// cselData.TELPNO_DEPT				// 지점전화번호	
 			$("#textbox13").val(cselData.DEPT_NAME);							// 지점명(연계사업국명)	
 			$("#textbox9").val(cselData.UP_DEPT_NAME);							// 본부명(연계본부명)		
 			// cselData.AREA_NAME				// 지역코드		
@@ -493,7 +493,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			$("#hiddenbox1").val(cselData.LC_ID);								// 센터코드	(연계센터코드)		
 			// cselData.LC_EMP_ID				// 센터장사번				
 			$("#textbox15").val(cselData.LC_NAME);								// 센터명(연계센터명)	
-			$("#textbox10").val(cselData.TELPNO_LC);							// 센터전화번호(센터전화번호)			
+			$("#textbox10").val(cselData.TELPNO_LC || cselData.TELPNO_DEPT);	// 센터전화번호(사업국/센터 전화번호)			
 			$("#hiddenbox5").val(cselData.ZEN_TICKET_ID);						// ZEN_티켓 ID	
 			$("#textbox18").val(cselData.EVT_NM);								// 이벤트명			
 			$("#hiddenbox9").val(cselData.AGE_CDE);								// 연령코드			
@@ -503,7 +503,6 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.LC_EMP_MOBILNO			// 센터장핸드폰번호	
 			$("#hiddenbox10").val(cselData.DIV_KIND_CDE);						// 브랜드ID
 				
-
 			setBtnCtrlAtLoadComp();				// 버튼제어
 
 			return resolve(cselData);
@@ -1016,7 +1015,7 @@ const getCustomData = async () => {
 var setDisPlay = (data) => {
 	$("#textbox8").val(data.DIV_CDE);			// 상위지점(부서)코드		(연계본부코드)
 	$("#textbox9").val(data.UPDEPTNAME);		// 상위지점(부서)코드명		(연계본부명)
-	$("#textbox10").val(data.TELPNO_LC);		// 연계본부 전화번호		(센터전화번호)	
+	$("#textbox10").val(data.TELPNO_LC || data.TELPNO_DEPT); // 연계본부 전화번호 (사업국/센터 전화번호)
 	$("#textbox12").val(data.DEPT_ID);			// 지점(부서)코드			(연계사업국코드)	
 	$("#textbox13").val(data.DEPT_NAME);		// 지점(부서)코드명			(연계사업국명)		
 	$("#hiddenbox1").val(data.LC_ID)			// 센터ID					(연계센터코드)
