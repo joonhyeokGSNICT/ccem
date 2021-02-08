@@ -391,137 +391,133 @@
 			</div>
 		</div>
 		<div class="row"><div class="col"><div id="grid1"></div></div></div>
+		<!-- 상담조회 상세정보 -->
 		<form id="form1" autocomplete="off">
-			<div class="row mt-2">
-				<div class="col-3"><div id="grid2"></div></div>
-				<div class="col-6">
-					<!-- 상담조회 상세정보 -->
-					<table class="table table-sm table-bordered">
-						<colgroup>
-							<col span="1" style="width: 12%;">
-							<col span="1" style="width: 88%;">
-						</colgroup>
-						<tr>
-							<th>제목</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_TITLE" readonly></td>
-						</tr>
-						<tr>
-							<th>상담내용</th>
-							<td style="height: 90px;"><textarea class="form-control w-100 h-100" id="txtCSEL_CNTS" readonly></textarea></td>
-						</tr>
-					</table>
-				</div>
-				<div class="col-3">
-					<table class="table table-sm table-bordered">
-						<colgroup>
-							<col span="1" style="width: 30%;">
-							<col span="1" style="width: 70%;">
-						</colgroup>
-						<tr>
-							<th>상담구분</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MK_NM" readonly></td>
-						</tr>
-						<tr>
-							<th>분류(대)</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_LTYPE_CDE_NM" readonly></td>
-						</tr>
-						<tr>
-							<th>분류(중)</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MTYPE_CDE_NM" readonly></td>
-						</tr>
-						<tr>
-							<th>분류(소)</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_STYPE_CDE_NM" readonly></td>
-						</tr>
-					</table>
-				</div>
+			<div style="width: 20%; float: left;">
+				<div id="grid2"></div>
 			</div>
-			<div class="row">
-				<div class="col">
-					<table class="table table-sm table-bordered">
-						<colgroup>
-							<col span="1" style="width:  6%;">
-							<col span="1" style="width: 12%;">
-							<col span="1" style="width:  8%;">
-							<col span="1" style="width: 12%;">
-							<col span="1" style="width:  6%;">
-							<col span="1" style="width: 12%;">
-							<col span="1" style="width:  5%;">
-							<col span="1" style="width: 16%;">
-							<col span="1" style="width:  7%;">
-							<col span="1" style="width: 16%;">
-						</colgroup>
-						<tr>
-							<th>상담경로</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtFST_CRS_CDE_NM" readonly></td>
-							<th>처리구분</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtPROC_MK_NM" readonly></td>
-							<th>상담결과</th> 
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_RST_MK1_NM" readonly></td>
-							<th>지역</th> 
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control form-control-sm" id="txtAREA_CDE" style="width: 30%;" readonly>
-									<input type="text" class="form-control form-control-sm" id="txtAREA_CDE_NM" style="width: 70%;" readonly>
-								</div>
-							</td>
-							<th>처리상태</th> 
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control form-control-sm" id="txtPROC_STS_MK_NM" readonly>
-									<input type="text" class="form-control form-control-sm" id="txtREFUND_FLAG_NM" readonly>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<th>매체구분</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtMEDIA_CDE_NM" readonly></td>
-							<th>처리시한</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtLIMIT_MK_NM" readonly></td>
-							<th>고객반응</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCUST_RESP_MK_NM" readonly></td>
-							<th>본부</th>
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control form-control-sm" id="txtDIV_CDE" style="width: 30%;" readonly>
-									<input type="text" class="form-control form-control-sm" id="txtUP_DEPT_NAME_NM" style="width: 70%;" readonly>
-								</div>
-							</td>
-							<th>정보</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtOPEN_GBN_NM" readonly></td>
-						</tr>
-						<tr>
-							<th>입회사유</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtMOTIVE_CDE_NM" readonly></td>
-							<th>처리희망일</th>
-							<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_HOPE_DATE"></td>
-							<th>O/B결과</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCALL_RST_MK_NM" readonly></td>
-							<th>사업국</th>
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control form-control-sm" id="txtDEPT_ID" style="width: 30%;" readonly>
-									<input type="text" class="form-control form-control-sm" id="txtDEPT_NAME_NM" style="width: 70%;" readonly>
-								</div>
-							</td>
-							<th>상담등급</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_GRD_NM" readonly></td>
-						</tr>
-						<tr>
-							<th>내담자</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MAN_MK_NM" readonly></td>
-							<th>처리완료일</th>
-							<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_DATE"></td>
-							<th>상담채널</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtCSEL_CHNL_MK_NM" readonly></td>
-							<th>센터</th>
-							<td><input type="text" class="form-control form-control-sm" id="txtLC_NAME_NM" readonly></td>
-							<th>VOC</th>
-							<td><input type="checkbox" id="checkbox32" disabled></td>
-						</tr>
-					</table>
-				</div>
+			<div class="ml-2 mr-2" style="width: 58%; float: left;">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width: 12%;">
+						<col span="1" style="width: 88%;">
+					</colgroup>
+					<tr>
+						<th>제목</th>
+						<td><input type="text" class="form-control form-control-sm" id="txtCSEL_TITLE" readonly></td>
+					</tr>
+					<tr>
+						<th>상담내용</th>
+						<td style="height: 90px;"><textarea class="form-control w-100 h-100" id="txtCSEL_CNTS" readonly></textarea></td>
+					</tr>
+				</table>
 			</div>
+			<div style="width: 20%; float: left;">
+				<table class="table table-sm table-bordered">
+					<colgroup>
+						<col span="1" style="width: 30%;">
+						<col span="1" style="width: 70%;">
+					</colgroup>
+					<tr>
+						<th>상담구분</th>
+						<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MK_NM" readonly></td>
+					</tr>
+					<tr>
+						<th>분류(대)</th>
+						<td><input type="text" class="form-control form-control-sm" id="txtCSEL_LTYPE_CDE_NM" readonly></td>
+					</tr>
+					<tr>
+						<th>분류(중)</th>
+						<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MTYPE_CDE_NM" readonly></td>
+					</tr>
+					<tr>
+						<th>분류(소)</th>
+						<td><input type="text" class="form-control form-control-sm" id="txtCSEL_STYPE_CDE_NM" readonly></td>
+					</tr>
+				</table>
+			</div>
+			<table class="table table-sm table-bordered">
+				<colgroup>
+					<col span="1" style="width:  6%;">
+					<col span="1" style="width: 12%;">
+					<col span="1" style="width:  8%;">
+					<col span="1" style="width: 12%;">
+					<col span="1" style="width:  6%;">
+					<col span="1" style="width: 12%;">
+					<col span="1" style="width:  5%;">
+					<col span="1" style="width: 16%;">
+					<col span="1" style="width:  7%;">
+					<col span="1" style="width: 16%;">
+				</colgroup>
+				<tr>
+					<th>상담경로</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtFST_CRS_CDE_NM" readonly></td>
+					<th>처리구분</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtPROC_MK_NM" readonly></td>
+					<th>상담결과</th> 
+					<td><input type="text" class="form-control form-control-sm" id="txtCSEL_RST_MK1_NM" readonly></td>
+					<th>지역</th> 
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm" id="txtAREA_CDE" style="width: 30%;" readonly>
+							<input type="text" class="form-control form-control-sm" id="txtAREA_CDE_NM" style="width: 70%;" readonly>
+						</div>
+					</td>
+					<th>처리상태</th> 
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm" id="txtPROC_STS_MK_NM" readonly>
+							<input type="text" class="form-control form-control-sm" id="txtREFUND_FLAG_NM" readonly>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>매체구분</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtMEDIA_CDE_NM" readonly></td>
+					<th>처리시한</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtLIMIT_MK_NM" readonly></td>
+					<th>고객반응</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtCUST_RESP_MK_NM" readonly></td>
+					<th>본부</th>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm" id="txtDIV_CDE" style="width: 30%;" readonly>
+							<input type="text" class="form-control form-control-sm" id="txtUP_DEPT_NAME_NM" style="width: 70%;" readonly>
+						</div>
+					</td>
+					<th>정보</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtOPEN_GBN_NM" readonly></td>
+				</tr>
+				<tr>
+					<th>입회사유</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtMOTIVE_CDE_NM" readonly></td>
+					<th>처리희망일</th>
+					<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_HOPE_DATE"></td>
+					<th>O/B결과</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtCALL_RST_MK_NM" readonly></td>
+					<th>사업국</th>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm" id="txtDEPT_ID" style="width: 30%;" readonly>
+							<input type="text" class="form-control form-control-sm" id="txtDEPT_NAME_NM" style="width: 70%;" readonly>
+						</div>
+					</td>
+					<th>상담등급</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtCSEL_GRD_NM" readonly></td>
+				</tr>
+				<tr>
+					<th>내담자</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MAN_MK_NM" readonly></td>
+					<th>처리완료일</th>
+					<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_DATE"></td>
+					<th>상담채널</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtCSEL_CHNL_MK_NM" readonly></td>
+					<th>센터</th>
+					<td><input type="text" class="form-control form-control-sm" id="txtLC_NAME_NM" readonly></td>
+					<th>VOC</th>
+					<td><input type="checkbox" id="checkbox32" disabled></td>
+				</tr>
+			</table>
 		</form>
 		<!-- 상담조회 엑셀저장용 -->
 		<table hidden id="cselExcelTable">

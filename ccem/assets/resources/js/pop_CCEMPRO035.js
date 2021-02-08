@@ -1,3 +1,5 @@
+window.resizeTo(1100, 853);
+
 var topbarObject;			// topbar window
 var topbarClient;			// topbar client
 var currentUser;			// 현재 사용중인 유저의 정보(ZENDESK)
@@ -235,7 +237,7 @@ const createGrids = () => {
 		],
 		columns: [
 			{ header: '제품코드', 			 name: "PRDT_ID", 		 align: "center", sortable: true, ellipsis: true, hidden: true,  },
-			{ header: '제품명', 			 name: "PRDT_NAME", 	 align: "center", sortable: true, ellipsis: true, hidden: false, },
+			{ header: '제품명', 			 name: "PRDT_NAME", 	 align: "left", sortable: true, ellipsis: true, hidden: false, },
 			{ header: '입회결과여부(1:입회)', name: "ENTER_RST_FLAG", align: "center", sortable: true, ellipsis: true, hidden: true,  },
 		],
 	});
