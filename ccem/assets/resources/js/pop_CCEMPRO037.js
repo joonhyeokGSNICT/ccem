@@ -340,3 +340,130 @@ const getProd = () => {
 		}
 	});
 }
+
+// 입회 리스트 조회
+function onSearch(){
+	var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '입회조회',
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: [{
+		    	"CHK_DATE":				"",
+		    	"VAL_STDATE":			"",
+		    	"VAL_EDDATE":			"",
+		    	"CHK_USER_GRP_CDE":		"",
+		    	"VAL_USER_GRP_CDE":		[{}],
+		    	"CHK_TB_USER":		"",
+		    	"VAL_TB_USER":		"",
+		    	"CHK_LC_NM":		"",
+		    	"VAL_LC_NM":		"",
+		    	"CHK_DEPT_NM":		"",
+		    	"VAL_DEPT_NM":		"",
+		    	"CHK_DIV_CDE":		"",
+		    	"VAL_DIV_CDE":		[{}],
+		    	"CHK_RST":		"",
+		    	"VAL_RST":		"",
+		    	"CHK_FST_CRS":		"",
+		    	"VAL_FST_CRS":		"",
+		    	"CHK_CSEL_LTYPE":		"",
+		    	"VAL_CSEL_LTYPE":		"",
+		    	"CHK_CSEL_MTYPE":		"",
+		    	"VAL_CSEL_MTYPE":		"",
+		    	"CHK_CSEL_CHNL_MK":		"",
+		    	"VAL_CSEL_CHNL_MK":		[],
+		    	"CHK_PRDT_GRP":		"",
+		    	"VAL_PRDT_GRP":		"",
+		    	"CHK_TB_PROD":		"",
+		    	"VAL_TB_PROD":		"",
+		    }]
+		};
+		var validationBool = false;
+		if($("#calendarDateCheck").is(":checked")){					// 입회일자
+			param.send1[0].CHK_DATE = "Y";
+			param.send1[0].VAL_STDATE = $("#calendar_st").val();
+			param.send1[0].VAL_EDDATE = $("#calendar_ed").val();
+			validationBool = true;
+		}
+		if($("#asignList_cselGrpCheck").is(":checked")){			// 상담원그룹 (리스트)
+			param.send1[0].CHK_USER_GRP_CDE = "Y";
+			param.send1[0].VAL_USER_GRP_CDE = $("#asignList_cselGrp").val();
+			validationBool = true;
+		}
+		if($("#asignList_cselCheck").is(":checked")){				// 상담원
+			param.send1[0].CHK_TB_USER = "Y";
+			param.send1[0].VAL_TB_USER = $("#asignList_csel").val();
+			validationBool = true;
+		}
+		if($("#asignList_lcCheck").is(":checked")){					// 센터
+			param.send1[0].CHK_LC_NM = "Y";
+			param.send1[0].VAL_LC_NM = $("#asignList_lc").val();
+			validationBool = true;
+		}
+		if($("#asignList_deptCheck").is(":checked")){				// 사업국
+			param.send1[0].CHK_DEPT_NM = "Y";
+			param.send1[0].VAL_DEPT_NM = $("#asignList_dept").val();
+			validationBool = true;
+		}
+		if($("#asignList_updeptCheck").is(":checked")){				// 본부 (리스트)
+			param.send1[0].CHK_DIV_CDE = "Y";
+			param.send1[0].VAL_DIV_CDE = $("#asignList_updept").val();
+			validationBool = true;
+		}
+		if($("#asignList_rsltCheck").is(":checked")){				// 결과
+			param.send1[0].CHK_RST = "Y";
+			param.send1[0].VAL_RST = $("#asignList_rslt").val();
+			validationBool = true;
+		}
+		if($("#asignList_joinTypeCheck").is(":checked")){			// 입회경로 (리스트)
+			param.send1[0].CHK_FST_CRS = "Y";
+			param.send1[0].VAL_FST_CRS = $("#asignList_joinType").val();
+			validationBool = true;
+		}
+		if($("#asignList_topPrdtCheck").is(":checked")){			// 대분류
+			param.send1[0].CHK_CSEL_LTYPE = "Y";
+			param.send1[0].VAL_CSEL_LTYPE = $("#asignList_topPrdt").val();
+			validationBool = true;
+		}
+		if($("#asignList_midPrdtCheck").is(":checked")){			// 중분류
+			param.send1[0].CHK_CSEL_MTYPE = "Y";
+			param.send1[0].VAL_CSEL_MTYPE = $("#asignList_midPrdt").val();
+			validationBool = true;
+		}
+		if($("#asignList_inChnlCheck").is(":checked")){				// LC 센터
+			param.send1[0].CHK_CSEL_CHNL_MK = "Y";
+			param.send1[0].VAL_CSEL_CHNL_MK = $("#asignList_inChnl").val();
+			validationBool = true;
+		}
+		if(validationBool == false){
+			client.invoke("notify", "조회조건을 하나 선택해야 합니다.", "error", 6000);
+			return;
+		}
+		
+		$.ajax({
+		    url: API_SERVER + '/cns.getCustList.do',
+		    type: 'POST',
+		    dataType: 'json',
+		    contentType: "application/json",
+		    data: JSON.stringify(param),
+		    success: function (response) {
+		        console.log(response);
+		        if(response.errcode == "0"){
+		        	customerSearchList_grid.resetData(response.recv1);
+		        	customerSearchList_grid.refreshLayout();
+		        	// 조회된 수가 1명 일 경우 자동 조회, 전화인입일경우 
+		        	if(response.recv1.length == "1" && type == '1'){
+		        		initAll(); 													// 기존 정보 초기화
+		        		custInfo = customerSearchList_grid.getRow(0);
+		        		onAutoSearch(custInfo.CUST_ID);
+		        		
+		        	}
+		        	
+		        }else {
+		        	loading.out();
+		        	client.invoke("notify", response.errmsg, "error", 60000);
+		        }
+		    }, error: function (response) {
+		    }
+		});
+}

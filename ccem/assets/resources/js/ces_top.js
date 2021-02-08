@@ -244,7 +244,7 @@ function userSearch() {
 					customerSearch("custSearchDiv","1");
 				}, 500);
 			}else {
-				if(reqUser.user.user_fields.tchr_mk_cde == "선생님" || reqUser.user.user_fields.tchr_mk_cde == "직원"){
+				if(reqUser.user.user_fields.cust_mk == "교사"){
 					$("#teacherSearchTab").click();													// 선생님 탭 이동
 					$("#teacherSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
 					$("#teacherSearchDiv").find("input[type=text]").val("");
