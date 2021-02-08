@@ -801,6 +801,7 @@ const getTransCondition = () => {
 
 	const data = {
 		TRANS_DATE		: calendarUtil.getImaskValue("calendar4"), // 연계일시	
+		TRANS_TIME		: $("#timebox3").val(),					   // 연계시간
 		TRANS_NO		: $("#hiddenbox7").val(), 				   // 연계번호	
 		TRANS_MK		: $("#selectbox4").val(), 				   // 연계구분	(처리구분)
 		TRANS_DEPT_ID	: $("#textbox12").val(), 				   // 연계지점코드(연계사업국코드)		
