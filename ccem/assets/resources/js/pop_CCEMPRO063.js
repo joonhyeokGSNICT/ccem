@@ -46,7 +46,7 @@ boardGrid = new Grid({
             sortable: true,
             ellipsis: true,
             formatter: function(data){
-                console.log(data);
+                // console.log(data);
                 var text = ``;
                     text += `<a href="#">`+data.value+`</a>`
                 return text;
@@ -131,7 +131,7 @@ function init() {
 var getArticles = function () {
 	return new Promise(function (resolve, reject) {	
 		client.request(`/api/v2/help_center/sections/${ZD[ZD_TYPE]['article_section']['notice']}/articles`).then(function(result) {
-            console.log(result.articles);
+            // console.log(result.articles);
             getFileFunction(result.articles).then(function(){
                 getNameFunction().then(function(){
                     resolve("");
@@ -151,7 +151,7 @@ var getFileFunction = function (data) {
             tempArr.push( getFile(articleList[index].id) );
         }
         Promise.all(tempArr).then((values) => {
-            console.log(values);
+            // console.log(values);
             for ( index in values ) {
                 articleList[index].files_url = values[index];
             }
@@ -168,7 +168,7 @@ var getNameFunction = function () {
             tempArr.push( getUserName(articleList[index].author_id) );
         }
         Promise.all(tempArr).then((values) => {
-            console.log(values);
+            // console.log(values);
             for ( index in values ) {
                 articleList[index].author_name = values[index];
             }
@@ -206,9 +206,9 @@ var getFile = function (id) {
 var articles = {
     list : null,
     get : function(){
-        console.log('articles.get() >>> ');
+        // console.log('articles.get() >>> ');
         getArticles().then(function(){
-            console.log(articleList);
+            // console.log(articleList);
             articles.list = articleList;
             if ( articles.list.length > 0 ) {
                 temp = articles.list.map(el => {
@@ -220,6 +220,7 @@ var articles = {
                         updated_at : formatDateTime(el.updated_at)
                     };
                 });
+                boardGrid.resetData([]);
                 boardGrid.resetData(temp);
             } else {
 
@@ -228,6 +229,52 @@ var articles = {
     }
 }
 
+/******************************************************
+ * 게시글 제목 검색
+ ******************************************************/ 
+var searchArticles = function () {
+    var searchTxt = $('#searchTitle_input').val();
+    if (searchTxt == "") {
+        if ( articleList.length > 0 ) {
+            temp = articleList.map(el => {
+                return {
+                    author_name : el.author_name,
+                    title : el.title,
+                    files_url : el.files_url,
+                    body : el.body,
+                    updated_at : formatDateTime(el.updated_at)
+                };
+            });
+            boardGrid.resetData([]);
+            boardGrid.resetData(temp);
+        } else {
+            boardGrid.resetData([]);
+        }
+    } else {
+        var tempList = articleList.filter(data => data.title.indexOf(searchTxt) > -1 );
+        if ( tempList.length > 0 ) {
+            temp = tempList.map(el => {
+                return {
+                    author_name : el.author_name,
+                    title : el.title,
+                    files_url : el.files_url,
+                    body : el.body,
+                    updated_at : formatDateTime(el.updated_at)
+                };
+            });
+            boardGrid.resetData([]);
+            boardGrid.resetData(temp);
+        } else {
+            boardGrid.resetData([]);
+        }
+    }
+}
+
+$('#searchTitle_input').keyup(function(){
+    if(event.keyCode == 13){
+        $('#searchTitle').trigger('click');
+    }
+});
 
 /******************************************************
  * 파일 다운로드
@@ -239,7 +286,7 @@ var fileDownload = function (me) {
     fileInfo.file_name = me.getAttribute('file_name');          // 파일의 이름
     fileInfo.content_url = me.getAttribute('content_url');      // 파일의 url
     fileInfo.url = me.getAttribute('url');                      // 파일의 json url
-    console.log(fileInfo);
+    // console.log(fileInfo);
 
     var file_name = getExtensionOfFilename(fileInfo.file_name);
     

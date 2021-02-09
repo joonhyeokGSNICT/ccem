@@ -22,6 +22,19 @@
     a:link { color: red; text-decoration: none;}
     a:visited { color: black; text-decoration: none;}
     a:hover { color: blue; text-decoration: none;}
+
+    /* 버튼 */
+    .navBtn {
+        background-color: #123f8a;
+        color:white;
+        font-weight:bold;
+        width: 80px;
+    }
+    .navBtn:hover {
+        background-color: #3f7ee6;
+        color:white;
+        font-weight:bold;
+    }
   </style>
 </head>
 <body>
@@ -29,10 +42,16 @@
 		<div style="height: 60px; width: 150px; background: white; float: left">
 			<img src="../img/logo.png" style="margin: 10px 0 0 10px;">
         </div>
-        <div style="margin-top:20px;float: left"><span style="font-weight: bold; font-size: 1.25rem; width: 300px;">공지사항</span></div>
-    </div>
-  <div style="padding:10px;">
-      <div id="boardGrid"></div>
+        <div style="margin-top:20px;float: left">
+            <span style="font-weight: bold; font-size: 1.25rem; width: 300px;">공지사항</span></div>
+        </div>
+        <div style="padding:10px;">
+        
+        <div class="input-group input-group-sm" style="margin-right:4px; margin-top:19px;width:40%;float:right;">
+            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" id="searchTitle_input">
+            <button id="searchTitle" class="btn btn-sm navBtn floatRight" type="button" onclick="searchArticles()" style="margin-top: 1px; margin-bottom: 0px; padding: 3px; height: 30px; margin-left: 0px; margin-right: 0px;border-top-left-radius: 0px; border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;">조회</button>
+        </div>
+        <div id="boardGrid" style="float:left; margin-top:-1px;"></div>
   </div>
 
   <script src="../lib/bootstrap/js/bootstrap.min.js"></script>
