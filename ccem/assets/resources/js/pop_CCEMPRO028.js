@@ -21,7 +21,7 @@ $(function () {
 
 	// 앱알림 버튼 event
 	$("#button1").on("click", ev => {
-		loading = new Loading(getLoadingSet('앱알림 전송 중 입니다.'));
+		const loading = new Loading(getLoadingSet('앱알림 전송 중 입니다.'));
 		onAppSend()
 			.then(succ => { if(succ) alert("앱알림이 전송되었습니다."); })
 			.catch((error) => {
@@ -34,7 +34,7 @@ $(function () {
 
 	// SMS 버튼 event
 	$("#button2").on("click", ev => {
-		loading = new Loading(getLoadingSet('SMS 발송 중 입니다.'));
+		const loading = new Loading(getLoadingSet('SMS 발송 중 입니다.'));
 		onSMSSend()
 			.then(succ => { if(succ) alert("SMS가 발송 되었습니다."); })
 			.catch(error => {
@@ -47,7 +47,7 @@ $(function () {
 
 	// FAX 버튼 event
 	$("#button3").on("click", ev => {
-		loading = new Loading(getLoadingSet('FAX 전송 중 입니다.'));
+		const loading = new Loading(getLoadingSet('FAX 전송 중 입니다.'));
 		onFAXSend()
 			.then(succ => { if(succ) alert("FAX가 전송되었습니다."); })
 			.catch(error => {
@@ -138,6 +138,13 @@ const createGrids = () => {
 
 	grid1.on("focusChange", (ev) => {
 		grid1.addSelection(ev);
+
+		// 입회건인 경우 제목 세팅
+		if (grid1.getValue(ev.rowKey, "PROC_MK") == "5" && !grid1.getValue(ev.rowKey, "CSEL_TITLE")) {
+			grid1.setValue(ev.rowKey, "CSEL_TITLE", "입회상담");
+		}
+
+		// 상담정보 세팅
 		$("#textbox1").val(grid1.getValue(ev.rowKey, "TELNO"));				// 전화번호
 		$("#textbox2").val(grid1.getValue(ev.rowKey, "MOBILNO"));			// 핸드폰
 		$("#textbox3").val("");												// 직장전화
@@ -146,6 +153,7 @@ const createGrids = () => {
 		$("#textbox6").val(grid1.getValue(ev.rowKey, "FULLADDR"));			// 주소2
 		$("#textbox7").val(grid1.getValue(ev.rowKey, "CSEL_TITLE"));		// 제목
 		$("#textbox8").val(grid1.getValue(ev.rowKey, "CSEL_CNTS"));			// 상담내용
+
 	});
 
 	grid1.on("click", (ev) => {
@@ -154,41 +162,6 @@ const createGrids = () => {
 	});
 
 	grid1.on("onGridUpdated", (ev) => {
-
-		// as-is : cns2510.DS_TransInfo.onLoadCompleted(cnt)
-
-		// 조회이력이 없는경우.
-		if (grid1.getRowCount() == 0) {
-			$("#selectbox2").val("3");	// 연계방법: FAX
-			$("#selectbox1").val("0");	// 회신여부: 없음
-			return;
-		}
-
-		// 입회건인 경우 제목 세팅
-		if (sPROC_MK == "5" && !grid1.getValue(0, "CSEL_TITLE")) {
-			// CSEL_TITLE 이 없는경우 "입회상담"으로 넣어준다.
-			grid1.setValue(0, "CSEL_TITLE", "입회상담");
-		}
-
-		// 처리상태구분 세팅
-		if (!grid1.getValue(0, "PROC_STS_MK") || grid1.getValue(0, "PROC_STS_MK") == "01") {
-			if (sPROC_MK == "5") { // 입회연계인경우
-				// 입회건인 경우 무조건 완료로 셋팅한다.
-				$("#selectbox3").val("99");		// 처리상태
-			} else {
-				// 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
-				$("#selectbox3").val("03");		// 처리상태
-			}
-		}
-
-		// 나머지 세팅
-		grid1.focus(0);
-		$("#selectbox1").val(grid1.getValue(0, "RTN_FLAG"));		// 회신여부
-		$("#selectbox2").val(grid1.getValue(0, "TRANS_CHNL_MK"));	// 연계방법
-		$("#textbox15").val(grid1.getValue(0, "CSEL_USER"));		// 상담원
-		calendarUtil.setImaskValue("calendar1", grid1.getValue(0, "TRANS_DATE") || "");	// 일시1
-		$("#time1").val(grid1.getValue(0, "TRANS_TIME"));								// 일시2
-		calendarUtil.setImaskValue("calendar3",  grid1.getValue(0, "PROC_HOPE_DATE") || "");	// 처리희망일
 
 	});
 
@@ -332,13 +305,15 @@ var setTransDisPlay = (data) => {
 	$("#hiddenbox5").val(data.LC_ID);			// 센터ID		 
 	$("#hiddenbox6").val(data.LC_EMP_ID);		// 센터장ID	
 	$("#hiddenbox8").val(data.EMP_ID_LIST);		// 연계대상자ID
-	$("#textbox17").val(data.EMP_ID_NAME);		// 연계대상자이름
+	$("#textbox17").val(data.EMP_NAME_LIST);	// 연계대상자이름
+	$("#hiddenbox9").val(data.EMP_PHONE_LIST);	// 연계대상자전화번호
+	
 
 }
 
 /**
  * 상담/연계 조회
- * - as-is : cns2510.onSearch()
+ * - as-is : cns2510.onSearch(), DS_TransInfo.onLoadCompleted(cnt)
  */
 const getCselTrans = () => {
 	const settings = {
@@ -363,19 +338,60 @@ const getCselTrans = () => {
 
 		const DS_TRANS 		= res.dsRecv1; 	// 상담연계정보
 		const DS_TRANS_EMP  = res.dsRecv2;	// 연계대상자정보
+		let transData;
 
-		if (!DS_TRANS || DS_TRANS.length == 0) return;
+		// 조회이력이 없는경우.
+		if (!DS_TRANS || DS_TRANS.length == 0) {
+			$("#selectbox2").val("3");	// 연계방법: FAX
+			$("#selectbox1").val("0");	// 회신여부: 없음
+			transData = new Object();
+		} else {
+			transData = DS_TRANS[0];
+		}
 
-		grid1.resetData(DS_TRANS);	 // 고객정보grid 및 상담연계정보 세팅
-		getCselProd(DS_TRANS);		 // 상담과목 조회
-		setTransDisPlay(DS_TRANS[0]);// 연계정보세팅
+		// 처리상태구분 세팅
+		if (!transData.PROC_STS_MK || transData.PROC_STS_MK == "01") {
+			if (transData.PROC_MK == "5") { // 입회연계인경우
+				// 입회건인 경우 무조건 완료로 셋팅한다.
+				$("#selectbox3").val("99");		// 처리상태
+			} else {
+				// 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
+				$("#selectbox3").val("03");		// 처리상태
+			}
+		}
+
+		// 고객정보 grid
+		grid1.resetData(DS_TRANS || []);
+		grid1.focus(0);
+
+		// 상담과목 조회
+		getCselProd(DS_TRANS || []);	
+
+		// 연계정보 세팅
+		$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
+		$("#selectbox2").val(transData.TRANS_CHNL_MK);						// 연계방법
+		$("#textbox15").val(transData.CSEL_USER);							// 상담원
+		calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
+		$("#time1").val(transData.TRANS_TIME);								// 일시2
+		calendarUtil.setImaskValue("calendar3",  transData.PROC_HOPE_DATE);	// 처리희망일
+		setTransDisPlay(transData);
 
 		// 연계대상자 세팅
-		if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) return;
-		const ids 	= DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
-		const names = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+		let ids; 	
+		let names; 	
+		let mobilnos; 
+		if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) {
+			ids 	 = "";
+			names 	 = "";
+			mobilnos = "";
+		} else {
+			ids 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
+			names 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+			mobilnos = DS_TRANS_EMP.map(el => el.TRANS_EMP_MOBILNO).join(", ");
+		}
 		$("#hiddenbox8").val(ids);
 		$("#textbox17").val(names);	
+		$("#hiddenbox9").val(mobilnos);
 
 	});
 }
@@ -506,16 +522,16 @@ const getTransCondition = (row) => {
 		return false;
 	}
 
-	// 연계대상자사번 세팅
+	// 연계대상자 세팅
 	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
-	for(let TRANS_EMP_ID of EMP_ID_LIST) {
+	for (let TRANS_EMP_ID of EMP_ID_LIST) {
 		TRANS_EMP_ID = TRANS_EMP_ID.trim();
-		if(!TRANS_EMP_ID) continue;
+		if (!TRANS_EMP_ID) continue;
 		data.DS_TRANS_USER.push({ TRANS_EMP_ID });
 	}
 
-	// 상담연계, 시정처리, 입회연계 외에는 연계할수 없다.
-	if (row.PROC_MK != "3" && row.PROC_MK != "4" && row.PROC_MK != "5") {
+	// 상담연계, 시정처리, 입회연계, 소개연계 외에는 연계할수 없다.
+	if (row.PROC_MK != "3" && row.PROC_MK != "4" && row.PROC_MK != "5" && row.PROC_MK != "6") {
 		alert("지점연계를 할 수 있는 처리구분이 아닙니다.");
 		return false;
 
@@ -545,6 +561,10 @@ const getTransCondition = (row) => {
 	// 입회연계
 	} else if (row.PROC_MK == "5") { 
 		data.TRANS_MK = "3";
+
+	// 소개연계
+	} else if (row.PROC_MK == "6") { 
+		data.TRANS_MK = "4";
 	}
 
 	return data;
@@ -601,9 +621,9 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 		data: JSON.stringify({
 			userid: currentUser?.external_id,
 			menuname: "상담연계",
-			senddataids		: ["DS_TRANS"],
+			senddataids		: ["DS_TRANS", "DS_TRANS_USER"],
 			recvdataids		: ["dsRecv"],
-			DS_TRANS		: transData,	// 상담/입회연계 정보
+			DS_TRANS		: transData,
 		}),
 	}
 
@@ -652,14 +672,20 @@ const onSMSSend = async () => {
 		return false;
 	}		
 
+	// SMS 수신자 리스트 세팅
+	const userData = getSmsUserCondition();
+	if (!userData) return false;
+
+	// SMS 전송정보 세팅
 	const sendData = new Array();
 	let smsCnt = 0
 	for (const row of checkedRows) {
 
 		// check send data
-		const condition = await getSmsCondition(row);
-		if (!condition) return false;
-		sendData.push(condition);
+		const smsCondition = await getSmsCondition(row);
+		if (!smsCondition) return false;
+		smsCondition.DS_SMS_USER = userData;
+		sendData.push(smsCondition);
 
 		// SMS 여부를 확인하기 위해
 		smsCnt += await getSmsCheck(row);
@@ -675,6 +701,59 @@ const onSMSSend = async () => {
 }
 
 /**
+ * SMS수신대상자리스트 반환.
+ * @return {array}
+ */
+const getSmsUserCondition = () => {
+
+	const userData = new Array();
+
+	const EMP_ID_LIST    = $("#hiddenbox8").val().split(","); // 연계대상자 사번
+	const EMP_NAME_LIST  = $("#textbox17").val().split(",");  // 연계대상자 성명
+	const EMP_PHONE_LIST = $("#hiddenbox9").val().split(","); // 연계대상자 전화번호
+
+	for (let i = 0; i < EMP_ID_LIST.length; i++) {
+		const destId 	= EMP_ID_LIST[i]?.trim();
+		const destName  = EMP_NAME_LIST[i]?.trim();
+		const destPhone = EMP_PHONE_LIST[i]?.trim();
+
+		// 전화번호를 분리해서 유효성 체크
+		const sDeptMobilNo = FormatUtil.tel(destPhone || "").split("-");
+		// DDD확인
+		if (!sDeptMobilNo[0] || !gf_chkDDDNumber(sDeptMobilNo[0])) {
+			alert("휴대폰 번호가 정확하지 않습니다.");
+			return false;
+		}
+		// 앞번호 확인
+		if (!sDeptMobilNo[1] || sDeptMobilNo[1].length < 1) {
+			alert("휴대폰 번호가 정확하지 않습니다.");
+			return false;
+		}
+		// 뒷번호 확인
+		if (!sDeptMobilNo[2] || sDeptMobilNo[2].length < 4) {
+			alert("휴대폰 번호가 정확하지 않습니다.");
+			return false;
+		}
+
+		userData.push({
+			DEST_PHONE	: sDeptMobilNo.join(""), 	// 수신번호(연계대상자 전화번호,'-' 없이 전화번호 전체)	
+			DEST_NAME	: destName, 				// 수신자명(연계대상자 성명)	
+			CUST_ID		: destId, 					// 고객번호(연계대상자 사번)
+			MBR_ID		: destId, 					// 회원번호(연계대상자 사번)
+		})
+
+	}
+
+	if (userData.length == 0) {
+		alert("연계 대상자를 선택하여 주십시요.");
+		$("#textbox17").focus();
+		return false;
+	}
+
+	return userData;
+}
+
+/**
  * SMS 발송 정보 value check
  * @param {object} row grid row
  */
@@ -682,75 +761,93 @@ const getSmsCondition = async (row) => {
 
 	SEND_PHONE 	= SEND_PHONE ? SEND_PHONE : (await getBasicList("13", "SMS발신번호 조회")).replace(/[^0-9]/gi, "");	// SMS발신번호(기준값 13, '-'없이)
 
-	var sDeptMobilNoStr = "";
-	var sDeptMobilNo = new Array();
-    var sEmpName 	 = "";
-    var sEmpId 		 = "";
+	// var sDeptMobilNoStr = "";
+	// var sDeptMobilNo = new Array();
+    // var sEmpName 	 = "";
+    // var sEmpId 		 = "";
 
 	// 연계정보 세팅
-	if (!row.LC_ID) {
-		// SMS번호를 분리하고, 휴대폰 번호가 있는지 확인함.
-		if (!row.DEPT_EMP_MOBILNO) {
-			alert("휴대폰 번호가 없습니다.");
-			return false;
-		}
-		sDeptMobilNoStr = row.DEPT_EMP_MOBILNO;
-		sEmpName 		= row.DEPT_EMP_NAME;
-		sEmpId 			= row.DEPT_EMP_ID;
-	} else {
-		// SMS번호를 분리하고, 휴대폰 번호가 있는지 확인함.
-		if (!row.LC_EMP_MOBILNO) {
-			alert("휴대폰 번호가 없습니다.");
-			return false;
-		}
-		sDeptMobilNoStr = row.LC_EMP_MOBILNO;
-		sEmpName 		= row.LC_EMP_NAME;
-		sEmpId 			= row.LC_EMP_ID;
-	}
+	// if (!row.LC_ID) {
+	// 	// SMS번호를 분리하고, 휴대폰 번호가 있는지 확인함.
+	// 	if (!row.DEPT_EMP_MOBILNO) {
+	// 		alert("휴대폰 번호가 없습니다.");
+	// 		return false;
+	// 	}
+	// 	sDeptMobilNoStr = row.DEPT_EMP_MOBILNO;
+	// 	sEmpName 		= row.DEPT_EMP_NAME;
+	// 	sEmpId 			= row.DEPT_EMP_ID;
+	// } else {
+	// 	// SMS번호를 분리하고, 휴대폰 번호가 있는지 확인함.
+	// 	if (!row.LC_EMP_MOBILNO) {
+	// 		alert("휴대폰 번호가 없습니다.");
+	// 		return false;
+	// 	}
+	// 	sDeptMobilNoStr = row.LC_EMP_MOBILNO;
+	// 	sEmpName 		= row.LC_EMP_NAME;
+	// 	sEmpId 			= row.LC_EMP_ID;
+	// }
 
-	sDeptMobilNo = FormatUtil.tel(sDeptMobilNoStr).split("-");
+	// sDeptMobilNo = FormatUtil.tel(sDeptMobilNoStr).split("-");
 	
 	// 분리된 SMS번호를 한번더 확인함.
     // DDD확인
-	if (!sDeptMobilNo[0] || !gf_chkDDDNumber(sDeptMobilNo[0])) {
-		alert("휴대폰 번호가 정확하지 않습니다.");
-		return false;
-	}
-	// 앞번호 확인
-	if (!sDeptMobilNo[1] || sDeptMobilNo[1].length < 1) {
-		alert("휴대폰 번호가 정확하지 않습니다.");
-		return false;
-	}
-	// 뒷번호 확인
-	if (!sDeptMobilNo[2] || sDeptMobilNo[2].length < 4) {
-		alert("휴대폰 번호가 정확하지 않습니다.");
-		return false;
-	}
+	// if (!sDeptMobilNo[0] || !gf_chkDDDNumber(sDeptMobilNo[0])) {
+	// 	alert("휴대폰 번호가 정확하지 않습니다.");
+	// 	return false;
+	// }
+	// // 앞번호 확인
+	// if (!sDeptMobilNo[1] || sDeptMobilNo[1].length < 1) {
+	// 	alert("휴대폰 번호가 정확하지 않습니다.");
+	// 	return false;
+	// }
+	// // 뒷번호 확인
+	// if (!sDeptMobilNo[2] || sDeptMobilNo[2].length < 4) {
+	// 	alert("휴대폰 번호가 정확하지 않습니다.");
+	// 	return false;
+	// }
 
 	// 코드구분을 저장하기 위한 변수
+	let sSmsTrgtId = "";
 	let sSmsFixId = ""; 
 	// 입회연계 인경우
-	if (sPROC_MK == "5") sSmsFixId = "1";
+	if (sPROC_MK == "5") {
+		sSmsTrgtId = "1";
+		sSmsFixId = "1";
+	}
 	// 시정처리 인경우
-	else if (sPROC_MK == "4") sSmsFixId = "2";
+	else if (sPROC_MK == "4") {
+		sSmsTrgtId = "1";
+		sSmsFixId = "2";
+	}
 	// 상담연계 인경우
-	else if (sPROC_MK == "3") sSmsFixId = "3";
+	else if (sPROC_MK == "3") {
+		sSmsTrgtId = "1";
+		sSmsFixId = "3";
+	}
+	// 소개연계 인경우
+	else if (sPROC_MK == "6") {
+		sSmsTrgtId = "5";
+		sSmsFixId = "1";
+	}
 	else {
 		alert("연계할수 있는 내용이 아닙니다.");
 		return false;
 	}
 
 	return {
-		DEST_PHONE	: sDeptMobilNo.join(""), 	// 수신번호(연계대상자 전화번호,'-' 없이 전화번호 전체)		
-		DEST_NAME	: sEmpName, 				// 수신자명(연계대상자 성명)		
-		CUST_ID		: sEmpId, 					// 고객번호(연계대상자 사번)	
-		MBR_ID		: sEmpId, 					// 회원번호(연계대상자 사번)	
+		// DEST_PHONE	: sDeptMobilNo.join(""), 	// 수신번호(연계대상자 전화번호,'-' 없이 전화번호 전체)		
+		// DEST_NAME	: sEmpName, 				// 수신자명(연계대상자 성명)		
+		// CUST_ID		: sEmpId, 					// 고객번호(연계대상자 사번)	
+		// MBR_ID		: sEmpId, 					// 회원번호(연계대상자 사번)	
+		DS_SMS_USER	: [],						// SMS수신대상리스트
 		CSEL_DATE	: row.CSEL_DATE, 			// 상담일자		
 		CSEL_NO		: row.CSEL_NO	, 			// 상담번호	
 		CSEL_SEQ	: row.CSEL_SEQ, 			// 상담순번		
 		USER_ID		: currentUser.external_id,  // 상담원ID	
+		SMS_TRGT_ID : sSmsTrgtId,				// 대상코드	(소개연계 - 5 / 나머지 - 1)
 		SMS_FIX_ID	: sSmsFixId, 				// 구분코드	
-		SEND_PHONE	: SEND_PHONE,				// SMM발신번호
+		SEND_PHONE	: SEND_PHONE,				// 발신번호
+		PROC_MK		: row.PROC_MK,				// 처리구분
 	}
 }
 
@@ -816,7 +913,6 @@ const saveTransSms = (sendData) => new Promise((resolve, reject) => {
 
 /**
  * FAX 전송
- * - TODO 저장후 전송
  * - as-is : cns2510.onFAXSend()
  * @return {boolean} 성공여부
  */
@@ -922,7 +1018,13 @@ const getFaxCondition = (row) => {
 		} else {
 			data.FAX_TYPE_CDE = "DS23"; // 입회상담의뢰서OB
 		}
+
+	// 소개연계
+	} else if (row.PROC_MK == "6") {
+		data.FAX_TYPE_CDE = "DS27"; // 교사소개의뢰서
 	}
+
+
 
 	return data;
 
