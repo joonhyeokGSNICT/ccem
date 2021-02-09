@@ -18,18 +18,36 @@
   <!-- loading.css -->
   <link rel="stylesheet" href="../lib/customModal/css/modal-loading-animate.css">
   <link rel="stylesheet" href="../lib/customModal/css/modal-loading.css">
-
+  <link rel="stylesheet" href="../css/ces_top.css">
 </head>
 <body>
-    <div class="customBody">
-		<div style="height: 60px; width: 150px; background: white; float: left">
-			<img src="../img/logo.png" style="margin: 10px 0 0 10px;">
-        </div>
-        <div style="margin-top:20px;float: left"><span style="font-weight: bold; font-size: 1.25rem; width: 300px;">공지사항</span></div>
+		<div style="width: 100%; background: white; float: left; padding:10px 10px 2px;">
+			<table id="tableHeight" class="table table-sm table-bordered">
+        <colgroup>
+          <col span="1" style="width: 15%;">
+          <col span="1" style="width: 35%;">
+          <col span="1" style="width: 15%;">
+          <col span="1" style="width: 35%;">
+        </colgroup>
+        <tr>
+          <th>제 목</th>
+          <td colspan="3" id="text1"></td>
+        </tr>
+        <tr>
+          <th>작성자</th>
+          <td id="text2"></td>
+          <th>작성일</th>
+          <td id="text3"></td>
+        </tr>
+        <tr>
+          <td colspan="4" id="text4"></td>
+        </tr>
+        <tr>
+          <th>첨부파일</th>
+          <td colspan="3" id="text5"></td>
+        </tr>
+      </table>
     </div>
-  <div style="padding:10px;">
-      <div id="boardGrid"></div>
-  </div>
 
   <script src="../lib/bootstrap/js/bootstrap.min.js"></script>
   <script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
@@ -40,6 +58,6 @@
   <script src="../js/config.js"></script>
   <script src="../js/ces_util.js"></script>
 
-  <script src="../js/pop_CCEMPRO063.js"></script>
+  <script src="../js/pop_CCEMPRO063_1.js"></script>
 </body>
 </html>

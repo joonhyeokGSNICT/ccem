@@ -1,8 +1,9 @@
 var client = opener.topBarClient;
-// const ZD_TYPE = 'SANDBOX';   // 샌드박스 반영 시 
-const ZD_TYPE = 'OPS';   // 운영 반영시 'OPS'
+var articleList;                // 게시글 리스트
+var boardWindow;
 
-var articleList;
+// const ZD_TYPE = 'SANDBOX';   // 샌드박스 반영 시 
+const ZD_TYPE = 'OPS';          // 운영 반영시 'OPS'
 
 const ZD = {
     SANDBOX : {
@@ -36,7 +37,7 @@ const ZD = {
 }
 
 
-// 구성원 리스트 grid 설정
+// 게시판 grid 설정
 boardGrid = new Grid({
     el: document.getElementById('boardGrid'),
     bodyHeight: 350,
@@ -44,7 +45,7 @@ boardGrid = new Grid({
     columnOptions: { minWidth: 50, resizable: true, frozenCount: 0, frozenBorderWidth: 1, },
     pageOptions: {
         useClient: true,
-        perPage: 5
+        perPage: 15
     },
     columns: [
         {
@@ -59,7 +60,7 @@ boardGrid = new Grid({
             header: '제목',
             name: 'title',
             width: 448,
-            align: "center",
+            align: "left",
             sortable: true,
             ellipsis: true,
         },
@@ -71,14 +72,15 @@ boardGrid = new Grid({
             sortable: true,
             ellipsis: true,
             formatter: function(data){
-                console.log(data);
+                // console.log(data);
                 var text = ``;
                 if ( data.value.length > 0 ) {
                     var tempList = data.value;
                     for( var i=0; i<tempList.length; i++ ) {
-                        text += `<a onclick="fileDownload('`+tempList[i].content_url+`')"><img src="../img/download.png" style="width:15px; height:13px"></a>`
+                        text += `<a href="#" onclick="fileDownload(this)" content_type="`+tempList[i].content_type+`" file_name="`+tempList[i].file_name+`" content_url="`+tempList[i].content_url+`" url="`+tempList[i].url+`">
+                                 <img src="../img/download.png" style="width:18px; height:16px"></a>`
                     }
-                    console.log(text);
+                    // console.log(text);
                     return text;
                 } else {
                     return text;
@@ -92,19 +94,30 @@ boardGrid = new Grid({
             align: "center",
             sortable: true,
             ellipsis: true,
+        },
+        {
+            header: 'body_hide',
+            name: 'body',
+            width: 150,
+            align: "center",
+            sortable: true,
+            ellipsis: true,
         }
     ],
 });
 boardGrid.on('dblclick', (ev) => {
-    console.log(ev)
+    // console.log(ev)
+    var sendData = boardGrid.getRow(ev.rowKey);
+    PopupUtilboard.open("CCEMPRO063_1", 900, 600, "", sendData);
 });
+boardGrid.hideColumn("body"); 
 
 var getArticles = function () {
 	return new Promise(function (resolve, reject) {	
 		client.request(`/api/v2/help_center/sections/${ZD[ZD_TYPE]['article_section']['notice']}/articles`).then(function(result) {
             console.log(result.articles);
             getFileFunction(result.articles).then(function(){
-                getUserName().then(function(){
+                getNameFunction().then(function(){
                     resolve("");
                 });
             });
@@ -112,23 +125,6 @@ var getArticles = function () {
 	});
 }
 
-/* 이름 가져오기 */
-var getUserName = function () {
-    return new Promise(function (resolve, reject) {	
-        for ( index in articleList ) {
-            client.request(`/api/v2/users/`+articleList[index].author_id+`.json`).then(function(temp) {
-                console.log(temp);
-                var arr = articleList.filter(data=>data.author_id == temp.user.id);
-                for(index in arr){
-                    arr[index]['author_name'] = temp.user.name;
-                }
-                if ( Number(index) == articleList.length-1 ) {
-                    resolve("");
-                }
-            });
-        }
-    });
-}
 
 /* 첨부파일 가져오기 */
 var getFileFunction = function (data) {
@@ -148,19 +144,59 @@ var getFileFunction = function (data) {
     });
 }
 
+/* 작성자 이름 가져오기 */
+var getNameFunction = function () {
+    return new Promise(function (resolve, reject) {
+        tempArr = [];
+        for ( index in articleList ) {
+            tempArr.push( getUserName(articleList[index].author_id) );
+        }
+        Promise.all(tempArr).then((values) => {
+            console.log(values);
+            for ( index in values ) {
+                articleList[index].author_name = values[index];
+            }
+            resolve("");
+        });
+    });
+}
+
+
+/* 첨부파일 가져오기 상세내역 promise */
+var getUserName = function (userId) {
+    return new Promise(function (resolve, reject) {	
+        client.request(`/api/v2/users/`+userId+`.json`).then(function(temp) {
+            // console.log(temp);
+            resolve(temp.user.name);
+        });
+    });
+}
+
 /* 첨부파일 가져오기 상세내역 promise */
 var getFile = function (id) {
     return new Promise(function (resolve, reject) {	
         client.request(`/api/v2/help_center/articles/`+id+`/attachments`).then(function(result) {
-            console.log(result);
+            // console.log(result);
             resolve(result.article_attachments);
         });
     });
 }
 
-/* 파일 다운로드 */
-var fileDownload = function (url) {
-    $.fileDownload(url);
+
+var fileDownload = function (me) {
+    
+    var fileInfo = {};
+    fileInfo.content_type = me.getAttribute('content_type');
+    fileInfo.file_name = me.getAttribute('file_name');
+    fileInfo.content_url = me.getAttribute('content_url');
+    fileInfo.url = me.getAttribute('url');
+    console.log(fileInfo);
+
+    var file_name = getExtensionOfFilename(fileInfo.file_name);
+    
+    /* 크롬의 경우 이미지인 경우 새로운 윈도우 팝업, 파일은 다운로드 */
+    if ( file_name == '.jpg' || file_name == '.gif' || file_name == '.png' || file_name == '.jpeg'|| file_name == '.bmp' ) window.open(fileInfo.content_url);
+    else window.location.assign(fileInfo.content_url);
 }
 
 
@@ -178,6 +214,7 @@ var articles = {
                         author_name : el.author_name,
                         title : el.title,
                         files_url : el.files_url,
+                        body : el.body,
                         updated_at : formatDateTime(el.updated_at)
                     };
                 });
@@ -244,6 +281,52 @@ var _styleChanger = {
 function isEmpty(data) {
 	if (!data || data == "" || data == undefined || Object.keys(data).length === 0 ) return true;
 	else return false;
+}
+
+
+/**
+ * 파일명에서 확장자명 추출
+ * @param filename   파일명
+ * @returns _fileExt 확장자명
+ */
+function getExtensionOfFilename(filename) {
+    var _fileLen = filename.length;
+    var _lastDot = filename.lastIndexOf('.');
+    var _fileExt = filename.substring(_lastDot, _fileLen).toLowerCase(); 
+    return _fileExt;
+}
+
+
+var PopupUtilboard = {
+    /**
+     * 오픈된 팝업
+     */
+    pops: {},
+    /**
+     * 팝업오픈여부
+     * @param {string} name 
+     */
+    contains(name) {
+        if(this.pops[name] && this.pops[name].name) return true;
+        else return false;
+    },
+    /**
+     * 팝업 오픈
+     * @param {string} name 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {string} hash 
+     * @param {object} param 
+     */
+    open(name, width, height, hash, param) {
+        if(this.contains(name)) {
+            boardWindow.POP_DATA = param
+            boardWindow.windowReload();
+        }else {
+            this.pops[name] = window.open(`pop_${name}.html${hash||""}`, name, `width=${width}, height=${height}`, false);
+        }
+        this.pops[name].POP_DATA = param;
+    },
 }
 
 _styleChanger.resizeWidth();
