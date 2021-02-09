@@ -832,7 +832,7 @@ const checkTicketRequester = async (ticket_id, requester_id) => {
 	const { user } = await topbarClient.request(`/api/v2/users/${ticket.requester_id}`);
 	
 	// 사용자의 external_id가 없을경우 임시사용자이므로 현재 요청자로 병합한다.
-	if (!user.external_id) {
+	if (!user.external_id && user.role == "end-user") {
 		await zendeskUserMerge(ticket.requester_id, requester_id);
 	}
 
