@@ -22,375 +22,372 @@
 	<link rel="stylesheet" href="../lib/multiple-select/css/bootstrap.min.css">
 	<link rel="stylesheet" href="../css/ces_top.css">
 </head>
-<body>
-	<div class="container customBody">
-		<div class="row" style="background: #123f8a; height: 35px;">
-			<div class="col-2">
-				<div class="input-group mt-2 pr-4">
-					<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i> 조회건수 :&nbsp;</span>
-					<input type="text" class="form-control form-control-sm text-right" id="textbox4">
-				</div>
-			</div>
-			<div class="col text-right">
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="getCsel(1)">조 회</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="PopupUtil.open('CCEMPRO033', 1184, 650)">고객조회</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4" id="button3" onclick="saveExcelCsel()">엑셀저장</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="PopupUtil.open('CCEMPRO036', 815, 547)"  disabled>녹취매핑</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4" id="button5" onclick="onRecordPlay()" id="button2" disabled>녹취청취</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button6" onclick="onResult()" disabled>결 과</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button7" onclick="onModify()" disabled>상담/입회수정</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button8" onclick="delCounsel()" disabled>삭 제</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
+<body style="overflow: hidden;">
+	<div class="row" style="background: #123f8a; height: 35px;">
+		<div class="col-2">
+			<div class="input-group mt-2 pl-1 pr-4">
+				<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i> 조회건수 :&nbsp;</span>
+				<input type="text" class="form-control form-control-sm text-right" id="textbox4">
 			</div>
 		</div>
-		<div class="row">
-			<div class="col">
-				<form onsubmit="getCsel(1); return false;" autocomplete="off">
-					<button type="submit" hidden></button>
-					<!-- 상담조회 조회조건 -->
-					<table class="table table-xs table-bordered mt-2">
-						<colgroup>
-							<col span="1" style="width:  9%;">
-							<col span="1" style="width: 19%;">
-							<col span="1" style="width:  9%;">
-							<col span="1" style="width: 15%;">
-							<col span="1" style="width:  9%;">
-							<col span="1" style="width: 15%;">
-							<col span="1" style="width:  9%;">
-							<col span="1" style="width: 15%;">
-						</colgroup>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox1" checked disabled>
-									<label class="form-check-label" for="checkbox1">상담일자</label>
-								</div>
-							</th>
-							<td>
-								<div class="input-group">
-									<input type="text" class="form-control form-control-sm calendar" id="calendar1" oninput="document.querySelector('#checkbox1').checked = checkDate()">
-									<span class="ml-1 mr-1">~</span> 
-									<input type="text" class="form-control form-control-sm calendar" id="calendar2" oninput="document.querySelector('#checkbox1').checked = checkDate()"/>
-								</div>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox2">
-									<label class="form-check-label" for="checkbox2">연계여부</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="TRANS_MK" id="selectbox6" onchange="document.querySelector('#checkbox2').checked = true">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox3">
-									<label class="form-check-label" for="checkbox3">과목군</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="PRDT_GRP" id="selectbox7" onchange="
-									filterProd(this.value);
-									document.querySelector('#checkbox3').checked = true;
-									document.querySelector('#checkbox7').checked = true;
-								">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox4">
-									<label class="form-check-label" for="checkbox4">상담원그룹</label>
-								</div>
-							</th>
-							<td><select class="form-control form-control-sm" name="USER_GRP_CDE" id="selectbox8" multiple="multiple"></select></td>
-						</tr>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox5">
-									<label class="form-check-label" for="checkbox5">상담구분</label>
-								</div>
-							</th>
-							<td>
-								<select class="form-control form-control-sm" name="CSEL_MK" id="selectbox9" onchange="
-									filterCselType('L', this.value);
-									document.querySelector('#checkbox5').checked = true;
-								">
-								<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox6">
-									<label class="form-check-label" for="checkbox6">처리구분</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="PROC_MK" id="selectbox10" onchange="document.querySelector('#checkbox6').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox7">
-									<label class="form-check-label" for="checkbox7">과목</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" id="selectbox1" onchange="document.querySelector('#checkbox7').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox8">
-									<label class="form-check-label" for="checkbox8">상담원</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" id="selectbox2" onchange="document.querySelector('#checkbox8').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox9">
-									<label class="form-check-label" for="checkbox9">센터</label>
-								</div>
-							</th>
-							<td>
-								<input class="form-control form-control-sm" id="textbox1" oninput="document.querySelector('#checkbox9').checked = this.value ? true:false" maxlength="50" autocomplete="off"/>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox10">
-									<label class="form-check-label" for="checkbox10">사업국</label>
-								</div>
-							</th>
-							<td colspan="">
-								<input class="form-control form-control-sm" id="textbox2" oninput="document.querySelector('#checkbox10').checked = this.value ? true:false" maxlength="50" autocomplete="off"/>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox11">
-									<label class="form-check-label" for="checkbox11">본부</label>
-								</div>
-							</th>
-							<td><select class="form-control form-control-sm" name="DIV_CDE" id="selectbox11" multiple="multiple"></select></td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox12">
-									<label class="form-check-label" for="checkbox12">처리상태</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="PROC_STS_MK" id="selectbox12" onchange="document.querySelector('#checkbox12').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox13">
-									<label class="form-check-label" for="checkbox13">분류(대)</label>
-								</div>
-							</th>
-							<td>
-								<select class="form-control form-control-sm" id="selectbox3" onchange="
-									filterCselType('M', this.value); 
-									document.querySelector('#checkbox13').checked = true;
-								">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox14">
-									<label class="form-check-label" for="checkbox14">분류(중)</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" id="selectbox4" onchange="
-									filterCselType('S', this.value);
-									document.querySelector('#checkbox14').checked = true;
-								">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox15">
-									<label class="form-check-label" for="checkbox15">분류(소)</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" id="selectbox5" onchange="document.querySelector('#checkbox15').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox16">
-									<label class="form-check-label" for="checkbox16">상담결과</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_RST_MK" id="selectbox13" onchange="document.querySelector('#checkbox16').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox17">
-									<label class="form-check-label" for="checkbox17">상담경로</label>
-								</div>
-							</th>
-							<td><select class="form-control form-control-sm" name="STD_CRS_CDE" id="selectbox14" multiple="multiple"></select></td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox18">
-									<label class="form-check-label" for="checkbox18">상담등급</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_GRD" id="selectbox15" onchange="document.querySelector('#checkbox18').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox19">
-									<label class="form-check-label" for="checkbox19">상담채널</label>
-								</div>
-							</th>
-							<td><select class="form-control form-control-sm" name="CSEL_CHNL_MK" id="selectbox16" multiple="multiple"></select></td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox20">
-									<label class="form-check-label" for="checkbox20">내담자</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="CSEL_MAN_GRP_CDE" id="selectbox17" onchange="document.querySelector('#checkbox20').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox21">
-									<label class="form-check-label" for="checkbox21">학습개월</label>
-								</div>
-							</th>
-							<td>
-								<select class="form-control form-control-sm" name="STD_MON_CDE" id="selectbox18" onchange="document.querySelector('#checkbox21').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox22">
-									<label class="form-check-label" for="checkbox22">복회가능성</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" name="RENEW_POTN" id="selectbox19" onchange="document.querySelector('#checkbox22').checked = true;">
-									<option value="" hidden></option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox23">
-									<label class="form-check-label" for="checkbox23">VOC</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" id="selectbox20" onchange="document.querySelector('#checkbox23').checked = true;">
-									<option value="" hidden></option>
-									<option value="Y">Y</option>
-									<option value="N">N</option>
-								</select>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox33">
-									<label class="form-check-label" for="checkbox33">재통화</label>
-								</div>
-							</th>
-							<th>
-								<select class="form-control form-control-sm" id="selectbox22" onchange="document.querySelector('#checkbox33').checked = true;">
-									<option value="" hidden></option>
-									<option value="N">재통화예약</option>
-									<option value="Y">재통화완료</option>
-								</select>
-							</th>
-						</tr>
-						<tr>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox26">
-									<label class="form-check-label" for="checkbox26">연계부서</label>
-								</div>
-							</th>
-							<td>
-								<input class="form-control form-control-sm" id="textbox3" oninput="document.querySelector('#checkbox26').checked = this.value ? true:false" maxlength="50" autocomplete="off"/>
-							</td>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox27">
-									<label class="form-check-label" for="checkbox27">문자발송</label>
-								</div>
-							</th>
-							<td colspan="">
-								<select class="form-control form-control-sm" id="selectbox21" onchange="document.querySelector('#checkbox27').checked = true;">
-									<option value="" hidden></option>
-									<option value="1">회원모 지점장 문자발송</option>
-									<option value="2">회원모 문자발송</option>
-									<option value="3">지점장 문자발송</option>
-									<option value="4">입회연계 지점 문자발송</option>
-									<option value="5">문자 미발송</option>
-								</select>
-							</td>
-							<th colspan="2">
-								
-							</th>
-							<th>
-								<div class="form-check ml-1">
-									<input class="form-check-input" type="checkbox" id="checkbox24">
-									<label class="form-check-label" for="checkbox24">재확인</label>
-								</div>
-							</th>
-							<th>
-								<div class="input-group">
-									<div class="form-check ml-1">
-										<input class="form-check-input" type="checkbox" id="checkbox28">
-										<label class="form-check-label" for="checkbox28">LC</label>
-									</div>
-									<div class="form-check ml-3">
-										<input class="form-check-input" type="checkbox" id="checkbox29">
-										<label class="form-check-label" for="checkbox29">YC</label>
-									</div>
-									<div class="form-check ml-3">
-										<input class="form-check-input" type="checkbox" id="checkbox30">
-										<label class="form-check-label" for="checkbox30">HL</label>
-									</div>
-								</div>
-							</th>
-						</tr>
-					</table>
-				</form>
-			</div>
+		<div class="col text-right">
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button1" onclick="getCsel(1)">조 회</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button2" onclick="PopupUtil.open('CCEMPRO033', 1184, 650)">고객조회</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4" id="button3" onclick="saveExcelCsel()">엑셀저장</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button4" onclick="PopupUtil.open('CCEMPRO036', 815, 547)"  disabled>녹취매핑</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn mr-4" id="button5" onclick="onRecordPlay()" id="button2" disabled>녹취청취</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button6" onclick="onResult()" disabled>결 과</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button7" onclick="onModify()" disabled>상담/입회수정</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button8" onclick="delCounsel()" disabled>삭 제</button>&nbsp;
+			<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>&nbsp;
 		</div>
-		<div class="row"><div class="col"><div id="grid1"></div></div></div>
+	</div>
+	
+	<div class="pl-1 pr-1">
+		<!-- 상담조회 조회조건 -->
+		<form onsubmit="getCsel(1); return false;" autocomplete="off">
+			<button type="submit" hidden></button>
+			<table class="table table-xs table-bordered mt-2">
+				<colgroup>
+					<col span="1" style="width:  9%;">
+					<col span="1" style="width: 19%;">
+					<col span="1" style="width:  9%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width:  9%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width:  9%;">
+					<col span="1" style="width: 15%;">
+				</colgroup>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox1" checked disabled>
+							<label class="form-check-label" for="checkbox1">상담일자</label>
+						</div>
+					</th>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm calendar" id="calendar1" oninput="document.querySelector('#checkbox1').checked = checkDate()">
+							<span class="ml-1 mr-1">~</span> 
+							<input type="text" class="form-control form-control-sm calendar" id="calendar2" oninput="document.querySelector('#checkbox1').checked = checkDate()"/>
+						</div>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox2">
+							<label class="form-check-label" for="checkbox2">연계여부</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="TRANS_MK" id="selectbox6" onchange="document.querySelector('#checkbox2').checked = true">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox3">
+							<label class="form-check-label" for="checkbox3">과목군</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="PRDT_GRP" id="selectbox7" onchange="
+							filterProd(this.value);
+							document.querySelector('#checkbox3').checked = true;
+							document.querySelector('#checkbox7').checked = true;
+						">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox4">
+							<label class="form-check-label" for="checkbox4">상담원그룹</label>
+						</div>
+					</th>
+					<td><select class="form-control form-control-sm" name="USER_GRP_CDE" id="selectbox8" multiple="multiple"></select></td>
+				</tr>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox5">
+							<label class="form-check-label" for="checkbox5">상담구분</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" name="CSEL_MK" id="selectbox9" onchange="
+							filterCselType('L', this.value);
+							document.querySelector('#checkbox5').checked = true;
+						">
+						<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox6">
+							<label class="form-check-label" for="checkbox6">처리구분</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="PROC_MK" id="selectbox10" onchange="document.querySelector('#checkbox6').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox7">
+							<label class="form-check-label" for="checkbox7">과목</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" id="selectbox1" onchange="document.querySelector('#checkbox7').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox8">
+							<label class="form-check-label" for="checkbox8">상담원</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" id="selectbox2" onchange="document.querySelector('#checkbox8').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox9">
+							<label class="form-check-label" for="checkbox9">센터</label>
+						</div>
+					</th>
+					<td>
+						<input class="form-control form-control-sm" id="textbox1" oninput="document.querySelector('#checkbox9').checked = this.value ? true:false" maxlength="50" autocomplete="off"/>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox10">
+							<label class="form-check-label" for="checkbox10">사업국</label>
+						</div>
+					</th>
+					<td colspan="">
+						<input class="form-control form-control-sm" id="textbox2" oninput="document.querySelector('#checkbox10').checked = this.value ? true:false" maxlength="50" autocomplete="off"/>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox11">
+							<label class="form-check-label" for="checkbox11">본부</label>
+						</div>
+					</th>
+					<td><select class="form-control form-control-sm" name="DIV_CDE" id="selectbox11" multiple="multiple"></select></td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox12">
+							<label class="form-check-label" for="checkbox12">처리상태</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="PROC_STS_MK" id="selectbox12" onchange="document.querySelector('#checkbox12').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox13">
+							<label class="form-check-label" for="checkbox13">분류(대)</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" id="selectbox3" onchange="
+							filterCselType('M', this.value); 
+							document.querySelector('#checkbox13').checked = true;
+						">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox14">
+							<label class="form-check-label" for="checkbox14">분류(중)</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" id="selectbox4" onchange="
+							filterCselType('S', this.value);
+							document.querySelector('#checkbox14').checked = true;
+						">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox15">
+							<label class="form-check-label" for="checkbox15">분류(소)</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" id="selectbox5" onchange="document.querySelector('#checkbox15').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox16">
+							<label class="form-check-label" for="checkbox16">상담결과</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="CSEL_RST_MK" id="selectbox13" onchange="document.querySelector('#checkbox16').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox17">
+							<label class="form-check-label" for="checkbox17">상담경로</label>
+						</div>
+					</th>
+					<td><select class="form-control form-control-sm" name="STD_CRS_CDE" id="selectbox14" multiple="multiple"></select></td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox18">
+							<label class="form-check-label" for="checkbox18">상담등급</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="CSEL_GRD" id="selectbox15" onchange="document.querySelector('#checkbox18').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox19">
+							<label class="form-check-label" for="checkbox19">상담채널</label>
+						</div>
+					</th>
+					<td><select class="form-control form-control-sm" name="CSEL_CHNL_MK" id="selectbox16" multiple="multiple"></select></td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox20">
+							<label class="form-check-label" for="checkbox20">내담자</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="CSEL_MAN_GRP_CDE" id="selectbox17" onchange="document.querySelector('#checkbox20').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox21">
+							<label class="form-check-label" for="checkbox21">학습개월</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" name="STD_MON_CDE" id="selectbox18" onchange="document.querySelector('#checkbox21').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox22">
+							<label class="form-check-label" for="checkbox22">복회가능성</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" name="RENEW_POTN" id="selectbox19" onchange="document.querySelector('#checkbox22').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox23">
+							<label class="form-check-label" for="checkbox23">VOC</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" id="selectbox20" onchange="document.querySelector('#checkbox23').checked = true;">
+							<option value="" hidden></option>
+							<option value="Y">Y</option>
+							<option value="N">N</option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox33">
+							<label class="form-check-label" for="checkbox33">재통화</label>
+						</div>
+					</th>
+					<th>
+						<select class="form-control form-control-sm" id="selectbox22" onchange="document.querySelector('#checkbox33').checked = true;">
+							<option value="" hidden></option>
+							<option value="N">재통화예약</option>
+							<option value="Y">재통화완료</option>
+						</select>
+					</th>
+				</tr>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox26">
+							<label class="form-check-label" for="checkbox26">연계부서</label>
+						</div>
+					</th>
+					<td>
+						<input class="form-control form-control-sm" id="textbox3" oninput="document.querySelector('#checkbox26').checked = this.value ? true:false" maxlength="50" autocomplete="off"/>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox27">
+							<label class="form-check-label" for="checkbox27">문자발송</label>
+						</div>
+					</th>
+					<td colspan="">
+						<select class="form-control form-control-sm" id="selectbox21" onchange="document.querySelector('#checkbox27').checked = true;">
+							<option value="" hidden></option>
+							<option value="1">회원모 지점장 문자발송</option>
+							<option value="2">회원모 문자발송</option>
+							<option value="3">지점장 문자발송</option>
+							<option value="4">입회연계 지점 문자발송</option>
+							<option value="5">문자 미발송</option>
+						</select>
+					</td>
+					<th colspan="2">
+						
+					</th>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox24">
+							<label class="form-check-label" for="checkbox24">재확인</label>
+						</div>
+					</th>
+					<th>
+						<div class="input-group">
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="checkbox28">
+								<label class="form-check-label" for="checkbox28">LC</label>
+							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" type="checkbox" id="checkbox29">
+								<label class="form-check-label" for="checkbox29">YC</label>
+							</div>
+							<div class="form-check ml-3">
+								<input class="form-check-input" type="checkbox" id="checkbox30">
+								<label class="form-check-label" for="checkbox30">HL</label>
+							</div>
+						</div>
+					</th>
+				</tr>
+			</table>
+		</form>
+		<div id="grid1"></div>
 		<!-- 상담조회 상세정보 -->
 		<form id="form1" autocomplete="off">
 			<div style="width: 20%; float: left;">
@@ -519,12 +516,13 @@
 				</tr>
 			</table>
 		</form>
-		<!-- 상담조회 엑셀저장용 -->
-		<table hidden id="cselExcelTable">
-			<thead></thead>
-			<tbody></tbody>
-		</table>
 	</div>
+
+	<!-- 상담조회 엑셀저장용 -->
+	<table hidden id="cselExcelTable">
+		<thead></thead>
+		<tbody></tbody>
+	</table>
 
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
