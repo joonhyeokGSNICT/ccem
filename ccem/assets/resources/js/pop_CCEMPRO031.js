@@ -158,6 +158,9 @@ const onStart = async () => {
 		$("#textbox7").val(sCSEL_NO); 				   	
 		onSearch(sCSEL_SEQ);
 
+	// TODO 입회조회 > 입회수정 버튼으로 오픈
+	} else if (opener_name.includes("CCEMPRO037")) {	
+
 	}
 	
 }

@@ -1,4 +1,4 @@
-window.resizeTo(1100, 853);
+window.resizeTo(1110, 853);
 
 var topbarObject;			// topbar window
 var topbarClient;			// topbar client
@@ -848,6 +848,11 @@ const onResult = () => {
  */
 const onModify = () => {
 
+	if (!opener) {
+		alert("세션정보를 찾을 수 없습니다.\n\n팝업창을 닫고 다시 실행해 주세요.");
+		return;
+	}
+
 	if (opener.PopupUtil.contains("CSELTOP")) {
 		alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
 		return;
@@ -858,13 +863,13 @@ const onModify = () => {
 
 	switch (proc) {
 		case "6":
-			PopupUtil.open("CCEMPRO032", 1220, 605);	// 선생님소개 탭
+			PopupUtil.open("CCEMPRO032", 1220, 610);	// 선생님소개 탭
 			break;
 		case "5":
-			PopupUtil.open("CCEMPRO031", 1220, 605);	// 입회등록 탭
+			PopupUtil.open("CCEMPRO031", 1220, 610);	// 입회등록 탭
 			break;
 		default:
-			PopupUtil.open("CCEMPRO022", 1220, 605);	// 상담등록 탭
+			PopupUtil.open("CCEMPRO022", 1220, 610);	// 상담등록 탭
 			break;
 	}
 

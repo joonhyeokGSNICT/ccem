@@ -1,3 +1,5 @@
+let topbarClient;
+
 let currentUser;
 let currentTicket;
 

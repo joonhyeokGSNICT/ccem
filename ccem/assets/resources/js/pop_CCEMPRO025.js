@@ -60,9 +60,8 @@ $(function() {
 });
 
 const onStart = async () => {
-    const openerNm = opener ? opener.name : "";
     
-    if (openerNm == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
+    if (opener?.name == "CCEMPRO022") {  // 상담등록 화면에서 오픈했을때.
         currentUser = opener.currentUser;
         
         // 자택, 직장, 회원모, 회원 전화번호 가져오기
@@ -100,23 +99,20 @@ const getTelNo = (CUST_ID) => new Promise((resolve, reject) => {
         errMsg: "연락처 조회 중 오류가 발생하였습니다.",
     }
     $.ajax(settings)
-        .done(data => {
-            if (!checkApi(data, settings)) return reject(settings.errmsg);
-            return resolve(data.dsRecv[0]);
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+            return resolve(res.dsRecv[0]);
         })
-        .fail(error => {
-            return reject(error);
-        });
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
 
 /**
  * 저장
  */
 const onSave = async () => {
-    const openerNm = opener ? opener.name : "";
 
     // 상담등록 화면에서 오픈했을때.
-    if (openerNm == "CCEMPRO022") {  
+    if ( opener?.name == "CCEMPRO022") {  
         const tel1 = $("#textbox1").val();
         const tel2 = $("#textbox2").val();
         const tel3 = $("#textbox3").val();
