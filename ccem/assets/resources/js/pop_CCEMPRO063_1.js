@@ -1,7 +1,10 @@
-var POP_DATA;
+var POP_DATA;                                           // 팝업 및 게시판 리로드 값 설정
 
-
+/******************************************************
+ * 초기진입
+ ******************************************************/ 
 function init() {
+    /* 팝업시 받은 POP_DATA 화면 표시 */
     if(POP_DATA != undefined){
         console.log(POP_DATA);
         var files = POP_DATA.files_url;
@@ -23,12 +26,17 @@ function init() {
         $('#text5').append(text);                       // 첨부파일
     }
 
+    /* 윈도우 */
     _styleChanger.resize();
 
-    opener.boardWindow = window;
-    POP_DATA = POP_DATA;
+    /* 전역변수 값 설정 */
+    opener.boardWindow = window;                        // 현재 윈도우 위치 부모 창 전달
+    POP_DATA = POP_DATA;                                // 게시판 내용 저장
 }
 
+/******************************************************
+ * 다른 게시판 선택 시, 화면 변경
+ ******************************************************/ 
 function windowReload() {
     var files = POP_DATA.files_url;
     var text = ``;
@@ -53,6 +61,9 @@ function windowReload() {
     _styleChanger.resize();
 }
 
+/******************************************************
+ * 첨부파일 다운로드
+ ******************************************************/ 
 var fileDownload = function (me) {
     var fileInfo = {};
     fileInfo.content_type = me.getAttribute('content_type');
@@ -69,11 +80,11 @@ var fileDownload = function (me) {
 }
 
 
-/**
+/******************************************************
  * 파일명에서 확장자명 추출
  * @param filename   파일명
  * @returns _fileExt 확장자명
- */
+ ******************************************************/
 function getExtensionOfFilename(filename) {
     var _fileLen = filename.length;
     var _lastDot = filename.lastIndexOf('.');
@@ -82,18 +93,22 @@ function getExtensionOfFilename(filename) {
 }
 
 
-//반응형
-// #02 document ready function모음
+/******************************************************
+ * document ready function모음
+ ******************************************************/
 $( document ).ready(function() {
-    // #01_윈도우 크기에 따라 그리드 크기 조정
+    
+    /* 윈도우 크기에 따라 그리드 크기 조정 */ 
 	$(window).resize(function() {
 		_styleChanger.resize();
 	});
 });
 
-// #03 _styleChanger : 화면 내 스타일 변경사항처리 JS
+/******************************************************
+ * _styleChanger : 화면 내 스타일 변경사항처리 JS
+ ******************************************************/
 var _styleChanger = {
-    // #03_01 그리드 가로 수정
+    /* 화면 크기 수정 */
     resize(){
         var widthSize = 850;
         var heightSize = $('#tableHeight').outerHeight()+90;
