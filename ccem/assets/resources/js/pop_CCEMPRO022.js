@@ -30,7 +30,7 @@ $(function () {
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
 	createGrids();
-	setElmEvent();
+	setEvent();
 	onStart();
 
 });
@@ -148,11 +148,11 @@ const createGrids = () => {
 	});
 }
 
-const setElmEvent = () => {
+const setEvent = () => {
 
 	// 티켓생성 버튼 
 	$("#button10").on("click", ev => {
-		loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		const loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
 		onNewTicket()
 			.then( async (ticket_id) => { 
 				if (ticket_id)  {
@@ -170,7 +170,7 @@ const setElmEvent = () => {
 
 	// 저장 버튼
 	$("#button8").on("click", ev => {
-		loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
+		const loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
 		onSave()
 			.then((succ) => { if (succ) alert("저장 되었습니다."); })
 			.catch((error) => {
@@ -1220,9 +1220,7 @@ const saveCounsel = async (counselData, addInfoData, obData) => new Promise((res
 	$.ajax(settings)
 		.done(data => {
 			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
-
 			if (data.dsRecv.length == 0) return reject(new Error("저장 결과 데이터가 존재하지 않습니다."));
-
 			return resolve(data.dsRecv[0]);
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));

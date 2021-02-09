@@ -16,50 +16,12 @@ $(function () {
 
 	// input mask
 	calendarUtil.dateMask("calendar1");
-	calendarUtil.timeMask("time1");
+	calendarUtil.timeMask("timebox1");
     $(".imask-tel").each((i, el) => calendarUtil.telMask(el.id));
 
-	// 앱알림 버튼 event
-	$("#button1").on("click", ev => {
-		const loading = new Loading(getLoadingSet('앱알림 전송 중 입니다.'));
-		onAppSend()
-			.then(succ => { if(succ) alert("앱알림이 전송되었습니다."); })
-			.catch((error) => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`앱알림 전송중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
-
-	// SMS 버튼 event
-	$("#button2").on("click", ev => {
-		const loading = new Loading(getLoadingSet('SMS 발송 중 입니다.'));
-		onSMSSend()
-			.then(succ => { if(succ) alert("SMS가 발송 되었습니다."); })
-			.catch(error => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`SMS 발송중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
-
-	// FAX 버튼 event
-	$("#button3").on("click", ev => {
-		const loading = new Loading(getLoadingSet('FAX 전송 중 입니다.'));
-		onFAXSend()
-			.then(succ => { if(succ) alert("FAX가 전송되었습니다."); })
-			.catch(error => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`FAX 전송중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
-
 	createGrids();
-	onStart(opener ? opener.name : "");
+	setEvent();
+	onStart();
 
 });
 
@@ -185,10 +147,55 @@ const createGrids = () => {
 	});
 }
 
-const onStart = async (openerNm) => {
+const setEvent = () => {
+	
+	// 앱알림 버튼 event
+	$("#button1").on("click", ev => {
+		const loading = new Loading(getLoadingSet('앱알림 전송 중 입니다.'));
+		onAppSend()
+			.then(succ => { if(succ) alert("앱알림이 전송되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`앱알림 전송중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
+	// SMS 버튼 event
+	$("#button2").on("click", ev => {
+		const loading = new Loading(getLoadingSet('SMS 발송 중 입니다.'));
+		onSMSSend()
+			.then(succ => { if(succ) alert("SMS가 발송 되었습니다."); })
+			.catch(error => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`SMS 발송중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
+	// FAX 버튼 event
+	$("#button3").on("click", ev => {
+		const loading = new Loading(getLoadingSet('FAX 전송 중 입니다.'));
+		onFAXSend()
+			.then(succ => { if(succ) alert("FAX가 전송되었습니다."); })
+			.catch(error => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`FAX 전송중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
+}
+
+const onStart = async () => {
+
+	const opener_name = opener?.name;
 
 	// 상담등록 화면에서 오픈했을때.
-	if (openerNm.includes("CCEMPRO022")) {
+	if (opener_name == "CCEMPRO022") {
 		currentUser = opener.currentUser;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
@@ -196,9 +203,10 @@ const onStart = async (openerNm) => {
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("textbox27");
 		sCSEL_NO    = opener.document.getElementById("textbox28").value;
 		setDisPlay();
-		getCselTrans();
+		onSearch();
+
 	// 입회등록 화면에서 오픈했을때.
-	} else if (openerNm.includes("CCEMPRO031")) {
+	} else if (opener_name == "CCEMPRO031") {
 		currentUser = opener.currentUser;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
@@ -206,9 +214,10 @@ const onStart = async (openerNm) => {
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar3");
 		sCSEL_NO    = opener.document.getElementById("textbox7").value;
 		setDisPlay();
-		getCselTrans();
+		onSearch();
+
 	// 선생님소개 화면에서 오픈했을때.
-	} else if (openerNm.includes("CCEMPRO032")) {
+	} else if (opener_name == "CCEMPRO032") {
 		currentUser = opener.currentUser;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
@@ -216,7 +225,7 @@ const onStart = async (openerNm) => {
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar1");
 		sCSEL_NO    = opener.document.getElementById("textbox6").value;
 		setDisPlay();
-		getCselTrans();
+		onSearch();
 	}
 
 }
@@ -307,15 +316,78 @@ var setTransDisPlay = (data) => {
 	$("#hiddenbox8").val(data.EMP_ID_LIST);		// 연계대상자ID
 	$("#textbox17").val(data.EMP_NAME_LIST);	// 연계대상자이름
 	$("#hiddenbox9").val(data.EMP_PHONE_LIST);	// 연계대상자전화번호
-	
+
+}
+
+/**
+ * 조회
+ * - as-is : cns2510.onSearch(), DS_TransInfo.onLoadCompleted(cnt)
+ */
+const onSearch = async () => {
+
+	const { DS_TRANS, DS_TRANS_EMP } = await getCselTrans(sCSEL_DATE, sCSEL_NO, sPROC_MK);
+
+	// 고객정보 grid - 상담정보 세팅
+	grid1.resetData(DS_TRANS || []);
+	grid1.focus(0);
+
+	let transData;
+	if (DS_TRANS?.length > 0) {
+		transData = DS_TRANS[0];
+	} else {
+		transData = new Object();
+		transData.RTN_FLAG = "0";		// 회신여부(초기값 "0" : 없음)
+		transData.TRANS_CHNL_MK	= "3";  // 연계방법(초기값 "3" : FAX)
+	}
+
+	// 처리상태구분 세팅
+	if (!transData.PROC_STS_MK || transData.PROC_STS_MK == "01") {
+		if (transData.PROC_MK == "5") $("#selectbox3").val("99");	// 입회건인 경우 무조건 완료로 셋팅한다.
+		else $("#selectbox3").val("03"); // 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
+	}
+
+	// 연계정보 세팅
+	$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
+	$("#selectbox2").val(transData.TRANS_CHNL_MK);						// 연계방법
+	$("#textbox15").val(transData.CSEL_USER);							// 상담원
+	calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
+	$("#time1").val(transData.TRANS_TIME);								// 일시2
+	calendarUtil.setImaskValue("calendar3",  transData.PROC_HOPE_DATE);	// 처리희망일
+	setTransDisPlay(transData);
+
+	// 연계대상자 세팅
+	let ids = ""; 	
+	let names = ""; 	
+	let mobilnos = ""; 
+	if (DS_TRANS_EMP?.length > 0) {
+		ids 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
+		names 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+		mobilnos = DS_TRANS_EMP.map(el => el.TRANS_EMP_MOBILNO).join(", ");
+	}
+	$("#hiddenbox8").val(ids);
+	$("#textbox17").val(names);	
+	$("#hiddenbox9").val(mobilnos);
+
+	// 상담과목 조회
+	grid2.clear();
+	for (const trans of DS_TRANS) {
+		const prods = await getCselProd(trans.CSEL_DATE, trans.CSEL_NO, trans.CSEL_SEQ);
+		const appendData = grid2.getData().map(el => el.PRDT_ID);
+		for (const prod of prods) {
+			if (appendData.includes(prod.PRDT_ID)) continue; // 중복체크
+			grid2.appendRow(prod);
+		}
+	}
 
 }
 
 /**
  * 상담/연계 조회
- * - as-is : cns2510.onSearch(), DS_TransInfo.onLoadCompleted(cnt)
+ * @param {string} CSEL_DATE 상담일자	
+ * @param {string} CSEL_NO	 상담번호	
+ * @param {string} PROC_MK	 처리구분	
  */
-const getCselTrans = () => {
+const getCselTrans = (CSEL_DATE, CSEL_NO, PROC_MK) => new Promise((resolve, reject) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getCselTrans.do`,
 		method: 'POST',
@@ -326,116 +398,49 @@ const getCselTrans = () => {
 			menuname: "상담연계",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv1", "dsRecv2"],
-			dsSend: [{ 
-				CSEL_DATE	: sCSEL_DATE,	// 상담일자		
-				CSEL_NO		: sCSEL_NO, 	// 상담번호	
-				PROC_MK		: sPROC_MK,		// 처리구분	
-			}],			
+			dsSend: [{ CSEL_DATE, CSEL_NO, PROC_MK }],			
 		}),
 	}
-	$.ajax(settings).done(res => {
-		if (!checkApi(res, settings)) return;
-
-		const DS_TRANS 		= res.dsRecv1; 	// 상담연계정보
-		const DS_TRANS_EMP  = res.dsRecv2;	// 연계대상자정보
-		let transData;
-
-		// 조회이력이 없는경우.
-		if (!DS_TRANS || DS_TRANS.length == 0) {
-			$("#selectbox2").val("3");	// 연계방법: FAX
-			$("#selectbox1").val("0");	// 회신여부: 없음
-			transData = new Object();
-		} else {
-			transData = DS_TRANS[0];
-		}
-
-		// 처리상태구분 세팅
-		if (!transData.PROC_STS_MK || transData.PROC_STS_MK == "01") {
-			if (transData.PROC_MK == "5") { // 입회연계인경우
-				// 입회건인 경우 무조건 완료로 셋팅한다.
-				$("#selectbox3").val("99");		// 처리상태
-			} else {
-				// 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
-				$("#selectbox3").val("03");		// 처리상태
-			}
-		}
-
-		// 고객정보 grid
-		grid1.resetData(DS_TRANS || []);
-		grid1.focus(0);
-
-		// 상담과목 조회
-		getCselProd(DS_TRANS || []);	
-
-		// 연계정보 세팅
-		$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
-		$("#selectbox2").val(transData.TRANS_CHNL_MK);						// 연계방법
-		$("#textbox15").val(transData.CSEL_USER);							// 상담원
-		calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
-		$("#time1").val(transData.TRANS_TIME);								// 일시2
-		calendarUtil.setImaskValue("calendar3",  transData.PROC_HOPE_DATE);	// 처리희망일
-		setTransDisPlay(transData);
-
-		// 연계대상자 세팅
-		let ids; 	
-		let names; 	
-		let mobilnos; 
-		if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) {
-			ids 	 = "";
-			names 	 = "";
-			mobilnos = "";
-		} else {
-			ids 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
-			names 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
-			mobilnos = DS_TRANS_EMP.map(el => el.TRANS_EMP_MOBILNO).join(", ");
-		}
-		$("#hiddenbox8").val(ids);
-		$("#textbox17").val(names);	
-		$("#hiddenbox9").val(mobilnos);
-
-	});
-}
+	$.ajax(settings)
+		.done(res => {
+			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+			const DS_TRANS = res.dsRecv1; 		// 상담연계정보
+			const DS_TRANS_EMP = res.dsRecv2;	// 연계대상자정보
+			return resolve({ DS_TRANS, DS_TRANS_EMP });
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
 
 /**
  * 상담과목 조회
- * - as-is : cns2510.onSearch()
- * @param {array} DS_TRANS 상담/연계정보
+ * @param {string} CSEL_DATE 상담일자
+ * @param {string} CSEL_NO   상담번호
+ * @param {string} CSEL_SEQ  상담순번
  */
-const getCselProd = (DS_TRANS) => {
+const getCselProd = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => new Promise((resolve, reject) => {
 
-	for (const trans of DS_TRANS) {
-		const settings = {
-			url: `${API_SERVER}/cns.getCselProd.do`,
-			method: 'POST',
-			contentType: "application/json; charset=UTF-8",
-			dataType: "json",
-			data: JSON.stringify({
-				userid: currentUser?.external_id,
-				menuname: "상담연계",
-				senddataids: ["dsSend"],
-				recvdataids: ["dsRecv"],
-				dsSend: [{ 
-					CSEL_DATE	: trans.CSEL_DATE, 	// 상담일자
-					CSEL_NO		: trans.CSEL_NO,	// 상담번호
-					CSEL_SEQ 	: trans.CSEL_SEQ,	// 상담순번
-				}],
-			}),
-		}
-		$.ajax(settings).done(res => {
-			if (!checkApi(res, settings)) return;
-
-			// 중복체크
-			const prdt_ids = grid2.getData().map(el => el.PRDT_ID);
-			const addData = res.dsRecv;
-			for (const row of addData) {
-				if (prdt_ids.includes(row.PRDT_ID)) continue;
-				grid2.appendRow(row);
-			}
-
-		});
+	const settings = {
+		url: `${API_SERVER}/cns.getCselProd.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{ CSEL_DATE, CSEL_NO, CSEL_SEQ }],
+		}),
+		errMsg: "상담과목 조회중 오류가 발생하였습니다.",
 	}
+	$.ajax(settings)
+		.done(res => {
+			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+			return resolve(res.dsRecv);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 	
-}
+});
 
 /**
  * 앱알림 전송
@@ -516,11 +521,6 @@ const getTransCondition = (row) => {
 		$("#textbox10").focus();
 		return false;
 	}
-	if (!$("#hiddenbox8").val()) {
-		alert("연계 대상자를 선택하여 주십시요.");
-		$("#textbox17").focus();
-		return false;
-	}
 
 	// 연계대상자 세팅
 	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
@@ -589,15 +589,16 @@ const getFollowerCondition = async (row) => {
 	// 팔로워 대상자 세팅
 	const followers = new Array();
 	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
-	for (let EMP_ID of EMP_ID_LIST) {
-		EMP_ID = EMP_ID.trim();
-		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID}`);
-		if (users.length > 0) followers.push({ user_id: users[0].id, action: "put" });
-	}
+	for (const EMP_ID of EMP_ID_LIST) {
 
-	if (followers.length === 0) {
-		alert("연계대상자의 젠데스트 사용자정보가 존재하지 않습니다. 다시 선택해 주세요.");
-		return false;
+		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
+		if (!users || users.length == 0) {
+			alert("연계대상자에 해당하는 젠데스트 사용자정보가 존재하지 않습니다.\n\n다시 선택해 주세요.");
+			return false;
+		} else {
+			followers.push({ user_id: users[0].id, action: "put" });
+		}
+
 	}
 
 	return {
@@ -630,7 +631,7 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 	$.ajax(settings)
 		.done(data => {
 			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
-			getCselTrans();	// 저장성공후 상담/연계 재조회
+			onSearch();	// 저장성공후 상담/연계 재조회
 			return resolve(true);
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));

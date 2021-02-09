@@ -768,9 +768,9 @@ const createTicket = async (user_id, parent_id) => {
 			const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
 			const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
 			const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
-			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], 			value: fOB_MK.value});				// OB구분   		
-			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"], 	value: fLIST_CUST_ID.value});		// 리스트ID_고객번호
-			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"], 	value: fCALLBACK_ID.value});		// 콜백번호   
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], 			value: fOB_MK?.value});				// OB구분   		
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"], 	value: fLIST_CUST_ID?.value});		// 리스트ID_고객번호
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"], 	value: fCALLBACK_ID?.value});		// 콜백번호   
 		}		
 	
 	}
