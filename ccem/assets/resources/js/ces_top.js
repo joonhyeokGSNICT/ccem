@@ -1017,6 +1017,19 @@ $(function(){
 function getCurrentUserInfo(){
 	client.request('/api/v2/users/me.json').then(function(d){
 		currentUserInfo = d;
+		if(currentUserInfo.user.tags.includes("user_lvl_mk_1")){
+			currentUserInfo.user.userMK = 1;
+		}else if(currentUserInfo.tags.includes("user_lvl_mk_2")){
+			currentUserInfo.user.userMK = 2;
+		}else if(currentUserInfo.tags.includes("user_lvl_mk_3")){
+			currentUserInfo.user.userMK = 3;
+		}else if(currentUserInfo.tags.includes("user_lvl_mk_4")){
+			currentUserInfo.user.userMK = 4;
+		}else if(currentUserInfo.tags.includes("user_lvl_mk_5")){
+			currentUserInfo.user.userMK = 5;
+		}else if(currentUserInfo.tags.includes("user_lvl_mk_9")){
+			currentUserInfo.user.userMK = 9;
+		}
 	});
 };
 
@@ -2956,6 +2969,36 @@ function smsOnClick(){
 	arrInData[4] = currentCustInfo.MOBILNO_FAT != null?currentCustInfo.MOBILNO_FAT.replace(/-/gi,""):""; 			// 회원/부 휴대폰
 	arrInData[5] = "2";            																					// 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
 	arrInData[6] = currentCustInfo.MBR_ID; 																			// 회원번호
+	arrInData[7] = "";              // 상담일자
+	arrInData[8] = "";              // 상담번호
+	arrInData[9] = "";              // 상담순번
+	PopupUtil.open('CCEMPRO046', 1000, 600 ,"", arrInData);
+};
+
+function smsOnClick_tchr(){
+	if(currentTchrInfo == null){
+		ModalUtil.modalPop("알림","선생님조회를 먼저 해 주세요.");
+		return;
+	}
+	var user_grp = "";
+	
+	for(d of currentUserInfo.user.tags){
+		if(d.length == 4){
+			user_grp = d;
+		}
+	}
+	// MOL상담원 SMS사용금지
+	if(user_grp == '7096'){
+		return;
+	};
+	var arrInData = new Array();
+	arrInData[0] = currentTchrInfo.EMP_ID;                                                                      	// 회원번호
+	arrInData[1] = currentTchrInfo.NAME;                                                                      		// 회원명
+	arrInData[2] = currentTchrInfo.MOBILNO != null?currentTchrInfo.MOBILNO.replace(/-/gi,""):"";  					// 회원휴대폰
+	arrInData[3] = ""; 			// 회원/모 휴대폰
+	arrInData[4] = ""; 			// 회원/부 휴대폰
+	arrInData[5] = "1";            																					// 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
+	arrInData[6] = ""; 																			// 회원번호
 	arrInData[7] = "";              // 상담일자
 	arrInData[8] = "";              // 상담번호
 	arrInData[9] = "";              // 상담순번

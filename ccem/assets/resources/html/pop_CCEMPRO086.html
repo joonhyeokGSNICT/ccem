@@ -26,8 +26,8 @@
 		<div class="container customBody rounded-lg border">
 			<div class="row" style="background: #123f8a; height: 35px;">
 				<div class="col text-right">
-					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="sendSms">SMS발송</button>&nbsp;
-					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="recieveTabBtn">조회</button>&nbsp;
+					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="sendSms" onclick="onSmssend();">SMS발송</button>&nbsp;
+					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="recieveTabBtn" onclick="onSearch();">조회</button>&nbsp;
 					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="smsExcelSaveBtn" onclick="opener.excelExport(multipleSmsList_grid,'다량발송 이력Excel_'+getToday(0),'tableExcel')">엑셀저장</button>&nbsp;
 					<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" id="button9" onclick="window.close()">닫 기</button>
 				</div>
@@ -35,13 +35,21 @@
 			<div class="row mt-1">
 				<div class="col-12">
 					<table class="table" style="background:#f1f5ff;">
+						<colgroup>
+							<col span="1" style="width: 10%;">
+							<col span="1" style="width: 20%;">
+							<col span="1" style="width: 10%;">
+							<col span="1" style="width: 10%;">
+							<col span="1" style="width: 12%;">
+							<col span="1" style="width: 38%;">
+						</colgroup>
 						<tr>
 							<th class="tdCheck thCheck" colspan="">
 								<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="multipleSend_nameCheck">수신자명
 								</label>
 							</th>
 							<td colspan="">
-								<input type="text" class="form-control form-control-sm searchInputCheck" id="multipleSend_name" name="searchInputCheck" maxlength="" autocomplete="off">
+								<input type="text" class="form-control form-control-sm searchInputCheck" id="multipleSend_name" name="searchInputCheck" maxlength="20" autocomplete="off">
 							</td>
 							<th class="tdCheck thCheck" colspan="">
 								<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="multipleSend_statCheck">전송여부
@@ -60,7 +68,7 @@
 								</label>
 							</th>
 							<td colspan="">
-								<input type="text" class="form-control form-control-sm searchInputCheck" id="multipleSend_whole" readonly name="searchInputCheck" maxlength="" autocomplete="off">
+								<input type="text" class="form-control form-control-sm searchInputCheck" id="multipleSend_whole" readonly name="searchInputCheck" maxlength="" autocomplete="off" style="color:blue; font-weight:600;">
 							</td>
 						</tr>
 					</table>

@@ -2,7 +2,7 @@ let grid
 var smsRecvListGrid;
 
 var currentSendInfo;
-
+var currentUser = opener.currentUserInfo;
 $(function(){
 
 	// 날짜 픽커
@@ -55,6 +55,8 @@ $(function(){
 	// input mask
     $(".calendar").each((i, el) => calendarUtil.init(el.id));
 
+    $(".searchInputCheck_dt").val(getToday(0)); // 오늘 날짜로 세팅
+    
     // create grid
     // 수신목록
     smsRecvListGrid = new Grid({
@@ -332,12 +334,9 @@ $(function(){
     // 탭 이동시 이벤트
     $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
 		id = $(this).attr('id');
-		switch($(this).attr('id')){
-		// 고객정보
-		case 'recieveTab':
-			smsRecvListGrid.refreshLayout();
-			break;
-		};
+		smsRecvListGrid.refreshLayout();
+		smsPerSendListGrid.refreshLayout();
+		smsSendListGrid.refreshLayout();
     });
     
     $(".ccemBtn").click(function(){
@@ -526,7 +525,8 @@ function excelExport(gridId, excelfile, tableId){
 		appendStr += "<tr>";
 		for(dataObj of gridData){
 			if(dataObj["hidden"] == false){
-				appendStr += `<td style="mso-number-format:'\@'">${gridRow[dataObj["name"]]}</td>`;
+				var tempD = gridRow[dataObj["name"]] != null? gridRow[dataObj["name"]]:"";
+				appendStr += `<td style="mso-number-format:'\@'">${tempD}</td>`;
 			}
 		}
 		appendStr += "</tr>";
@@ -537,7 +537,7 @@ function excelExport(gridId, excelfile, tableId){
 		var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
 		tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
 		tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
-		tab_text = tab_text + '<x:Name>Test Sheet</x:Name>';
+		tab_text = tab_text + '<x:Name>Sheet</x:Name>';
 		tab_text = tab_text + '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
 		tab_text = tab_text + '</x:ExcelWorksheets></x:ExcelWorkbook></xml></head><body>';
 		tab_text = tab_text + "<table border='1px'>";

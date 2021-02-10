@@ -13,12 +13,12 @@ $(function(){
 	$(".specialCharacter").click(function(){
 		insertText($(this).text());
 		bytesHandler($("#smsContentArea"));
-		checkByte();
+		checkByteDisplay();
 	});
 	
 	$("#smsContentArea").keyup(function(){
 		bytesHandler(this);
-		checkByte();
+		checkByteDisplay();
 	});
 	
 	// 문자메세지 컨텐츠 LIST
@@ -63,7 +63,7 @@ $(function(){
 			$("#smsContentArea").val("");
 			$("#smsContentArea").val(contents);
 			bytesHandler($("#smsContentArea"));
-			checkByte();
+			checkByteDisplay();
 		}
     });
 	
@@ -143,7 +143,7 @@ $(function(){
 	
 });
 
-function checkByte(){
+function checkByteDisplay(){
 	if(Number($("#calByte").text()) > 90){
 		$("#lmsBadge").css("display","");
 		$("#smsBadge").css("display","none");
@@ -191,7 +191,7 @@ function insertText(addChar){
 function cleanContent(){
 	$("#smsContentArea").val("");
 	bytesHandler($("#smsContentArea"));
-	checkByte();
+	checkByteDisplay();
 };
 
 /**
@@ -294,47 +294,3 @@ function sendSMS(){
 	  
 	  sendSMS();
   }
-
-/*function sendSMS(){
-	param.send1 = [{}];
-	param.userid = opener.currentUserInfo.user.external_id;
-	param.menuname = 'SMS전송';
-	param.senddataids = ["send1"];
-	param.recvdataids = ["recv1"];
-	
-	param.send1[0].MSG_TYPE = msgType;																						//메시지 타입(0:SMS,5:LMS)
-	param.send1[0].DEST_PHONE = $("#inputTable").find('input:radio:checked').parent().parent().parent().children().eq(1); 	//수신번호
-	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
-	param.send1[0].SEND_NAME =	opener.currentUserInfo.user.name;
-	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
-	param.send1[0].STATUS = 0;
-	param.send1[0].EXTERNAL_ID = opener.currentUserInfo.user.external_id,         											//상담자ID
-	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
-	param.send1[0].SMS_FIX_ID = "";         																				//구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)
-	
-	
-	
-	{
-		userid: opener.currentUserInfo.user.external_id,
-	    menuname: 'SMS전송',
-		senddataids: ["send1"],
-		recvdataids: ["recv1"],
-		send1: [{
-			"MSG_TYPE" : "",			//메시지 타입(0:SMS,5:LMS)
-			"DEST_PHONE" : "",	        //수신번호
-			"DEST_NAME" : "",           //수신자
-			"SEND_PHONE" : "",          //발신번호
-			"SEND_NAME" : "",           //발신자명
-			"MSG_BODY" : "",            //전송내용
-			"STATUS" : "",              //발송상태  (0:발송대기)
-			"CUST_ID" : "",             //고객번호
-			"MBR_ID" : "",              //회원번호
-			"CSEL_DATE" : "",           //상담일자
-			"CSEL_NO" : "",             //상담번호
-			"CSEL_SEQ" : "",            //상담순번
-			"EXTERNAL_ID" : 			opener.currentUserInfo.user.external_id,         //상담자ID
-			"SMS_TRGT_ID" : "",         //대상구분(1:지점,2:학부모,3:교사)
-			"SMS_FIX_ID" : ""           //구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)
-		}]
-	}
-}*/
