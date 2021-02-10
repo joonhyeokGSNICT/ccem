@@ -1399,7 +1399,7 @@ const getSmsCondition = async (sType, recevier) => {
         DEST_NAME   : DS_SMSDATA.RECVNAME,  // 수신자      
         SEND_PHONE  : SEND_PHONE,           // 발신번호      
         MSG_BODY    : DS_SMSDATA.MSG,       // 전송내용      
-        STATUS      : "",                   // 발송상태  (0:발송대기)  
+        STATUS      : "0",                  // 발송상태  (0:발송대기)  
         CUST_ID     : DS_SMSDATA.CUST_ID,   // 고객번호  
         MBR_ID      : DS_SMSDATA.MBR_ID,    // 회원번호  
         CSEL_DATE   : DS_SMSDATA.CSEL_DATE, // 상담일자      
