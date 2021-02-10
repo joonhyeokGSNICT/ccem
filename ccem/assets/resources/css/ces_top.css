@@ -44,7 +44,17 @@ body *{font-size:13px!important;}
 }
 
 /* navs */
-
+.navBtn {
+	background-color: #123f8a;
+	color:white;
+	font-weight:bold;
+	width: 80px;
+}
+.navBtn:hover {
+	background-color: #3f7ee6;
+	color:white;
+	font-weight:bold;
+}
 .nav-tabs .active{
     background-color: #123f8a !important;
     color: rgb(255, 255, 255)!important;

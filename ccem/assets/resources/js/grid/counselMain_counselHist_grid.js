@@ -231,11 +231,27 @@ $(function(){
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                formatter: function(data){
+                    // console.log(data);
+                    var text = ``;
+                    if ( data.value==null ) text =``;
+                    else if ( data.value=="MOREDATA" ) text += `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>선택청취</span></button>`;
+                    else text += `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>청취</span></button>`;
+                    return text;
+                }
             }
         ],
     });
 	counselMain_counselHist_grid.on('click', (ev) => {
-		if(ev.targetType == 'cell'){
+        console.log(ev);
+        if(ev.targetType == 'cell'){
+            if ( ev.columnName == 'RECORD_ID' ) {
+                var arr = {}
+                    arr.CSEL_DATE = counselMain_counselHist_grid.getRow(ev.rowKey).CSEL_DATE;
+                    arr.CSEL_NO = counselMain_counselHist_grid.getRow(ev.rowKey).CSEL_NO;
+                    arr.RECORD_ID = counselMain_counselHist_grid.getRow(ev.rowKey).RECORD_ID;
+                
+            } 
 			counselMain_counselHist_grid.addSelection(ev);
 			counselMain_counselHist_grid.clickSort(ev);
 			currentCounselInfo = counselMain_counselHist_grid.getRow(ev.rowKey);
