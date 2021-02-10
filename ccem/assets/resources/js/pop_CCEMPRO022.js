@@ -1464,6 +1464,7 @@ const changeProcMk = (sPROC_STS_MK) => {
 const setBtnCtrlAtLoadComp = () => {
 	$("#button5").prop("disabled", false);	// 추가등록
 	$("#button6").prop("disabled", false);	// 관계회원
+	$("#button10").prop("disabled", true);	// 티켓생성버튼 비활성화
 
 	// 처리구분에 따른 상담연계/결과등록버튼 제어
 	switch ($("#selectbox4").val()) {
@@ -1576,7 +1577,9 @@ const onNewTicket = async (parent_id) => {
 
 	// 티켓생성
 	const origin = await createTicket(user_id, parent_id);
-	currentTicket = origin.ticket;
+	currentTicket = origin.ticket;			// 현재 티켓을 새로운 티켓으로 교체
+	$("#button10").prop("disabled", true);	// 티켓생성버튼 비활성화
+
 	return currentTicket.id;
 
 }
