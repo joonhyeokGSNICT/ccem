@@ -250,7 +250,11 @@ $(function(){
                     arr.CSEL_DATE = counselMain_counselHist_grid.getRow(ev.rowKey).CSEL_DATE;
                     arr.CSEL_NO = counselMain_counselHist_grid.getRow(ev.rowKey).CSEL_NO;
                     arr.RECORD_ID = counselMain_counselHist_grid.getRow(ev.rowKey).RECORD_ID;
-                
+                if( arr.RECORD_ID == "MOREDATA") {
+                    PopupUtil.open("CCEMPRO047",600,300,"",arr);
+                } else {
+                    recordPlay(arr.RECORD_ID);
+                }
             } 
 			counselMain_counselHist_grid.addSelection(ev);
 			counselMain_counselHist_grid.clickSort(ev);
