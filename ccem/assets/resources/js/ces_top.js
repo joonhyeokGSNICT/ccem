@@ -1019,15 +1019,15 @@ function getCurrentUserInfo(){
 		currentUserInfo = d;
 		if(currentUserInfo.user.tags.includes("user_lvl_mk_1")){
 			currentUserInfo.user.userMK = 1;
-		}else if(currentUserInfo.tags.includes("user_lvl_mk_2")){
+		}else if(currentUserInfo.user.tags.includes("user_lvl_mk_2")){
 			currentUserInfo.user.userMK = 2;
-		}else if(currentUserInfo.tags.includes("user_lvl_mk_3")){
+		}else if(currentUserInfo.user.tags.includes("user_lvl_mk_3")){
 			currentUserInfo.user.userMK = 3;
-		}else if(currentUserInfo.tags.includes("user_lvl_mk_4")){
+		}else if(currentUserInfo.user.tags.includes("user_lvl_mk_4")){
 			currentUserInfo.user.userMK = 4;
-		}else if(currentUserInfo.tags.includes("user_lvl_mk_5")){
+		}else if(currentUserInfo.user.tags.includes("user_lvl_mk_5")){
 			currentUserInfo.user.userMK = 5;
-		}else if(currentUserInfo.tags.includes("user_lvl_mk_9")){
+		}else if(currentUserInfo.user.tags.includes("user_lvl_mk_9")){
 			currentUserInfo.user.userMK = 9;
 		}
 	});

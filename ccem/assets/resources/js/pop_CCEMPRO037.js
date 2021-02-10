@@ -16,6 +16,8 @@ $(function(){
 	getUser();
 	setEnableBtn();
 	
+	$(".searchInputCheck_dt").val(getToday(0));
+	$("#calendarDateCheck").prop("checked",true);
 	// create multipleSelect
 	// 상담원그룹
 	$('#asignList_cselGrp').multipleSelect({
@@ -532,6 +534,9 @@ function onSearch(){
 		        		}
 		        	}
 		        	$("#totalCnt").val(tot);
+		        	for(d of response.recv1){
+		        		d.TELNO = d.TELNO.replace(/ /gi,"");
+		        	}
 		        	grid.resetData(response.recv1);
 		        }else {
 		        	loading.out();
@@ -697,106 +702,111 @@ function onSendFax(){
 		// 구성된 데이터를 TR에 실어 전송
 		if(!confirm("[" + grid.getCheckedRows().length + "]건의 팩스를 전송합니다.\n\n계속하시겠습니까?")) return;
 		
+		var paramSet = {
+				userid: opener.currentUserInfo.user.external_id,
+				menuname: '입회조회',
+				senddataids: ["send1"],
+				recvdataids: ["recv1"],
+				send1: []
+		};
 		for(listData of grid.getCheckedRows()){
+			
 			var param = {
-					userid: opener.currentUserInfo.user.external_id,
-					menuname: '입회조회',
-					senddataids: ["send1"],
-					recvdataids: ["recv1"],
-					send1: [{
-						"CHNLMK": "",
-						"MBRMK": "",
-						"ENTER_RST_FLAG": "",
-						"TRANS_CHNL_MK":"",
-						"GUBUN":"",
-						"FAX_TIME": String(new Date()).split(" ")[4].replace(/:/gi,""),
-						"CSEL_DATE": "",
-						"CSEL_NO" : "",
-						"CSEL_SEQ" : "",
-						"DEPT_ID" : "",
-						"FAX_TYPE_CDE" : "",
-						"CUST_ID": "",
-						"FAX_NO": "",
-						"USER_ID" : "",
-						"MBR_ID" : "",
-						"CUST_NAME" : "",
-						"GRADE_CDE": "",
-						"PRDT_NAME": "",
-						"TRNAS_DIV" : "",
-						"TRANS_DEPT" : "",
-						"TRANS_LC" : "",
-						"TRANS_DATE": "",
-						"TRANS_NO": ""
-					}]
-			};
+					"CHNLMK": "",
+					"MBRMK": "",
+					"ENTER_RST_FLAG": "",
+					"TRANS_CHNL_MK":"",
+					"GUBUN":"",
+					"FAX_TIME": String(new Date()).split(" ")[4].replace(/:/gi,""),
+					"CSEL_DATE": "",
+					"CSEL_NO" : "",
+					"CSEL_SEQ" : "",
+					"DEPT_ID" : "",
+					"FAX_TYPE_CDE" : "",
+					"CUST_ID": "",
+					"FAX_NO": "",
+					"USER_ID" : "",
+					"MBR_ID" : "",
+					"CUST_NAME" : "",
+					"GRADE_CDE": "",
+					"PRDT_NAME": "",
+					"TRNAS_DIV" : "",
+					"TRANS_DEPT" : "",
+					"TRANS_LC" : "",
+					"TRANS_DATE": "",
+					"TRANS_NO": ""
+				}
 			
 			chnlMk = listData.CSEL_CHNL_MK;
 			// 입회상담의뢰서 (OB) : 상담채널이 발신, TM발신인 경우
 			if(chnlMk == "2" || chnlMk == "7"){
-				param.send1[0].CHNLMK = "OB";
-				param.send1[0].FAX_TYPE_CDE = "DS23";
+				param.CHNLMK = "OB";
+				param.FAX_TYPE_CDE = "DS23";
 			}
 			// 입회상담의뢰서(EDUPIA) : 상담채널이 인터넷, 발신(에듀피아)인 경우
 			else if(chnlMk=="3" || chnlMk=="83"){
-				param.send1[0].CHNLMK = "ED";
-				param.send1[0].FAX_TYPE_CDE = "DS26";
+				param.CHNLMK = "ED";
+				param.FAX_TYPE_CDE = "DS26";
 			}
 			// 입회상담의뢰서(IB) : 상담채널이 나머지 모두 인 경우
 			else{
-				param.send1[0].CHNLMK = "IB";
-				param.send1[0].FAX_TYPE_CDE = "DS10";
+				param.CHNLMK = "IB";
+				param.FAX_TYPE_CDE = "DS10";
 			}
 			
-			param.send1[0].TRANS_DATE = currentMemberData.TRANS_DATE?currentMemberData.TRANS_DATE:"";
-			param.send1[0].TRANS_CHNL_MK = currentMemberData.CSEL_CHNL_MK?currentMemberData.CSEL_CHNL_MK:"";
-			param.send1[0].TRNAS_DIV = currentMemberData.TRNAS_DIV?currentMemberData.TRNAS_DIV:"";
-			param.send1[0].TRANS_DEPT = currentMemberData.TRANS_DEPT?currentMemberData.TRANS_DEPT:"";
-			param.send1[0].TRANS_LC = currentMemberData.TRANS_LC?currentMemberData.TRANS_LC:"";
-			param.send1[0].TRANS_NO = currentMemberData.TRANS_NO?currentMemberData.TRANS_NO:"";
-			param.send1[0].FAX_TIME = String(new Date()).split(" ")[4];
-			param.send1[0].CSEL_DATE = currentMemberData.CSEL_DATE?currentMemberData.CSEL_DATE:"";
-			param.send1[0].CSEL_NO = currentMemberData.CSEL_NO?currentMemberData.CSEL_NO:"";
-			param.send1[0].CSEL_SEQ = currentMemberData.CSEL_SEQ?currentMemberData.CSEL_SEQ:"";
-			param.send1[0].DEPT_ID = currentMemberData.DEPT_ID?currentMemberData.DEPT_ID:"";
-			param.send1[0].CUST_ID = currentMemberData.CUST_ID?currentMemberData.CUST_ID:"";
-			param.send1[0].FAX_NO = currentMemberData.FAX_NO?$.trim(currentMemberData.FAX_NO):"";
-			param.send1[0].USER_ID = opener.currentUserInfo.user.external_id;
-			param.send1[0].MBR_ID = currentMemberData.MBR_ID?currentMemberData.MBR_ID:"";
-			param.send1[0].CUST_NAME = currentMemberData.CUST_NAME?currentMemberData.CUST_NAME:"";
-			param.send1[0].GRADE_CDE = currentMemberData.GRADE_CDE?currentMemberData.GRADE_CDE:"";
-			param.send1[0].PRDT_NAME = currentMemberData.PRDT_NAME?currentMemberData.PRDT_NAME:"";
+			param.TRANS_DATE = listData.TRANS_DATE?listData.TRANS_DATE:"";
+			param.TRANS_CHNL_MK = listData.CSEL_CHNL_MK?listData.CSEL_CHNL_MK:"";
+			param.TRNAS_DIV = listData.TRNAS_DIV?listData.TRNAS_DIV:"";
+			param.TRANS_DEPT = listData.TRANS_DEPT?listData.TRANS_DEPT:"";
+			param.TRANS_LC = listData.TRANS_LC?listData.TRANS_LC:"";
+			param.TRANS_NO = listData.TRANS_NO?listData.TRANS_NO:"";
+			param.FAX_TIME = String(new Date()).split(" ")[4];
+			param.CSEL_DATE = listData.CSEL_DATE?listData.CSEL_DATE:"";
+			param.CSEL_NO = listData.CSEL_NO?listData.CSEL_NO:"";
+			param.CSEL_SEQ = listData.CSEL_SEQ?listData.CSEL_SEQ:"";
+			param.DEPT_ID = listData.DEPT_ID?listData.DEPT_ID:"";
+			param.CUST_ID = listData.CUST_ID?listData.CUST_ID:"";
+			param.FAX_NO = listData.FAX_NO?$.trim(listData.FAX_NO):"";
+			param.USER_ID = opener.currentUserInfo.user.external_id;
+			param.MBR_ID = listData.MBR_ID?listData.MBR_ID:"";
+			param.CUST_NAME = listData.CUST_NAME?listData.CUST_NAME:"";
+			param.GRADE_CDE = listData.GRADE_CDE?listData.GRADE_CDE:"";
+			param.PRDT_NAME = listData.PRDT_NAME?listData.PRDT_NAME:"";
 			
 			// 상담채널 구분(에듀피아인 경우)에 따른 추가 데이터 세팅
 			if(chnlMk=="3" || chnlMk=="83"){
-				param.send1[0].ENTER_RST_FLAG = currentMemberData.ENTER_RST_FLAG?currentMemberData.ENTER_RST_FLAG:"";
-				param.send1[0].MBRMK = currentMemberData.CSEL_LTYPE_CDE?currentMemberData.CSEL_LTYPE_CDE:"";
-				param.send1[0].GUBUN = currentMemberData.CSEL_MTYPE_CDE?currentMemberData.CSEL_MTYPE_CDE:"";
+				param.ENTER_RST_FLAG = listData.ENTER_RST_FLAG?listData.ENTER_RST_FLAG:"";
+				param.MBRMK = listData.CSEL_LTYPE_CDE?listData.CSEL_LTYPE_CDE:"";
+				param.GUBUN = listData.CSEL_MTYPE_CDE?listData.CSEL_MTYPE_CDE:"";
 			} else {
-				param.send1[0].ENTER_RST_FLAG = "";
-				param.send1[0].MBRMK = "";
-				param.send1[0].GUBUN = "";
+				param.ENTER_RST_FLAG = "";
+				param.MBRMK = "";
+				param.GUBUN = "";
 			}
 			
-			$.ajax({
-			    url: API_SERVER + '/cns.addEnterSendFax.do',
-			    type: 'POST',
-			    dataType: 'json',
-			    contentType: "application/json",
-			    data: JSON.stringify(param),
-			    success: function (response) {
-			        console.log(response);
-			        if(response.errcode == "0"){
-			        	console.log(response);
-			        }else {
-			        	loading.out();
-			        	alert(response.errmsg);
-			        }
-			    }, error: function (response) {
-			    }
-			});
 		}
 		
-		alert("요청이 완료 되었습니다.");
+		console.log(paramSet);
+		
+		$.ajax({
+			url: API_SERVER + '/cns.addEnterSendFax.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(paramSet),
+			success: function (response) {
+				console.log(response);
+				if(response.errcode == "0"){
+					console.log(response);
+					alert("요청이 완료 되었습니다.");
+				}else {
+					loading.out();
+					alert(response.errmsg);
+				}
+			}, error: function (response) {
+			}
+		});
+		
 		
 	}else {
 		alert("팩스전송 체크된 건이 없습니다.\n\n먼저 체크를 해 주십시오."); return;
@@ -940,7 +950,8 @@ function onDelProc(date, no, seq){
 		    		    success: function (response) {
 		    		        console.log(response);
 		    		        if(response.errcode == "0"){
-		    		        	
+		    		        	alert("삭제가 완료되었습니다.");
+		    		        	onSearch();
 		    		        }else {
 		    		        	loading.out();
 		    		        	alert(response.errmsg);
@@ -958,6 +969,41 @@ function onDelProc(date, no, seq){
 		});
 	}else{
 		alert("삭제가 취소되었습니다.")
+		return;
+	}
+}
+
+/*****************************************
+*	수정 버튼 클릭
+*****************************************/	
+function onEdit(){
+	if(grid.getRow().length > 0){
+	
+	// 전달값
+	/*var arr = new Array();
+	arr[0] = DS_CNS4801.NameValue(getRowPos("DS_CNS4801"),"ACPDATE");
+	arr[1] = DS_CNS4801.NameValue(getRowPos("DS_CNS4801"),"ACPNO");
+	arr[2] = DS_CNS4801.NameValue(getRowPos("DS_CNS4801"),"ACPSEQ");*/
+
+	// 리턴값
+	//var retVal = "";
+
+		// 권한 확인
+		if(opener.currentUserInfo.user.userMK < 3){		// 상담관리자 이상 권한인 경우
+			//retVal = gf_popupModal("/cns/cns4800/cns4890.jsp",this,1010,628);
+		} else {			// 상담관리자 이하의 권한 등급인 경우
+			if(currentMemberData.USER_ID != opener.currentUserInfo.user.external_id){
+				alert("상담원이 틀립니다. \n수정할 수 없습니다.");
+				return;
+			} else {
+				//retVal = gf_popupModal("/cns/cns4800/cns4890.jsp",this,1010,628);
+			}
+		}
+
+		// 저장된 경우 재조회
+		//if(retVal) onSearch();
+	} else {
+		alert("수정할 내역이 없습니다.");
 		return;
 	}
 }
