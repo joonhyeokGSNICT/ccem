@@ -977,7 +977,7 @@ function onDelProc(date, no, seq){
 *	수정 버튼 클릭
 *****************************************/	
 function onEdit(){
-	if(grid.getRow().length > 0){
+	if(grid.getData().length > 0){
 	
 	// 전달값
 	/*var arr = new Array();
@@ -991,12 +991,14 @@ function onEdit(){
 		// 권한 확인
 		if(opener.currentUserInfo.user.userMK < 3){		// 상담관리자 이상 권한인 경우
 			//retVal = gf_popupModal("/cns/cns4800/cns4890.jsp",this,1010,628);
+			PopupUtil.open('CCEMPRO031', 1220, 610);
 		} else {			// 상담관리자 이하의 권한 등급인 경우
 			if(currentMemberData.USER_ID != opener.currentUserInfo.user.external_id){
 				alert("상담원이 틀립니다. \n수정할 수 없습니다.");
 				return;
 			} else {
 				//retVal = gf_popupModal("/cns/cns4800/cns4890.jsp",this,1010,628);
+				PopupUtil.open('CCEMPRO031', 1220, 610);
 			}
 		}
 
