@@ -10,7 +10,7 @@ recordGrid = new Grid({
         {
             header: '녹취ID',
             name: 'RECORD_ID',
-            width: 220,
+            width: 200,
             align: "center",
             sortable: true,
             ellipsis: true,
@@ -19,7 +19,7 @@ recordGrid = new Grid({
             header: '저장일자',
             name: 'RECORD_STDATE',
             width: 120,
-            align: "left",
+            align: "center",
             sortable: true,
             ellipsis: true
         },
@@ -34,7 +34,7 @@ recordGrid = new Grid({
         {
             header: '사용자',
             name: 'USER_NAME',
-            width: 120,
+            width: 100,
             align: "center",
             sortable: true,
             ellipsis: true,
@@ -43,29 +43,75 @@ recordGrid = new Grid({
             header: '전화번호',
             name: 'TELPNO',
             width: 150,
-            align: "center",
+            align: "left",
             sortable: true,
             ellipsis: true,
         },
 		{
             header: '녹취청취',
-            name: 'RECORD_ID',
+            name: 'RECORD_ID_text',
             width: 100,
             align: "center",
             sortable: true,
             ellipsis: true,
             formatter: function(data){
                 // console.log(data);
-				text += `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>청취</span></button>`
+				var text = `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>청취</span></button>`;
+                return text;
             }
+        },
+        {
+            header: '사용자ID_HIDE',
+            name: 'USER_ID',
+            width: 120,
+            align: "center",
+            sortable: true,
+            ellipsis: true,
         },
     ],
 });
-recordGrid.on('click', (ev) => {
+/* 그리드 컬럼 숨김처리 */
+recordGrid.hideColumn("USER_ID"); // user_id 설정
 
+/******************************************************
+ * 그리드 단일 클릭 시 기능
+ ******************************************************/ 
+recordGrid.on('click', (ev) => {
+    recordGrid.uncheckAll();
+    recordGrid.addSelection(ev);
+    recordGrid.clickSort(ev);
+    recordGrid.clickCheck(ev);
+    if ( ev.columnName == "RECORD_ID_text" ) {
+        const tempArr = {
+            RECORD_ID : recordGrid.getRow(ev.rowKey).RECORD_ID
+        }
+        recordPlay(tempArr.RECORD_ID);
+    } 
 });
 
+/******************************************************
+ * 그리드 더블 클릭 시 기능
+ ******************************************************/ 
+recordGrid.on("dblclick", (ev) => {
+    if (recordGrid.getCheckedRows().length > 0){
+        const tempArr = {
+            RECORD_ID : recordGrid.getCheckedRows()[0].RECORD_ID
+        }
+        recordPlay(tempArr.RECORD_ID);
+    }
+});
 
+/******************************************************
+ * 녹취청취 버튼 클릭
+ ******************************************************/ 
+function listenBtn() {
+    if (recordGrid.getCheckedRows().length > 0){
+        const tempArr = {
+            RECORD_ID : recordGrid.getCheckedRows()[0].RECORD_ID
+        }
+        recordPlay(tempArr.RECORD_ID);
+    }
+}
 
 /******************************************************
  * 전역변수
@@ -75,7 +121,7 @@ var data 	// 부모창에서 받은 값
 /******************************************************
  * 초기 화면 로드 
  ******************************************************/ 
-async function init(){
+function init(){
 	data = POP_DATA;
 	var param = {
 		senddataids : ["dsSend"],
@@ -88,9 +134,27 @@ async function init(){
 	url = '/cns.getRecord.do';
 	
 	// 중복 녹취 값 가져오기
-	var tempArr = await ajax( param, url );
-	console.log(tempArr);
-	
+	ajax( param, url ).then( function(data){
+        var tempArr = data.dsRecv;
+        console.log(tempArr);
+        if ( tempArr.length > 0 ) {
+            temp = tempArr.map(el => {
+                return {
+                    RECORD_ID : el.RECORD_ID,
+                    RECORD_STDATE : el.RECORD_STDATE,
+                    RECORD_STTIME : el.RECORD_STTIME,
+                    TELPNO : el.TELPNO,
+                    USER_ID : el.USER_ID,
+                    USER_NAME : el.USER_NAME,
+                    RECORD_ID_text : el.RECORD_ID,
+                };
+            });
+            recordGrid.resetData([]);
+            recordGrid.resetData(temp);
+        } else {
+
+        }
+    });
 }
 
 

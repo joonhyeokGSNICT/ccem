@@ -254,7 +254,7 @@ $(function(){
                 console.log(tempArr.RECORD_ID);
                 if( tempArr.RECORD_ID == "MOREDATA") {
                     console.log(tempArr);
-                    PopupUtil.open("CCEMPRO047",752,240,"",tempArr);
+                    PopupUtil.open("CCEMPRO047",852,240,"",tempArr);
                 } else if ( tempArr.RECORD_ID == null ) {
                 } else  {
                     recordPlay(tempArr.RECORD_ID);
