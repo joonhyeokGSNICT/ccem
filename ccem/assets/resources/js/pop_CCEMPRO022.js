@@ -194,6 +194,19 @@ const setEvent = () => {
     });
     $selectbox8.on("blur", ev => $(ev.target).removeClass('open'));
 
+	// 상담구분 콤보박스 - 이미 선택한 옵션을 다시 선택했을때 이벤트 발생
+	const $selectbox3 = $('#selectbox3');
+    $selectbox3.on("click", ev => {
+        const $this = $(ev.target);
+        if ($this.hasClass('open')) {
+            changeCselType($this.val());
+            $this.removeClass('open');
+        } else {
+            $this.addClass('open');
+        }
+    });
+    $selectbox3.on("blur", ev => $(ev.target).removeClass('open'));
+
 }
 
 /**
@@ -341,7 +354,7 @@ const setCodeData = async () => {
 		$("#selectbox15").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
 	}
 
-	changeCselType();	// 상담구분 chage event
+	// changeCselType();	// 상담구분 chage event
 	changeProcMk();		// 처리구분 chage event
 }
 
@@ -1413,6 +1426,27 @@ const changeCselType =() => {
 	const jobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;
 	if (jobType == "I") $("#selectbox10 option:eq(0)").prop("selected", true);
 
+}
+
+/**
+ * 처리시한구분 변경시 호출되는 함수
+ * - as-is : cns5810.CMB_LIMIT_MK.OnCloseUp()
+ * @param {string} value LIMIT_MK
+ */
+const changeLimitMk = (value) => {
+
+	let iDay = 0;
+	switch (value) {
+		case "1": iDay = 0; break;
+		case "2": iDay = 1; break;
+		case "3": iDay = 2; break;
+		case "4": iDay = 3; break;
+		case "5": iDay = 5; break;
+		case "6": iDay = 7; break;
+		case "7": iDay = 0; break;
+	}
+
+	calendarUtil.setImaskValue("calendar2", getDateFormat("day", iDay));
 }
 
 /**
