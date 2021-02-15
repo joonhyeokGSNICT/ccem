@@ -1,4 +1,4 @@
-let grid
+var grid
 var codeData = opener.codeData;
 var currentMemberData;
 
@@ -449,6 +449,8 @@ function onSearch(){
 			param.send1[0].VAL_STDATE = $("#calendar_st").val().replace(/-/gi,"");
 			param.send1[0].VAL_EDDATE = $("#calendar_ed").val().replace(/-/gi,"");
 			validationBool = true;
+		}else {
+			alert("기간을 확인 해 주세요.");
 		}
 		if($("#asignList_cselGrpCheck").is(":checked")){			// 상담원그룹 (리스트)
 			param.send1[0].CHK_USER_GRP_CDE = "Y";
@@ -697,7 +699,7 @@ function onSendFax(){
 	// 1.입회상담의뢰서(OB) : DS_CNS4800FAX
 	// 2.입회상담의뢰서(IB) : DS_CNS4800FAX_IB
 	// 3.입회상담의뢰서(EDUPIA) : DS_CNS4800FAX_ED
-	if(grid.getCheckedRows().length > 1) {
+	if(grid.getCheckedRows().length >= 1) {
 		
 		// 구성된 데이터를 TR에 실어 전송
 		if(!confirm("[" + grid.getCheckedRows().length + "]건의 팩스를 전송합니다.\n\n계속하시겠습니까?")) return;
@@ -715,7 +717,7 @@ function onSendFax(){
 					"CHNLMK": "",
 					"MBRMK": "",
 					"ENTER_RST_FLAG": "",
-					"TRANS_CHNL_MK":"",
+					"TRANS_CHNL_MK":"3",					// 연계방법구분 fax = 3
 					"GUBUN":"",
 					"FAX_TIME": String(new Date()).split(" ")[4].replace(/:/gi,""),
 					"CSEL_DATE": "",
@@ -755,7 +757,7 @@ function onSendFax(){
 			}
 			
 			param.TRANS_DATE = listData.TRANS_DATE?listData.TRANS_DATE:"";
-			param.TRANS_CHNL_MK = listData.CSEL_CHNL_MK?listData.CSEL_CHNL_MK:"";
+			param.TRANS_CHNL_MK = "3";													// 연계방법구분 fax = 3
 			param.TRNAS_DIV = listData.TRNAS_DIV?listData.TRNAS_DIV:"";
 			param.TRANS_DEPT = listData.TRANS_DEPT?listData.TRANS_DEPT:"";
 			param.TRANS_LC = listData.TRANS_LC?listData.TRANS_LC:"";
