@@ -935,16 +935,20 @@ const _btn = {
 
 			/**
 			 * 전송할 데이터
+			 * @param telArray    : 그리드에서 선택한 사람의 전화(핸드폰) 배열
 			 * @param nameArray    : 그리드에서 선택한 사람의 이름 배열
 			 * @param idArray      : 그리드에서 선택한 사람의 ID 배열
 			 */
+			var telArray = [];
 			var nameArray = [];
 			var idArray = [];
 
 			// 선택한 사람 넣기
+			console.log(tempGrid);
 			for ( index in tempGrid) {
 				idArray[index] = tempGrid[index].EMP_ID;
 				nameArray[index] = tempGrid[index].NAME;
+				telArray[index] = tempGrid[index].MOBILNO;
 			}
 			// 선택한 부서의 기본 부서장 입력(없을 경우 입력 없음)
 			if (! isEmpty(_selectedNode.data.REP_EMP_ID) ){
@@ -952,6 +956,14 @@ const _btn = {
 					if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length == 0 ) {
 						idArray.push(_selectedNode.data.REP_EMP_ID)
 						nameArray.push(_selectedNode.data.REP_EMP_NAME);
+						telArray.push(_selectedNode.data.REP_EMP_NAME);
+
+						// 전화번호 정보 입력
+						if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length > 0 ) {
+							var tempId = employeeListGrid.getData().filter(data => data.EMP_ID == _selectedNode.data.REP_EMP_ID.trim());
+							telArray.push(tempId[0].MOBILNO);
+						}
+
 					}
 				}
 			}
@@ -988,8 +1000,9 @@ const _btn = {
 					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
 					orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
 					orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
-					orgList.EMP_ID_NAME  = nameArray.join(', ')
-					orgList.EMP_ID_LIST = idArray.join(', ')
+					orgList.EMP_NAME_LIST  = nameArray.join(', ');
+					orgList.EMP_ID_LIST = idArray.join(', ');
+					orgList.EMP_PHONE_LIST = telArray.join(', ');
 
 
 				} else if ( _selectedNode.data.LV =="2" ) {
@@ -1004,7 +1017,6 @@ const _btn = {
 						orgList.DEPT_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
 						orgList.DEPT_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
 					}
-
 					orgList.LC_ID = "";		
 					orgList.LC_NAME = "";
 					orgList.LC_TELNO = "";
@@ -1015,26 +1027,30 @@ const _btn = {
 					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
 					orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
 					orgList.LC_EMP_ID = "";
-					orgList.EMP_ID_NAME  = nameArray.join(', ')
-					orgList.EMP_ID_LIST = idArray.join(', ')
+					orgList.EMP_NAME_LIST  = nameArray.join(', ');
+					orgList.EMP_ID_LIST = idArray.join(', ');
+					orgList.EMP_PHONE_LIST = telArray.join(', ');
 				} else if ( _selectedNode.data.LV =="1" )  {
-					// orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
-					// orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
-					// orgList.UP_DEPT_ID = _selectedNode.data.DEPT_ID;
-					// orgList.UP_DEPT_NAME = _selectedNode.data.DEPT_NAME;
-					// orgList.UP_DEPT_TEL = _selectedNode.data.TELPNO;
-					// orgList.UP_DEPT_FAX = _selectedNode.data.FAXNO;
-					// orgList.PARE_DEPT_ID = "";
-					// orgList.PARE_DEPT_NAME = "";
-					// orgList.PARE_DEPT_TEL = "";
-					// orgList.LC_DEPT_ID = "";
-					// orgList.LC_DEPT_NAME = "";
-					// orgList.LC_DEPT_TEL = ""
-					// orgList.LV = _selectedNode.data.LV;
-					// orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
-					// orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
-					// orgList.REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
-					// orgList.REP_EMP_NAME = _selectedNode.data.REP_EMP_NAME;
+					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
+					orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
+					orgList.UP_DEPT_ID = _selectedNode.data.DEPT_ID;
+					orgList.UP_DEPT_NAME = _selectedNode.data.DEPT_NAME;
+					orgList.UP_DEPT_TEL = _selectedNode.data.TELPNO;
+					orgList.UP_DEPT_FAX = _selectedNode.data.FAXNO;
+					orgList.PARE_DEPT_ID = "";
+					orgList.PARE_DEPT_NAME = "";
+					orgList.PARE_DEPT_TEL = "";
+					orgList.LC_DEPT_ID = "";
+					orgList.LC_DEPT_NAME = "";
+					orgList.LC_DEPT_TEL = ""
+					orgList.LV = _selectedNode.data.LV;
+					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+					orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+					orgList.REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
+					orgList.REP_EMP_NAME = _selectedNode.data.REP_EMP_NAME;
+					orgList.EMP_NAME_LIST  = nameArray.join(', ');
+					orgList.EMP_ID_LIST = idArray.join(', ');
+					orgList.EMP_PHONE_LIST = telArray.join(', ');
 				}
 				opener.setTransDisPlay(orgList);
 			} else if ( opener.name == 'CCEMPRO022' ) {
@@ -1049,9 +1065,9 @@ const _btn = {
 				orgList.EMP_NAME_LIST  = nameArray.join(', ')
 				orgList.EMP_ID_LIST = idArray.join(', ')
 				opener.setDisPlayDn(orgList);
-				// console.log(orgList);
+				console.log(orgList);
 			}
-			window.close();
+			// window.close();
 
 		} else if ( _mode =="plainTreeSelOrg") {
 			var orgList = {};
