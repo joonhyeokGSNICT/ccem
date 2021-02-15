@@ -239,7 +239,6 @@ const setCodeData = (codeData) => {
 
 	const CODE_MK_LIST = [
 		"RTN_FLAG", 		// 회신여부
-		"TRANS_CHNL_MK", 	// 연계방법구분
 		"PROC_STS_MK",		// 처리상태구분
 		"FAX_TYPE_CDE",		// FAX 구분
 	];
@@ -292,6 +291,8 @@ const setDisPlay = () => {
  */
 var setTransDisPlay = (data) => {
 
+	console.debug("setTransDisPlay: ", data)
+
 	if (!data.LC_ID) {
 		// 사업국 정보 설정
 		$("#textbox10").val(data.DEPT_NAME);	// 지점명(연계)
@@ -337,7 +338,6 @@ const onSearch = async () => {
 	} else {
 		transData = new Object();
 		transData.RTN_FLAG = "0";		// 회신여부(초기값 "0" : 없음)
-		transData.TRANS_CHNL_MK	= "3";  // 연계방법(초기값 "3" : FAX)
 	}
 
 	// 처리상태구분 세팅
@@ -348,7 +348,6 @@ const onSearch = async () => {
 
 	// 연계정보 세팅
 	$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
-	$("#selectbox2").val(transData.TRANS_CHNL_MK);						// 연계방법
 	$("#textbox15").val(transData.CSEL_USER);							// 상담원
 	calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
 	$("#time1").val(transData.TRANS_TIME);								// 일시2
@@ -454,9 +453,6 @@ const onAppSend = async () => {
 		return false;
 	}
 
-	// 연계방법 콤보 셋팅 - 앱연계
-	$("#selectbox2").val("4");
-
 	// 저장정보 value check
 	const transData = new Array();
 	const followerData = new Array();
@@ -464,6 +460,7 @@ const onAppSend = async () => {
 		
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
+		transCondition.TRANS_CHNL_MK = "4"; // 연계방법 - 앱연계
 		transData.push(transCondition);
 
 		const followerCondition = await getFollowerCondition(row);
@@ -494,7 +491,7 @@ const getTransCondition = (row) => {
 		TRANS_NO		: row.TRANS_NO || "",       					// 연계번호		
 		TRANS_MK		: "",     										// 연계구분		
 		TRANS_TIME		: row.TRANS_TIME || "", 						// 연계시간		
-		TRANS_CHNL_MK	: $("#selectbox2").val(), 						// 연계방법			
+		TRANS_CHNL_MK	: "", 											// 연계방법			
 		TRANS_TITLE		: row.CSEL_TITLE, 								// 상담제목		
 		TRANS_CNTS		: row.CSEL_CNTS, 								// 상담내용		
 		PROC_HOPE_DATE	: calendarUtil.getImaskValue("calendar3"),  	// 처리예정일자			
@@ -510,12 +507,7 @@ const getTransCondition = (row) => {
 		DS_TRANS_USER	: [],											// 연계대상자사번
 	}
 
-	// 연계방법 유효성 확인
-	if (!data.TRANS_CHNL_MK) {
-		alert("연계방법을 선택하여 주십시요.");
-		$("#selectbox2").focus();
-		return false;
-	}
+	// 연계 사업국 확인
 	if (!$("#textbox10").val()) {
 		alert("연계 사업국/센터를 선택하여 주십시요.");
 		$("#textbox10").focus();
@@ -926,20 +918,20 @@ const onFAXSend = async () => {
 		return false;
 	}
 
-	// 연계방법 콤보 셋팅 - FAX로 셋팅
-	$("#selectbox2").val("3");
-	
 	// 저장정보 value check
 	const transData = new Array();
 	const faxData 	= new Array();
 	for (const row of checkedRows) {
+
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
+		transCondition.TRANS_CHNL_MK = "3";	// 연계방법 - FAX로 셋팅
 		transData.push(transCondition);
 
 		const faxCondition = getFaxCondition(row);
 		if (!faxCondition) return false;
 		faxData.push(faxCondition);
+
 	}
 
 	// 저장API 호출
