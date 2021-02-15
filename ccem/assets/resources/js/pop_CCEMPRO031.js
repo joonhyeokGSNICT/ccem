@@ -130,7 +130,6 @@ const onStart = async () => {
 		const sCUST_ID = topbarObject.document.getElementById("custInfo_CUST_ID").value; // 고객번호
 		const sMBR_ID  = topbarObject.document.getElementById("custInfo_MBR_ID").value;	 // 회원번호
 		getCust(sCUST_ID, "I");
-		setDate();
 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	} else if (opener_name.includes("CCEMPRO035")) {	
@@ -266,7 +265,7 @@ const getSysdate = () => new Promise((resolve, reject) => {
  * @param {string} CUST_ID 고객번호
  * @param {string} sJobType 저장구분(I: 신규, U: 수정)
  */
-var getCust = (CUST_ID, sJobType) => new Promise((resolve, reject) => {
+var getCust = (CUST_ID, sJobType) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getCust.do`,
 		method: 'POST',
@@ -283,11 +282,9 @@ var getCust = (CUST_ID, sJobType) => new Promise((resolve, reject) => {
 	}
 	$.ajax(settings)
 		.done(res => {
-			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
+			if (!checkApi(res, settings)) return;
 
-			const custData = res.dsRecv[0];
-			if(!custData) return resolve(null);
-			
+			const custData = (res?.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
 			$("#textbox2").val(custData.NAME);				// 고객명	
 			$("#textbox3").val(custData.ID);				// 회원번호
 			$("#textbox4").val(custData.TELPNO);			// 전화번호	
@@ -341,12 +338,11 @@ var getCust = (CUST_ID, sJobType) => new Promise((resolve, reject) => {
 				$("#selectbox2").val(custData.GRADE_CDE);		// 학년코드
 				$("#hiddenbox9").val(custData.AGE_CDE);			// 연령코드
 				$("#hiddenbox10").val(custData.DIV_KIND_CDE);	// 브랜드ID
+				setDate();										// 상담시간, 연계시간
 			}
 
-			return resolve(custData);
-		})
-		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
-});
+		});
+};
 
 /**
  * 입회정보 저장
@@ -578,7 +574,7 @@ const onSearch = async (sCSEL_SEQ) => {
 	const cselData = await getCounsel(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
 	
 	// 고객정보 조회
-	await getCust(cselData.CUST_ID, "U");		
+	getCust(cselData.CUST_ID, "U");		
 
 	// 연계정보 조회
 	getEnterData(cselData.TRANS_DATE, cselData.TRANS_NO);
@@ -837,7 +833,7 @@ const getObCondition = async (ticket_id) => {
 		OBLIST_CDE		: "", // OB리스트구분	
 		LIST_CUST_ID	: "", // 리스트_고객_ID(OBLIST_CDE = '60' 외 나머지 경우 셋팅)
 		CSEL_DATE		: calendarUtil.getImaskValue("calendar3"),  // 상담일자	
-		CSEL_NO			: $("#timebox2").val(), 					// 상담번호
+		CSEL_NO			: $("#textbox7").val(), 					// 상담번호
 		CALLBACK_ID		: "", // CALLBACK_ID(OBLIST_CDE = '60'일 경우 셋팅)
 	}
 	
@@ -934,7 +930,6 @@ const addCsel = () => {
 	// init value
 	$("#selectbox9").val("01");	// 내담자 : 모
 	$("#selectbox5").val("3");	// 연계방법 : FAX
-	setDate();					// 연계시간 재설정
 
 }
 

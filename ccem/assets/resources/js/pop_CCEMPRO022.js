@@ -13,10 +13,6 @@ var procStsList = [];	// 처리상태 리스트
 
 $(function () {
 
-	// 날짜와 시간 초기값 세팅
-	$("#textbox27").val(getDateFormat());
-	$("#calendar2").val(getDateFormat());
-
 	// create calendar
 	$(".calendar").each((i, el) => {
 		if(el.id === "calendar2") calendarUtil.init(el.id, { drops: "up" });
@@ -430,22 +426,24 @@ var getBaseData = (target, targetId, sJobType) => {
 		$("#hiddenbox12").val("");							// 연계담당자이름
 
 		// 신규일경우 초기값 세팅
-		if (sJobType == "I") {
-			$("#selectbox13").val(baseData.GRADE_CDE);			// 학년코드	
-			$("#textbox1").val(baseData.UP_DEPT_ID);			// 상위지점(부서)코드	(본부코드)
-			$("#textbox2").val(baseData.UPDEPTNAME);			// 상위지점(부서)코드명	(본부명)
-			$("#textbox3").val(baseData.AREA_CDE);				// 지역코드			
-			$("#textbox4").val(baseData.AREA_NAME);				// 지역코드명
-			$("#textbox5").val(baseData.DEPT_ID);				// 지점(부서)코드	(사업국코드)
-			$("#textbox6").val(baseData.DEPT_NAME);				// 지점(부서)코드명	(사업국명)	
-			$("#textbox7").val(baseData.TELPNO_DEPT);			// 지점(부서) 전화번호	(사업국전화번호)	
-			$("#textbox9").val(baseData.LC_NAME);				// 센터명		
-			$("#hiddenbox1").val(baseData.LC_ID);				// 센터ID
-			$("#textbox10").val(baseData.TELPNO_LC);			// 센터전화번호	
-			$("#hiddenbox4").val(baseData.LC_EMP_ID);			// 센터장사번	
-			$("#hiddenbox13").val(baseData.AGE_CDE);			// 연령코드		
-			$("#hiddenbox14").val(baseData.DIV_KIND_CDE);		// 브랜드ID		
-			$("#textbox29").val(getTimeFormat());				// 상담시간
+		if (sJobType == "I") {		
+			calendarUtil.setImaskValue("textbox27", getDateFormat()); 	// 상담일자
+			$("#textbox29").val(getTimeFormat());						// 상담시간
+			calendarUtil.setImaskValue("calendar2", getDateFormat()); 	// 처리희망일
+			$("#selectbox13").val(baseData.GRADE_CDE);					// 학년코드	
+			$("#textbox1").val(baseData.UP_DEPT_ID);					// 상위지점(부서)코드	(본부코드)
+			$("#textbox2").val(baseData.UPDEPTNAME);					// 상위지점(부서)코드명	(본부명)
+			$("#textbox3").val(baseData.AREA_CDE);						// 지역코드			
+			$("#textbox4").val(baseData.AREA_NAME);						// 지역코드명
+			$("#textbox5").val(baseData.DEPT_ID);						// 지점(부서)코드	(사업국코드)
+			$("#textbox6").val(baseData.DEPT_NAME);						// 지점(부서)코드명	(사업국명)	
+			$("#textbox7").val(baseData.TELPNO_DEPT);					// 지점(부서) 전화번호	(사업국전화번호)	
+			$("#textbox9").val(baseData.LC_NAME);						// 센터명		
+			$("#hiddenbox1").val(baseData.LC_ID);						// 센터ID
+			$("#textbox10").val(baseData.TELPNO_LC);					// 센터전화번호	
+			$("#hiddenbox4").val(baseData.LC_EMP_ID);					// 센터장사번	
+			$("#hiddenbox13").val(baseData.AGE_CDE);					// 연령코드		
+			$("#hiddenbox14").val(baseData.DIV_KIND_CDE);				// 브랜드ID
 		}
 		
 		setInitCselRstMkDS();	// 상담결과 저장정보 초기화

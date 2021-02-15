@@ -9,10 +9,6 @@ $(function () {
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 	$("#textbox26").inputmask("99.99.99", { autoUnmask: true, });
 
-	// 날짜와 시간 초기값 세팅
-	calendarUtil.setImaskValue("calendar1", getDateFormat());
-	$("#timebox1").val(getTimeFormat());
-
 	// 저장 버튼
 	$("#button1").on("click", ev => {
 		loading = new Loading(getLoadingSet('상담등록중 입니다.'));
@@ -179,7 +175,7 @@ const onSearch = async (sCSEL_SEQ) => {
 	// 선생님정보 조회
 	const sCUST_MK 	 = cselData.CUST_MK;								
 	const sCSEL_TYPE = (sCUST_MK=="TC" || sCUST_MK=="PE") ? "T" : "C";		// 대상구분 ( "C" : 고객, "T" : 선생님 )
-	await getTchInfo(cselData.CUST_ID, sCSEL_TYPE, "U");
+	getTchInfo(cselData.CUST_ID, sCSEL_TYPE, "U");
 	
 	// 연계정보 조회
 	getEnterData(cselData.TRANS_DATE, cselData.TRANS_NO);
@@ -192,7 +188,7 @@ const onSearch = async (sCSEL_SEQ) => {
  * @param {string} sCSEL_TYPE 	고객구분(C:고객, T: 선생님/직원)
  * @param {string} sJobType 	저장구분(I/U)
  */
-const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, reject) => {
+const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getTchrCselIntro.do`,
@@ -217,7 +213,7 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, rej
 	}
 	$.ajax(settings)
 		.done(res => {
-			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
+			if (!checkApi(res, settings)) return;
 
 			const DS_TCHR = res.dsRecv1;
 			const tchrData = (DS_TCHR.length > 0) ? DS_TCHR[0] : new Object();
@@ -252,11 +248,14 @@ const getTchInfo = (sCUST_ID, sCSEL_TYPE, sJobType) => new Promise((resolve, rej
 			// tchrData.DEPT_EMP_ID		// 지점장사번
 			$("#hiddenbox2").val(sCSEL_TYPE == "T" ? "TC" : "CM"); // 고객구분(선생님인경우: 'TC', 신규선생님인경우: 'CM')
 
-			return resolve(tchrData);
+			// 신규일경우 초기값 세팅
+			if (sJobType == "I") {
+				calendarUtil.setImaskValue("calendar1", getDateFormat());
+				$("#timebox1").val(getTimeFormat());
+			}
 
-		})
-		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
-});
+		});
+};
 
 /**
  * 상담정보 조회
@@ -303,7 +302,7 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			if(cselData.ZEN_TICKET_ID && sCSEL_SEQ == 1) topbarClient.invoke('routeTo', 'ticket', cselData.ZEN_TICKET_ID);
 
 			// 상담정보 세팅 
-			// cselData.CSEL_DATE			// 상담일자		
+			calendarUtil.setImaskValue("calendar1", cselData.CSEL_DATE); 					// 상담일자	
 			// cselData.CSEL_NO				// 상담번호		
 			// cselData.CSEL_SEQ			// 상담수번		
 			// cselData.CUST_ID				// 고객번호		
