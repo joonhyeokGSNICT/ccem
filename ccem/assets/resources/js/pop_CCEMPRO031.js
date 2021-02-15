@@ -151,14 +151,37 @@ const onStart = async () => {
 
 		// 상담조회
 		const sCSEL_DATE   = counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
-		const sCSEL_NO      = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
+		const sCSEL_NO     = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
 		const sCSEL_SEQ    = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
 		calendarUtil.setImaskValue("calendar3", sCSEL_DATE); 
 		$("#textbox7").val(sCSEL_NO); 				   	
 		onSearch(sCSEL_SEQ);
 
-	// TODO 입회조회 > 입회수정 버튼으로 오픈
+	// 입회조회 > 입회수정 버튼으로 오픈
 	} else if (opener_name.includes("CCEMPRO037")) {	
+		topbarObject  = opener.opener;
+		topbarClient  = topbarObject.client;
+		sidebarClient = topbarObject.sidebarClient;
+		currentUser   = topbarObject.currentUserInfo.user;
+		codeData 	  = topbarObject.codeData;
+
+		// 콤보박스 세팅
+		await setCodeData();
+
+		const counselGrid  = opener.grid;						// 입회조회 grid
+		const rowKey 	   = counselGrid.getSelectedRowKey();	// grid rowKey
+		
+		// 티켓오픈
+		const ZEN_TICKET_ID = counselGrid.getValue(rowKey, "ZEN_TICKET_ID");	// 티켓ID
+		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);  
+
+		// 상담조회
+		const sCSEL_DATE   = counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
+		const sCSEL_NO     = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
+		const sCSEL_SEQ    = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
+		calendarUtil.setImaskValue("calendar3", sCSEL_DATE); 
+		$("#textbox7").val(sCSEL_NO); 				   	
+		onSearch(sCSEL_SEQ);
 
 	}
 	
@@ -407,7 +430,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 	}
 	$.ajax(settings)
 		.done(res => {
-			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
+			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 			
 			DS_COUNSEL = res.dsRecv;
 			if(DS_COUNSEL.length == 0) {
