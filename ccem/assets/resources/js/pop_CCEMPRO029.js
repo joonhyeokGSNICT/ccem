@@ -55,6 +55,9 @@ const createGrids = () => {
             alert("세션정보를 찾을 수 없습니다.\n\n팝업창을 닫고 다시 실행해 주세요.");
             return;
         }
+        
+        // 젠데스크 사용자 생성 or 업데이트
+        opener.topbarObject.onAutoSearch(CUST_ID, "1");
 
         // 상담등록화면에서 오픈했을 때.
         if (opener_name == "CCEMPRO022") {
