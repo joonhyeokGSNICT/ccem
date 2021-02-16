@@ -40,27 +40,75 @@ const createGrids = () => {
     });
 
     grid.on("dblclick", (ev) => {
-        if (ev.targetType == "cell") {
+        if (ev.targetType != "cell") return;
+        
+        // 고객번호가 존재하지 않을때.
+        const CUST_ID = grid.getValue(ev.rowKey, "CUST_ID");
+        if (!CUST_ID) {
+            alert("고객번호가 존재하지 않는 고객입니다.\n\n먼저 고객 정보 등록을 하시기 바랍니다.");
+            return;
+        }
 
-            const opener_name = opener ? opener.name : "";
-            const rowData = grid.getRow(ev.rowKey);
+        // 부모창이 존재하지 않을때.
+        const opener_name = opener?.name;
+        if (!opener_name) {
+            alert("세션정보를 찾을 수 없습니다.\n\n팝업창을 닫고 다시 실행해 주세요.");
+            return;
+        }
+        
+        // 젠데스크 사용자 생성 or 업데이트
+        opener.topbarObject.onAutoSearch(CUST_ID, "1");
 
-            // 상담등록 > 관계회원 버튼으로 오픈했을 때.
-            if (opener_name.includes("CCEMPRO022")) {
-                opener.addCselByFamily(rowData);
-                window.close();
+        // 상담등록화면에서 오픈했을 때.
+        if (opener_name == "CCEMPRO022") {
+
+            const sJobType = opener.getJobType("selectbox14", "L"); // 마지막순번 상담저장구분
+
+            // 신규일 경우.
+            if (sJobType == "I") {
+                const sMsg = "변경된 정보가 존재합니다."
+                                + "\n\n선택한 관계회원으로 상담등록하시려면 [확인]을 클릭하십시요."
+                                + "\n\n기존정보를 유지하고 저장하시려면 [취소]를 클릭하십시요.";
+                if (confirm(sMsg)) opener.getBaseData("C", CUST_ID, "I");
+        
+            // 수정일 경우.
+            } else if (sJobType == "U") { 
+                opener.addCsel();
+                opener.getBaseData("C", CUST_ID, "I");
+
+            // 신규 또는 수정이 아닐 때.
+            } else {
+                alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
+                return;
             }
-            // 입회등록 > 관계회원 버튼으로 오픈했을 때.
-            else if (opener_name.includes("CCEMPRO031")) {
-                opener.addCselByFamily(rowData);
-                window.close();
-            }
-            // 부모창이 존재하지 않을때.
-            else {
-                alert("세션정보를 찾을 수 없습니다.\n\n팝업창을 닫고 다시 실행해 주세요.");
-            }
+
+            window.close();
 
         }
+
+        // 입회등록화면에서 오픈했을 때.
+        else if (opener_name == "CCEMPRO031") {
+
+            const sJobType = opener.getJobType("selectbox3", "L"); // 마지막순번 상담저장구분
+
+            // 신규일 경우.
+            if (sJobType == "I") {
+
+            // 수정일 경우.
+            } else if (sJobType == "U") { 
+                opener.addCsel();
+
+            // 신규 또는 수정이 아닐 때.
+            } else {
+                alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
+                return;
+            }
+
+            opener.getCust(CUST_ID, "I");
+            window.close();
+            
+        }
+
     });
 }
 

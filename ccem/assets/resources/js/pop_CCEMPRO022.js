@@ -341,10 +341,6 @@ const setCodeData = async () => {
 	$("#selectbox2").val("01");				// 내담자 : 모
 	$("#selectbox6").val("2");				// 고객반응 : 보통
 	$("#selectbox4").val("1");				// 처리구분 : 단순상담
-	$("#button4").prop("disabled", true);	// 상담연계
-	$("#button5").prop("disabled", true);	// 추가등록
-	$("#button6").prop("disabled", true);	// 관계회원
-	$("#button7").prop("disabled", true);	// 결과등록
 	if (currentTicket?.via?.channel == "chat") {
 		$("#selectbox15").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
 	}
@@ -427,7 +423,7 @@ var getBaseData = (target, targetId, sJobType) => {
 
 		// 신규일경우 초기값 세팅
 		if (sJobType == "I") {		
-			calendarUtil.setImaskValue("textbox27", getDateFormat()); 	// 상담일자
+			if(calendarUtil.getImaskValue("textbox27").length != 8) calendarUtil.setImaskValue("textbox27", getDateFormat()); 	// 상담일자
 			$("#textbox29").val(getTimeFormat());						// 상담시간
 			calendarUtil.setImaskValue("calendar2", getDateFormat()); 	// 처리희망일
 			$("#selectbox13").val(baseData.GRADE_CDE);					// 학년코드	
@@ -524,7 +520,7 @@ const getCounsel = (sCSEL_SEQ) => {
 		if (DS_COUNSEL.length >= 1) {
 			
 			// 상담순번 세팅
-			createSeq($("#selectbox14"), DS_COUNSEL.length);
+			createSeq($("#selectbox14"), DS_COUNSEL);
 			$("#selectbox14").val(sCSEL_SEQ);
 			const selectedIdx  = $("#selectbox14 option:selected").index();
 			const cselData = DS_COUNSEL[selectedIdx];
@@ -697,44 +693,23 @@ const onNewCustInit = () => {
 /**
  * 추가등록
  */
-const addCsel = () => {
+var addCsel = () => {
 	  
-	// 상담내용을 초기화.
+	// 상담내용 초기화.
 	$("#textbox13").val("");
 
-	// 상담순번 설정
+	// 상담순번 추가
 	const newIdx = $("#selectbox14 option").length + 1;
 	const option = new Option(newIdx, newIdx);
 	option.dataset.jobType = "I";
 	$("#selectbox14").append(option);
 	$("#selectbox14").val(newIdx);
 
-	//버튼 비활성화
-	$("#button4").prop("disabled", true); // 상담연계
-	$("#button5").prop("disabled", true); // 추가등록
-	$("#button6").prop("disabled", true); // 관계회원
-	$("#button7").prop("disabled", true); // 결과등록
+	// 버튼 제어
+	$("#button4").prop("disabled", true); // 상담연계 비활성화
+	$("#button5").prop("disabled", true); // 추가등록 비활성화
+	$("#button7").prop("disabled", true); // 결과등록 비활성화
 
-}
-
-/**
- * 추가등록 by 관계회원
- * - as-is : cns5810.onAddCsel()
- * @param {object} data
- */
-var addCselByFamily = (data) => {
-
-	const target = "C";		// 대상구분 ( "C" : 고객, "T" : 선생님 )
-	const custId = data.CUST_ID;	// 고객번호
-
-	if(custId){
-		setLable(target);
-		getBaseData(target, custId, "I");
-		addCsel();
-	}else{
-		alert("고객번호가 존재하지 않는 고객입니다.\n\n먼저 고객 정보 등록을 하시기 바랍니다.");
-	}
-	
 }
 
 /**

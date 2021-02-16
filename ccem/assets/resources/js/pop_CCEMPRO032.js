@@ -293,7 +293,7 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			if (DS_COUNSEL.length == 0) return reject(new Error(settings.errMsg + "\n\n검색 결과가 없습니다."));
 
 			// 상담순번 세팅
-			createSeq($("#selectbox2"), DS_COUNSEL.length);
+			createSeq($("#selectbox2"), DS_COUNSEL);
 			$("#selectbox2").val(sCSEL_SEQ);
 			const cselIdx  = $("#selectbox2 option:selected").index();
 			const cselData = DS_COUNSEL[cselIdx];

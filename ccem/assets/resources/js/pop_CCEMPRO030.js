@@ -1555,6 +1555,11 @@ const getDeptValidityCheck = () => {
         $("#textbox19").focus();
         return false;
     }
+    if(!checkByte($("#textbox19").val().trim(), 12)){
+        alert("처리자는 12Byte를 초과할 수 없습니다.");
+        $("#textbox19").focus();
+        return false;
+    }
     if($("#textbox34").val().trim().length < 1){
         alert("처리내용을 입력하십시요.");
         $("#textbox34").focus();
