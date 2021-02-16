@@ -837,3 +837,27 @@ const checkTicketRequester = async (ticket_id, requester_id) => {
 	}
 
 }
+
+/**
+ * 상담 저장구분 반환.
+ * @param {string} id selectbox element id
+ * @param {string} flag C: 현재순번, L: 마지막순번
+ * @return {string} I: 신규, U: 수정
+ */
+var getJobType = (id, flag) => {
+
+	const selectbox = document.getElementById(id);
+
+	// 마지막순번
+	if (flag == "L") {
+		const selectboxLastIndex = selectbox.options.length - 1;
+		const sJobType = selectbox.options[selectboxLastIndex].dataset.jobType;	// 저장구분(I: 신규, U: 수정)
+		return sJobType;
+	
+	// 현재순번
+	} else {	
+		const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
+		return sJobType;
+	}
+	
+}

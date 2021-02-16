@@ -243,7 +243,7 @@ const setDate = async () => {
 	$("#timebox3").val(CTIME);
 
 	// 상담일자, 시간 
-	calendarUtil.setImaskValue("calendar3", CDATE);
+	if (calendarUtil.getImaskValue("calendar3").length != 8) calendarUtil.setImaskValue("calendar3", CDATE);
 	$("#timebox2").val(CTIME);
 
 }
@@ -831,7 +831,7 @@ const getCounselCondition = (sJobType) => {
  */
 const getTransCondition = () => {
 
-	const data = {
+	return {
 		TRANS_DATE		: calendarUtil.getImaskValue("calendar4"), // 연계일시	
 		TRANS_TIME		: $("#timebox3").val(),					   // 연계시간
 		TRANS_NO		: $("#hiddenbox7").val(), 				   // 연계번호	
@@ -841,8 +841,6 @@ const getTransCondition = () => {
 		TRANS_CNTS		: $("#textbox25").val().trim(), 		   // 연계내용	
 		TRANS_CHNL_MK	: $("#selectbox5").val(), 				   // 연계방법구분		
 	}
-
-	return data;
 
 }
 
@@ -918,27 +916,24 @@ const chkGroup = () => {
 
 /**
  * 저장이 완료 되었거나, 팝업되어 수정 상황일때 버튼 컨트롤 하는 함수.
- * @param {string} PROC_MK 처리구분
  */
-const setBtnCtrlAtLoadComp = (PROC_MK) => {
-
+const setBtnCtrlAtLoadComp = () => {
 	$("#button2").prop("disabled", true);	// 고객조회 비활성화
 	$("#button3").prop("disabled", false);	// 입회연계 활성화
 	$("#button4").prop("disabled", false);	// 추가등록 활성화
 	$("#button5").prop("disabled", false);	// 관계회원 활성화  
-	
 }
 
 /**
  * 추가등록
  * - as-is : cns4700.onAddReg()
  */
-const addCsel = () => {
+var addCsel = () => {
 	  
-	// 상담내용을 초기화.
+	// 상담내용 초기화.
 	$("#textbox25").val("");
 
-	// 상담순번 설정
+	// 상담순번 추가
 	const newIdx = $("#selectbox3 option").length + 1;
 	const option = new Option(newIdx, newIdx);
 	option.dataset.jobType = "I";
@@ -948,29 +943,10 @@ const addCsel = () => {
 	// 버튼 제어
 	$("#button3").prop("disabled", true);	// 입회연계 비활성화
 	$("#button4").prop("disabled", true);	// 추가등록 비활성화
-	$("#button5").prop("disabled", true);	// 관계회원 비활성화  
 
 	// init value
 	$("#selectbox9").val("01");	// 내담자 : 모
 	$("#selectbox5").val("3");	// 연계방법 : FAX
-
-}
-
-/**
- * 추가등록 by 관계회원
- * - as-is : cns4700.onRelation()
- * @param {object} data
- */
-var addCselByFamily = (data) => {
-
-	const custId = data.CUST_ID;
-
-	if (custId) {
-		getCust(custId, "I");
-		addCsel();
-	} else {
-		alert("고객번호가 존재하지 않는 고객입니다.\n\n먼저 고객 정보 등록을 하시기 바랍니다.");
-	}
 
 }
 
