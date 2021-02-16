@@ -439,7 +439,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			}
 
 			// 상담순번 세팅
-			createSeq($("#selectbox3"), DS_COUNSEL.length);
+			createSeq($("#selectbox3"), DS_COUNSEL);
 			$("#selectbox3").val(sCSEL_SEQ);
 			const cselIdx  = $("#selectbox3 option:selected").index();
 			const cselData = DS_COUNSEL[cselIdx];

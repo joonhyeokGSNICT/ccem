@@ -520,7 +520,7 @@ const getCounsel = (sCSEL_SEQ) => {
 		if (DS_COUNSEL.length >= 1) {
 			
 			// 상담순번 세팅
-			createSeq($("#selectbox14"), DS_COUNSEL.length);
+			createSeq($("#selectbox14"), DS_COUNSEL);
 			$("#selectbox14").val(sCSEL_SEQ);
 			const selectedIdx  = $("#selectbox14 option:selected").index();
 			const cselData = DS_COUNSEL[selectedIdx];

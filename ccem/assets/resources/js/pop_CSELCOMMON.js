@@ -159,17 +159,17 @@ const deleteProd = (unCheckGrid, removeGrid, removeRowKey) => {
 }
 
 /**
- * 순번 selectbox 생성
- * @param {object} $target 순번selectbox
- * @param {number} cnt     순번count
+ * 상담순번 selectbox 생성
+ * @param {object} $target 	 상담순번 selectbox
+ * @param {array} DS_COUNSEL 상담데이터셋
  */
-const createSeq = ($target, cnt) => {
+const createSeq = ($target, DS_COUNSEL) => {
 	$target.empty();
-	for (let seq = 1; seq <= cnt; seq++) {
-		const option = new Option(seq, seq);
+	DS_COUNSEL.forEach(el => {
+		const option = new Option(el.CSEL_SEQ, el.CSEL_SEQ);
 		option.dataset.jobType = "U";
 		$target.append(option);
-	}
+	});
 }
 
 /**
