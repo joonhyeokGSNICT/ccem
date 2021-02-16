@@ -786,8 +786,8 @@ function onSendFax(){
 				param.GUBUN = "";
 			}
 			
+			paramSet.send1.push(param);
 		}
-		
 		console.log(paramSet);
 		
 		$.ajax({

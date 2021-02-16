@@ -1084,64 +1084,81 @@ function customerSearch(currentDiv, type){
 		    	"MACADAMIA_ID"	:"",
 		    }]
 		};
+		var checkLength = 0;
 		var validationBool = false;
 		if($("#customerNameCheck").is(":checked")){				// 고객명
 			param.send1[0].CHK_NAME = "Y";
 			param.send1[0].NAME = $("#customerName").val();
 			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
 			param.send1[0].CHK_TELNO = "Y";
 			param.send1[0].TELPNO = $("#customerPhone").val();
 			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerEmailCheck").is(":checked")){			// EMAIL
 			param.send1[0].CHK_EMAIL = "Y";
 			param.send1[0].EMAIL = $("#customerEmail").val();
-			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerGradeCheck").is(":checked")){			// 학년
 			param.send1[0].CHK_GRADE = "Y";
 			param.send1[0].GRADE_CDE = $("#customerGrade").val();
-			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerMNumCheck").is(":checked")){				// 회원번호
 			param.send1[0].CHK_CUSTID = "Y";
 			param.send1[0].MBR_ID = $("#customerMNum").val();
 			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerBirthCheck").is(":checked")){			// 생년월일
 			param.send1[0].CHK_RSDNO = "Y";
 			param.send1[0].RSDNO = $("#customerBirth").val();
 			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerAddrCheck").is(":checked")){				// 주소
 			param.send1[0].CHK_ADDR = "Y";
 			param.send1[0].ADDR = $("#customerAddr").val();
-			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerSubjectCheck").is(":checked")){			// 과목
 			param.send1[0].CHK_PROD = "Y";
 			param.send1[0].PRDT_ID = $("#customerSubject").val();
-			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerSpotCheck").is(":checked")){				// 사업국
 			param.send1[0].CHK_DEPT = "Y";
 			param.send1[0].DEPT_NAME = $("#customerSpot").val();
 			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerDeptCheck").is(":checked")){				// 본부
 			param.send1[0].CHK_UP_DEPT = "Y";
 			param.send1[0].UPDEPTID = $("#customerDept").val();
-			validationBool = true;
+			checkLength++;
 		}
 		if($("#customerLCCheck").is(":checked")){				// LC 센터
 			param.send1[0].CHL_LCID = "Y";
 			param.send1[0].LC_NM = $("#customerLC").val();
 			validationBool = true;
+			checkLength++;
+		}
+		if($("#customerOnlineCheck").is(":checked")){				// 마카다미아 ID (온라인ID)
+			param.send1[0].CHK_MACADAMIA = "Y";
+			param.send1[0].MACADAMIA_ID = $("#customerOnline").val();
+			validationBool = true;
+			checkLength++;
+		}
+		console.log(checkLength);
+		if(checkLength > 1){
+			validationBool = true;
 		}
 		if(validationBool == false){
-			client.invoke("notify", "조회조건을 하나 선택해야 합니다.", "error", 6000);
+			client.invoke("notify", "조회조건을 더 선택 해 주세요.", "error", 6000);
 			return;
 		}
 		

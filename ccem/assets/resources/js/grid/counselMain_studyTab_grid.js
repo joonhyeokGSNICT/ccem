@@ -139,7 +139,6 @@ $(function(){
 		counselMain_studyTab_changeHist = new Grid({
 			el: document.getElementById('counselMain_studyTab_changeHist'),
 			bodyHeight: 300,
-			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
 	            header: "NO",
@@ -163,7 +162,7 @@ $(function(){
 				{
 					header: '구분',
 					name: 'CODE_NAME',
-					width: 100,
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -171,14 +170,14 @@ $(function(){
 				{
 					header: '학습연기(코로나)',
 					name: 'MOTIVE_TXT',
-					width: 150,
+					width: 120,
 					align: "center",
 					ellipsis: true,
 				},
 				{
 					header: '사업국',
 					name: 'DEPT_NAME',
-					width: 150,
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -195,7 +194,7 @@ $(function(){
 				{
 					header: '센터',
 					name: 'LC_NAME',
-					width: 200,
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -203,7 +202,7 @@ $(function(){
 				{
 					header: '선생님',
 					name: 'EMP_NAME',
-					width: 200,
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -211,7 +210,7 @@ $(function(){
 				{
 					header: '선생님사번',
 					name: 'EMP_ID',
-					width: 150,
+					width: 85,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -219,7 +218,7 @@ $(function(){
 				{
 					header: '교실',
 					name: 'CLS_NAME',
-					width: 150,
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -227,7 +226,7 @@ $(function(){
 				{
 					header: '최종회비',
 					name: 'LASTFEE_YM',
-					width: 150,
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -235,7 +234,7 @@ $(function(){
 				{
 					header: '학습개월',
 					name: 'STD_MONTH',
-					width: 150,
+					width: 70,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -243,7 +242,7 @@ $(function(){
 				{
 					header: '복회가능성',
 					name: 'RENEW_POTNNM',
-					width: 100,
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -251,7 +250,7 @@ $(function(){
 				{
 					header: '마감여부',
 					name: 'CLOSE_FLAG',
-					width: 100,
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
