@@ -20,11 +20,11 @@ let hash = window.location.hash; // 구분처리
 /**
  * Mode설정
  * @param _mode 
- * 		  = chkTree         : 트리구조 체크 / 구성원 검색 X / 구성원 체크 X / 선택시 조직  리스트 전송 / 웹설문 페이지에서 활용
- *        = plainTree       : 트리구조 일반 / 구성원 검색 O / 구성원 체크 O / 선택시 구성원리스트 전달 / 현장, 상담, 소개연계 페이지에서 활용
- *        = plainTreeNoEmp  : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 X             / 조직관할구역 페이지 활용
- *        = plainTreeSelOrg : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 O             / 본부/사업국/센터 선택시
- *        = search          : 트리구조 일반 / 구성원 검색 O / 구성원 체크 X / 선택 버튼 X             / 탑바에서 본부/사업국/센터 페이지
+ * 		  = chkTree         : 트리구조 체크 / 구성원 검색 X / 구성원 체크 X / 선택시 조직  리스트 전송 / 조직관할구역 저장 X / 웹설문 페이지에서 활용
+ *        = plainTree       : 트리구조 일반 / 구성원 검색 O / 구성원 체크 O / 선택시 구성원리스트 전달 / 조직관할구역 저장 X / 현장, 상담, 소개연계 페이지에서 활용
+ *        = plainTreeNoEmp  : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 X             / 조직관할구역 저장 X / 조직관할구역 페이지 활용
+ *        = plainTreeSelOrg : 트리구조 일반 / 구성원 검색 X / 구성원 체크 X / 선택 버튼 O             / 조직관할구역 저장 X / 본부/사업국/센터 선택시
+ *        = search          : 트리구조 일반 / 구성원 검색 O / 구성원 체크 X / 선택 버튼 X             / 조직관할구역 저장 O / 탑바에서 본부/사업국/센터 페이지
  *
  * @param opener.name 진입 부모창의 이름에 따라 모드가 변경됨
  * ======== 진입구분 ========
@@ -38,7 +38,8 @@ let hash = window.location.hash; // 구분처리
  * 	1. #menu : 상단 메뉴
  * 	2. #info : 유저정보
  */
- 
+console.log(opener.name+' / '+ hash);
+
 var _mode = "plainTree";
 if ( opener.name == 'CCEMPRO022' ) {
 	if (hash ==="#disPlayUp") _mode ="plainTreeSelOrg";
@@ -46,7 +47,16 @@ if ( opener.name == 'CCEMPRO022' ) {
 }
 else if ( opener.name == 'CCEMPRO028' ) _mode ="plainTree";
 else if ( opener.name == 'CCEMPRO031' ) _mode ="plainTreeSelOrg";
-else if ( opener.name == 'app_CCEM_top_bar_38e2ab2c-665c-4ac5-be58-65f649da8317') _mode="search";
+else if ( opener.name == 'app_CCEM_top_bar_38e2ab2c-665c-4ac5-be58-65f649da8317') { // 운영의 top_bar id
+	if (hash ==="#menu") _mode="search";
+	else if (hash ==="#info")  _mode="search"; 
+}
+else if ( opener.name == 'app_CCEM_top_bar_4475ef3b-a063-4905-ba6e-e9631ca21868') { // 샌드박스의 top_bar id
+	if (hash ==="#menu") _mode="search";
+	else if (hash ==="#info")  _mode="search"; 
+}
+
+console.log(_mode);
 
 var _modeSelect = {
 	chkTree : {
@@ -149,6 +159,7 @@ function init(){
 			$("#counselDeSel_btn").addClass('invisible');
 			$("#counselSend_btn").addClass('invisible');
 			$("#counselSend_btn").addClass('d-none');
+			$("#counselSave_btn").removeClass('invisible');
 			break;
 	}
 
@@ -459,6 +470,31 @@ const _sortList = {
 						temp[index].UP_DEPT_ID = UP_DEPT_ID;
 					}
 				}
+			} else if (temp[index].LV == '4') {//센터
+				var chk_name = treeData.filter(data => data.LV == '4' );
+				chk_name = chk_name.filter(data => data.DEPT_ID == temp[index].DEPT_ID);
+				
+				if(chk_name.length > 0) {
+					temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
+					temp[index].DEPT_NAME = chk_name[0].DEPT_NAME;
+
+					var PARE_DEPT_ID = chk_name[0].UP_DEPT;
+					var UP_DEPT_ID
+					temp[index].PARE_DEPT_ID = PARE_DEPT_ID;
+					
+					chk_name = treeData.filter(data => data.LV == '3' );
+					chk_name = chk_name.filter(data => data.DEPT_ID == PARE_DEPT_ID);
+					
+					if(chk_name.length > 0) {
+						temp[index].PARE_DEPT_NAME = chk_name[0].DEPT_NAME;
+						UP_DEPT_ID = chk_name[0].UP_DEPT;
+						
+						chk_name = treeData.filter(data => data.LV == '2' );
+						chk_name = chk_name.filter(data => data.DEPT_ID == UP_DEPT_ID);
+						if(chk_name.length > 0) temp[index].UP_DEPT_NAME = chk_name[0].DEPT_NAME;
+						temp[index].UP_DEPT_ID = UP_DEPT_ID;
+					}
+				}
 			}
 		}
 
@@ -496,9 +532,12 @@ const _sortList = {
 				} else if ( temp[index].LV == "2" ){
 					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'2\' ';
 					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'2\'  || ';
-				} else {
+				} else if ( temp[index].LV == "3" ){
 					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'3\' ';
 					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'3\'  || ';
+				} else if ( temp[index].LV == "4" ){
+					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'4\' ';
+					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'4\'  || ';
 				}
 			}
 			var attr = {mode:"hide", autoExpand : true};
@@ -1084,11 +1123,19 @@ const _btn = {
 	// saveTxt() : 조직관할구역 저장
 	saveTxt() {
 		var param = [{}]
-		if ( _selectedNode.data.LV == '2') {
+		if ( _selectedNode.data.LV == '1') {
 			param[0].CHG_DEPT = "Y";
-			param[0].DEPT_ID = _selectedNode.data.PARE_DEPT_ID;
+			param[0].DEPT_ID = _selectedNode.data.DEPT_ID;
+			param[0].ZIP_CNTS = $('#ZIP_CNTS_input').val();
+		} else if ( _selectedNode.data.LV == '2') {
+			param[0].CHG_DEPT = "Y";
+			param[0].DEPT_ID = _selectedNode.data.DEPT_ID;
 			param[0].ZIP_CNTS = $('#ZIP_CNTS_input').val();
 		} else if (_selectedNode.data.LV == '3') {
+			param[0].CHG_LC = "Y";
+			param[0].LC_ID = _selectedNode.data.DEPT_ID;
+			param[0].ZIP_CNTS = $('#ZIP_CNTS_input').val();
+		} else if (_selectedNode.data.LV == '4') {
 			param[0].CHG_LC = "Y";
 			param[0].LC_ID = _selectedNode.data.DEPT_ID;
 			param[0].ZIP_CNTS = $('#ZIP_CNTS_input').val();
@@ -1096,11 +1143,8 @@ const _btn = {
 			return false;
 		}
 		var node = tree.getActiveNode();
-		// console.log(param);
-		// console.log(node.key);
 		_getList.saveZIPCNTS(param).then(function() {
 			_getList.orgList();
-			// tree.activateKey(node.key);
 		});
 	},
 
@@ -1167,6 +1211,19 @@ function removeDuplicates(originalArray, prop) {
 // 탭 이동시, employeeListGrid가 refresh되어 표의 틀어짐 방지
 $("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
 	employeeListGrid.refreshLayout();
+
+	/* _mode에 따른 탭별 기능 */
+	switch (_mode){
+
+		/* search */
+		case "search" : 
+			if ( $(this).attr('id') == 'employee' ) {
+				$("#counselSave_btn").addClass('invisible');	// 저장버튼 비활성화
+			} else if ( $(this).attr('id') == 'deptCenter') {
+				$("#counselSave_btn").removeClass('invisible'); // 저장버튼 활성화
+			}
+			break;
+	}
 });
 
 // 본부/사업국/센터 => 주소&관할주소&본부사업국/센터명 input박스 keyup이벤트

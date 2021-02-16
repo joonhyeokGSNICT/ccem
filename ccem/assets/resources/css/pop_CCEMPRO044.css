@@ -1,0 +1,16 @@
+a:link { color: black; text-decoration: none;}
+a:visited { color: black; text-decoration: none;}
+a:hover { color: blue; text-decoration: none;}
+
+/* 버튼 */
+.navBtn {
+	background-color: #123f8a;
+	color:white;
+	font-weight:bold;
+	width: 80px;
+}
+.navBtn:hover {
+	background-color: #3f7ee6;
+	color:white;
+	font-weight:bold;
+}

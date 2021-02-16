@@ -57,6 +57,12 @@ function setGridTree() {
                 align: "center",
                 sortable: true,
                 ellipsis: true,
+                formatter: function(data){
+                    // console.log(data);
+                    var text = ``;
+                    if( data.value != null ) text += `<a href="#">`+data.value+`</a>`;
+                    return text;
+                }
             },
             {
                 header: '교사구분',
@@ -93,11 +99,19 @@ function setGridTree() {
         ],
     });
     employeeListGrid.on('click', (ev) => {
-        employeeListGrid.addSelection(ev);
-        employeeListGrid.clickSort(ev);
-        employeeListGrid.clickCheck(ev);
+        if (ev.columnName != 'MOBILNO') {
+            employeeListGrid.addSelection(ev);
+            employeeListGrid.clickSort(ev);
+            employeeListGrid.clickCheck(ev);
+        } 
+        /* 전화번호를 더블클릭 할 경우 전화번호 wiseNtalk 호출 */
+        else if (ev.columnName == 'MOBILNO') {
+            var sendData = employeeListGrid.getRow(ev.rowKey);
+            console.log("callme!", sendData.MOBILNO);
+            // PopupUtilboard.open("CCEMPRO063_1", 900, 600, "", sendData);
+        }
     });
-        
+
     // 트리구조 설정, 
     $("#tree").fancytree({
         extensions: ["filter"],
@@ -130,7 +144,6 @@ function setGridTree() {
             if ( $('#searchEmp_chk').prop("checked")==true && !isEmpty($('#searchEmp_selectbox').val()) ) {
                 // SEARCH_STS_CDE_TXT : 0:퇴직, 1:휴직, 2:대기, 3:사업, 4:해지, 9:재직
                 if ($('#searchEmp_selectbox').val()=="전체") {
-    
                 } else if ($('#searchEmp_selectbox').val()=="재직") {
                     param[0].SEARCH_STS_CDE_TXT = ["9", "2", "1"];
                     param[0].SEARCH_STS_CDE = "Y"
@@ -154,8 +167,17 @@ function setGridTree() {
     
                 // 본부내 인원 검색
                 switch (_mode){
-                    case "plainTree" : 
                     case "search" :
+                        if (_isEmpSearch) {
+                            _sortList.selTreeEmpList(data.node.title);
+                        } else {
+                            param[0].SEARCH_DEPT_ID = "Y";
+                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                            _getList.employeeList(param);
+                        }
+                        break;
+
+                    case "plainTree" : 
                         if (_isEmpSearch) {
                             _sortList.selTreeEmpList(data.node.title);
                         } else {
@@ -165,12 +187,15 @@ function setGridTree() {
                         }
                         if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
                         else $("#counselSend_btn").addClass('invisible');
+                        $("#counselSave_btn").addClass('invisible');
                         break;
+
                     case "plainTreeSelOrg" : 
                         $("#counselSend_btn").addClass('invisible');
+                        $("#counselSave_btn").addClass('invisible');
                         break;
                 }
-                $("#counselSave_btn").addClass('invisible');
+                
                 
             } else if(data.node.data.LV == "2"){
                 $("#HQ_NAME").text(data.node.parent.title);
@@ -182,7 +207,6 @@ function setGridTree() {
     
                 // 사업국 인원 검색
                 switch (_mode){
-                    case "plainTree" : 
                     case "search" :
                         if (_isEmpSearch) {
                             _sortList.selTreeEmpList(data.node.title);
@@ -191,7 +215,16 @@ function setGridTree() {
                             param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
                             _getList.employeeList(param);
                         }
-    
+                        break;
+
+                    case "plainTree" : 
+                        if (_isEmpSearch) {
+                            _sortList.selTreeEmpList(data.node.title);
+                        } else {
+                            param[0].SEARCH_DEPT_ID = "Y";
+                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                            _getList.employeeList(param);
+                        }
                         if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
                         else $("#counselSend_btn").removeClass('invisible');
                     case "plainTreeNoEmp" : 
@@ -211,7 +244,16 @@ function setGridTree() {
     
                 // 센터 인원 검색
                 switch (_mode){
-                    case "plainTree" : case "search" :
+                    case "search" :
+                        if (_isEmpSearch) {
+                            _sortList.selTreeEmpList(data.node.title); 
+                        } else {
+                            param[0].SEARCH_DEPT_ID = "Y";
+                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                            _getList.employeeList(param);
+                        }
+                        break;
+                    case "plainTree" : 
                         if (_isEmpSearch) {
                             _sortList.selTreeEmpList(data.node.title); 
                         } else {
@@ -238,7 +280,16 @@ function setGridTree() {
     
                 // 센터 인원 검색
                 switch (_mode){
-                    case "plainTree" : case "search" :
+                    case "search" :
+                        if (_isEmpSearch) {
+                            _sortList.selTreeEmpList(data.node.title); 
+                        } else {
+                            param[0].SEARCH_DEPT_ID = "Y";
+                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                            _getList.employeeList(param);
+                        }
+                        break;
+                    case "plainTree" : 
                         if (_isEmpSearch) {
                             _sortList.selTreeEmpList(data.node.title); 
                         } else {
