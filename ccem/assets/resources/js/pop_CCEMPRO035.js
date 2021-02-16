@@ -89,7 +89,12 @@ const createGrids = () => {
 			{ header: '핸드폰번호',                     name: "MOBILNO",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: 'ERMS구분',                       name: "ERMS_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	 },
 			{ header: '팩스발송일시',                   name: "FAX_DATETIME",          width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
-			{ header: '녹취ID',                         name: "RECORD_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	 formatter: function(data){ var text = ``; if ( data.value==null ) text =``; else if ( data.value=="MOREDATA" ) text += `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>선택청취</span></button>`; else text += `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>청취</span></button>`; return text; }	},
+			{ header: '녹취ID',                         name: "RECORD_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	 
+				renderer: {
+					type: CustomRecRenderer,
+					options: { onClick: onRecordPlay },
+				}
+			},
 			{ header: '상담입력시각',                   name: "CSEL_STTIME",           width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	  formatter: columnInfo => FormatUtil.time(columnInfo.value)	  },
 			{ header: 'TICKET ID',                      name: "ZEN_TICKET_ID",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '상담경로',                       name: "FST_CRS_CDE_NM",        width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
@@ -203,22 +208,6 @@ const createGrids = () => {
 
 	grid1.on("click", ev => {
 		ev.instance.clickSort(ev);
-		if(ev.targetType == 'cell'){
-            if ( ev.columnName == 'RECORD_ID' ) {
-                const tempArr = {
-                    CSEL_DATE : grid1.getRow(ev.rowKey).CSEL_DATE,
-                    CSEL_NO : grid1.getRow(ev.rowKey).CSEL_NO,
-                    RECORD_ID : grid1.getRow(ev.rowKey).RECORD_ID
-                }
-                if( tempArr.RECORD_ID == "MOREDATA") {
-                    console.log(tempArr);
-                    PopupUtil.open("CCEMPRO047",852,240,"",tempArr);
-                } else if ( tempArr.RECORD_ID == null ) {
-                } else  {
-                    recordPlay(tempArr.RECORD_ID);
-                }
-            } 
-		}
 	});
 
 	grid1.on("dblclick", ev => {
@@ -844,11 +833,21 @@ const saveExcelCsel = async () => {
 
 /**
  * 녹취청취
+ * @param {string} param rowKey
  */
-const onRecordPlay = () => {
-	const rowKey = grid1.getSelectedRowKey();
-	const recordId = grid1.getValue(rowKey, "RECORD_ID");
-	recordPlay(recordId);
+const onRecordPlay = (param) => {
+	
+	const rowKey = param || grid1.getSelectedRowKey();
+	const rowData = grid1.getRow(rowKey);
+
+	if (rowData.RECORD_ID == "MOREDATA") {
+		PopupUtil.open("CCEMPRO047", 852, 240, "", rowData);
+	} else if (rowData.RECORD_ID == null) {
+
+	} else {
+		recordPlay(rowData.RECORD_ID);
+	}
+
 }
 
 /**

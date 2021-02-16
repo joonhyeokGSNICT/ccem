@@ -168,6 +168,43 @@ class CustomIconRenderer {
 }
 
 /**
+ * 청취버튼 renderer
+ */
+class CustomRecRenderer {
+
+    constructor(props) {
+
+        const record = props.value;
+        const { onClick } = props.columnInfo.renderer.options;
+
+        if (record == "MOREDATA") {
+            const el = document.createElement("button");
+            el.style = "padding: 0px;";
+            el.className = "btn btn-sm navBtn";
+            el.innerHTML = "선택청취";
+            el.onclick = () => onClick(props.rowKey);
+            this.el = el;
+        } else if (record?.length == 18) {
+            const el = document.createElement("button");
+            el.style = "padding: 0px;";
+            el.className = "btn btn-sm navBtn";
+            el.innerHTML = "청취";
+            el.onclick = () => onClick(props.rowKey);
+            this.el = el;
+        } else {
+            const el = document.createElement("div");
+            this.el = el;
+        }
+        
+    }
+
+    getElement() {
+        return this.el;
+    }
+
+}
+
+/**
  * Customizing TOAST UI Grid
  * https://nhn.github.io/tui.grid/latest/Grid
  */
