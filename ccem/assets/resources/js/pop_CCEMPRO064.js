@@ -17,6 +17,7 @@ var _insert = {
     status(response) {
         var initList = response;
 
+        console.log(response.recv1);
         // 상단통화건수 설정
         $('#IB_CNT').text(response.recv1[0].IB_CNT+'건');
         $('#OB_CNT').text(response.recv1[0].OB_CNT+'건');
@@ -42,6 +43,13 @@ var _insert = {
             $('.TelephoneSurvey>.numbers').text('0');
             $('.RequestConsult>.numbers').text('0');
             $('.InfoAgreement>.numbers').text('0');
+        }
+
+        // 현황판 업데이트
+        if ( response.recv3.length != 0 ){ 
+            
+        } else {
+
         }
     },
     top5(response) {
@@ -92,7 +100,7 @@ var ccemApi = {
     getStatusBoard() {
       var param = {
               senddataids: ["send"],
-              recvdataids: ["recv1","recv2"],
+              recvdataids: ["recv1","recv2","recv3"],
         send: [{USER_ID:currentUser.external_id}]
       };
       // console.log("param >>",param);
@@ -104,7 +112,7 @@ var ccemApi = {
               contentType: "application/json",
               data: JSON.stringify(param),
               success: function (response) {
-          console.log("getStatusBoard >> ",response);
+          // console.log("getStatusBoard >> ",response);
           _insert.status(response);
               }, error: function (response) {
               }
@@ -125,7 +133,7 @@ var ccemApi = {
               contentType: "application/json",
               data: JSON.stringify(param),
               success: function (response) {
-          console.log("getCselStypeTop5 >> ",response);
+          // console.log("getCselStypeTop5 >> ",response);
   
           // 임시 데이터 테스트용
           // response.recv1 = complainList;
