@@ -11,6 +11,11 @@ $(function(){
 	getCodeList();
 	getProd();
 	getUser();
+	setExDisable();
+	
+	// 결과 기본 선택 체크
+	$("#asignList_rsltCheck").prop('checked',true);
+	$("#asignList_rslt").val("0");
 	
 	$(".searchInputCheck_dt").val(getToday(0));
 	$("#calendarDateCheck").prop("checked",true);
@@ -255,7 +260,7 @@ $(function(){
 			},
 			{
 				header: '결과',
-				name: 'ENTER_RST',
+				name: 'ENTER_RST_NM',
 				width: 60,
 				align: "center",
 				sortable: true,
@@ -578,6 +583,9 @@ function onSearch(){
 	    dataType: 'json',
 	    contentType: "application/json",
 	    data: JSON.stringify(param),
+	    beforeSend: function() {
+	    	loading = new Loading(getLoadingSet());
+	    },
 	    success: function (response) {
 	        console.log(response);
 	        if(response.errcode == "0"){
@@ -701,12 +709,13 @@ const onDataMove = async () => {
 			iRowSource.TCHID = "";									// 담당선생님사번
 		}
 	}
-
+	grid.resetData(sourceList);
 	if(sourceList.length >= 1) {
 		setExEnable();
 	} else {
 		alert("데이터가 없습니다.");
 	}
+	loading.out();
 }
 
 /*****************************************
@@ -872,14 +881,12 @@ function getDetailRFC(id,pd){
 *	확장 조회 조건 Disable
 *****************************************/
 function setExDisable(){
-	chkRsc.disabled = true;
-	CMB_RSC.Enable = false;
-	//chkErr.disabled = true;
-	rdoErr[0].disabled = true;
-	rdoErr[1].disabled = true;
-	rdoErr[2].disabled = true;
-	b_ex.src = "/img/btn/b_expansearch_.gif";
-	b_ex.disabled = true;
+	$("#radio3").prop('disabled',true);
+	$("#radio4").prop('disabled',true);
+	$("#radio5").prop('disabled',true);
+	$("#expandSearchBtn").prop('disabled',true);
+	$("#asignList_listLimitCon").prop('disabled',true);
+	$("#asignList_listLimitConCheck").prop('disabled',true);
 }
 
 /*****************************************
@@ -890,6 +897,8 @@ function setExEnable(){
 	$("#radio4").prop('disabled',false);
 	$("#radio5").prop('disabled',false);
 	$("#expandSearchBtn").prop('disabled',false);
+	$("#asignList_listLimitCon").prop('disabled',false);
+	$("#asignList_listLimitConCheck").prop('disabled',false);
 }
 
 //============================================================================
