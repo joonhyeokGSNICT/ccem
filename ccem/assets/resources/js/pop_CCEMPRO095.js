@@ -227,7 +227,7 @@ const getCselProc = () => {
             // DS_CSEL_PROC.DTL_MK             // 내역구분    
             $("#selectbox3").val(DS_CSEL_PROC.GIFT_TYPE_CDE);                       // CMB_GIFT_TYPE_CDE      // 사은품분류코드            
             $("#selectbox4").val(DS_CSEL_PROC.GIFT_CDE);                            // CMB_TB_GIFTCODE           // 사은품코드        
-            $("#textbox28").val(DS_CSEL_PROC.GIFT_PRICE);                           // txtGIFT_PRICE         // 사은품가격        
+            calendarUtil.setImaskValue("textbox28", DS_CSEL_PROC.GIFT_PRICE);       // txtGIFT_PRICE         // 사은품가격        
             calendarUtil.setImaskValue("calendar4", DS_CSEL_PROC.SEND_DATE);        // MSK_SEND_DATE          // 발송일자  
             $("#selectbox5").val(DS_CSEL_PROC.GIFT_CHNL_MK);                        // CMB_GIFT_CHNL_MK       // 전달경로구분            
             $("#textbox29").val(DS_CSEL_PROC.PASS_USER);                            // txtPASS_USER          // 전달자명        
@@ -553,14 +553,22 @@ const getSaveCondition = () => {
             GIFT_SEQ        : DS_CSEL_PROC.GIFT_SEQ,                    // 사은품접수순번       
             GIFT_TYPE_CDE   : $("#selectbox3").val(),                   // 사은품분류코드           
             GIFT_CDE        : $("#selectbox4").val(),                   // 사은품코드       
-            GIFT_PRICE      : $("#textbox28").val(),                    // 사은품가격       
+            GIFT_PRICE      : calendarUtil.getImaskValue("textbox28"),  // 사은품가격       
             SEND_DATE       : calendarUtil.getImaskValue("calendar4"),  // 발송일자       
             GIFT_CHNL_MK    : $("#selectbox5").val(),                   // 전달경로구분           
             PASS_USER       : $("#textbox29").val(),                    // 전달자명       
             INVOICENUM      : $("#textbox30").val(),                    // 택배송장번호       
-            ZEN_TICKET_ID   : DS_CSEL_PROC.ZEN_TICKET_ID,               // 티켓ID(for updateTicket)
-            GIFT_CHNL_MKNM  : $("#selectbox5 option:selected").text(),  // 전달경로이름(for updateTicket)
-            GIFT_NAME       : $("#selectbox4 option:selected").text(),  // 사은품명(for updateTicket)
+        },
+        DS_TICKET: {
+            ZEN_TICKET_ID   : DS_CSEL_PROC.ZEN_TICKET_ID,               // 티켓ID
+            GIFT_ROW_TYPE   : DS_CSEL_PROC.GIFT_STAT,                   // 사은품 저장구분(I/U/D)
+            GIFT_CHNL_MKNM  : $("#selectbox5 option:selected").text(),  // 전달경로이름 
+            GIFT_NAME       : $("#selectbox4 option:selected").text(),  // 사은품명
+            GIFT_PRICE      : calendarUtil.getImaskValue("textbox28"),  // 사은품가격       
+            SEND_DATE       : calendarUtil.getImaskValue("calendar4"),  // 발송일자       
+            PASS_USER       : $("#textbox29").val(),                    // 전달자명       
+            INVOICENUM      : $("#textbox30").val(),                    // 택배송장번호       
+            IS_HAPY         : $("#checkbox1").is(":checked"),           // 해피콜여부
         },
     }
 }
@@ -590,40 +598,51 @@ const saveCselProc = (condition) => {
         if (!checkApi(res, settings)) return;
 
         // 저장성공후
-        updateTicket(condition.DS_GIFT);    // 티켓업데이트(사은품정보)
-        getCselProc();  // 재조회
+        updateTicket(condition.DS_TICKET); // 티켓업데이트
+        getCselProc();                     // 재조회
         alert("저장 되었습니다.");
+        
     })
 }
 
 /**
- * Zendesk 티켓 업데이트 for 사은품정보
- * @param {object} giftData 사은품정보
+ * Zendesk 티켓 업데이트
+ * @param {object} DS_TICKET 티켓정보
  */
-const updateTicket = async (giftData) => {
+const updateTicket = (DS_TICKET) => {
+    
+    if (!DS_TICKET.ZEN_TICKET_ID) return;
 
-    // 신규 또는 수정 저장시에만 티켓업데이트한다.
-    if (giftData.ROW_TYPE != "I" && giftData.ROW_TYPE != "U") return;
-    if (!giftData.ZEN_TICKET_ID) return;
+    // 티켓업데이트 정보 세팅
+    const custom_fields = new Array();
+    
+    // 사은품정보 저장시 - 사은품관련 티켓필드 세팅
+    if (DS_TICKET.GIFT_ROW_TYPE == "I" || DS_TICKET.GIFT_ROW_TYPE == "U") {
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_NAME"],	     value: DS_TICKET.GIFT_NAME });                  // 사은품명  
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_PRICE"],	     value: DS_TICKET.GIFT_PRICE });                 // 사은품 가격  
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["SEND_DATE"],		 value: FormatUtil.date(DS_TICKET.SEND_DATE) }); // 사은품 발송일자  
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_CHNL_MKNM"],  value: DS_TICKET.GIFT_CHNL_MKNM });             // 사은품 발송경로  
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PASS_USER"],	     value: DS_TICKET.PASS_USER });                  // 사은품 전달자명  
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["INVOICENUM"],	     value: DS_TICKET.INVOICENUM });                 // 사은품 송장번호  
+    }
+
+    // 해피콜여부 체크시 - OB구분과 처리상태를 1차해피콜로 세팅
+    if (DS_TICKET.IS_HAPY) {
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"],	     value: "oblist_cde_110" });  // OB구분
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: "proc_sts_mk_15" });  // 처리상태
+    }
+
+    if (custom_fields.length == 0) return;
 
     const option = {
-        url: `/api/v2/tickets/${giftData.ZEN_TICKET_ID}`,
+        url: `/api/v2/tickets/${DS_TICKET.ZEN_TICKET_ID}`,
         method: 'PUT',
         contentType: "application/json",
         data: JSON.stringify({ 
-            ticket: {
-                custom_fields: [
-                    { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_NAME"],	     value: giftData.GIFT_NAME },                   // 사은품명
-                    { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_PRICE"],	 value: giftData.GIFT_PRICE },					// 사은품 가격   
-                    { id: ZDK_INFO[_SPACE]["ticketField"]["SEND_DATE"],		 value: FormatUtil.date(giftData.SEND_DATE) },	// 사은품 발송일자   
-                    { id: ZDK_INFO[_SPACE]["ticketField"]["GIFT_CHNL_MKNM"], value: giftData.GIFT_CHNL_MKNM },				// 사은품 발송경로   
-                    { id: ZDK_INFO[_SPACE]["ticketField"]["PASS_USER"],	     value: giftData.PASS_USER },					// 사은품 전달자명   
-                    { id: ZDK_INFO[_SPACE]["ticketField"]["INVOICENUM"],	 value: giftData.INVOICENUM },					// 사은품 송장번호   
-                ],
-            }
+            ticket: { custom_fields }
         }),
     }
-    
-    return await topbarClient.request(option);
+
+    return topbarClient.request(option);
 
 }

@@ -272,7 +272,7 @@ const onStart = async () => {
 		await setCodeData();
 
 		// 상담정보 조회
-		const data = currentTicket?.externalId.split("_");	// externalId = "2021-02-17_6_1"
+		const data = currentTicket?.externalId?.split("_");	// externalId = "2021-02-17_6_1"
 		if (data?.length == 3) {
 			calendarUtil.setImaskValue("textbox27", data[0]);
 			$("#textbox28").val(data[1]);
