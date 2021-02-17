@@ -965,7 +965,7 @@ const getCounselCondition = async (sJobType) => {
 		$("#textbox18").focus();
 		return false;
 	}
-	if (!data.CUST_RESP_MK && bIsOB == "N") {
+	if (!data.CUST_RESP_MK) {
 		alert("고객반응을 선택해 주십시요.");
 		$("#selectbox6").focus();
 		return false;
