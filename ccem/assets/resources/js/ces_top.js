@@ -3049,6 +3049,23 @@ function smsOnClick_tchr(){
  }
  
  /******************************************************
+  * 드림스 SMS 재발송 팝업
+  ******************************************************/
+  function onSMSResend(){
+	var surl = "";           //sms 재발송 드림스 url
+	var zsite = "ES";
+	var slogin_id = currentUserInfo.user.external_id;
+	var zpasswd = currentUserInfo.user.external_id;
+	var name = "[cns1610] sms 재발송";
+
+	getBasicList("10").then(function(d){	// 드림스 url 가져오기
+		surl = d;
+		var param = surl + "?zsite="+zsite+"&zlogin_id="+slogin_id+"&zpasswd="+zpasswd;
+		window.open(param,'cashBill','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');
+	});
+  }
+ 
+ /******************************************************
   * 태블릿 배송조회 팝업
   ******************************************************/     
   function onIOCSPopup(){

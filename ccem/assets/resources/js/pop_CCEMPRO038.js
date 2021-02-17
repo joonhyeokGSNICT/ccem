@@ -174,7 +174,7 @@ $(function(){
 			},
 			{
 				header: '학습과목',
-				name: 'SUBJ',
+				name: 'STDSBJ',
 				width: 160,
 				align: "left",
 				sortable: true,
@@ -572,6 +572,7 @@ function onSearch(){
 	if(!confirm("이 작업은 데이터량에 따라 매우 많은 시간을 필요로 합니다.\n\n계속 하시겠습니까?")) return;
 
 	$.ajax({
+		global: false,
 	    url: API_SERVER + '/cns.getEnterResult.do',
 	    type: 'POST',
 	    dataType: 'json',
@@ -842,6 +843,7 @@ function getDetailRFC(id,pd){
 		};
 		
 		$.ajax({
+			global: false,
 			url: API_SERVER + '/cns.ifsStudyChgInfo.do',
 			type: 'POST',
 			dataType: 'json',
@@ -864,6 +866,30 @@ function getDetailRFC(id,pd){
 			}
 		});
 	});
+}
+
+/*****************************************
+*	확장 조회 조건 Disable
+*****************************************/
+function setExDisable(){
+	chkRsc.disabled = true;
+	CMB_RSC.Enable = false;
+	//chkErr.disabled = true;
+	rdoErr[0].disabled = true;
+	rdoErr[1].disabled = true;
+	rdoErr[2].disabled = true;
+	b_ex.src = "/img/btn/b_expansearch_.gif";
+	b_ex.disabled = true;
+}
+
+/*****************************************
+*	확장 조회 조건 Enable
+*****************************************/
+function setExEnable(){
+	$("#radio3").prop('disabled',false);
+	$("#radio4").prop('disabled',false);
+	$("#radio5").prop('disabled',false);
+	$("#expandSearchBtn").prop('disabled',false);
 }
 
 //============================================================================
