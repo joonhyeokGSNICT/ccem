@@ -170,9 +170,10 @@ const createGrids = () => {
 		const thisGrid = ev.instance;
 		thisGrid.addSelection(ev);
 
-		const selCselUserId = thisGrid.getValue(ev.rowKey, "CSEL_USER_ID");
-		const currentUserLvl = currentUser.user_fields.user_lvl_mk
-		const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false;
+		const rowData = thisGrid.getRow(ev.rowKey);
+		const selCselUserId = rowData.CSEL_USER_ID;					  // 상담원ID
+		const currentUserLvl = currentUser?.user_fields?.user_lvl_mk; // 상담원등급
+		const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false; // 관리자유무
 
 		// 녹취매핑 버튼/상담/입회수정 버튼 - 자신의 상담건 or 사용자레벨 3이하 가능
 		if (currentUser.external_id == selCselUserId || isAdmin) {
@@ -184,14 +185,14 @@ const createGrids = () => {
 		}
 
 		// 녹취청취 버튼 - 녹취키가 있고, 자신의 상담건 or 사용자레벨 3이하 가능
-		if (thisGrid.getValue(ev.rowKey, "RECORD_ID") && (currentUser.external_id == selCselUserId || isAdmin)) {
+		if (rowData.RECORD_ID && (currentUser.external_id == selCselUserId || isAdmin)) {
 			$("#button5").prop("disabled", false);
 		} else {
 			$("#button5").prop("disabled", true);
 		}
 
 		// 결과 버튼 disabled 여부
-		const proc = thisGrid.getValue(ev.rowKey, "PROC_MK");
+		const proc = rowData.PROC_MK; // 처리구분
 		if (proc == "2" || proc == "3" || proc == "4") {	// 2: 상담원처리, 3: 상담연계, 4: 시정처리
 			$("#button6").prop("disabled", false);
 		} else {
@@ -202,7 +203,9 @@ const createGrids = () => {
 		if (isAdmin) $("#button8").prop("disabled", false);
 		else $("#button8").prop("disabled", true);
 
-		setCselDetail(thisGrid.getRow(ev.rowKey));
+		// 상담상세정보 세팅
+		setCselDetail(rowData);
+
 	});
 
 	grid1.on("click", ev => {
@@ -730,14 +733,36 @@ const setCselDetail = row => {
 	getCselSubj(row.CSEL_DATE, row.CSEL_NO, row.CSEL_SEQ);
 
 	// 상세정보 영역 세팅
-	row.PROC_HOPE_DATE = FormatUtil.date(row.PROC_HOPE_DATE || "____-__-__");
-	row.PROC_DATE = FormatUtil.date(row.PROC_DATE || "____-__-__");
-	grid1.getColumns().forEach(el => $(`#txt${el.name}`).val(row[el.name]));
-	calendarUtil.updateImask();
-
-	// VOC 체크여부
-	row.VOC_MK = row.VOC_MK == "1" ? true : false;
-	$("#checkbox32").prop("checked", row.VOC_MK);
+	$("#txtCSEL_TITLE").val(row.CSEL_TITLE);								// 제목			
+	$("#txtCSEL_CNTS").val(row.CSEL_CNTS);									// 상담내용
+	$("#txtCSEL_MK_NM").val(row.CSEL_MK_NM);								// 상담구분
+	$("#txtCSEL_LTYPE_CDE_NM").val(row.CSEL_LTYPE_CDE_NM);					// 분류(대)
+	$("#txtCSEL_MTYPE_CDE_NM").val(row.CSEL_MTYPE_CDE_NM);					// 분류(중)
+	$("#txtCSEL_STYPE_CDE_NM").val(row.CSEL_STYPE_CDE_NM);					// 분류(소)
+	$("#txtFST_CRS_CDE_NM").val(row.FST_CRS_CDE_NM);						// 상담경로
+	$("#txtPROC_MK_NM").val(row.PROC_MK_NM);								// 처리구분
+	$("#txtCSEL_RST_MK1_NM").val(row.CSEL_RST_MK1_NM);						// 상담결과
+	$("#txtAREA_CDE").val(row.AREA_CDE);									// 지역코드
+	$("#txtAREA_CDE_NM").val(row.AREA_CDE_NM);								// 지역명
+	$("#txtPROC_STS_MK_NM").val(row.PROC_STS_MK_NM);						// 처리상태
+	$("#txtREFUND_FLAG_NM").val(row.REFUND_FLAG_NM);						// 환불접수상태
+	$("#txtMEDIA_CDE_NM").val(row.MEDIA_CDE_NM);							// 매체구분
+	$("#txtLIMIT_MK_NM").val(row.LIMIT_MK_NM);								// 처리시한
+	$("#txtCUST_RESP_MK_NM").val(row.CUST_RESP_MK_NM);						// 고객반응
+	$("#txtDIV_CDE").val(row.DIV_CDE);										// 본부코드
+	$("#txtUP_DEPT_NAME_NM").val(row.UP_DEPT_NAME_NM);						// 본부명
+	$("#txtOPEN_GBN_NM").val(row.OPEN_GBN_NM);								// 정보
+	$("#txtMOTIVE_CDE_NM").val(row.MOTIVE_CDE_NM);							// 입회사유
+	calendarUtil.setImaskValue("txtPROC_HOPE_DATE", row.PROC_HOPE_DATE);	// 처리희망일
+	$("#txtCALL_RST_MK_NM").val(row.CALL_RST_MK_NM);						// O/B결과
+	$("#txtDEPT_ID").val(row.DEPT_ID);										// 사업국코드
+	$("#txtDEPT_NAME_NM").val(row.DEPT_NAME_NM);							// 사업국명
+	$("#txtCSEL_GRD_NM").val(row.CSEL_GRD_NM);								// 상담등급
+	$("#txtCSEL_MAN_MK_NM").val(row.CSEL_MAN_MK_NM);						// 내담자
+	calendarUtil.setImaskValue("txtPROC_DATE", row.PROC_DATE);				// 처리완료일
+	$("#txtCSEL_CHNL_MK_NM").val(row.CSEL_CHNL_MK_NM);						// 상담채널
+	$("#txtLC_NAME_NM").val(row.LC_NAME_NM);								// 센터
+	$("#checkbox32").prop("checked", row.VOC_MK == "Y");					// VOC가 "Y" 일경우 체크
 
 }
 
