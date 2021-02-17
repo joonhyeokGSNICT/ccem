@@ -1011,6 +1011,24 @@ $(function(){
 // document.ready 끝
 
 /**
+ *  상담 등록 버튼 클릭
+ */
+function onclickCselBtn(id) {
+	if(id == 'cust'){
+		if(currentTicketInfo.ticket.externalId){
+			PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
+		}else {
+			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
+		}
+	}else {
+		if(currentTicketInfo.ticket.externalId){
+			PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
+		}else {
+			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
+		}
+	}
+}
+/**
  * 현재 사용자 정보 불러오기
  * @returns
  */

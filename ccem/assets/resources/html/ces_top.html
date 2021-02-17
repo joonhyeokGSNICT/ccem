@@ -108,8 +108,8 @@
 							</div>
 							<div class="col-4" style="margin-top: -44px;">
 								<div style="float: right;">
-									<input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');" value="상담등록" id="csel_cust"> 
-									<input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');" value="상담등록" id="csel_tchr" style="display: none;">
+									<input type="button" class="btn btn-sm counselMainBtn" onclick="onclickCselBtn('cust');" value="상담등록" id="csel_cust"> 
+									<input type="button" class="btn btn-sm counselMainBtn" onclick="onclickCselBtn('tchr');" value="상담등록" id="csel_tchr" style="display: none;">
 									<input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CSELTOP', 1227, 655, '#entr_by_cust');" value="입회등록" id="assignMemberbtn">
 									<input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CSELTOP', 1227, 655, '#tchr_by_cust');" value="선생님소개" id="csel_t_cust"> 
 									<input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CSELTOP', 1227, 655, '#tchr_by_tchr');" value="선생님소개" id="csel_t_tchr" style="display: none;">
@@ -1400,7 +1400,7 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerName" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerName" name="searchInputCheck" autocomplete="off" tabindex='1'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1408,7 +1408,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerPhone" name="searchInputCheck" maxlength="13" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerPhone" name="searchInputCheck" maxlength="13" autocomplete="off"  tabindex='2'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1416,7 +1416,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerEmail" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerEmail" name="searchInputCheck" autocomplete="off" tabindex='3'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1424,7 +1424,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm searchInputCheck" id="customerGrade" name="GRADE_CDE">
+												<select class="form-control form-control-sm searchInputCheck" id="customerGrade" name="GRADE_CDE" tabindex='4'>
 													<!-- INPUT -->
 													<option></option>
 												</select>
@@ -1436,7 +1436,7 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerMNum" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerMNum" name="searchInputCheck" autocomplete="off" tabindex='5'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1444,7 +1444,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerBirth" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerBirth" name="searchInputCheck" autocomplete="off" tabindex='6'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1452,7 +1452,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerAddr" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerAddr" name="searchInputCheck" autocomplete="off" tabindex='7'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1460,7 +1460,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm searchInputCheck" id="customerSubject" name="PRDT_ID">
+												<select class="form-control form-control-sm searchInputCheck" id="customerSubject" name="PRDT_ID" tabindex='8'>
 													<!-- INPUT -->
 													<option></option>
 												</select>
@@ -1472,7 +1472,7 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerLC" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerLC" name="searchInputCheck" autocomplete="off"  tabindex='9'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1480,7 +1480,7 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSpot" name="searchInputCheck" autocomplete="off">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerSpot" name="searchInputCheck" autocomplete="off" tabindex='10'>
 												<!-- INPUT -->
 											</td>
 											<th class="tdCheck thCheck" colspan="">
@@ -1488,7 +1488,7 @@
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm searchInputCheck" id="customerDept" name="DIV_CDE">
+												<select class="form-control form-control-sm searchInputCheck" id="customerDept" name="DIV_CDE" tabindex='11'>
 													<!-- INPUT -->
 													<option></option>
 												</select>
@@ -1498,7 +1498,7 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerOnline" name="searchInputCheck" autocomplete="off" maxlength="40">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="customerOnline" name="searchInputCheck" autocomplete="off" maxlength="40" tabindex='12'>
 												<!-- INPUT -->
 											</td>
 										</tr>
@@ -1532,21 +1532,21 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherName">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherName" tabindex='13'>
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherDNumCheck">사원번호
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm searchInputCheck" maxlength="8" id="teacherDNum">
+												<input type="text" class="form-control form-control-sm searchInputCheck" maxlength="8" id="teacherDNum" tabindex='14'>
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherStatCheck">재직구분
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm searchInputCheck" name="STS_CDE" id="teacherStat">
+												<select class="form-control form-control-sm searchInputCheck" name="STS_CDE" id="teacherStat" tabindex='15'>
 													<option></option>
 												</select>
 											</td>
@@ -1557,21 +1557,21 @@
 												</label>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherLCName">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherLCName" tabindex='16'>
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherDeptNameCheck">사업국
 												</label>
 											</th>
 											<td colspan="">
-												<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherDeptName">
+												<input type="text" class="form-control form-control-sm searchInputCheck" id="teacherDeptName" tabindex='17'>
 											</td>
 											<th class="tdCheck thCheck" colspan="">
 												<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="teacherUpDeptNameCheck">본부
 												</label>
 											</th>
 											<td colspan="">
-												<select class="form-control form-control-sm searchInputCheck" name="DIV_CDE" id="teacherUpDeptName">
+												<select class="form-control form-control-sm searchInputCheck" name="DIV_CDE" id="teacherUpDeptName" tabindex='18'>
 													<option></option>
 												</select>
 											</td>

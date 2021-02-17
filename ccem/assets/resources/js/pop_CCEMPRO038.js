@@ -3,6 +3,7 @@ var codeData = opener.codeData;
 var tempList;
 var sourceList;
 var weeklyData; // DS_YHR12
+var resultList;
 
 var SSInitFlag = false;
 
@@ -727,7 +728,7 @@ async function getDataDetail(sDate, sMemNo, sPrdtId, TargetRow){
 		TargetRow.STD_STDATE = "18000101";
 		TargetRow.STD_EDDATE = "18000101";
 		
-		if(await getDetailRFC(sMemNo, sPrdtId)){
+		if((await getDetailRFC(sMemNo, sPrdtId))){
 			for(jRow of changeData){
 				if(getMonthJudge(sDate, jRow.MBR_CHG_DATE, 0, 2)){
 					sGB = $.trim(jRow.CODE_NAME);
@@ -900,6 +901,181 @@ function setExEnable(){
 	$("#asignList_listLimitCon").prop('disabled',false);
 	$("#asignList_listLimitConCheck").prop('disabled',false);
 }
+
+/*****************************************
+*	확장 조회 버튼 클릭
+*****************************************/
+function onExpand(){
+	
+	if(!$("#asignList_listLimitConCheck").is(":checked")) { alert("확장 조회 조건이 없습니다. 조회조건을 확인하세요."); return; }
+	if($("#asignList_listLimitCon").val()=="") { alert("리스트 제한 조건을 선택해주세요."); return; }
+
+	if(!confirm("이 작업은 데이터량에 따라 매우 많은 시간을 필요로 합니다.\n\n계속 하시겠습니까?")) return;
+	else { chkSave = true; setTimeout("onExapndSearch()",250); }
+
+	
+}
+
+/*****************************************
+*	확장 조회 시작
+*****************************************/
+function onExapndSearch(){
+	// SSErrorInit
+	//DS_CNS4902.ClearAll();
+	//DS_CNS4902.SetDataHeader(DS_CNS4901.text);		
+			
+	SSerrorInitFlag = true;
+
+	// SSErrorExtInit
+	SSerrorExtInitFlag = true;
+	
+	switch($("#asignList_listLimitCon").val()){
+		case "0" :
+			//if(!chkErr.checked){
+			//	setErrorDataMove("▶", false);
+			//}
+			//else{
+				setErrorDataMove("▶", false);
+				if(!SSerrorInitFlag){
+					setErrorDataMoveExension();
+					setDataMoveExtension();
+				}
+			//}
+			break;
+		case "1" :
+			//if(!chkErr.checked){
+			//	setErrorDataMove("▶회원번호 오류 추정건", true);
+			//}
+			//else{
+				setErrorDataMove("▶회원번호 오류 추정건", true);
+				if(!SSerrorInitFlag){						
+					setErrorDataMoveExension();
+					setDataMoveExtension();
+				}
+			//}
+			break;
+		case "2" :
+			//if(!chkErr.checked){
+			//	setErrorDataMove("▶학습이력 오류 추정건", true);
+			//}
+			//else{
+				setErrorDataMove("▶학습이력 오류 추정건", true);
+				if(!SSerrorInitFlag){
+					setErrorDataMoveExension();
+					setDataMoveExtension();
+				}
+			//}
+			break;
+		default :
+			alert("업무 오류 입니다. 관리자에게 연락 바랍니다.");
+			return;
+	}
+	
+	gf_setBlock(false);
+	if(SSerrorInitFlag) { alert("데이터가 없습니다."); return; }
+}
+
+/*****************************************
+*	확장조회 - 리스트 제한 조건에 대해서만 DS_CNS4901 -> DS_CNS4905로 복사
+*****************************************/
+function setErrorDataMove(ErrorChar, FullChar){
+	var ssText = "";
+	var chrLen = 0;
+			
+	// 조회 그리드에 데이터 셋을 전환
+	// DS_CNS4901 -> DS_CNS4905
+	//GRD_ENTREF.DataID = "DS_CNS4905";
+
+	for(q of sourceList){
+		if(FullChar){
+			ssText = q.STDSBJ;
+		} else if (!FullChar){
+			chrLen = ErrorChar.length;
+			ssText = q.STDSBJ.substr(0,chrLen);
+		}
+					
+		if(ssText==ErrorChar){
+
+			SSerrorInitFlag = false;
+			// 조건을 충족하는 DS_CNS4901(q,col)을 DS_CNS4905(추가할 row, col)에 복사
+			resultList.push(q);
+		}
+	}
+}
+
+
+/*****************************************
+*	확장조회 - 오류 추정 데이터 조회
+*****************************************/
+async function setErrorDataMoveExension(){
+	var sCsel_date = "";
+	var sCsel_no = "";
+	var errName = "";
+	var errPhone = "";
+	var errMbrId = "";
+	var ExtRow = 1;
+	var phoneLen = 0;
+	
+	for(v of resultList){
+		sCsel_date = v.CSEL_DATE;
+		sCsel_no = v.CSEL_NO;
+		
+		errName = v.MBR_NAME;
+		errMbrId = v.MBR_ID;
+		errPhone = v.TEL_NO;
+		
+		phoneLen = errPhone.length;
+		errPhone = errPhone.substring(phoneLen-4,phoneLen);
+/*
+		DS_CNS4906.AddRow();
+
+		for(bCol=1;bCol<=DS_CNS4905.CountColumn;bCol++){
+			DS_CNS4906.ColumnValue(ExtRow,bCol) = DS_CNS4905.ColumnValue(v,bCol);
+		}
+		ExtRow = ExtRow + 1;						
+*/
+		if($("#radio3").is(':checked')){
+			// 센터
+			DS_CNS4909.DataID = "/cns/cns4900/cns4907V.jsp?flag=3&date="+sCsel_date+"&no="+sCsel_no+"&id="+errMbrId+"&name="+errName;
+		} else if($("#radio4").is(':checked')){
+			// 사업국
+			DS_CNS4909.DataID = "/cns/cns4900/cns4907V.jsp?flag=1&date="+sCsel_date+"&no="+sCsel_no+"&id="+errMbrId+"&name="+errName;
+		} else if($("#radio5").is(':checked')){
+			// 전화번호
+			DS_CNS4909.DataID = "/cns/cns4900/cns4907V.jsp?flag=2&date="+sCsel_date+"&no="+sCsel_no+"&id="+errMbrId+"&name="+errName+"&tel="+errPhone;				
+		}
+		DS_CNS4909.reset();
+	
+		if(DS_CNS4909.CountRow > 0){
+			// 데이터 한건 이동 후 오류 데이터가 있는 경우에만 추가함
+			DS_CNS4906.AddRow();
+
+			for(bCol=1;bCol<=DS_CNS4905.CountColumn;bCol++){
+				DS_CNS4906.ColumnValue(ExtRow,bCol) = DS_CNS4905.ColumnValue(v,bCol);
+			}
+			ExtRow = ExtRow + 1;		
+					
+			for(nRow=1;nRow<=DS_CNS4909.CountRow;nRow++){
+
+				// 데이터를 집어 넣는다.
+				DS_CNS4906.AddRow();
+				DS_CNS4906.NameString(ExtRow, "ACPNO") = 0000;
+				if(DS_CNS4909.NameValue(nRow,"MBRNAME").length > 0) { DS_CNS4906.NameValue(ExtRow,"MBRNAME") = DS_CNS4909.NameValue(nRow,"MBRNAME"); }
+				if(DS_CNS4909.NameValue(nRow,"MBRID").length > 0) { DS_CNS4906.NameValue(ExtRow,"MBRID") = DS_CNS4909.NameValue(nRow,"MBRID"); }
+				if(DS_CNS4909.NameValue(nRow,"GRD").length > 0) { DS_CNS4906.NameValue(ExtRow,"GRD") = DS_CNS4909.NameValue(nRow,"GRD"); }
+				if(DS_CNS4909.NameValue(nRow,"TELNO").length > 0) { DS_CNS4906.NameValue(ExtRow,"TELNO") = DS_CNS4909.NameValue(nRow,"TELNO"); }
+				if(DS_CNS4909.NameValue(nRow,"ADDRESS").length > 0) { DS_CNS4906.NameValue(ExtRow,"ADDRESS") = DS_CNS4909.NameValue(nRow,"ADDRESS"); }
+				if(DS_CNS4909.NameValue(nRow,"HDQ").length > 0) { DS_CNS4906.NameValue(ExtRow,"TRANSHDQ") = DS_CNS4909.NameValue(nRow,"HDQ"); }
+				if(DS_CNS4909.NameValue(nRow,"CNT").length > 0) { DS_CNS4906.NameValue(ExtRow,"TRANSCNT") = DS_CNS4909.NameValue(nRow,"CNT"); }
+				if(DS_CNS4909.NameValue(nRow,"LC_NAME").length > 0) { DS_CNS4906.NameValue(ExtRow,"TRANSLC") = DS_CNS4909.NameValue(nRow,"LC_NAME"); }
+				
+				ExtRow = ExtRow + 1;
+			}
+		}
+		
+	}		
+}
+
 
 //============================================================================
 //Funciotn Name : gf_getIntervalDay(fromtime, totime)
