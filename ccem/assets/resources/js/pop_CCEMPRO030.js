@@ -1503,7 +1503,7 @@ const onSave = (sBtnMk) => {
             // 데이터의 조작이 있는 경우
             if ($("#selectbox5").val().length >= 1 ||
                 $("#selectbox6").val().length >= 1 ||
-                calendarUtil.getImaskValue("textbox30").length >= 1 ||
+                // calendarUtil.getImaskValue("textbox30").length >= 1 ||
                 $("#selectbox7").val().length >= 1 ||
                 $("#textbox31").val().length >= 1 ||
                 $("#textbox32").val().length >= 1) {
