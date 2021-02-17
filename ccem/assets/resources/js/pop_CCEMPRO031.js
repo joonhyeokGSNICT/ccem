@@ -760,15 +760,6 @@ const getCounselCondition = async (sJobType) => {
 	// 	}
 	// }
 
-	if (!data.MBR_ID) {
-		// 회원번호가 없으면 회원번호 생성
-		data.MBR_ID = await getNewMbrId(data.CUST_ID);
-		// 회원번호 생성 실패시
-		if (!data.MBR_ID) { 
-			alert("회원번호를 확인할 수 없습니다. \n\n회원의 성별, 이름, 주소, 지점정보는 필수 입력사항입니다.\n\n다시 확인해 주십시오.");
-			if (!confirm("회원번호 없이 저장하시겠습니까?")) return false;
-		}
-	}
 	if (!data.TRANS_DATE) { 
 		alert("연계일시를 입력하여 주십시오"); 
 		$("#calendar4").focus();
@@ -829,6 +820,16 @@ const getCounselCondition = async (sJobType) => {
 			alert("중분류를 선택하여 주십시오"); 
 			$("#textbox22").focus();
 			return false;
+		}
+	}
+	
+	if (!data.MBR_ID) {
+		// 회원번호가 없으면 회원번호 생성
+		data.MBR_ID = await getNewMbrId(data.CUST_ID);
+		// 회원번호 생성 실패시
+		if (!data.MBR_ID) { 
+			alert("회원번호를 확인할 수 없습니다. \n\n회원의 성별, 이름, 주소, 지점정보는 필수 입력사항입니다.\n\n다시 확인해 주십시오.");
+			if (!confirm("회원번호 없이 저장하시겠습니까?")) return false;
 		}
 	}
 
