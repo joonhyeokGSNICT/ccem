@@ -173,23 +173,22 @@ class CustomIconRenderer {
 class CustomRecRenderer {
 
     constructor(props) {
-
         const record = props.value;
-        const { onClick } = props.columnInfo.renderer.options;
+        const rowData = props.grid.getRow(props.rowKey);
 
         if (record == "MOREDATA") {
             const el = document.createElement("button");
             el.style = "padding: 0px;";
             el.className = "btn btn-sm navBtn";
             el.innerHTML = "선택청취";
-            el.onclick = () => onClick(props.rowKey);
+            el.onclick = () => PopupUtil.open("CCEMPRO047", 852, 240, "", rowData);
             this.el = el;
         } else if (record?.length == 18) {
             const el = document.createElement("button");
             el.style = "padding: 0px;";
             el.className = "btn btn-sm navBtn";
             el.innerHTML = "청취";
-            el.onclick = () => onClick(props.rowKey);
+            el.onclick = () => recordPlay(record);
             this.el = el;
         } else {
             const el = document.createElement("div");

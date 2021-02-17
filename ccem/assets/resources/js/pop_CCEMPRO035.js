@@ -93,12 +93,7 @@ const createGrids = () => {
 			{ header: '핸드폰번호',                     name: "MOBILNO",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: 'ERMS구분',                       name: "ERMS_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	 },
 			{ header: '팩스발송일시',                   name: "FAX_DATETIME",          width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
-			{ header: '녹취ID',                         name: "RECORD_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	 
-				renderer: {
-					type: CustomRecRenderer,
-					options: { onClick: onRecordPlay },
-				}
-			},
+			{ header: '녹취ID',                         name: "RECORD_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	 renderer: CustomRecRenderer, 									 },
 			{ header: '상담입력시각',                   name: "CSEL_STTIME",           width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	  formatter: columnInfo => FormatUtil.time(columnInfo.value)	  },
 			{ header: 'TICKET ID',                      name: "ZEN_TICKET_ID",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: '상담경로',                       name: "FST_CRS_CDE_NM",        width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
@@ -837,17 +832,16 @@ const saveExcelCsel = async () => {
 
 /**
  * 녹취청취
- * @param {string} param rowKey
  */
-const onRecordPlay = (param) => {
+const onRecordPlay = () => {
 	
-	const rowKey = param || grid1.getSelectedRowKey();
+	const rowKey = grid1.getSelectedRowKey();
 	const rowData = grid1.getRow(rowKey);
+
+	if (!rowData.RECORD_ID) return;
 
 	if (rowData.RECORD_ID == "MOREDATA") {
 		PopupUtil.open("CCEMPRO047", 852, 240, "", rowData);
-	} else if (rowData.RECORD_ID == null) {
-
 	} else {
 		recordPlay(rowData.RECORD_ID);
 	}
