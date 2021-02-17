@@ -158,7 +158,7 @@ var currentTchrInfo;							// 현재 선택된 선생님의 정보
 
 var tempCustInfo;
 
-var currentTicketInfo;							// 현재 열려있는 티켓의 정보
+var currentTicketInfo;			// 현재 열려있는 티켓의 정보
 
 var existCustInfo;								// 기존 존재하는 고객의 정보
 var existCustName;								// 기존 존재하는 고객의 이름
@@ -1015,13 +1015,13 @@ $(function(){
  */
 function onclickCselBtn(id) {
 	if(id == 'cust'){
-		if(currentTicketInfo.ticket.externalId){
+		if(currentTicketInfo?.ticket?.externalId){
 			PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
 		}else {
 			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
 		}
 	}else {
-		if(currentTicketInfo.ticket.externalId){
+		if(currentTicketInfo?.ticket?.externalId){
 			PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
 		}else {
 			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');

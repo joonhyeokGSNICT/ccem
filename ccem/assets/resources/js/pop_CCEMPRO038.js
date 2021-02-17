@@ -1076,6 +1076,50 @@ async function setErrorDataMoveExension(){
 	}		
 }
 
+/*****************************************
+*	확장 조회
+*****************************************/
+function getExpandSearch(flag,cselDate,cselNo,mbrId,mbrName,telNo){
+
+	return new Promise((resolve) => {
+		
+		var param = {
+				userid: opener.currentUserInfo.user.external_id,
+			    menuname: '입회조회(성과)',
+				senddataids: ["send1"],
+				recvdataids: ["recv1"],
+				send1: [{
+					"FLAG"	 : flag,
+					"CSEL_DATE": cselDate,
+					"MBR_ID" : id,
+				}]
+		};
+		
+		$.ajax({
+			global: false,
+			url: API_SERVER + '/cns.ifsStudyChgInfo.do',
+			type: 'POST',
+			dataType: 'json',
+			contentType: "application/json",
+			data: JSON.stringify(param),
+			success: function (response) {
+				console.log(response);
+				if(response.errcode == "0"){
+					if(response.recv1.length > 0){
+						changeData = response.recv1;
+						resolve(true);
+					} else {
+						resolve(false);
+					}
+				}else {
+					loading.out();
+					alert(response.errmsg);
+				}
+			}, error: function (response) {
+			}
+		});
+	});
+}
 
 //============================================================================
 //Funciotn Name : gf_getIntervalDay(fromtime, totime)
