@@ -5,6 +5,10 @@ var DS_COUNSEL = [];	// 상담정보
 
 $(function () {
 	
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
 	// create calendar
 	$(".calendar").each((i, el) =>  calendarUtil.init(el.id));
 

@@ -2,6 +2,11 @@ let currentUser;    // 현재 사용중인 유저의 정보(ZENDESK)
 let grid;           // 관계회원 grid
 
 $(function () {
+    
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
     createGrids();
     onStart(opener ? opener.name : "");
 });

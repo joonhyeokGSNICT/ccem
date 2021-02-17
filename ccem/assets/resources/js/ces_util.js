@@ -686,6 +686,20 @@ var PopupUtil = {
         }
         this.pops[name].POP_DATA = param;
     },
+    /**
+     * 자식창 close
+     */
+    close(name) {
+        this.pops[name]?.close();
+    },
+    /**
+     * 모든 자식창 close
+     */
+    closeAll() {
+        for (const name in this.pops) {
+            this.pops[name]?.close();
+        }
+    },
 }
 
 const ModalUtil = {

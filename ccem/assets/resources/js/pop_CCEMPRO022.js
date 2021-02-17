@@ -13,6 +13,10 @@ var procStsList = [];	// 처리상태 리스트
 
 $(function () {
 
+	$(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
 	// create calendar
 	$(".calendar").each((i, el) => {
 		if(el.id === "calendar2") calendarUtil.init(el.id, { drops: "up" });

@@ -15,6 +15,10 @@ let sCustMk   = "";
 
 $(function () {
 
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
     // create calendar
     $(".calendar").each((i, el) => {
         if(el.id === "calendar4") calendarUtil.init(el.id, { drops: "up", opens: "left"});

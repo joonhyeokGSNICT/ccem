@@ -4,6 +4,10 @@ let cselGrid, rowKey;	// 상담정보 Grid
 
 $(function () {
 
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
 	createGrids();
 	
 	const opener_name = opener.name;

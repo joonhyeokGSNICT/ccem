@@ -14,6 +14,10 @@ let cselType = {};	// 분류코드
 
 $(function () {
 
+	$(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
 	// init date
 	$(".calendar").val(getDateFormat());
 

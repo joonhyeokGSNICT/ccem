@@ -8,6 +8,10 @@ let grid1, grid2;
 let sFLAG, sLIST_CUST_ID, sCUST_ID, sCSEL_DATE, sCSEL_NO, sCSEL_SEQ
 
 $(async function () {
+
+	$(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
 	
 	createGrids();
 

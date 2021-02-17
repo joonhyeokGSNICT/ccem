@@ -10,6 +10,10 @@ const TEL_LIST = {
 
 $(function() {
 
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
     // 날짜와 시간 세팅
     $("#calendar1").val(getDateFormat());
     $("#time1").val(getTimeFormat());

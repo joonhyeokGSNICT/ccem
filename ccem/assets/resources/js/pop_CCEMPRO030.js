@@ -23,6 +23,10 @@ let SEND_PHONE = "";    // 대표번호
 
 $(function () {
 
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
+
     // create calendar
     calendarUtil.init("calendar1", { drops: "up", opens: "left" });
     calendarUtil.init("calendar2");

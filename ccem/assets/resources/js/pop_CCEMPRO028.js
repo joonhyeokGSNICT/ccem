@@ -10,6 +10,10 @@ let sCSEL_NO 	= "";	// 상담번호
 let SEND_PHONE = "";	// SMS발신번호
 
 $(function () {
+	
+    $(window).on('beforeunload', () => {
+		PopupUtil.closeAll();
+	});
 
 	// create calendar
 	calendarUtil.init("calendar3", { drops: "up" });
