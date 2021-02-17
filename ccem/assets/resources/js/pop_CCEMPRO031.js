@@ -623,7 +623,7 @@ const onSave = async () => {
 	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
 
 	// 저장 validation check
-	const cselData = getCounselCondition(sJobType);
+	const cselData = await getCounselCondition(sJobType);
 	if (!cselData) return false;
 	const transData = getTransCondition();
 	if (!transData) return false;
@@ -679,7 +679,7 @@ const onSave = async () => {
  * 입회정보 validation check
  * -as-is : cns4700.onNeedCheck(), setDataForSave(), 
  */
-const getCounselCondition = (sJobType) => {
+const getCounselCondition = async (sJobType) => {
 
 	const data = {
 		ROW_TYPE			: sJobType, 									// 저장구분(I/U/D)		
@@ -759,13 +759,14 @@ const getCounselCondition = (sJobType) => {
 	// 	}
 	// }
 
-	// TODO 회원번호가 없으면 회원번호 생성 API 호출(/cns.getNewMbrId.do)
 	if (!data.MBR_ID) {
-		// data.MBR_ID = await getNewMbrId(data.CUST_ID);
-	}
-	if (!data.MBR_ID) { 
-		alert("회원번호를 확인할 수 없습니다. \n\n회원의 성별, 이름, 주소, 지점정보는 필수 입력사항입니다.\n\n다시 확인해 주십시오.");
-		if (!confirm("회원번호 없이 저장하시겠습니까?")) return false;
+		// 회원번호가 없으면 회원번호 생성
+		data.MBR_ID = await getNewMbrId(data.CUST_ID);
+		// 회원번호 생성 실패시
+		if (!data.MBR_ID) { 
+			alert("회원번호를 확인할 수 없습니다. \n\n회원의 성별, 이름, 주소, 지점정보는 필수 입력사항입니다.\n\n다시 확인해 주십시오.");
+			if (!confirm("회원번호 없이 저장하시겠습니까?")) return false;
+		}
 	}
 	if (!data.TRANS_DATE) { 
 		alert("연계일시를 입력하여 주십시오"); 
@@ -1027,3 +1028,40 @@ var setDisPlay = (data) => {
 	$("#textbox15").val(data.LC_NAME);			// 센터명					(연계센터명)
 	$("#hiddenbox10").val(data.DIV_KIND_CDE);	// 브랜드ID
 }
+
+/**
+ * 회원번호 생성
+ * @param {string} CUST_ID 고객번호
+ * @return {string} MBR_ID(회원번호)
+ */
+const getNewMbrId = (CUST_ID) => new Promise((resolve, reject) => {
+	const settings = {
+		global: false,
+		url: `${API_SERVER}/cns.getNewMbrId.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "입회등록",
+			senddataids	: ["dsSend"],
+			recvdataids	: ["dsRecv"],
+			dsSend		: [{CUST_ID}]
+		}),
+		errMsg: "회원번호 생성중 오류가 발생하였습니다.",
+	}
+	
+	$.ajax(settings)
+		.done(res => {
+
+			if (res.errcode != "0") {
+				console.error("getNewMbrId: ", res.errmsg);
+				return resolve("");
+			}
+
+			if (res.dsRecv?.length > 0) return resolve(res.dsRecv[0].MBR_ID || "");
+			else return resolve("");
+
+		})
+		.fail(() => resolve(""));
+});
