@@ -256,6 +256,30 @@ const onStart = async () => {
 		getBaseData("T", empId, "I");
 
 	} 
+	// 탑바 > 고객정보, 선생님 > 상담등록 버튼으로 오픈(이 경우는 상담수정)
+	else if (opener_name.includes("top_bar") && hash.includes("by_ticket")) {	
+		topbarObject  = parent.opener;
+		topbarClient  = topbarObject.client;
+		sidebarClient = topbarObject.sidebarClient;
+		currentUser   = topbarObject.currentUserInfo.user;
+		codeData 	  = topbarObject.codeData;	
+
+		// 오픈된 티켓세팅
+		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+		currentTicket = origin?.ticket;
+
+		// 콤보박스 세팅
+		await setCodeData();
+
+		// 상담정보 조회
+		const data = currentTicket?.externalId.split("_");	// externalId = "2021-02-17_6_1"
+		if (data?.length == 3) {
+			calendarUtil.setImaskValue("textbox27", data[0]);
+			$("#textbox28").val(data[1]);
+			getCounsel(data[2]);
+		}
+
+	} 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	else if (opener_name.includes("CCEMPRO035")) {	
 		topbarObject  = parent.opener.topbarObject;
