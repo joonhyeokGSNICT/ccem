@@ -465,7 +465,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.CSEL_EDTIME				// 상담종료시간					
 			$("#selectbox4").val(cselData.CSEL_CHNL_MK);						// 상담채널구분					
 			// cselData.CSEL_MK					// 상담구분				
-			// cselData.CSEL_TITLE				// 상담제목				
+			$("#textbox18").val(cselData.CSEL_TITLE);							// 상담제목			
 			$("#textbox25").val(cselData.CSEL_CNTS);							// 상담상세내용				
 			// cselData.OCCUR_DATE				// 문제발생일자				
 			// cselData.LIMIT_MK				// 처리시한구분				
@@ -521,7 +521,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			$("#textbox15").val(cselData.LC_NAME);								// 센터명(연계센터명)	
 			$("#textbox10").val(cselData.TELPNO_LC || cselData.TELPNO_DEPT);	// 센터전화번호(사업국/센터 전화번호)			
 			$("#hiddenbox5").val(cselData.ZEN_TICKET_ID);						// ZEN_티켓 ID	
-			$("#textbox18").val(cselData.EVT_NM);								// 이벤트명			
+			// cselData.EVT_NM					// 이벤트명			
 			$("#hiddenbox9").val(cselData.AGE_CDE);								// 연령코드			
 			// cselData.DEPT_EMP_NAME			// 지점장명					
 			// cselData.DEPT_EMP_MOBILE			// 지점장핸드폰번호						
@@ -696,7 +696,7 @@ const getCounselCondition = (sJobType) => {
 		CSEL_LTYPE_CDE		: $("#textbox19").val(), 						// 상담대분류코드			
 		CSEL_MTYPE_CDE		: $("#textbox21").val(), 						// 상담중분류코드			
 		CSEL_STYPE_CDE		: $("#textbox23").val(), 						// 상담소분류코드	
-		CSEL_TITLE			: "입회상담",									 // 상담제목
+		CSEL_TITLE			: $("#textbox18").val(),   					    // 상담제목
 		CSEL_CNTS			: $("#textbox25").val().trim(), 				// 상담상세내용		
 		// LIMIT_MK			: "", // 처리시한구분		
 		// PROC_HOPE_DATE	: "", // 처리희망일자			
