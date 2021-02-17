@@ -44,7 +44,7 @@ $(function(){
     	openerTop_ID = "textbox19";
     	openerMid_ID = "textbox21";
     	openerBot_ID = "textbox23";
-    	openerSub_ID = "";
+    	openerSub_ID = "textbox18";
     	
     	openerTop_NAME = "textbox20";
     	openerMid_NAME = "textbox22";
@@ -116,6 +116,8 @@ $(function(){
 			midGrid.resetData(midList);
 			botGrid.clear();
 			tempTop = topSelet;
+			tempMid = null;
+			tempBot = null;
 		}
     });
 	
@@ -165,6 +167,7 @@ $(function(){
 			}
 			botGrid.resetData(botList);
 			tempMid = midSelet;
+			tempBot = null;
 		}
     });
 	
@@ -268,9 +271,12 @@ $(function(){
 			$("#" + openerBot_ID, opener.document).val("");
 			$("#" + openerBot_NAME, opener.document).val("");
 		}
-		if(tempSub != null && tempSub != undefined){
-			$("#" + openerSub_ID, opener.document).val(tempSub.CSEL_TITLE);
-		}
+		$("#" + openerSub_ID, opener.document).val("");
+		var subject = "";
+		if(tempTop?.CODE_NAME)subject+=tempTop.CODE_NAME;
+		if(tempMid?.CODE_NAME)subject+=" > " + tempMid.CODE_NAME;
+		if(tempBot?.CODE_NAME)subject+=" > " + tempBot.CODE_NAME;
+		$("#" + openerSub_ID, opener.document).val(subject);
 		window.close();
 	});
 });

@@ -3,7 +3,8 @@ var codeData = opener.codeData;
 var tempList;
 var sourceList;
 var weeklyData; // DS_YHR12
-var resultList;
+var resultList = [];
+var finalList = [];
 
 var SSInitFlag = false;
 
@@ -94,6 +95,11 @@ $(function(){
 			$("#"+tempId.split('_')[0] + "DateCheck").prop("checked",false);
 		}
 	});
+	
+	// 상담원 그룹 체인지 이벤트
+	$('#asignList_cselGrp').change(function (){
+		filterUser($('#asignList_cselGrp').val());
+	});
 
     // create grid
     grid = new Grid({
@@ -135,7 +141,11 @@ $(function(){
 				sortable: true,
 				ellipsis: true,
 				formatter: function(e){
-					return e.value.substring(0,2) + ":" + e.value.substring(2,4)
+					if(e.value != null){
+						return e?.value?.substring(0,2) + ":" + e?.value?.substring(2,4)
+					}else {
+						return "";
+					}
 				}
 			},
 			{
@@ -920,10 +930,13 @@ function onExpand(){
 *	확장 조회 시작
 *****************************************/
 function onExapndSearch(){
+	loading = new Loading(getLoadingSet());
 	// SSErrorInit
 	//DS_CNS4902.ClearAll();
 	//DS_CNS4902.SetDataHeader(DS_CNS4901.text);		
-			
+	// 초기화
+	resultList = [];
+	finalList = [];
 	SSerrorInitFlag = true;
 
 	// SSErrorExtInit
@@ -938,7 +951,7 @@ function onExapndSearch(){
 				setErrorDataMove("▶", false);
 				if(!SSerrorInitFlag){
 					setErrorDataMoveExension();
-					setDataMoveExtension();
+					//setDataMoveExtension();
 				}
 			//}
 			break;
@@ -950,7 +963,7 @@ function onExapndSearch(){
 				setErrorDataMove("▶회원번호 오류 추정건", true);
 				if(!SSerrorInitFlag){						
 					setErrorDataMoveExension();
-					setDataMoveExtension();
+					//setDataMoveExtension();
 				}
 			//}
 			break;
@@ -962,7 +975,7 @@ function onExapndSearch(){
 				setErrorDataMove("▶학습이력 오류 추정건", true);
 				if(!SSerrorInitFlag){
 					setErrorDataMoveExension();
-					setDataMoveExtension();
+					//setDataMoveExtension();
 				}
 			//}
 			break;
@@ -971,7 +984,6 @@ function onExapndSearch(){
 			return;
 	}
 	
-	gf_setBlock(false);
 	if(SSerrorInitFlag) { alert("데이터가 없습니다."); return; }
 }
 
@@ -995,6 +1007,8 @@ function setErrorDataMove(ErrorChar, FullChar){
 		}
 					
 		if(ssText==ErrorChar){
+			console.log(ErrorChar);
+			console.log(ssText);
 
 			SSerrorInitFlag = false;
 			// 조건을 충족하는 DS_CNS4901(q,col)을 DS_CNS4905(추가할 row, col)에 복사
@@ -1034,19 +1048,27 @@ async function setErrorDataMoveExension(){
 		}
 		ExtRow = ExtRow + 1;						
 */
+		var dataInOK = "";
 		if($("#radio3").is(':checked')){
 			// 센터
-			DS_CNS4909.DataID = "/cns/cns4900/cns4907V.jsp?flag=3&date="+sCsel_date+"&no="+sCsel_no+"&id="+errMbrId+"&name="+errName;
+			dataInOK = (await getExpandSearch(3,sCsel_date,sCsel_no,errMbrId,errName,""))
 		} else if($("#radio4").is(':checked')){
 			// 사업국
-			DS_CNS4909.DataID = "/cns/cns4900/cns4907V.jsp?flag=1&date="+sCsel_date+"&no="+sCsel_no+"&id="+errMbrId+"&name="+errName;
+			dataInOK = (await getExpandSearch(1,sCsel_date,sCsel_no,errMbrId,errName,""));
 		} else if($("#radio5").is(':checked')){
 			// 전화번호
-			DS_CNS4909.DataID = "/cns/cns4900/cns4907V.jsp?flag=2&date="+sCsel_date+"&no="+sCsel_no+"&id="+errMbrId+"&name="+errName+"&tel="+errPhone;				
+			dataInOK = (await getExpandSearch(2,sCsel_date,sCsel_no,errMbrId,errName,errPhone));
 		}
-		DS_CNS4909.reset();
+		
+		if(dataInOK != "none"){
+			finalList.push(v);
+			for(data of dataInOK){
+				finalList.push(data);
+			}
+		}
+		//DS_CNS4909.reset();
 	
-		if(DS_CNS4909.CountRow > 0){
+		/*if(DS_CNS4909.CountRow > 0){
 			// 데이터 한건 이동 후 오류 데이터가 있는 경우에만 추가함
 			DS_CNS4906.AddRow();
 
@@ -1071,9 +1093,17 @@ async function setErrorDataMoveExension(){
 				
 				ExtRow = ExtRow + 1;
 			}
-		}
-		
-	}		
+		}*/
+	}
+	var i = 0;
+	for(o of finalList){
+		o._attributes = {};
+		o.rowKey = i;
+		o.sortKey = null;
+		i++;
+	}
+	grid.resetData(finalList);
+	loading.out();
 }
 
 /*****************************************
@@ -1091,25 +1121,27 @@ function getExpandSearch(flag,cselDate,cselNo,mbrId,mbrName,telNo){
 				send1: [{
 					"FLAG"	 : flag,
 					"CSEL_DATE": cselDate,
-					"MBR_ID" : id,
+					"CSEL_NO": cselNo,
+					"MBR_ID" : mbrId,
+					"MBR_NAME" : mbrName,
+					"TEL_NO" : telNo?telNo:"",
 				}]
 		};
 		
 		$.ajax({
 			global: false,
-			url: API_SERVER + '/cns.ifsStudyChgInfo.do',
+			url: API_SERVER + '/cns.getEnterMultiResult.do',
 			type: 'POST',
 			dataType: 'json',
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log(response);
+				console.log("에러" ,response);
 				if(response.errcode == "0"){
 					if(response.recv1.length > 0){
-						changeData = response.recv1;
-						resolve(true);
+						resolve(response.recv1);
 					} else {
-						resolve(false);
+						resolve("none");
 					}
 				}else {
 					loading.out();

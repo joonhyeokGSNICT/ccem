@@ -27,7 +27,7 @@
 		<div class="row" style="background: #123f8a; height: 35px;">
 			<div class="col text-right">
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="onSearch();">조 회</button>&nbsp;
-				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn">엑셀저장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="excelExport(grid,'입회조회(성과별) Excel_'+getToday(0),'tableExcel')">엑셀저장</button>&nbsp;
 				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
 			</div>
 		</div>
@@ -192,15 +192,15 @@
 							<select class="form-control form-control-sm searchInputCheck" id="asignList_listLimitCon" name="" disabled>
 								<!-- INPUT -->
 								<option></option>
-								<option value="1">오류추정 건만</option>
-								<option value="2">회원번호 오류추정 건만</option>
-								<option value="3">학습이력 오류추정 건만</option>
+								<option value="0">오류추정 건만</option>
+								<option value="1">회원번호 오류추정 건만</option>
+								<option value="2">학습이력 오류추정 건만</option>
 							</select>
 						</td>
 						<th>
 							<div class="input-group">
 								<div class="form-check ml-3">
-									<input class="form-check-input" type="radio" id="radio3" name="match" disabled>
+									<input class="form-check-input" type="radio" id="radio3" name="match" checked disabled>
 									<label class="form-check-label" for="radio3">센터매치</label>
 								</div>
 								<div class="form-check ml-3">
@@ -213,12 +213,17 @@
 								</div>
 							</div>
 						</th>
-						<th><button type="button" class="btn btn-primary btn-sm ccemBtn w-100" id="expandSearchBtn" disabled>확장조회</button></th>
+						<th><button type="button" class="btn btn-primary btn-sm ccemBtn w-100" id="expandSearchBtn" onclick="onExpand();" disabled>확장조회</button></th>
 					</tr>
 				</table>
 			</div>
 		</div>
 		<div class="row mt-2"><div class="col"><div id="grid"></div></div></div>
+		<div id="Excel_div" style="display: none;">
+			<table id="tableExcel">
+
+			</table>
+		</div>
 	</div>
 
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>

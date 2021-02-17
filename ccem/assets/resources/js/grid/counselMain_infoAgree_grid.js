@@ -2,7 +2,7 @@ $(function(){
 	// 상담메인 > 정보동의 탭 > 개인정보 동의리스트 grid
 	counselMain_infoAgree_infoAgreeList_grid = new Grid({
 		el: document.getElementById('counselMain_infoAgree_infoAgreeList_grid'),
-		bodyHeight: 150,
+		bodyHeight: 100,
 		rowHeaders: [{
             type: 'rowNum',
             header: "NO",
@@ -124,7 +124,7 @@ $(function(){
 		// 상담메인 > 정보동의 탭 > 개인정보 녹취 통화이력 grid
 		counselMain_infoAgree_iaRecordList_grid = new Grid({
 			el: document.getElementById('counselMain_infoAgree_iaRecordList_grid'),
-			bodyHeight: 150,
+			bodyHeight: 100,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',
@@ -190,7 +190,7 @@ $(function(){
 		// 상담메인 > 정보동의 탭 > 약관버전 grid
 		counselMain_infoAgree_termsVersion_grid = new Grid({
 			el: document.getElementById('counselMain_infoAgree_termsVersion_grid'),
-			bodyHeight: 150,
+			bodyHeight: 100,
 			rowHeaders: [{
 	            type: 'rowNum',
 	            header: "NO",
@@ -303,7 +303,7 @@ $(function(){
 		// 상담메인 > 정보동의 탭 > 약관녹취통화이력 grid
 		counselMain_infoAgree_termsRecordList_grid = new Grid({
 			el: document.getElementById('counselMain_infoAgree_termsRecordList_grid'),
-			bodyHeight: 150,
+			bodyHeight: 100,
 			scrollX: false,
 			rowHeaders: [{
 	            type: 'rowNum',

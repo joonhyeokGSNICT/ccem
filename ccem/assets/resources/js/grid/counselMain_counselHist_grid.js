@@ -288,6 +288,12 @@ $(function(){
 			counselMain_studyList_grid.refreshLayout();
 		}
     });
+	counselMain_counselHist_grid.on("dblclick", ev => {
+		// 티켓오픈
+		if (ev.targetType != "cell") return;
+		const ZEN_TICKET_ID = ev.instance.getValue(ev.rowKey, "ZEN_TICKET_ID");
+		if (ZEN_TICKET_ID)client.invoke('routeTo', 'ticket', ZEN_TICKET_ID);
+	});
 	// 상담이력 끝
 	
 	// 상담메인 > 학습정보 grid
