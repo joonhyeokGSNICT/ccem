@@ -294,7 +294,11 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(data, settings)));
 			
 			DS_COUNSEL = res.dsRecv2;
-			if (DS_COUNSEL.length == 0) return reject(new Error(settings.errMsg + "\n\n검색 결과가 없습니다."));
+			if(DS_COUNSEL.length == 0) {
+				const errmsg = settings.errMsg + "\n\n상담정보가 존재하지 않습니다.";
+				alert(errmsg);
+				return reject(new Error(errmsg));
+			}
 
 			// 상담순번 세팅
 			createSeq($("#selectbox2"), DS_COUNSEL);

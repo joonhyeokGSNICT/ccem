@@ -438,8 +438,9 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			
 			DS_COUNSEL = res.dsRecv;
 			if(DS_COUNSEL.length == 0) {
-				alert(settings.errMsg + "\n\n검색 결과가 없습니다.");
-				return reject(new Error(settings.errMsg + "\n\n검색 결과가 없습니다."));
+				const errmsg = settings.errMsg + "\n\n입회정보가 존재하지 않습니다.";
+				alert(errmsg);
+				return reject(new Error(errmsg));
 			}
 
 			// 상담순번 세팅
