@@ -520,18 +520,7 @@ const getStudy = (id) => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-		
-		const studyList = data.dsRecv;
-		grid3.resetData(studyList);
-
-		// 신규상담일 경우 학습중인 과목을 좌측 상담과목 선택
-		const selectSeq = document.getElementById("selectbox14")
-		const jobType = selectSeq.options[selectSeq.selectedIndex].dataset.jobType;
-		if(jobType == "I") {
-			const study_id_arr = studyList.map(el => el.PRDT_ID);
-			const study_id_str = study_id_arr.join("_");
-			setPlProd(grid1, study_id_str);
-		}
+		grid3.resetData(data.dsRecv || []);
 	});
 }
 
@@ -1636,4 +1625,14 @@ const onNewTicket = async (parent_id) => {
 
 	return currentTicket.id;
 
+}
+
+/**
+ * 학습중인 과목을 좌측하단 상담과목에 세팅
+ */
+const copyStudyProd = () => {
+    const studyData = grid3.getData();
+    const study_id_arr = studyData.map(el => el.PRDT_ID);
+    const study_id_str = study_id_arr.join("_");
+    setPlProd(grid1, study_id_str);
 }
