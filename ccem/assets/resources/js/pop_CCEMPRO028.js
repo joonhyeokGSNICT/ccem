@@ -6,6 +6,7 @@ let grid1, grid2;
 let sPROC_MK 	= "";	// 처리구분
 let sCSEL_DATE 	= "";	// 상담일자
 let sCSEL_NO 	= "";	// 상담번호
+let sCSEL_SEQ 	= [];	// 상담순번
 
 let SEND_PHONE = "";	// SMS발신번호
 
@@ -103,32 +104,42 @@ const createGrids = () => {
 	});
 
 	grid1.on("focusChange", (ev) => {
-		grid1.addSelection(ev);
+		ev.instance.addSelection(ev);
+		
+		const rowData = ev.instance.getRow(ev.rowKey);
 
 		// 입회건인 경우 제목 세팅
-		if (grid1.getValue(ev.rowKey, "PROC_MK") == "5" && !grid1.getValue(ev.rowKey, "CSEL_TITLE")) {
-			grid1.setValue(ev.rowKey, "CSEL_TITLE", "입회상담");
+		if (rowData.PROC_MK == "5" && !rowData.CSEL_TITLE) {
+			ev.instance.setValue(ev.rowKey, "CSEL_TITLE", "입회상담");
 		}
 
 		// 상담정보 세팅
-		$("#textbox1").val(grid1.getValue(ev.rowKey, "TELNO"));				// 전화번호
-		$("#textbox2").val(grid1.getValue(ev.rowKey, "MOBILNO"));			// 핸드폰
-		$("#textbox3").val("");												// 직장전화
-		$("#textbox4").val(grid1.getValue(ev.rowKey, "FAT_NAME"));			// 학부모명
-		$("#textbox5").val(grid1.getValue(ev.rowKey, "ZIPCDE"));			// 주소1
-		$("#textbox6").val(grid1.getValue(ev.rowKey, "FULLADDR"));			// 주소2
-		$("#textbox7").val(grid1.getValue(ev.rowKey, "CSEL_TITLE"));		// 제목
-		$("#textbox8").val(grid1.getValue(ev.rowKey, "CSEL_CNTS"));			// 상담내용
+		$("#textbox1").val(rowData.TELNO);		// 전화번호
+		$("#textbox2").val(rowData.MOBILNO);	// 핸드폰
+		$("#textbox3").val("");					// 직장전화
+		$("#textbox4").val(rowData.FAT_NAME);	// 학부모명
+		$("#textbox5").val(rowData.ZIPCDE);		// 주소1
+		$("#textbox6").val(rowData.FULLADDR);	// 주소2
+		$("#textbox7").val(rowData.CSEL_TITLE);	// 제목
+		$("#textbox8").val(rowData.CSEL_CNTS);	// 상담내용
 
 	});
 
 	grid1.on("click", (ev) => {
-		grid1.clickSort(ev);
-		grid1.clickCheck(ev);
+		ev.instance.clickSort(ev);
+		ev.instance.clickCheck(ev);
 	});
 
 	grid1.on("onGridUpdated", (ev) => {
 
+		// sCSEL_SEQ에 포한된 상담건 체크
+		const gridData   	= ev.instance.getData();
+		const filterData 	= gridData.filter(el => sCSEL_SEQ.includes(String(el.CSEL_SEQ)));
+		filterData.forEach((el, i) => {
+			if (i == 0) grid1.focus(el.rowKey); // 첫번째 행 포커스
+			grid1.check(el.rowKey);
+		});
+		
 	});
 
 	grid2 = new Grid({
@@ -206,6 +217,7 @@ const onStart = async () => {
 		sPROC_MK 	= opener.document.getElementById("selectbox4").value;
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("textbox27");
 		sCSEL_NO    = opener.document.getElementById("textbox28").value;
+		sCSEL_SEQ.push(opener.document.getElementById("selectbox14").value);
 		setDisPlay();
 		onSearch();
 
@@ -217,6 +229,7 @@ const onStart = async () => {
 		sPROC_MK 	= "5";
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar3");
 		sCSEL_NO    = opener.document.getElementById("textbox7").value;
+		sCSEL_SEQ.push(opener.document.getElementById("selectbox3").value);
 		setDisPlay();
 		onSearch();
 
@@ -228,6 +241,7 @@ const onStart = async () => {
 		sPROC_MK 	= opener.document.getElementById("selectbox9").value;
 		sCSEL_DATE  = opener.calendarUtil.getImaskValue("calendar1");
 		sCSEL_NO    = opener.document.getElementById("textbox6").value;
+		sCSEL_SEQ.push(opener.document.getElementById("selectbox2").value);
 		setDisPlay();
 		onSearch();
 	}
@@ -295,8 +309,6 @@ const setDisPlay = () => {
  */
 var setTransDisPlay = (data) => {
 
-	console.debug("setTransDisPlay: ", data)
-
 	if (!data.LC_ID) {
 		// 사업국 정보 설정
 		$("#textbox10").val(data.DEPT_NAME);	// 지점명(연계)
@@ -334,8 +346,8 @@ const onSearch = async () => {
 
 	// 고객정보 grid - 상담정보 세팅
 	grid1.resetData(DS_TRANS || []);
-	grid1.focus(0);
-
+	
+	// 연계정보 세팅
 	let transData;
 	if (DS_TRANS?.length > 0) {
 		transData = DS_TRANS[0];
@@ -343,20 +355,19 @@ const onSearch = async () => {
 		transData = new Object();
 		transData.RTN_FLAG = "0";		// 회신여부(초기값 "0" : 없음)
 	}
-
-	// 처리상태구분 세팅
-	if (!transData.PROC_STS_MK || transData.PROC_STS_MK == "01") {
-		if (transData.PROC_MK == "5") $("#selectbox3").val("99");	// 입회건인 경우 무조건 완료로 셋팅한다.
-		else $("#selectbox3").val("03"); // 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
-	}
-
-	// 연계정보 세팅
+	$("#selectbox3").val(transData.PROC_STS_MK);						// 처리상태구분
 	$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
 	$("#textbox15").val(transData.CSEL_USER);							// 상담원
 	calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
 	$("#time1").val(transData.TRANS_TIME);								// 일시2
 	calendarUtil.setImaskValue("calendar3",  transData.PROC_HOPE_DATE);	// 처리희망일
 	setTransDisPlay(transData);
+
+	// 처리상태구분 세팅
+	if (!transData.PROC_STS_MK || transData.PROC_STS_MK == "01") {
+		if (transData.PROC_MK == "5") $("#selectbox3").val("99");	// 입회건인 경우 무조건 완료로 셋팅한다.
+		else $("#selectbox3").val("03"); // 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
+	}
 
 	// 연계대상자 세팅
 	let ids = ""; 	
@@ -627,7 +638,13 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 	$.ajax(settings)
 		.done(data => {
 			if (data.errcode != "0") return reject(new Error(getApiMsg(data, settings)));
-			onSearch();	// 저장성공후 상담/연계 재조회
+
+			// 저장성공후 상담/연계 재조회
+			sCSEL_SEQ = new Array();
+			const checkedRows = grid1.getCheckedRows();
+			checkedRows.forEach(el => sCSEL_SEQ.push(String(el.CSEL_SEQ)));
+			onSearch();	
+
 			return resolve(true);
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
