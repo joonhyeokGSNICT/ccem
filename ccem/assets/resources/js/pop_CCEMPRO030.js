@@ -535,14 +535,16 @@ const getHappy2 = (isHappy1) => {
 		if (data.dsRecv.length >= 1) {
             DS_HPCALL2 = data.dsRecv[0];
             DS_HPCALL2.ROW_TYPE = "U";
-        } 
-        // 검색결과가 없고, 1차해피콜 결과도 없을때.
-        else if (!isHappy1) {
+        // 처음 저장인 경우
+        } else {
             DS_HPCALL2 = {};
             DS_HPCALL2.ROW_TYPE = "I";
-            DS_HPCALL2.HPCALL_DATE = getDateFormat();       // 해피콜일자 초기화
-            DS_HPCALL2.HPCALL_TIME = getTimeFormat();       // 해피콜시간 초기화
-            DS_HPCALL2.HPCALL_NAME = currentUser.name;      // 해피콜담당자명 초기화
+            // 검색결과가 없고, 1차해피콜 결과도 없을때.
+            if (!isHappy1) {
+                DS_HPCALL2.HPCALL_DATE = getDateFormat();       // 해피콜일자 초기화
+                DS_HPCALL2.HPCALL_TIME = getTimeFormat();       // 해피콜시간 초기화
+                DS_HPCALL2.HPCALL_NAME = currentUser.name;      // 해피콜담당자명 초기화
+            }
         }
 
         // 2차해피콜 세팅
