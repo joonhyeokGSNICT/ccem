@@ -271,12 +271,14 @@ $(function(){
 			$("#" + openerBot_ID, opener.document).val("");
 			$("#" + openerBot_NAME, opener.document).val("");
 		}
-		$("#" + openerSub_ID, opener.document).val("");
-		var subject = "";
-		if(tempTop?.CODE_NAME)subject+=tempTop.CODE_NAME;
-		if(tempMid?.CODE_NAME)subject+=" > " + tempMid.CODE_NAME;
-		if(tempBot?.CODE_NAME)subject+=" > " + tempBot.CODE_NAME;
-		$("#" + openerSub_ID, opener.document).val(subject);
+		if(openerSub_ID != ""){
+			$("#" + openerSub_ID, opener.document).val("");
+			var subject = "";
+			if(tempTop?.CODE_NAME)subject+=tempTop.CODE_NAME;
+			if(tempMid?.CODE_NAME)subject+=" > " + tempMid.CODE_NAME;
+			if(tempBot?.CODE_NAME)subject+=" > " + tempBot.CODE_NAME;
+			$("#" + openerSub_ID, opener.document).val(subject);
+		}
 		window.close();
 	});
 });

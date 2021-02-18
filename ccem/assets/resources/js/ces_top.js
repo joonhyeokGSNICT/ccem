@@ -176,6 +176,11 @@ var topBarClient = null;						// 탑바 클라이언트 (ZAF CLIENT // TopBar)
 var sidebarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // SideBar)
 var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT // Background)
 
+var autoPopMKList = [							// 자동으로 탑바 오픈되는 OB구분
+	'oblist_cde_30',
+	'oblist_cde_10'
+]
+
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
 var custInfoStatus;
 
@@ -195,6 +200,13 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 						topBarClient.invoke("popover");					// 탑바 열기
 					}
 				};
+			}else {
+				sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+					if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+						topBarClient.invoke("popover");					// 탑바 열기
+					}
+				});
+				
 			}
 		});
 	}, 500);
@@ -227,6 +239,7 @@ client.on("pane.activated", (ev) => {
  * @returns
  */
 function userSearch() {
+	$("#customerSearch").click(); 						// 고객찾기 탭 이동
 	sidebarClient.get('ticket').then(function(data){
 	var phone = "";
 		client.request(`/api/v2/users/${data['ticket'].requester.id}.json`).then(function(reqUser){
@@ -420,10 +433,22 @@ function initSemi(){
 	$("#customerInfoTab").find("input:text").each( function () {
         $(this).val('');
     });
+	// span 내용 삭제
+	$("#customerInfoTab").find("span").each( function () {
+        $(this).text('');
+    });
+	// textarea 내용 삭제
+	$("#customerInfoTab").find("textarea").each( function () {
+        $(this).val('');
+    });
 	// select 첫번째 옵션 선택
 	$("#customerInfoTab").find('select').each(function(){
 		$(this).find('option:first').prop('selected','true');
 	});
+	
+	// 관계회원 정보 삭제
+	$("#custInfo_FAMILY_CMB").empty();
+	$("#custInfo_FAMILY_CMB").prop('disabled',true);
 	
 	// 상담이력 탭 이동
 	$("#customerCounselHist").click();
@@ -1022,19 +1047,21 @@ $(function(){
  *  상담 등록 버튼 클릭
  */
 function onclickCselBtn(id) {
-	if(id == 'cust'){
-		if(currentTicketInfo?.ticket?.externalId){
-			PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
-		}else {
-			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
-		}
-	}else {
-		if(currentTicketInfo?.ticket?.externalId){
-			PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
-		}else {
-			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
-		}
-	}
+	sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`).then(function (d){
+			if(id == 'cust'){
+				if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
+					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
+				}else {
+					PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
+				}
+			}else {
+				if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
+					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
+				}else {
+					PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
+				}
+			}
+		});
 }
 /**
  * 현재 사용자 정보 불러오기
@@ -1114,68 +1141,68 @@ function customerSearch(currentDiv, type){
 		var validationBool = false;
 		if($("#customerNameCheck").is(":checked")){				// 고객명
 			param.send1[0].CHK_NAME = "Y";
-			param.send1[0].NAME = $("#customerName").val();
+			param.send1[0].NAME = $.trim($("#customerName").val());
 			validationBool = true;
 			checkLength++;
 		}
 		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
 			param.send1[0].CHK_TELNO = "Y";
-			param.send1[0].TELPNO = $("#customerPhone").val();
+			param.send1[0].TELPNO = $.trim($("#customerPhone").val());
 			validationBool = true;
 			checkLength++;
 		}
 		if($("#customerEmailCheck").is(":checked")){			// EMAIL
 			param.send1[0].CHK_EMAIL = "Y";
-			param.send1[0].EMAIL = $("#customerEmail").val();
+			param.send1[0].EMAIL = $.trim($("#customerEmail").val());
 			checkLength++;
 		}
 		if($("#customerGradeCheck").is(":checked")){			// 학년
 			param.send1[0].CHK_GRADE = "Y";
-			param.send1[0].GRADE_CDE = $("#customerGrade").val();
+			param.send1[0].GRADE_CDE = $.trim($("#customerGrade").val());
 			checkLength++;
 		}
 		if($("#customerMNumCheck").is(":checked")){				// 회원번호
 			param.send1[0].CHK_CUSTID = "Y";
-			param.send1[0].MBR_ID = $("#customerMNum").val();
+			param.send1[0].MBR_ID = $.trim($("#customerMNum").val());
 			validationBool = true;
 			checkLength++;
 		}
 		if($("#customerBirthCheck").is(":checked")){			// 생년월일
 			param.send1[0].CHK_RSDNO = "Y";
-			param.send1[0].RSDNO = $("#customerBirth").val();
+			param.send1[0].RSDNO = $.trim($("#customerBirth").val());
 			validationBool = true;
 			checkLength++;
 		}
 		if($("#customerAddrCheck").is(":checked")){				// 주소
 			param.send1[0].CHK_ADDR = "Y";
-			param.send1[0].ADDR = $("#customerAddr").val();
+			param.send1[0].ADDR = $.trim($("#customerAddr").val());
 			checkLength++;
 		}
 		if($("#customerSubjectCheck").is(":checked")){			// 과목
 			param.send1[0].CHK_PROD = "Y";
-			param.send1[0].PRDT_ID = $("#customerSubject").val();
+			param.send1[0].PRDT_ID = $.trim($("#customerSubject").val());
 			checkLength++;
 		}
 		if($("#customerSpotCheck").is(":checked")){				// 사업국
 			param.send1[0].CHK_DEPT = "Y";
-			param.send1[0].DEPT_NAME = $("#customerSpot").val();
+			param.send1[0].DEPT_NAME = $.trim($("#customerSpot").val());
 			validationBool = true;
 			checkLength++;
 		}
 		if($("#customerDeptCheck").is(":checked")){				// 본부
 			param.send1[0].CHK_UP_DEPT = "Y";
-			param.send1[0].UPDEPTID = $("#customerDept").val();
+			param.send1[0].UPDEPTID = $.trim($("#customerDept").val());
 			checkLength++;
 		}
 		if($("#customerLCCheck").is(":checked")){				// LC 센터
 			param.send1[0].CHL_LCID = "Y";
-			param.send1[0].LC_NM = $("#customerLC").val();
+			param.send1[0].LC_NM = $.trim($("#customerLC").val());
 			validationBool = true;
 			checkLength++;
 		}
 		if($("#customerOnlineCheck").is(":checked")){				// 마카다미아 ID (온라인ID)
 			param.send1[0].CHK_MACADAMIA = "Y";
-			param.send1[0].MACADAMIA_ID = $("#customerOnline").val();
+			param.send1[0].MACADAMIA_ID = $.trim($("#customerOnline").val());
 			validationBool = true;
 			checkLength++;
 		}
@@ -1245,32 +1272,32 @@ function customerSearch(currentDiv, type){
 		var validationBool = false;
 		if($("#teacherNameCheck").is(":checked")){			// 선생님명
 			param.send1[0].CHK_TCHR_NAME = "Y";
-			param.send1[0].TCHR_NAME = $("#teacherName").val();
+			param.send1[0].TCHR_NAME = $.trim($("#teacherName").val());
 			validationBool = true;
 		}
 		if($("#teacherDNumCheck").is(":checked")){			// 사원번호
 			param.send1[0].CHK_EMP_ID = "Y";
-			param.send1[0].EMP_ID = $("#teacherDNum").val();
+			param.send1[0].EMP_ID = $.trim($("#teacherDNum").val());
 			validationBool = true;
 		}
 		if($("#teacherStatCheck").is(":checked")){			// 재직구분
 			param.send1[0].CHK_STS_CDE = "Y";
-			param.send1[0].STS_CDE = $("#teacherStat").val();
+			param.send1[0].STS_CDE = $.trim($("#teacherStat").val());
 			validationBool = true;
 		}
 		if($("#teacherLCNameCheck").is(":checked")){		// 센터
 			param.send1[0].CHK_LC_NM = "Y";
-			param.send1[0].LC_NM = $("#teacherLCName").val();
+			param.send1[0].LC_NM = $.trim($("#teacherLCName").val());
 			validationBool = true;
 		}
 		if($("#teacherDeptNameCheck").is(":checked")){		// 사업국
 			param.send1[0].CHK_DEPT_NAME = "Y";
-			param.send1[0].DEPT_NAME = $("#teacherDeptName").val();
+			param.send1[0].DEPT_NAME = $.trim($("#teacherDeptName").val());
 			validationBool = true;
 		}
 		if($("#teacherUpDeptNameCheck").is(":checked")){	// 본부
 			param.send1[0].CHK_DIV_CDE = "Y";
-			param.send1[0].DIV_CDE = $("#teacherUpDeptName").val();
+			param.send1[0].DIV_CDE = $.trim($("#teacherUpDeptName").val());
 			validationBool = true;
 		}
 		if(validationBool == false){
@@ -1794,6 +1821,7 @@ function familyInfoLoad() {
 function relCustChange(){
     if($("#custInfo_FAMILY_CMB").find("option:selected").data("fml_name").length > 0){
         onAutoSearch($("#custInfo_FAMILY_CMB").find("option:selected").val());
+        initSemi();
     }else{
         //cust_id가 없을때
     	//txtNAME.value = DS_FAMILY_CMB.nameValue(DS_FAMILY_CMB.rowPosition,"FML_NAME");

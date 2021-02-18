@@ -250,7 +250,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '상담시각',
+					header: '입금자',
 					name: 'NAME',
 					width: 90,
 					align: "center",

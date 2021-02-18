@@ -438,7 +438,7 @@ $(function(){
 	});
 	
 	// 제목검색
-	$("#subjectSearchInput").keyup(function(e){v
+	$("#subjectSearchInput").keyup(function(e){
 		var keyCode = e.which;
 		if(keyCode === 13){
 			searchTitle = $.trim($("#subjectSearchInput").val());
