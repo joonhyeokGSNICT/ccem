@@ -16,20 +16,8 @@ $(function () {
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 
-	// 저장 버튼
-	$("#button1").on("click", ev => {
-		loading = new Loading(getLoadingSet('입회등록중 입니다.'));
-		onSave()
-			.then((succ) => { if (succ) alert("저장 되었습니다."); })
-			.catch((error) => {
-				console.error(error);
-				const errMsg = error.responseText || error;
-				alert(`입회등록중 오류가 발생하였습니다.\n\n${errMsg}`);
-			})
-			.finally(() => loading.out());
-	});
-
 	createGrids();
+	setEvent();
 	onStart();
 
 });
@@ -106,6 +94,41 @@ const createGrids = () => {
 		grid5.addSelection(ev);
 		grid5.clickSort(ev);
 	});
+}
+
+const setEvent = () => {
+	
+	// 티켓생성 버튼 
+	$("#button7").on("click", ev => {
+		const loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		onNewTicket()
+			.then( async (ticket_id) => { 
+				if (ticket_id)  {
+					await topbarClient.invoke('routeTo', 'ticket', ticket_id);	// 티켓오픈
+					alert("티켓생성이 완료되었습니다."); 
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
+	// 저장 버튼
+	$("#button1").on("click", ev => {
+		loading = new Loading(getLoadingSet('입회등록중 입니다.'));
+		onSave()
+			.then((succ) => { if (succ) alert("저장 되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`입회등록중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 }
 
 /**
@@ -937,6 +960,7 @@ const setBtnCtrlAtLoadComp = () => {
 	$("#button3").prop("disabled", false);	// 입회연계 활성화
 	$("#button4").prop("disabled", false);	// 추가등록 활성화
 	$("#button5").prop("disabled", false);	// 관계회원 활성화  
+	$("#button7").prop("disabled", true);	// 티켓생성버튼 비활성화
 }
 
 /**
@@ -981,6 +1005,8 @@ const onNewTicket = async (parent_id) => {
 	// 티켓생성
 	const origin = await createTicket(user_id, parent_id);
 	currentTicket = origin.ticket;
+	$("#button7").prop("disabled", true);	// 티켓생성버튼 비활성화
+
 	return currentTicket.id;
 
 }

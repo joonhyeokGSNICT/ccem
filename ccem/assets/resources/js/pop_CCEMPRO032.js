@@ -13,6 +13,31 @@ $(function () {
 	$(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
 	$("#textbox26").inputmask("99.99.99", { autoUnmask: true, });
 
+	setEvent();
+	onStart();
+
+});
+
+const setEvent = () => {
+
+	// 티켓생성 버튼 
+	$("#button4").on("click", ev => {
+		const loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		onNewTicket()
+			.then( async (ticket_id) => { 
+				if (ticket_id)  {
+					await topbarClient.invoke('routeTo', 'ticket', ticket_id);	// 티켓오픈
+					alert("티켓생성이 완료되었습니다."); 
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 	// 저장 버튼
 	$("#button1").on("click", ev => {
 		loading = new Loading(getLoadingSet('상담등록중 입니다.'));
@@ -26,9 +51,7 @@ $(function () {
 			.finally(() => loading.out());
 	});
 
-	onStart();
-
-});
+}
 
 /**
  * 오픈되는 곳에 따라 분기처리
@@ -748,6 +771,7 @@ const getCustomData = async () => {
 const setBtnCtrlAtLoadComp = () => {
 
 	$("#button2").prop("disabled", false);	// 입회연계 활성화
+	$("#button4").prop("disabled", true);	// 티켓생성버튼 비활성화
 
 }
 
@@ -768,6 +792,8 @@ const onNewTicket = async (parent_id) => {
 	// 티켓생성
 	const origin = await createTicket(user_id, parent_id);
 	currentTicket = origin.ticket;
+	$("#button4").prop("disabled", true);	// 티켓생성버튼 비활성화
+
 	return currentTicket.id;
 
 }
