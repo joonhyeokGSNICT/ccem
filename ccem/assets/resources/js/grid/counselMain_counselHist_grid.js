@@ -76,9 +76,13 @@ $(function(){
         ],
     });
 	counselMain_studyProgressList_grid.on('click', (ev) => {
+		console.log(ev);
 		if(ev.targetType == 'cell'){
 			counselMain_studyProgressList_grid.addSelection(ev);
 			counselMain_studyProgressList_grid.clickSort(ev);
+			if(ev.columnName == 'NAME'){
+				onAutoSearchTeacher(counselMain_studyProgressList_grid.getRow(ev.rowKey).EMP_ID);
+			}
 		}
     });
 	

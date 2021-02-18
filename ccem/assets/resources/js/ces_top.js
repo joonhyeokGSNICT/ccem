@@ -1047,7 +1047,8 @@ $(function(){
  *  상담 등록 버튼 클릭
  */
 function onclickCselBtn(id) {
-	sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`).then(function (d){
+	if(sidebarClient != null){
+		sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`).then(function (d){
 			if(id == 'cust'){
 				if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
 					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
@@ -1062,6 +1063,13 @@ function onclickCselBtn(id) {
 				}
 			}
 		});
+	}else {
+		if(id == 'cust'){
+			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
+		}else {
+			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
+		}
+	}
 }
 /**
  * 현재 사용자 정보 불러오기
@@ -1498,8 +1506,8 @@ const getCodeList = () => {
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
 
 	// sorting
-	const sortKey = "CODE_ID";
-	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+	//const sortKey = "CODE_ID";
+	//codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
 	// create select options
 	for (const code of codeList) {
@@ -2975,9 +2983,13 @@ function loadTeacherInfoMain() {
 		}
 	}
 	
-	$("#tchrInfo_BIRTH_DATE").val(FormatUtil.date(currentTchrInfo.BIRTH_DATE));	// 생일 포멧 
+	$("#tchrInfo_BIRTH_DATE").val(FormatUtil.date(currentTchrInfo.BIRTH_DATE));		// 생일 포멧 
 	$("#tchrInfo_WORK_STDATE").val(FormatUtil.date(currentTchrInfo.WORK_STDATE));	// 입사일 포멧 
 	$("#tchrInfo_WORK_EDDATE").val(FormatUtil.date(currentTchrInfo.WORK_EDDATE));	// 퇴직일 포멧 
+	$("#tchrInfo_WED_DATE").val(FormatUtil.date(currentTchrInfo.WED_DATE));			// 결혼일자 포멧 
+	$("#tchrInfo_WORK_REDATE").val(FormatUtil.date(currentTchrInfo.WORK_REDATE));	// 복직일 포멧 
+	$("#tchrInfo_RSDNO").val(FormatUtil.birth(currentTchrInfo.RSDNO));				// 주민번호 포맷
+	
 	
 	loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 상담이력 조회
 }
