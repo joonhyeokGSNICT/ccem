@@ -357,7 +357,6 @@ const updateTicket = async (cselData, customData) => {
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"],				value: `cust_mk_${cselData.CUST_MK}`.toLowerCase() },		// 고객구분   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],			value: `proc_sts_mk_${cselData.PROC_STS_MK}` },				// 처리상태   
 					// { id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],				value: `std_motive_cde_${cselData.MOTIVE_CDE}` },			// 입회사유   
-					// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK_OB"],			value: `call_rst_mk_ob_${?}` },									// OB결과   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: `${customData.ageCde}::${cselData.GRADE_CDE}`.toLowerCase() },// 학년(연령::학년)
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["PRDT"],					value: customData.prdtList },								// 과목   
 					{ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"],				value: customData.deptIdNm },								// 지점부서명(사업국명)   
@@ -452,7 +451,6 @@ const setTicket = async (cselData, customData) => {
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"]}`]                 = `cust_mk_${cselData.CUST_MK}`.toLowerCase();           // 고객구분   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"]}`]             = `proc_sts_mk_${cselData.PROC_STS_MK}`;                 // 처리상태   
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"]}`]              = `std_motive_cde_${cselData.MOTIVE_CDE}`;               // 입회사유
-	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK_OB"]}`]          = `call_rst_mk_ob_${?}`;                                    // OB결과
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"]}`]           = `${customData.ageCde}::${cselData.GRADE_CDE}`.toLowerCase(); // 학년
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PRDT"]}`]                    = customData.customPrdtList;                                // 과목   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"]}`]               = customData.customDeptIdNm;                                // 지점부서명(사업국명)   
