@@ -642,6 +642,7 @@ var calendarUtil = {
      */
     setImaskValue(id, value) {
         calendarUtil.imasks[id].value = value || "";
+        $(`#${id}`).trigger("keyup"); // calendar refresh
     },
     /**
      * @param {string} id 
