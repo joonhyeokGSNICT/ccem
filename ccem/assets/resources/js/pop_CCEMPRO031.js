@@ -760,6 +760,10 @@ const getCounselCondition = async (sJobType) => {
 	// 	}
 	// }
 
+	if (!data.CUST_ID) {
+		alert("조회된 고객이 없습니다.\n\n[고객조회]를 먼저 하고, 처리 하시기 바랍니다.");
+		return false;
+	}
 	if (!data.TRANS_DATE) { 
 		alert("연계일시를 입력하여 주십시오"); 
 		$("#calendar4").focus();
