@@ -896,3 +896,31 @@ String.prototype.format = function(){
  
     return num.format();
 };
+
+
+/**
+ * wiseNtalk 앱과 연동(재민_수정중)
+ * @param {object} triggerNM trigger이름
+ * @param {object} returnNm 돌려받을 전역변수 이름
+ * @param {object} topBarWin 탑바화면
+ */
+function transWiseApp(triggerNM, returnNm, topBarWin){
+    var param = {
+        "app_id" : topBarWin.wiseNtalkClient,
+        "event" : triggerNM,
+        "body": {
+            "returnNm" : returnNm,
+            "returnWin" : window
+        }
+    }
+    var settings = {
+        url: '/api/v2/apps/notify',
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        data: JSON(param)
+    }
+    topBarWin.client.request(settings).then(function () {
+        topBarWin.client.invoke('popover', 'hide')
+    });
+
+}

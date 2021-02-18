@@ -12,6 +12,8 @@ var attorneyInfo // 대리인정보
 var tempData // 개인정보동의 정보 값
 var codeData = opener.codeData;
 
+var transData;  // wiseNtalk리턴값
+
 /**
  * 초기로드
  */
@@ -257,6 +259,10 @@ var btn = {
     cancelTran() {
         // callClient.cancelTran(); // wiseNtalk로 호전환중단 요청
         console.log("cancleTran >> 클릭");
+        
+        transWiseApp("exampleFunction","transData", opener.parent.opener);
+        console.log(transData);
+        
     },
 
     //============================================================================

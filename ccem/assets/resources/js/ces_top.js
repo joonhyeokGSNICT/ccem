@@ -175,6 +175,7 @@ var lcData;										// 현재 고객의 센터 리스트
 var topBarClient = null;						// 탑바 클라이언트 (ZAF CLIENT // TopBar)
 var sidebarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // SideBar)
 var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT // Background)
+var wiseNtalkClient = null;						// wiseNtalk 클라이언트 (ZAF CLIENT // TopBar)(재민)
 
 var autoPopMKList = [							// 자동으로 탑바 오픈되는 OB구분
 	'oblist_cde_30',
@@ -620,6 +621,12 @@ $(function(){
 				backgroundClient.trigger('getCodeList', client._instanceGuid);			// background에서 공통 코드를 가져온다.
 			}
 		}
+	});
+
+	// wiseNtalk 클라이언트 저장(재민)
+	client.request('/api/v2/apps/installations').then(function (datas) {
+		// wiseNtalkClient = datas.installations.filter(data => data.settings.name == 'WiseNTalk-Dev')[0].app_id;
+		wiseNtalkClient = datas.installations.filter(data => data.settings.name == 'OB결과등록W')[0].app_id;
 	});
 	
 	// input mask
