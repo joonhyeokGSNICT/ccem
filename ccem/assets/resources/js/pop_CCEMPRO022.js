@@ -941,17 +941,17 @@ const getCounselCondition = async (sJobType) => {
 	}
 	if (!$("#textbox14").val()) {
 		alert("상담분류(대)를 선택하여 주십시요.");
-		$("#textbox14").focus();
+		$("#textbox15").focus();
 		return false;
 	}
 	if (!$("#textbox16").val()) {
 		alert("상담분류(중)를 선택하여 주십시요.");
-		$("#textbox16").focus();
+		$("#textbox17").focus();
 		return false;
 	}
 	if (!$("#textbox18").val()) {
 		alert("상담분류(소)를 선택하여 주십시요.");
-		$("#textbox18").focus();
+		$("#textbox19").focus();
 		return false;
 	}
 	if (!data.CUST_RESP_MK) {

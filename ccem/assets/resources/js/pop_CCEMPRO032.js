@@ -612,7 +612,7 @@ const getCselCondition = (sJobType) => {
 		CUST_ID				: $("#textbox2").val(), 								// 고객번호		
 		CUST_MK				: $("#hiddenbox2").val(), 								// 고객구분
 		EXTERNAL_ID			: currentUser.external_id, 								// 상담원ID			
-		CSEL_STTIME			: $("#timebox1").val(), 								// 상담시작시간
+		// CSEL_STTIME			: "", // 상담시작시간
 		// CSEL_EDTIME			: "", // 상담종료시간(신규입력시 '')			
 		CSEL_CHNL_MK		: $("#selectbox3").val(), 								// 상담채널구분				
 		CSEL_MK				: $("#selectbox8").val(), 								// 상담구분
@@ -643,6 +643,10 @@ const getCselCondition = (sJobType) => {
 	data.CSEL_MTYPE_CDE = data.CSEL_LTYPE_CDE + data.CSEL_MTYPE_CDE;
 	data.CSEL_STYPE_CDE = data.CSEL_MTYPE_CDE + data.CSEL_STYPE_CDE;
 
+	// 신규일 경우 상담시간 세팅
+	if (sJobType == "I") {
+		data.CSEL_STTIME = $("#timebox1").val();
+	}
 	// 관심부분
 	if (!data.INTEREST_MK) {
 		alert("관심부분을 선택해 주십시요.");
@@ -693,7 +697,7 @@ const getCselCondition = (sJobType) => {
 	// 분류(대)
 	if (!$("#textbox20").val()) {
 		alert("분류를 입력해 주십시요.");
-		$("#textbox20").focus();
+		$("#textbox21").focus();
 		return false;
 	}
 
