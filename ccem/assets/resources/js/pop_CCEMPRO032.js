@@ -632,7 +632,7 @@ const getCselCondition = (sJobType) => {
 		// DEPT_ID			: "", // 지점(부서코드)		
 		// DIV_CDE			: "", // 지점(본부코드)		
 		// AREA_CDE			: "", // 지역코드			
-		PROC_STS_MK			: "99",					 								// 처리상태구분			
+		PROC_STS_MK			: getProcStsMk(),		 								// 처리상태구분			
 		// DEPT_EMP_ID		: "", // 지점장사번			
 		// CALL_STTIME		: "", // 통화시작시간			
 		// CALL_EDTIME		: "", // 통화종료시간(신규입력시 '')			
@@ -807,4 +807,21 @@ const onNewTicket = async (parent_id) => {
 
 	return currentTicket.id;
 
+}
+
+/**
+ * 처리상태구분 반환.
+ * @return {string} 처리상태구분 
+ */
+const getProcStsMk = () => {
+	let PROC_STS_MK = "";
+	const txtCntAcp = $("#textbox13").val();
+
+	if (txtCntAcp) {
+		PROC_STS_MK = "99";	// 완료
+	} else {
+		PROC_STS_MK = "03"; // 지점으로 전달완료
+	}
+
+	return PROC_STS_MK;
 }

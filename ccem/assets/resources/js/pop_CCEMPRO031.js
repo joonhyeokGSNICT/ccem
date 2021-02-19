@@ -916,12 +916,18 @@ const getProcStsMk = () => {
 	const way = $("#selectbox5").val();				// 연계방법
 	const txtCntAcp = $("#textbox14").val().trim();	// 접수자
 
-	if (way == "") PROC_STS_MK = "";
-	else if (way == "1") {					// 연계방법이 전화인 경우
-		if (txtCntAcp) PROC_STS_MK = "99";	// 지점 접수자가 있으면 바로 완료 상태
-		else PROC_STS_MK = "01";			// 없으면 접수
+	// if (way == "") PROC_STS_MK = "";
+	// else if (way == "1") {					// 연계방법이 전화인 경우
+	// 	if (txtCntAcp) PROC_STS_MK = "99";	// 지점 접수자가 있으면 바로 완료 상태
+	// 	else PROC_STS_MK = "01";			// 없으면 접수
+	// }
+	// else PROC_STS_MK = "99";				// 연계방법 Email,Fax인경우 바로 완료 상태
+
+	if (txtCntAcp) {
+		PROC_STS_MK = "99";	// 완료
+	} else {
+		PROC_STS_MK = "03"; // 지점으로 전달완료
 	}
-	else PROC_STS_MK = "99";				// 연계방법 Email,Fax인경우 바로 완료 상태
 
 	return PROC_STS_MK;
 }
