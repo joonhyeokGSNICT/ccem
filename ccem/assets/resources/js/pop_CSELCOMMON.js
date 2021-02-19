@@ -559,8 +559,14 @@ const checkTicket = async () => {
 		alert("대상티켓이 없습니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
 		return false;
 	}
-	
-	if (currentTicket.externalId) {
+
+	// if (currentTicket.externalId) {
+	// 	alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+	// 	return false;
+	// }
+
+	const CSEL_DATE_NO_SEQ = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]);
+	if (CSEL_DATE_NO_SEQ) {
 		alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
 		return false;
 	}
@@ -889,5 +895,23 @@ const getCallTimes = async (ticket_id) => {
 		throw new Error("티켓필드에서 통화시작/종료시각을 불러올수 없습니다.", error);
 
 	} 
+
+}
+
+/**
+ * 특정 커스텀필드값 반환
+ * @param {string|number} ticket_id 
+ */
+const getCustomFieldValue = async (ticket_id, custom_field_id) => {
+
+	let sData = undefined;
+
+	const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+	if (ticket?.custom_fields?.length > 0) {
+		const fData = ticket.custom_fields.find(el => el.id == custom_field_id);
+		sData = fData?.value;
+	}	
+
+	return sData;
 
 }

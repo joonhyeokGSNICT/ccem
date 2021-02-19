@@ -271,12 +271,13 @@ const onStart = async () => {
 		// 콤보박스 세팅
 		await setCodeData();
 
-		// 상담정보 조회
-		const data = currentTicket?.externalId?.split("_");	// externalId = "2021-02-17_6_1"
-		if (data?.length == 3) {
-			calendarUtil.setImaskValue("textbox27", data[0]);
-			$("#textbox28").val(data[1]);
-			onSearch(data[2]);
+		// 티켓필드에서 상담번호를 가져와서 상담정보 조회
+		const CSEL_DATE_NO_SEQ = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]);
+		const cselArr = CSEL_DATE_NO_SEQ?.split("_"); // CSEL_DATE_NO_SEQ = "2021-02-17_6_1"
+		if (cselArr?.length == 3) {
+			calendarUtil.setImaskValue("textbox27", cselArr[0]);
+			$("#textbox28").val(cselArr[1]);
+			onSearch(cselArr[2]);
 		}
 
 	} 
