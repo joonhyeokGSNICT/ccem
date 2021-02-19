@@ -494,7 +494,7 @@ var getBaseData = (target, targetId, sJobType) => {
 		onDmReceiptChange();	// DM 사은품접수 저장정보 세팅
 
 		setLable(target);
-		getStudy(baseData.ID);
+		getStudy(baseData.ID, sJobType);
 	});
 
 }
@@ -503,8 +503,9 @@ var getBaseData = (target, targetId, sJobType) => {
  * 학습중인 제품 조회
  * - as-is : cns5810.onSearchDS_STUDY_NOW()
  * @param {string} id 회원번호
+ * @param {string} sJobType 저장구분(I : 신규, U : 수정)
  */
-const getStudy = (id) => {
+const getStudy = (id, sJobType) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getStudy.do`,
 		method: 'POST',
@@ -521,7 +522,29 @@ const getStudy = (id) => {
 	}
 	$.ajax(settings).done(data => {
 		if (!checkApi(data, settings)) return;
-		grid3.resetData(data.dsRecv || []);
+
+		const studyData = data.dsRecv;
+		grid3.resetData(studyData || []);
+
+		// 신규일 경우 학습중인 과목으로 LC/YC/HL 자동체크
+		if (studyData?.length > 0 && sJobType == "I") {
+
+			let lc = false;
+			let yc = false;
+			let hl = false;
+
+			studyData.forEach(el => {
+				if (el.LC_MK == "Y") lc = true;
+				if (el.YC_MK == "Y") yc = true;
+				if (el.HL_MK == "Y") hl = true;
+			})
+
+			$("#checkbox1").prop("checked", lc);
+			$("#checkbox2").prop("checked", yc);
+			$("#checkbox3").prop("checked", hl);
+			
+		}
+
 	});
 }
 
@@ -621,9 +644,9 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		// cselData.CTI_CHGDATE		// cti변경일자		
 		// cselData.TO_TEAM_DEPT	// 지점장부서		
 		$("#selectbox1").val(cselData.OPEN_GBN);											// 공개여부	(개인정보)
-		$("#checkbox5").prop("checked", cselData.VOC_MK == "Y" ? true : false);				// VOC
+		$("#checkbox5").prop("checked", cselData.VOC_MK == "Y");							// VOC
 		$("#selectbox11").val(cselData.CSEL_GRD);											// 상담등급	
-		$("#checkbox4").prop("checked", cselData.RE_PROC == "1" ? true : false);			// 재확인여부	
+		$("#checkbox4").prop("checked", cselData.RE_PROC == "1");							// 재확인여부	
 		// cselData.CALL_STTIME		// 통화시작시간		
 		// cselData.CALL_EDTIME		// 통화종료시간		
 		$("#textbox7").val(cselData.TELPNO_DEPT);											// 지점전화번호	(사업국전화번호)
@@ -648,7 +671,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		// cselData.SEQ				// MOL학습관리순번
 		// cselData.STD_MON_CDE		// 학습개월		
 		// cselData.RENEW_POTN		// 복회가능여부	
-		$("#checkbox1").prop("checked", cselData.LC_MK == "Y" ? true : false);				// 러닝센터(LC)
+		$("#checkbox1").prop("checked", cselData.LC_MK == "Y");								// 러닝센터(LC)
 		$("#textbox11").val(cselData.PROC_DEPT_ID);											// 직원상담처리지점		(연계부서코드)
 		$("#textbox26").val(cselData.PROC_DEPT_NAME);										// 직원상담처리지점명	(연계부서이름)	
 		// cselData.TIME_APPO		// 시간약속	
@@ -656,10 +679,10 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		$("#hiddenbox4").val(cselData.LC_EMP_ID);											// 센터장사번	
 		$("#textbox9").val(cselData.LC_NAME);												// 센터명	
 		$("#textbox10").val(cselData.TELPNO_LC);											// 센터전화번호	
-		$("#checkbox2").prop("checked", cselData.YC_MK == "Y" ? true : false);				// YC
+		$("#checkbox2").prop("checked", cselData.YC_MK == "Y");								// YC
 		$("#hiddenbox10").val(cselData.ZEN_TICKET_ID);										// ZEN_티켓 ID		
-		$("#checkbox3").prop("checked", cselData.HL_MK == "Y" ? true : false);				// HL
-		$("#checkbox6").prop("checked", cselData.RE_CALL_CMPLT == "Y" ? true : false);		// 재통화완료여부		
+		$("#checkbox3").prop("checked", cselData.HL_MK == "Y");								// HL
+		$("#checkbox6").prop("checked", cselData.RE_CALL_CMPLT == "Y");						// 재통화완료여부		
 		$("#hiddenbox7").val(cselData.DM_MATCHCD);											// DM매치코드	
 		$("#hiddenbox8").val(cselData.DM_LIST_ID);											// DM목록ID	
 		$("#selectbox16").val(cselData.DM_TYPE_CDE);										// DM종류		(지급사유)
