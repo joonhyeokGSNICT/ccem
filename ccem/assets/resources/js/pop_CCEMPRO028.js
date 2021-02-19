@@ -377,6 +377,17 @@ const onSearch = async () => {
 		ids 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
 		names 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
 		mobilnos = DS_TRANS_EMP.map(el => el.TRANS_EMP_MOBILNO).join(", ");
+	// 조회된 연계대상자가 없으면 상담정보의 지점/센터장의 정보로 세팅
+	} else {
+		if (!transData.LC_ID) {
+			ids 	 = transData.DEPT_EMP_ID;		// 지점장 ID
+			names 	 = transData.DEPT_EMP_NAME;		// 지점장명
+			mobilnos = transData.DEPT_EMP_MOBILNO;	// 지점장휴대폰
+		} else {
+			ids 	 = transData.LC_EMP_ID;			// 센터장 ID
+			names 	 = transData.LC_EMP_NAME;		// 센터장명
+			mobilnos = transData.LC_EMP_MOBILNO;	// 센터장휴대폰
+		}
 	}
 	$("#hiddenbox8").val(ids);
 	$("#textbox17").val(names);	
