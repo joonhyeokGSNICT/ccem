@@ -69,18 +69,19 @@ const ZDK_INFO = {
             LC_IDNM                    :    "360054935054",     // 현장연계 러닝센터명                                    
             PROC_CTI_CHGDATE_TIME      :    "360054935074",     // 현장연계 지점처리시간                                                    
             PROC_CTI_CHGDATE_MS        :    "360055003054",     // 현장연계 지점처리시간(ms)                                                
-            PROC_CTI_CHGDATE           :    "360054935374",     // 현장연계 일시                                                
+            TRANS_DATE_TIME            :    "360054935374",     // 현장연계 일시                                                
+            PROC_CTI_CHGDATE           :    "360054941874",     // 현장처리 일시
             PROC_EMP_IDNM              :    "360055935573",     // 현장처리 처리자명                                            
             HPCALL_DATE1_TIME1         :    "360054935414",     // 1차 해피콜 일시                                                
             HPCALL_CNTS1               :    "360054935634",     // 1차 해피콜 내용                                            
             HPCALL_CHNL_MKNM1          :    "360054935814",     // 1차 해피콜 경로                                                
             HPCALL_USER_IDNM1          :    "360054935834",     // 1차 해피콜 상담원명                                                
             SATIS_CDENM1               :    "360054935854",     // 1차 해피콜 고객만족도                                            
-            HPCALL_DATE2_TIME2         :    "360054935414",     // 2차 해피콜 일시                                                
-            HPCALL_CNTS2               :    "360054935634",     // 2차 해피콜 내용                                            
-            HPCALL_CHNL_MKNM2          :    "360054935814",     // 2차 해피콜 경로                                                
-            HPCALL_USER_IDNM2          :    "360054935834",     // 2차 해피콜 상담원명                                                
-            SATIS_CDENM2               :    "360054935854",     // 2차 해피콜 고객만족도                                            
+            HPCALL_DATE2_TIME2         :    "360054935874",     // 2차 해피콜 일시                                                
+            HPCALL_CNTS2               :    "360055935893",     // 2차 해피콜 내용                                            
+            HPCALL_CHNL_MKNM2          :    "360055935913",     // 2차 해피콜 경로                                                
+            HPCALL_USER_IDNM2          :    "360055942713",     // 2차 해피콜 상담원명                                                
+            SATIS_CDENM2               :    "360055935933",     // 2차 해피콜 고객만족도                                            
             GIFT_NAME                  :    "360055936133",     // 사은품명                                        
             GIFT_PRICE                 :    "360055936153",     // 사은품 가격                                        
             SEND_DATE                  :    "360055936173",     // 사은품 발송일자                                        
@@ -169,7 +170,8 @@ const ZDK_INFO = {
             LC_IDNM                    :    "360056191073",     // 현장연계 러닝센터명                                    
             PROC_CTI_CHGDATE_TIME      :    "1500000125961",    // 현장연계 지점처리시간                                                    
             PROC_CTI_CHGDATE_MS        :    "1500000132742",    // 현장연계 지점처리시간(ms)                                                
-            PROC_CTI_CHGDATE           :    "1500000125981",    // 현장연계 일시                                                
+            TRANS_DATE_TIME            :    "1500000125981",    // 현장연계 일시                                                
+            PROC_CTI_CHGDATE           :    "360057751273",     // 현장처리 일시                                              
             PROC_EMP_IDNM              :    "1500000132762",    // 현장처리 처리자명                                            
             HPCALL_DATE1_TIME1         :    "1500000132782",    // 1차 해피콜 일시                                                
             HPCALL_CNTS1               :    "1500000132802",    // 1차 해피콜 내용                                            
