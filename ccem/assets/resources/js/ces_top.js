@@ -1681,6 +1681,10 @@ function loadCustInfoMain() {
 		$("#custInfo_MOBILNO_MBR2").val(tempMobileNo.split("-")[1]);
 		$("#custInfo_MOBILNO_MBR3").val(tempMobileNo.split("-")[2]);
 	}
+	if(currentCustInfo.FAT_DEPT_NAME == 'NODATA'){									// 직원자녀가 아닐 경우 공백으로 변경
+		$("#custInfo_FAT_DEPT_NAME").text('');
+	}
+	$("#empType").attr('title', currentCustInfo.EMPCHILD_NAME);						// 직원자녀 th 툴팁 변경
 	var maskOptions = {
 			mask: '*00000-0000000'
 	};
@@ -1720,74 +1724,83 @@ function loadCustInfoMain() {
 
 // === === === ZENDESK
 // 젠데스크에 사용자 정보 저장 ccem과의 데이터 무결성을 위해 조회시마다 젠데스크 user Update.
-function updateUserforZen(){
-	var option = {
-			url: '/api/v2/users/create_or_update.json',
-			method: 'POST',
-			contentType: "application/json",
-			data: JSON.stringify({
-				"user": {
-					"external_id": currentCustInfo.CUST_ID,
-					//"email": $("#custInfo_REP_EMAIL_ADDR").val(),
-					"phone": currentCustInfo.MOBILNO,
-					"user_fields": 
-					{
-						"bonbu": currentCustInfo.UPDEPTNAME,
-						"dept" : currentCustInfo.DEPT_NAME,
-						"center" : currentCustInfo.LC_NAME,
-						"grade" : $("#custInfo_GRADE_CDE").find("option[value="+ currentCustInfo.GRADE_CDE +"]").text(),
-						"mobilno_mother" : currentCustInfo.MOBILNO_MBR,
-						"mobilno_father" : "",
-						"mobile_legal" : currentCustInfo.MOBILNO_LAW?currentCustInfo.MOBILNO_LAW.replace(/-/gi,""):"",
-						"home_tel" : currentCustInfo.DDD+currentCustInfo.TELPNO1+currentCustInfo.TELPNO2,
-						"custom_no" : currentCustInfo.MBR_ID,
-						"fml_connt_cde" : $("#custInfo_FAT_REL").find("option[value="+ currentCustInfo.FAT_REL +"]").text(),
-						"fml_seq" : currentCustInfo.FAT_RSDNO,
-						"cust_mk" : $("#custInfo_CUST_MK").find("option[value="+ currentCustInfo.CUST_MK +"]").text(),
-						"tchr_mk_cde" : "",
-						"sts_cde" : "",
-					},
-					"name": currentCustInfo.NAME,
-					 "role": "end-user"
-				}
-			}),
+async function updateUserforZen(){
+	const { users } = await zendeskUserSearch(currentCustInfo.CUST_ID.trim());
+
+	if (users.length === 0) {
+		console.log(users);
+		var option = {
+				url: '/api/v2/users/create_or_update.json',
+				method: 'POST',
+				contentType: "application/json",
+				data: JSON.stringify({
+					"user": {
+						"external_id": currentCustInfo.CUST_ID,
+						//"email": $("#custInfo_REP_EMAIL_ADDR").val(),
+						"phone": currentCustInfo.MOBILNO,
+						"user_fields": 
+						{
+							"bonbu": currentCustInfo.UPDEPTNAME,
+							"dept" : currentCustInfo.DEPT_NAME,
+							"center" : currentCustInfo.LC_NAME,
+							"grade" : $("#custInfo_GRADE_CDE").find("option[value="+ currentCustInfo.GRADE_CDE +"]").text(),
+							"mobilno_mother" : currentCustInfo.MOBILNO_MBR,
+							"mobilno_father" : "",
+							"mobile_legal" : currentCustInfo.MOBILNO_LAW?currentCustInfo.MOBILNO_LAW.replace(/-/gi,""):"",
+									"home_tel" : currentCustInfo.DDD+currentCustInfo.TELPNO1+currentCustInfo.TELPNO2,
+									"custom_no" : currentCustInfo.MBR_ID,
+									"fml_connt_cde" : $("#custInfo_FAT_REL").find("option[value="+ currentCustInfo.FAT_REL +"]").text(),
+									"fml_seq" : currentCustInfo.FAT_RSDNO,
+									"cust_mk" : $("#custInfo_CUST_MK").find("option[value="+ currentCustInfo.CUST_MK +"]").text(),
+									"tchr_mk_cde" : "",
+									"sts_cde" : "",
+						},
+						"name": currentCustInfo.NAME,
+						"role": "end-user"
+					}
+				}),
+		}
+		client.request(option).then(function() {
+			client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
+		});		// 사용자 생성
 	}
-	client.request(option).then(function() {
-		client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
-	});		// 사용자 생성
 }
-function updateTchrforZen(){
-	var option = {
-			url: '/api/v2/users/create_or_update.json',
-			method: 'POST',
-			contentType: "application/json",
-			data: JSON.stringify({
-				"user": {
-					"external_id": currentTchrInfo.EMP_ID,
-					//"email": $("#custInfo_REP_EMAIL_ADDR").val(),
-					"phone": currentTchrInfo.MOBILNO,
-					"user_fields": 
-					{
-						"bonbu": currentTchrInfo.DIV_NM,
-						"dept" : currentTchrInfo.DEPT_NM,
-						"center" : currentTchrInfo.LC_NM,
-						"grade" : "",
-						"home_tel" : currentTchrInfo.HOME_TEL,
-						"custom_no" : "",
-						"fml_connt_cde" : "",
-						"fml_seq" : currentTchrInfo.RSDNO,
-						"cust_mk" : "",
-						"tchr_mk_cde" : currentTchrInfo.TCHR_MK_NM == null?"선생님":currentTchrInfo.TCHR_MK_NM,
-						"sts_cde" : "",
-					},
-					"name": currentTchrInfo.NAME,
-					 "role": "end-user"
-				}
-			}),
+async function updateTchrforZen(){
+	const { users } = await zendeskUserSearch(currentTchrInfo.EMP_ID.trim());
+
+	if (users.length === 0) {
+		var option = {
+				url: '/api/v2/users/create_or_update.json',
+				method: 'POST',
+				contentType: "application/json",
+				data: JSON.stringify({
+					"user": {
+						"external_id": currentTchrInfo.EMP_ID,
+						//"email": $("#custInfo_REP_EMAIL_ADDR").val(),
+						"phone": currentTchrInfo.MOBILNO,
+						"user_fields": 
+						{
+							"bonbu": currentTchrInfo.DIV_NM,
+							"dept" : currentTchrInfo.DEPT_NM,
+							"center" : currentTchrInfo.LC_NM,
+							"grade" : "",
+							"home_tel" : currentTchrInfo.HOME_TEL,
+							"custom_no" : "",
+							"fml_connt_cde" : "",
+							"fml_seq" : currentTchrInfo.RSDNO,
+							"cust_mk" : "",
+							"tchr_mk_cde" : currentTchrInfo.TCHR_MK_NM == null?"선생님":currentTchrInfo.TCHR_MK_NM,
+									"sts_cde" : "",
+						},
+						"name": currentTchrInfo.NAME,
+						"role": "end-user"
+					}
+				}),
+		}
+		client.request(option).then(function() {
+			client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
+		});		// 사용자 생성
 	}
-	client.request(option).then(function() {
-		client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
-	});		// 사용자 생성
 }
 
 /**
@@ -3197,3 +3210,8 @@ function smsOnClick_tchr(){
 	window.open(param,'tabletDelPop','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');        
   }
 
+  /**
+   * Zendesk 사용자정보 조회
+   * @param {string} external_id 고객번호
+   */
+  const zendeskUserSearch = (external_id) => client.request(`/api/v2/users/search.json?external_id=${external_id}`);

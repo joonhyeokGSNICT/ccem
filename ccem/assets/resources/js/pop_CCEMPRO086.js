@@ -205,15 +205,15 @@ function onSearch(auto){
 	};
 	
 	if(auto == 1){
-		if(opener.currentSendInfo.SMS_ID){
+		//if(opener.currentSendInfo.SMS_ID){
 			param.send1[0].RDAY = opener.currentSendInfo.RDAY;
-			param.send1[0].SMS_ID = opener.currentSendInfo.SMS_ID;
+			param.send1[0].SMS_ID = opener.currentSendInfo.SMS_ID != null?opener.currentSendInfo.SMS_ID:"";
 			param.send1[0].TB_NAME = opener.currentSendInfo.TB_NAME;
 			param.send1[0].KIND = opener.currentSendInfo.KIND;
-		}else {
+		/*}else {
 			alert("선택한 내역의 주제ID가 없습니다.");
 			return;
-		}
+		}*/
 	}else {
 		if($("#multipleSend_nameCheck").is(":checked")){
 			param.send1[0].CHK_DEST_NAME = "Y";
