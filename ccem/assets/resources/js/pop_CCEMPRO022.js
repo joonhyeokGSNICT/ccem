@@ -796,6 +796,13 @@ const onSave = async () => {
 		return false;
 	}
 
+	// 신규일때 통화시작/종료시각 세팅
+	if (sJobType == "I") {
+		const { sCALL_STTIME, sCALL_EDTIME } = await getCallTimes(cselData.ZEN_TICKET_ID);
+		cselData.CALL_STTIME = sCALL_STTIME;
+		cselData.CALL_EDTIME = sCALL_EDTIME;
+	}
+
 	// 티켓 요청자 체크
 	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 
@@ -1102,19 +1109,6 @@ const getCounselCondition = async (sJobType) => {
 	
 	//INSERT시,
     if (sJobType == "I") {
-
-        // TODO CTI사용여부가 Y이면, 통화시간정보를 셋팅한다.
-        //듀얼 모니터 사용으로 세션중복이 생겨서 CTI사용여부 변경     
-        // if (objSys1100.objSysCALL != "") {
-        //     // 통화시작시간과 통화종료시간을 가져온다.
-        //     if (isCall == "Y") {
-        //         try {
-        //             var arrCallTimes = objSys1100.gf_getCallTimes();
-        //             DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "CALL_STTIME") = arrCallTimes[0];
-        //             DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "CALL_EDTIME") = arrCallTimes[1];
-        //         } catch (e) { }
-        //     }
-        // }
 
         //"I"이고, 상담일자가 없을경우, (추가등록,관계회원등록 일때)
         if (!data.CSEL_DATE) {

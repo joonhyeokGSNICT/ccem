@@ -678,6 +678,11 @@ const onSave = async () => {
 		return false;
 	}
 
+	// 통화시작/종료시각 세팅
+	const { sCALL_STTIME, sCALL_EDTIME } = await getCallTimes(cselData.ZEN_TICKET_ID);
+	cselData.CALL_STTIME = sCALL_STTIME;
+	cselData.CALL_EDTIME = sCALL_EDTIME;
+
 	// 티켓 요청자 체크
 	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 	
@@ -767,21 +772,6 @@ const getCounselCondition = async (sJobType) => {
 	data.CSEL_LTYPE_CDE = data.CSEL_MK + data.CSEL_LTYPE_CDE;
 	data.CSEL_MTYPE_CDE = data.CSEL_LTYPE_CDE + data.CSEL_MTYPE_CDE;
 	data.CSEL_STYPE_CDE = data.CSEL_MTYPE_CDE + data.CSEL_STYPE_CDE;
-
-	// TODO CTI사용여부가 Y이면, 통화시간정보를 셋팅한다.
-	/* if( "<%=S_CTI_USE_YN%>" == "Y" ){ */
-	// if (objSys1100.objSysCALL != "") {
-
-	// 	// 통화시작시간과 통화종료시간을 가져온다.
-	// 	if (isCall == "Y") {
-	// 		try {
-	// 			var arrCallTimes = objSys1100.gf_getCallTimes();
-	// 			DS_CNS4797.NameValue(1, "CALL_STTIME") = arrCallTimes[0];
-	// 			DS_CNS4797.NameValue(1, "CALL_EDTIME") = arrCallTimes[1];
-	// 		} catch (e) { }
-
-	// 	}
-	// }
 
 	if (!data.CUST_ID) {
 		alert("조회된 고객이 없습니다.\n\n[고객조회]를 먼저 하고, 처리 하시기 바랍니다.");

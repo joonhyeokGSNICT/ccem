@@ -579,6 +579,13 @@ const onSave = async () => {
 		return false;
 	}
 
+	// 신규일 경우 통화시작/종료시각 세팅
+	if (sJobType == "I") {
+		const { sCALL_STTIME, sCALL_EDTIME } = await getCallTimes(cselData.ZEN_TICKET_ID);
+		cselData.CALL_STTIME = sCALL_STTIME;
+		cselData.CALL_EDTIME = sCALL_EDTIME;
+	}
+
 	// 티켓 요청자 체크
 	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 	
