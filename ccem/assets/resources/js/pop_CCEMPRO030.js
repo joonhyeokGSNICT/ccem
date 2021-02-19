@@ -677,13 +677,13 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
 
 
         // 접수일자 체크
-        if (calendarUtil.getImaskValue("calendar2").length < 8) {
-            calendarUtil.setImaskValue("calendar2", getDateFormat());
-        }
+        // if (calendarUtil.getImaskValue("calendar2").length < 8) {
+        //     calendarUtil.setImaskValue("calendar2", getDateFormat());
+        // }
         // 접수시간 체크
-        if ($("#timebox1").val().length < 6) {
-            $("#timebox1").val(getTimeFormat());   
-        }
+        // if ($("#timebox1").val().length < 6) {
+        //     $("#timebox1").val(getTimeFormat());   
+        // }
         // 사업국처리시간 세팅
         const intervalTime = gf_getIntervalTime(DS_DEPT_PROC.DEPT_ACP_DATE, DS_DEPT_PROC.DEPT_ACP_TIME, DS_VOC_PROC.VOC_PROC_DATE, DS_VOC_PROC.VOC_PROC_TIME);
         $("#textbox24").val(intervalTime);  
