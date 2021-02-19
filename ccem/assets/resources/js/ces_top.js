@@ -22,7 +22,8 @@ var counselMain_autoResign_resignDetail_grid = null;	// 상담메인	> 자동퇴
 var counselMain_autoResign_resignSendList_grid = null;	// 상담메인	> 자동퇴회 > 퇴회안내발송이력 grid
 var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조사 > 고객조사 grid
 var counselMain_researchCust_rschCallHist_grid = null;	// 상담메인	> 고객조사 > 통화이력 grid
-var counselMain_researchCust_smsLmsHist_grid = null;	// 상담메인	> 고객조사 > 설문조사 grid
+var counselMain_researchCust_surveyList_grid = null;	// 상담메인	> 고객조사 > 설문조사 grid
+var counselMain_researchCust_smsLmsHist_grid = null;	// 상담메인	> 고객조사 > SMSLMSLIST grid
 var counselMain_membershipDueTab_dueList = null;		// 상담메인 > 회비	   > 회비정보 grid
 var counselMain_membershipDueTab_subChargeList = null;	// 상담메인 > 회비	   > 과목별 입금내역 grid
 var counselMain_membershipDueTab_chargeList = null;		// 상담메인 > 회비	   > 입금내역 grid
@@ -264,6 +265,8 @@ function userSearch() {
 						$("#customerPhoneCheck").prop('checked',true);
 					}
 					customerSearch("custSearchDiv","1");
+					$("#customerPhone").val("");
+					$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 				}, 500);
 			}else {
 				if(reqUser.user.user_fields.cust_mk == "교사"){
@@ -289,6 +292,8 @@ function userSearch() {
 						$("#customerMNum").val(reqUser.user.external_id);
 						$("#customerMNumCheck").prop('checked',true);
 						customerSearch("custSearchDiv","1");
+						$("#customerMNum").val("");
+						$("#customerMNumCheck").prop('checked',false);
 					}, 500);
 				}
 			}
@@ -435,7 +440,7 @@ function initSemi(){
         $(this).val('');
     });
 	// span 내용 삭제
-	$("#customerInfoTab").find("span").each( function () {
+	$("#customerInfoTab").find("span").not('.font-weight-bold').each( function () {
         $(this).text('');
     });
 	// textarea 내용 삭제
@@ -500,7 +505,8 @@ function gridReset(){
 		counselMain_autoResign_resignSendList_grid.clear();		// 퇴회안내발송이력
 		counselMain_researchCust_rsrchCust_grid.clear();	 	// 고객조사 grid
 		counselMain_researchCust_rschCallHist_grid.clear();		// 통화이력 grid
-		counselMain_researchCust_smsLmsHist_grid.clear();		// 설문조사 grid
+		counselMain_researchCust_surveyList_grid.clear();		// 상담메인	> 고객조사 > 설문조사 grid
+		counselMain_researchCust_smsLmsHist_grid.clear();		// SMS/LMS LIST grid
 		counselMain_membershipDueTab_dueList.clear();			// 상담메인 > 회비	   > 회비정보 grid
 		counselMain_membershipDueTab_subChargeList.clear();		// 상담메인 > 회비	   > 과목별 입금내역 grid
 		counselMain_membershipDueTab_chargeList.clear();		// 상담메인 > 회비	   > 입금내역 grid
@@ -909,7 +915,10 @@ $(function(){
 		// 고객조사
 		case 'custInv':
 			if(currentCustInfo.CUST_ID != ""){
-				loadList('getTBLISTbyCUSTID', counselMain_researchCust_rsrchCust_grid);
+				loadList('getTBLISTbyCUSTID', counselMain_researchCust_rsrchCust_grid);				// 고객조사
+				if(currentCustInfo.MBR_ID){
+					loadList('getSurveyData', counselMain_researchCust_surveyList_grid);			// 설문조사
+				}
 			}
 			counselMain_researchCust_rsrchCust_grid.refreshLayout();
 			//counselMain_directCharge_reciverInfo_grid.refreshLayout();
@@ -1057,17 +1066,17 @@ function onclickCselBtn(id) {
 	if(sidebarClient != null){
 		sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`).then(function (d){
 			if(id == 'cust'){
-				if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
+				/*if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
 					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
-				}else {
+				}else {*/
 					PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
-				}
+				//}
 			}else {
-				if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
+				/*if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
 					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
-				}else {
+				}else {*/
 					PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
-				}
+				//}
 			}
 		});
 	}else {
@@ -2081,6 +2090,13 @@ function loadList(id, grid, listID) {
 			sendUrl = '/cns.getTBLISTbyCUSTID.do';
 			break;
 			
+		case 'getSurveyData' : 	// 고객조사 - 고객조사
+			param.menuname = "고객조사";
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			sendUrl = '/cns.getSurveyData.do';
+			break;
+			
 		case 'getTB_SMSDATA' : 	// SMS - SMS/LMS 이력
 			param.menuname = "SMS이력";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
@@ -2337,12 +2353,15 @@ function onFamilyBtnClick(){
  */
 function isCustDataChanged() {
 	if($("#custInfo_NAME").val() != currentCustInfo.NAME){										// 고객명
+		if($("#custInfo_NAME").val() == "" && currentCustInfo.NAME == null){
+			return;
+		}
 		console.log(currentCustInfo.NAME);
 		return true;
 	}
 	if(currentCustInfo.FML_RANK != null){
 		if($("#custInfo_FML_RANK").val() != currentCustInfo.FML_RANK){							// 형제서열
-			console.log(currentCustInfo.NAME);
+			console.log(currentCustInfo.FML_RANK);
 			return true;
 		}
 	}else if($("#custInfo_FML_RANK").val() != ""){
@@ -2350,58 +2369,100 @@ function isCustDataChanged() {
 	}
 	
 	if($("#custInfo_GND").val() != currentCustInfo.GND){									// 성별
+		if($("#custInfo_GND").val() == "" && currentCustInfo.GND == null){
+			return;
+		}
 		console.log(currentCustInfo.GND);
 		return true;
 	}
 	if($("#custInfo_BIRTH_YMD").val().replace(/-/gi,"") != currentCustInfo.BIRTH_YMD){		// 생년월일
+		if($("#custInfo_BIRTH_YMD").val().replace(/-/gi,"") == "" && currentCustInfo.BIRTH_YMD == null){
+			return;
+		}
 		console.log(currentCustInfo.BIRTH_YMD);
 		return true;
 	}
 	if($("#lunarSolarInput").val() != currentCustInfo.BIRTH_MK){							// 양력,음력
+		if($("#lunarSolarInput").val() == "" && currentCustInfo.BIRTH_MK == null){
+			return;
+		}
 		console.log(currentCustInfo.BIRTH_MK);
 		return true;
 	}
 	if($("#custInfo_GRADE_CDE").val() != currentCustInfo.GRADE_CDE){						// 학년
+		if($("#custInfo_GRADE_CDE").val() == "" && currentCustInfo.GRADE_CDE == null){
+			return;
+		}
 		console.log(currentCustInfo.GRADE_CDE);
 		return true;
 	}
 	if($("#custInfo_DDD").val() != currentCustInfo.DDD){									// 자택전화
+		if($("#custInfo_DDD").val() == "" && currentCustInfo.DDD == null){
+			return;
+		}
 		console.log(currentCustInfo.DDD);
 		return true;
 	}
 	if($("#custInfo_TELPNO1").val() != currentCustInfo.TELPNO1){
+		if($("#custInfo_TELPNO1").val() == "" && currentCustInfo.TELPNO1 == null){
+			return;
+		}
 		console.log(currentCustInfo.TELPNO1);
 		return true;
 	}
 	if($("#custInfo_TELPNO2").val() != currentCustInfo.TELPNO2){
+		if($("#custInfo_TELPNO2").val() == "" && currentCustInfo.TELPNO2 == null){
+			return;
+		}
 		console.log(currentCustInfo.TELPNO2);
 		return true;
 	}
 	if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() != currentCustInfo?.MOBILNO?.replace(/-/gi,"")){						// 회원전화번호
+		if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() == "" && currentCustInfo?.MOBILNO?.replace(/-/gi,"") == null){
+			return;
+		}
 		console.log(currentCustInfo.MOBILNO);
 		return true;
 	}
 	if($("#custInfo_ZIPCDE").val() != currentCustInfo.ZIPCDE){								// 우편번호
+		if($("#custInfo_ZIPCDE").val() == "" && currentCustInfo.ZIPCDE == null){
+			return;
+		}
 		console.log(currentCustInfo.ZIPCDE);
 		return true;
 	}
 	if($("#custInfo_ZIP_ADDR").val() != currentCustInfo.ZIP_ADDR){							// 기본주소
+		if($("#custInfo_ZIP_ADDR").val() == "" && currentCustInfo.ZIP_ADDR == null){
+			return;
+		}
 		console.log(currentCustInfo.ZIP_ADDR);
 		return true;
 	}
 	if($("#custInfo_ADDR").val() != currentCustInfo.ADDR){									// 상세주소
+		if($("#custInfo_ADDR").val() == "" && currentCustInfo.ADDR == null){
+			return;
+		}
 		console.log(currentCustInfo.ADDR);
 		return true;
 	}
 	if($("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val() != currentCustInfo?.MOBILNO_LAW?.replace(/-/gi,"")){			// 대리인 전화번호
+		if($("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val() == "" && currentCustInfo?.MOBILNO_LAW?.replace(/-/gi,"") == null){
+			return;
+		}
 		console.log(currentCustInfo.MOBILNO_LAW);
 		return true;
 	}
 	if($("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val() != currentCustInfo?.MOBILNO_MBR?.replace(/-/gi,"")){			// 학부모 전화번호
+		if($("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val() == "" && currentCustInfo?.MOBILNO_MBR?.replace(/-/gi,"") == null){
+			return;
+		}
 		console.log(currentCustInfo.MOBILNO_MBR);
 		return true;
 	}
 	if($("#custInfo_FAT_NAME").val() != currentCustInfo.FAT_NAME){							// 대리인명
+		if($("#custInfo_FAT_NAME").val() == "" && currentCustInfo.FAT_NAME == null){
+			return;
+		}
 		console.log(currentCustInfo.FAT_NAME);
 		return true;
 	}
@@ -2426,26 +2487,44 @@ function isCustDataChanged() {
 		}
 	}
 	if($("#custInfo_UPDEPTNAME").val() != currentCustInfo.UPDEPTNAME){						// 본부
+		if($("#custInfo_UPDEPTNAME").val() == "" && currentCustInfo.UPDEPTNAME == null){
+			return;
+		}
 		console.log(currentCustInfo.UPDEPTNAME);
 		return true;
 	}
 	if($("#custInfo_DEPT_ID").val() != currentCustInfo.DEPT_ID){							// 사업국
+		if($("#custInfo_DEPT_ID").val() == "" && currentCustInfo.DEPT_ID == null){
+			return;
+		}
 		console.log(currentCustInfo.DEPT_ID);
 		return true;
 	}
 	if($("#custInfo_DEPT_NAME").val() != currentCustInfo.DEPT_NAME){						// 사업국명
+		if($("#custInfo_DEPT_NAME").val() == "" && currentCustInfo.DEPT_NAME == null){
+			return;
+		}
 		console.log(currentCustInfo.DEPT_NAME);
 		return true;
 	}
 	if($("#custInfo_TELPNO_DEPT").val() != currentCustInfo.TELPNO_DEPT){					// 사업국 번호
+		if($("#custInfo_TELPNO_DEPT").val() == "" && currentCustInfo.TELPNO_DEPT == null){
+			return;
+		}
 		console.log(currentCustInfo.TELPNO_DEPT);
 		return true;
 	}
 	if($("#custInfo_LC_NAME").val() != currentCustInfo.LC_NAME){							// 센터
+		if($("#custInfo_LC_NAME").val() == "" && currentCustInfo.LC_NAME == null){
+			return;
+		}
 		console.log(currentCustInfo.LC_NAME);
 		return true;
 	}
 	if($("#custInfo_TELPNO_LC").val() != currentCustInfo.TELPNO_LC){						// 센터번호
+		if($("#custInfo_TELPNO_LC").val() == "" && currentCustInfo.TELPNO_LC == null){
+			return;
+		}
 		console.log(currentCustInfo.TELPNO_LC);
 		return true;
 	}

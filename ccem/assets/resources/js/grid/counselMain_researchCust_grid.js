@@ -146,8 +146,8 @@ $(function(){
 	        },
 	        columns: [
 				{
-					header: '설문명',
-					name: 'custNm',
+					header: '주제명',
+					name: 'SURVEY_NAME',
 					width: 200,
 					align: "center",
 					sortable: true,
@@ -155,15 +155,16 @@ $(function(){
 				},
 				{
 					header: '발송일시',
-					name: 'custSeq',
+					name: 'SEND_DTM',
 					width: 100,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value)
 				},
 				{
 					header: '참여여부',
-					name: 'reserverDtm',
+					name: 'CMPLY_YN',
 					width: 150,
 					align: "center",
 					sortable: true,
@@ -171,15 +172,16 @@ $(function(){
 				},
 				{
 					header: '참여일시',
-					name: 'chprNm',
+					name: 'CMPLY_DTM',
 					width: 150,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
+					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value)
 				},
 				{
 					header: '비고',
-					name: 'consStatNm',
+					name: 'SEND_CNTS',
 					width: 100,
 					align: "center",
 					sortable: true,
