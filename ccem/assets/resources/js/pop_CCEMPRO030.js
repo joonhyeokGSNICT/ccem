@@ -662,6 +662,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
         // DS_DEPT_PROC.PROC_HOPE_DATE    // 처리희망일자    
         // DS_DEPT_PROC.DEPT_ACP_ID       // 지점접수자사번
         $("#textbox18").val(DS_DEPT_PROC.DEPT_ACP_NAME);    // 지점접수자성명   
+        if (!$("#textbox18").val()) $("#textbox18").prop("readonly", false);     // 접수자가 없으면 입력가능하게
         calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE);     // 지점접수일자(접수일자)
         $("#timebox1").val(DS_DEPT_PROC.DEPT_ACP_TIME);     // 지점접수시간(접수시간)
         // DS_DEPT_PROC.PROC_STS_MK       // 처리상태구분
@@ -1733,9 +1734,9 @@ const getSaveCondition = (sBtnMk) => {
             RTN_USER_ID      : currentUser.external_id,                 // 피드백접수자ID
             RTN_DATE         : DS_DEPT_PROC.RTN_DATE,                   // 피드백일자
             RTN_TIME         : DS_DEPT_PROC.RTN_TIME,                   // 피드백시간
-            // DEPT_ACP_NAME   : $("#textbox18").val().trim(),             // 지점접수자 
-            // DEPT_ACP_DATE   : calendarUtil.getImaskValue("calendar2"),  // 지점점수일자
-            // DEPT_ACP_TIME   : $("#timebox1").val(),                     // 지점접수시간 
+            DEPT_ACP_NAME   : $("#textbox18").val().trim(),             // 지점접수자 
+            DEPT_ACP_DATE   : calendarUtil.getImaskValue("calendar2"),  // 지점점수일자
+            DEPT_ACP_TIME   : $("#timebox1").val(),                     // 지점접수시간 
         },
         // 해피콜1차 정보 데이터
         DS_HPCALL1: {
@@ -1859,6 +1860,12 @@ const getSaveCondition = (sBtnMk) => {
             data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
         }
     }
+
+    // 접수자가 있고 접수일시가 없을때 현재시간으로 세팅
+	if (data.DS_TRANS.DEPT_ACP_NAME && !data.DS_TRANS.DEPT_ACP_DATE) {
+		data.DS_TRANS.DEPT_ACP_DATE = getDateFormat().replace(/[^0-9]/gi, '');
+		data.DS_TRANS.DEPT_ACP_TIME = getTimeFormat().replace(/[^0-9]/gi, '');
+	}
 
     return data;
 

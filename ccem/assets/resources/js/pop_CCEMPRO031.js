@@ -596,6 +596,7 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 			// DS_TRANS[0].TRANS_DEPT_ID		// 지점코드(연계사업국코드)	
 			// DS_TRANS[0].DEPT_ACP_ID			// 접수자사번
 			$("#textbox14").val(DS_TRANS[0].DEPT_ACP_NAME);						   // 접수자	
+			if (!$("#textbox14").val()) $("#textbox14").prop("readonly", false);   // 접수자가 없으면 입력가능하게
 			// DS_TRANS[0].TRANS_CNTS			// 상담내용
 			calendarUtil.setImaskValue("calendar5", DS_TRANS[0].DEPT_ACP_DATE); 	// 접수일자	
 			$("#timebox4").val(DS_TRANS[0].DEPT_ACP_TIME);					 		// 접수시간	
@@ -859,7 +860,7 @@ const getCounselCondition = async (sJobType) => {
  */
 const getTransCondition = () => {
 
-	return {
+	const data = {
 		TRANS_DATE		: calendarUtil.getImaskValue("calendar4"), // 연계일시	
 		TRANS_TIME		: $("#timebox3").val(),					   // 연계시간
 		TRANS_NO		: $("#hiddenbox7").val(), 				   // 연계번호	
@@ -868,7 +869,18 @@ const getTransCondition = () => {
 		TRANS_LC_ID		: $("#hiddenbox1").val(), 				   // 연계센터코드	
 		TRANS_CNTS		: $("#textbox25").val().trim(), 		   // 연계내용	
 		TRANS_CHNL_MK	: $("#selectbox5").val(), 				   // 연계방법구분		
+		DEPT_ACP_NAME	: $("#textbox14").val().trim(),			   // 접수자
+		DEPT_ACP_DATE	: calendarUtil.getImaskValue("calendar5"), // 접수일자
+		DEPT_ACP_TIME	: $("#timebox4").val(),					   // 접수시간
 	}
+
+	// 접수자가 있고 접수일시가 없을때 현재시간으로 세팅
+	if (data.DEPT_ACP_NAME && !data.DEPT_ACP_DATE) {
+		data.DEPT_ACP_DATE = getDateFormat().replace(/[^0-9]/gi, '');
+		data.DEPT_ACP_TIME = getTimeFormat().replace(/[^0-9]/gi, '');
+	}
+
+	return data;
 
 }
 
