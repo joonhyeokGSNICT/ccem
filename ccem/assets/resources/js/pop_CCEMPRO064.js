@@ -82,7 +82,7 @@ var _insert = {
  * 탑바를 다시 띄울 경우 값들 다시 가져오기
  */
 playAlert = setInterval(function() {
-    ccemApi.getStatusBoard();
+    // ccemApi.getStatusBoard();
     ccemApi.getCselStypeTop5();
     console.log(new Date());
  }, 30000);

@@ -2,18 +2,23 @@
  * 전역변수
  ******************************************************/ 
 var client = opener.topBarClient;
-var articleList;                // 게시글 리스트
+var articleList = [];                // 게시글 리스트
+var oldList = [];                    // 게시글 이전 리스트
 var boardWindow;
 
-// const ZD_TYPE = 'SANDBOX';   // 샌드박스 반영 시 
-const ZD_TYPE = 'OPS';          // 운영 반영시 'OPS'
+var subDomain = document.domain.split('.')[0];
+
+var ZD_TYPE;   
+if ( subDomain == 'daekyohelp1605573305' ) ZD_TYPE = 'SANDBOX';   // 샌드박스 반영 시 
+else if ( subDomain == '' ) ZD_TYPE = 'OPS';          // 운영 반영시 'OPS'
+else ZD_TYPE = 'SANDBOX';
 
 const ZD = {
     SANDBOX : {
-        article_section : { notice : 900001503523 } // pdi의 KC_APP 섹션
+        article_section : { notice : 360011514914 } // 관리자 >> 공지사항 섹션
     },
     OPS : {
-        article_section : { notice : 360012577353 } // pdi의 KC_APP 섹션
+        article_section : { notice : 360012577353 } // 공지사항 >> 공지사항 섹션
     }
 }
 
@@ -121,6 +126,10 @@ boardGrid.on('dblclick', (ev) => {
  ******************************************************/ 
 function init() {
     articles.get();
+    setInterval(function() { // 1분마다 재조회
+        console.log("resetList");
+        articles.get();
+    }, 60000);
 }
 
 /******************************************************
@@ -208,7 +217,8 @@ var articles = {
     get : function(){
         // console.log('articles.get() >>> ');
         getArticles().then(function(){
-            // console.log(articleList);
+            console.log(articleList);
+            console.log(oldList);
             articles.list = articleList;
             if ( articles.list.length > 0 ) {
                 temp = articles.list.map(el => {
@@ -220,8 +230,19 @@ var articles = {
                         updated_at : formatDateTime(el.updated_at)
                     };
                 });
-                boardGrid.resetData([]);
-                boardGrid.resetData(temp);
+                
+                if ( oldList.length > 0 && oldList.length != articleList.length ) {
+                    client.invoke("notify", `공지사항이 업데이트 되었습니다!`, "error", 60000);
+                    boardGrid.resetData([]);
+                    boardGrid.resetData(temp);
+                    oldList = articleList;
+                } else if (oldList.length != articleList.length){
+                    boardGrid.resetData([]);
+                    boardGrid.resetData(temp);
+                    oldList = articleList;
+                } else {
+                    oldList = articleList;
+                }
             } else {
 
             }
@@ -251,7 +272,32 @@ var searchArticles = function () {
             boardGrid.resetData([]);
         }
     } else {
-        var tempList = articleList.filter(data => data.title.indexOf(searchTxt) > -1 );
+        var searchOpt = $('#searchSelect > option:selected').val()
+        var tempList;
+        switch (searchOpt) {
+            case "전체" :
+                tempList = articleList.filter(  data => data.title.indexOf(searchTxt) > -1 ||
+                                                        data.body.indexOf(searchTxt) > -1 ||
+                                                        data.author_name.indexOf(searchTxt) > -1 ||
+                                                        data.files_url.filter(temp => temp.display_file_name.indexOf(searchTxt) > -1).length > 0 );
+                break;
+            case "제목" :
+                tempList = articleList.filter(data => data.title.indexOf(searchTxt) > -1 );
+                break;
+            case "내용" :
+                tempList = articleList.filter(data => data.body.indexOf(searchTxt) > -1 );
+                break;
+            case "제목내용" :
+                tempList = articleList.filter(data => data.body.indexOf(searchTxt) > -1 || data.title.indexOf(searchTxt) > -1);
+                break;
+            case "작성자" :
+                tempList = articleList.filter(data => data.author_name.indexOf(searchTxt) > -1 );
+                break;
+            case "파일" :
+                tempList = articleList.filter(data => data.files_url.filter(temp => temp.display_file_name.indexOf(searchTxt) > -1).length > 0 );
+                break;
+        }
+        
         if ( tempList.length > 0 ) {
             temp = tempList.map(el => {
                 return {

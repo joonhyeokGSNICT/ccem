@@ -393,7 +393,7 @@ const _sortList = {
 	},
 
 	/**
-	 * 조회된 구성원 리스트 트리구조 클릭시 그리드 필터
+	 * 트리구조 클릭시 그리드 필터
 	 * @param {*} respondeData : 해당 조직의 이름(DEPT_NAME)
 	 */
 	searchedEmpList(respondeData) {
@@ -523,6 +523,13 @@ const _sortList = {
 				};
 			});
 			employeeListGrid.resetData(tempGrid);
+			
+			// 사업국장 자동 체크
+			var REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
+			var tempRow = employeeListGrid.findRows((row) => {
+				return ( row.EMP_ID == REP_EMP_ID );
+			});
+			if (tempRow.length > 0) employeeListGrid.check(tempRow[0].rowKey);
 		} else {
 			employeeListGrid.resetData([]);
 		}
