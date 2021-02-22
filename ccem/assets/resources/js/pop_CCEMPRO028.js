@@ -479,6 +479,10 @@ const onAppSend = async () => {
 		return false;
 	}
 
+	// 앱알림 대상자 세팅
+	const userData = await getAppUserCondition();
+	if (!userData) return false;
+
 	// 저장정보 value check
 	const transData = new Array();
 	const followerData = new Array();
@@ -489,8 +493,9 @@ const onAppSend = async () => {
 		transCondition.TRANS_CHNL_MK = "4"; // 연계방법 - 앱연계
 		transData.push(transCondition);
 
-		const followerCondition = await getFollowerCondition(row);
+		const followerCondition = getFollowerCondition(row);
 		if (!followerCondition) return false;
+		followerCondition.followers = userData;
 		followerData.push(followerCondition);
 	}
 
@@ -500,6 +505,41 @@ const onAppSend = async () => {
 
 	// 앱알림API 호출
 	return await setFollower(followerData);
+}
+
+/**
+ * 앱알림 대상자리스트 반환.
+ * @return {array}
+ */
+const getAppUserCondition = async () => {
+
+	if (!$("#hiddenbox8").val()) {
+		alert("연계 대상자를 선택하여 주십시요.");
+		$("#textbox17").focus();
+		return false;
+	}
+
+	const userData = new Array();
+	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
+	for (const EMP_ID of EMP_ID_LIST) {
+
+		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
+		if (!users || users.length == 0) {
+			alert("연계대상자에 해당하는 젠데스트 사용자정보가 존재하지 않습니다.\n\n다시 선택해 주세요.");
+			return false;
+		} else {
+			userData.push({ user_id: users[0].id, action: "put" });
+		}
+
+	}
+	
+	if (userData.length == 0) {
+		alert("연계 대상자를 선택하여 주십시요.");
+		$("#textbox17").focus();
+		return false;
+	}
+
+	return userData;
 }
 
 /**
@@ -592,36 +632,16 @@ const getTransCondition = (row) => {
  * 팔로워 정보 value check
  * @param {object} row grid row
  */
-const getFollowerCondition = async (row) => {
+const getFollowerCondition = (row) => {
 
 	if (!row.ZEN_TICKET_ID) {
 		alert("젠데스크 티켓ID가 존재하지 않습니다.");
 		return false;
 	}
-	if (!$("#hiddenbox8").val()) {
-		alert("연계 대상자를 선택하여 주십시요.");
-		$("#textbox17").focus();
-		return false;
-	}
-
-	// 팔로워 대상자 세팅
-	const followers = new Array();
-	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
-	for (const EMP_ID of EMP_ID_LIST) {
-
-		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
-		if (!users || users.length == 0) {
-			alert("연계대상자에 해당하는 젠데스트 사용자정보가 존재하지 않습니다.\n\n다시 선택해 주세요.");
-			return false;
-		} else {
-			followers.push({ user_id: users[0].id, action: "put" });
-		}
-
-	}
 
 	return {
 		ticket_id: row.ZEN_TICKET_ID,
-		followers: followers
+		followers: []
 	}
 
 }
@@ -730,6 +750,12 @@ const onSMSSend = async () => {
  * @return {array}
  */
 const getSmsUserCondition = () => {
+	
+	if (!$("#hiddenbox8").val()) {
+		alert("연계 대상자를 선택하여 주십시요.");
+		$("#textbox17").focus();
+		return false;
+	}
 
 	const userData = new Array();
 
