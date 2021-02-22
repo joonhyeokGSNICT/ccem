@@ -1109,12 +1109,12 @@ function onclickCselBtn(id) {
 		break;
 	case 'cust_modi': 
 		
-		if (opener.PopupUtil.contains("CSELTOP")) {
-			alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
+		if (PopupUtil.contains("CSELTOP")) {
+			client.invoke("notify", "상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.", "error", 6000);
 			return;
 		}
 
-		const proc = currentCounselInfo.PROC_MK;
+		var proc = currentCounselInfo.PROC_MK;
 
 		switch (proc) {
 			case "6":
@@ -1149,12 +1149,12 @@ function onclickCselBtn(id) {
 		break;
 	case 'tchr_modi': 
 		
-		if (opener.PopupUtil.contains("CSELTOP")) {
-			alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
+		if (PopupUtil.contains("CSELTOP")) {
+			client.invoke("notify", "상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.", "error", 6000);
 			return;
 		}
 
-		const proc = currentCounselInfo.PROC_MK;
+		var proc = currentCounselInfo.PROC_MK;
 
 		switch (proc) {
 			case "6":
