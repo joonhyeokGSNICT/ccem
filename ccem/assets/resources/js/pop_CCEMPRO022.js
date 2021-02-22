@@ -256,29 +256,24 @@ const onStart = async () => {
 		getBaseData("T", empId, "I");
 
 	} 
-	// 탑바 > 고객정보, 선생님 > 상담등록 버튼으로 오픈(이 경우는 상담수정)
-	else if (opener_name.includes("top_bar") && hash.includes("by_ticket")) {	
+	// 탑바 > 고객정보, 선생님 > 상담수정 버튼으로 오픈
+	else if (opener_name.includes("top_bar") && hash.includes("by_modify")) {	
 		topbarObject  = parent.opener;
 		topbarClient  = topbarObject.client;
 		sidebarClient = topbarObject.sidebarClient;
 		currentUser   = topbarObject.currentUserInfo.user;
 		codeData 	  = topbarObject.codeData;	
 
-		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
-
 		// 콤보박스 세팅
 		await setCodeData();
 
-		// 티켓필드에서 상담번호를 가져와서 상담정보 조회
-		const CSEL_DATE_NO_SEQ = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]);
-		const cselArr = CSEL_DATE_NO_SEQ?.split("_"); // CSEL_DATE_NO_SEQ = "2021-02-17_6_1"
-		if (cselArr?.length == 3) {
-			calendarUtil.setImaskValue("textbox27", cselArr[0]);
-			$("#textbox28").val(cselArr[1]);
-			onSearch(cselArr[2]);
-		}
+		// 티켓오픈
+		if (POP_DATA.ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', POP_DATA.ZEN_TICKET_ID);  
+
+		// 상담정보 조회
+		calendarUtil.setImaskValue("textbox27", POP_DATA.CSEL_DATE);
+		$("#textbox28").val(POP_DATA.CSEL_NO);
+		onSearch(POP_DATA.CSEL_SEQ);
 
 	} 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
