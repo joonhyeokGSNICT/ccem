@@ -372,7 +372,7 @@ const onSearch = async () => {
 	$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
 	$("#textbox15").val(transData.CSEL_USER);							// 상담원
 	calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
-	$("#time1").val(transData.TRANS_TIME);								// 일시2
+	$("#timebox1").val(transData.TRANS_TIME);							// 일시2
 	calendarUtil.setImaskValue("calendar3",  transData.PROC_HOPE_DATE);	// 처리희망일
 	setTransDisPlay(transData);
 
