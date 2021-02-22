@@ -106,7 +106,7 @@ boardGrid.hideColumn("body"); // 게시글 내용 및 태그
  ******************************************************/ 
 boardGrid.on('click', (ev) => {
     /* 타이틀을 클릭 할 경우 게시글 팝업 호출 */
-    if (ev.columnName == 'title') {
+    if (ev.columnName == 'title' && ev.targetType=='cell') {
         var sendData = boardGrid.getRow(ev.rowKey);
         PopupUtilboard.open("CCEMPRO063_1", 900, 600, "", sendData);
     }
@@ -116,8 +116,10 @@ boardGrid.on('click', (ev) => {
  ******************************************************/ 
 boardGrid.on('dblclick', (ev) => {
     /* 위치에 상관없이 게시글 팝업 호출 */
-    var sendData = boardGrid.getRow(ev.rowKey);
-    PopupUtilboard.open("CCEMPRO063_1", 900, 600, "", sendData);
+    if ( ev.targetType=='cell' ) {
+        var sendData = boardGrid.getRow(ev.rowKey);
+        PopupUtilboard.open("CCEMPRO063_1", 900, 600, "", sendData);
+    }
 });
 
 
@@ -217,8 +219,8 @@ var articles = {
     get : function(){
         // console.log('articles.get() >>> ');
         getArticles().then(function(){
-            console.log(articleList);
-            console.log(oldList);
+            // console.log(articleList);
+            // console.log(oldList);
             articles.list = articleList;
             if ( articles.list.length > 0 ) {
                 temp = articles.list.map(el => {

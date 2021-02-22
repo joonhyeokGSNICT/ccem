@@ -760,6 +760,11 @@ function isEmpty(data) {
  * sendAddr()
  */
 function sendAddr() {
+	if ( $('#flexRadioDefault1').prop("checked")!=true && $('#flexRadioDefault2').prop("checked")!=true && $('#flexRadioDefault3').prop("checked")!=true ) {
+		alert("선택된 주소가 없습니다.");
+		return false;
+	}
+
 	var temp = {};
 	var responseData = {};
 	if ( $('#flexRadioDefault1').prop("checked")==true ) {

@@ -520,16 +520,21 @@ const _sortList = {
 					TCHR_MK_NAME : el.TCHR_MK_NAME,
 					MOBILNO : el.MOBILNO,
 					STS_NAME : el.STS_NAME,
+					UP_DEPT_ID : el.UP_DEPT_ID,
+					PARE_DEPT_ID : el.PARE_DEPT_ID,
+					DEPT_ID : el.DEPT_ID,
 				};
 			});
 			employeeListGrid.resetData(tempGrid);
 			
 			// 사업국장 자동 체크
-			var REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
-			var tempRow = employeeListGrid.findRows((row) => {
-				return ( row.EMP_ID == REP_EMP_ID );
-			});
-			if (tempRow.length > 0) employeeListGrid.check(tempRow[0].rowKey);
+			if (! _isEmpSearch) {
+				var REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
+				var tempRow = employeeListGrid.findRows((row) => {
+					return ( row.EMP_ID == REP_EMP_ID );
+				});
+				if (tempRow.length > 0) employeeListGrid.check(tempRow[0].rowKey);
+			}
 		} else {
 			employeeListGrid.resetData([]);
 		}
@@ -727,6 +732,9 @@ const _btn = {
 					TCHR_MK_NAME : el.TCHR_MK_NAME,
 					MOBILNO : el.MOBILNO,
 					STS_NAME : el.STS_NAME,
+					UP_DEPT_ID : el.UP_DEPT_ID,
+					PARE_DEPT_ID : el.PARE_DEPT_ID,
+					DEPT_ID : el.DEPT_ID,
 				};
 			});
 
@@ -753,16 +761,19 @@ const _btn = {
 					if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length == 0 ) {
 						idArray.push(_selectedNode.data.REP_EMP_ID)
 						nameArray.push(_selectedNode.data.REP_EMP_NAME);
+						telArray.push(_selectedNode.data.REP_EMP_TELPNO);
 
 						// 전화번호 정보 입력
-						if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length > 0 ) {
-							var tempId = employeeListGrid.getData().filter(data => data.EMP_ID == _selectedNode.data.REP_EMP_ID.trim());
-							telArray.push(tempId[0].MOBILNO);
-						}
+						// if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length > 0 ) {
+						// 	var tempId = _selectedNode.data.REP_EMP_ID.trim();
+						// 	console.log(tempId);
+						// 	telArray.push(tempId[0].MOBILNO);
+						// }
 
 					}
 				}
 			}
+			console.log(telArray);
 
 			/**
 			 * 전송할 데이터
@@ -1006,6 +1017,11 @@ const _btn = {
 				if  ( isEmpty($('#searchEmpOrgNM_input').val())) $('#searchEmpOrgNM_input').focus();
 				else $('#searchEmpNM_input').focus();
 				return false;
+			}
+
+			if ( _mode =="plainTree" ) {
+				// $("#counselSel_btn").addClass('invisible');
+				$("#counselSend_btn").addClass('invisible');
 			}
 
 			_getList.employeeList(param);

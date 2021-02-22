@@ -95,7 +95,34 @@ function setGridTree() {
                 align: "center",
                 sortable: true,
                 ellipsis: true,
-            }
+            },
+            {
+                header: '본부_ID',
+                name: 'UP_DEPT_ID',
+                width: 100,
+                align: "center",
+                sortable: true,
+                ellipsis: true,
+                hidden : true
+            },
+            {
+                header: '사업국_ID',
+                name: 'PARE_DEPT_ID',
+                width: 100,
+                align: "center",
+                sortable: true,
+                ellipsis: true,
+                hidden : true
+            },
+            {
+                header: '사업국_ID',
+                name: 'DEPT_ID',
+                width: 100,
+                align: "center",
+                sortable: true,
+                ellipsis: true,
+                hidden : true
+            },
         ],
     });
     employeeListGrid.on('click', (ev) => {
@@ -129,7 +156,10 @@ function setGridTree() {
         },
         checkbox: _modeSelect[_mode].treeCheckBox,
         selectMode: 3,
-    
+        dblclick: function(event, data) {
+            console.log("test1");
+        },
+
         // 본부/사업국/센터 설정 시 해당 정보 표시
         activate: function(event, data) {
             // $("#statusLine").text(event.type + ": " + data.node);
