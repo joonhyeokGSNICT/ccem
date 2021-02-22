@@ -10,6 +10,7 @@ var DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
 var DS_SCHEDULE	   = {};		// 재통화예약 정보 저장 data
 
 var procStsList = [];	// 처리상태 리스트
+var cselMkList = [];	// 상담구분 리스트
 
 $(function () {
 
@@ -198,7 +199,7 @@ const setEvent = () => {
     $selectbox3.on("click", ev => {
         const $this = $(ev.target);
         if ($this.hasClass('open')) {
-            changeCselType($this.val());
+            changeCselType();
             $this.removeClass('open');
         } else {
             $this.addClass('open');
@@ -354,6 +355,9 @@ const setCodeData = async () => {
 		if (codeType == "PROC_STS_MK") { // 처리상태
 			procStsList.push(code);
 		}
+		if (codeType == "CSEL_MK") {	// 상담구분
+			cselMkList.push(code);
+		}
 
 		// set
 		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
@@ -369,8 +373,9 @@ const setCodeData = async () => {
 		$("#selectbox15").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
 	}
 
-	// changeCselType();	// 상담구분 chage event
-	changeProcMk();		// 처리구분 chage event
+	filterPROC_STS_MK(); // 처리구분 chage event
+	filterCSEL_MK();	 // 상담채널에 따라 상담구분 filtering
+	
 }
 
 /**
@@ -602,7 +607,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		$("#textbox29").val(cselData.CSEL_STTIME);											// 상담시작시간		
 		// cselData.CSEL_EDTIME		// 상담종료시간		
 		$("#selectbox15").val(cselData.CSEL_CHNL_MK);										// 상담채널구분		
-		$("#selectbox3").val(cselData.CSEL_MK);												// 상담구분	
+		filterCSEL_MK(cselData.CSEL_MK);													// 상담구분
 		// cselData.CSEL_LTYPE_CDE	// 상담대분류코드		
 		// cselData.CSEL_MTYPE_CDE	// 상담중분류코드		
 		// cselData.CSEL_STYPE_CDE	// 상담소분류코드		
@@ -627,7 +632,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		// cselData.MEDIA_CDE		// 매체구분코드	
 		// cselData.TRANS_DATE		// 연계일자	
 		// cselData.TRANS_NO		// 연계번호	
-		changeProcMk(cselData.PROC_STS_MK);													// 처리상태구분
+		filterPROC_STS_MK(cselData.PROC_STS_MK);											// 처리상태구분
 		$("#hiddenbox9").val(cselData.PROC_STS_MK);											// 처리상태구분 for 저장시 체크
 		// cselData.VENDER_CDE		// 동종업체코드	
 		// cselData.PRDT_ID			// 동종업체제품코드	
@@ -1421,11 +1426,11 @@ const onDmReceiptChange = () => {
 }
 
 /**
- * 상담구분, 상담채널 변경시 호출되는 함수
- * - as-is : cns5810.onCloseUpCMB_CSEL_MK()
+ * 상담구분 변경시 호출되는 함수
+ * - as-is : CMB_CSEL_MK.OnCloseUp()
  */
 const changeCselType =() => {
-    
+
     //상담분류 초기화
 	$("#textbox14").val("");
 	$("#textbox15").val("");
@@ -1477,10 +1482,10 @@ const changeLimitMk = (value) => {
 }
 
 /**
- * 처리구분 변경시 호출되는 함수
+ * 처리구분에 따라 처리상태 filtering
  * - as-is : cns5810.CMB_PROC_MK.OnSelChange()
  */
-const changeProcMk = (sPROC_STS_MK) => {
+const filterPROC_STS_MK = (sPROC_STS_MK) => {
 
 	const sPROC_MK = $("#selectbox4").val();
 	let fData = [];
@@ -1515,6 +1520,55 @@ const changeProcMk = (sPROC_STS_MK) => {
 	$("#selectbox10").empty();
 	fData.forEach(el => $("#selectbox10").append(new Option(el.CODE_NAME, el.CODE_ID)));
 	if (sPROC_STS_MK) $("#selectbox10").val(sPROC_STS_MK);
+
+}
+
+/**
+ * 상담채널에 따라 상담구분 filtering
+ * - as-is : DS_CSEL_MK.OnFilter()
+ * @param {string} sCSEL_MK 상담구분
+ */
+const filterCSEL_MK = (sCSEL_MK) => {
+
+	const sCSEL_CHNL_MK = $("#selectbox15").val();
+	let fData = [];
+	let sData = [];
+	
+	// 상담채널에 따라 처리상태 filtering data 처리
+	switch (sCSEL_CHNL_MK) {
+		case "2":
+		case "7":
+		case "11":
+		case "72":
+		case "81":
+		case "82":
+			sData = ["7"];
+			break;
+		case "9":
+			sData = ["2", "4", "5", "6", "8"];
+			break;
+		case "83":
+			sData = ["1", "2", "4", "5", "6", "7", "8"];
+			break;
+		default:
+			sData = ["1", "2", "4", "5", "6", "8"];
+			break;
+	}
+
+	// filtering
+	fData = cselMkList.filter(el => sData.includes(el.CODE_ID));
+
+	// sort
+	// const sortKey = "CODE_ID";
+	// fData.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+
+	// create select options
+	$("#selectbox3").empty();
+	fData.forEach(el => $("#selectbox3").append(new Option(el.CODE_NAME, el.CODE_ID)));
+	if (sCSEL_MK) $("#selectbox3").val(sCSEL_MK);
+
+	// 상담구분 change event
+	changeCselType();	
 
 }
 
