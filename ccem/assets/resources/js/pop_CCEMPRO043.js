@@ -414,7 +414,11 @@ function init(){
 		_chooseAddrGrid.clickCheck(ev);
     });
 
-
+	/* 고객의 상세주소가 있는 경우 자동으로 긁어오기 */
+	console.log( opener.document.getElementById('custInfo_ADDR').value );
+	if ( opener.name.indexOf('app_CCEM_top_bar') > -1 && !isEmpty(opener.document.getElementById('custInfo_ADDR').value) ) {
+		$('#addrZipAddr2_input').val(opener.document.getElementById('custInfo_ADDR').value);
+	}
 	_styleChanger.resizeWidth();
 	_styleChanger.resizeHeight();
 
@@ -470,6 +474,10 @@ var _styleChanger = {
  */
 const _searchTable = {
 	addrList(){
+		if( isEmpty($('#searchAddr_input').val()) ) {
+			alert("읍면동 또는 도로명을 입력하세요.");
+			return false;
+		}
 		var searchText = $('#searchAddr_input').val();
 		_getAddrList.addrList(searchText);
 	},
@@ -524,7 +532,7 @@ const _getAddrList = {
 		// 상세주소
 		$('#addrZipCode_input').val("");
 		$('#addrZipAddr_input').val("");
-		$('#addrZipAddr2_input').val("");
+		// $('#addrZipAddr2_input').val("");
 			
 		// 검증결과
 		$('#checkAddr').val("");
@@ -700,16 +708,22 @@ const _getAddrList = {
 				$('#typedAddr1').val(addr1);
 				$('#typedAddr2').val(addr2);
 
-				// 정제된 지번주소
-				$('#jibunPostNo').val(response.dsRecv[0].ZPRNJ);
-				$('#jibunAddr1').val(response.dsRecv[0].ADDR1Y);
-				$('#jibunAddr2').val(response.dsRecv[0].STDADDR);
+				$('#flexRadioDefault1').prop("checked", true); 
 
-				
-				// 정제된 도로명주소
-				$('#doroPostNo').val(response.dsRecv[0].ZPRNR);
-				$('#doroAddr1').val(response.dsRecv[0].NADR1S);
-				$('#doroAddr2').val(response.dsRecv[0].NADR3S);
+				if ( response.dsRecv[0].RMG3 != '새우편번호를 찾지 못한 주소입니다.') {
+					// 정제된 지번주소
+					$('#jibunPostNo').val(response.dsRecv[0].ZPRNJ);
+					$('#jibunAddr1').val(response.dsRecv[0].ADDR1Y);
+					$('#jibunAddr2').val(response.dsRecv[0].STDADDR);
+					
+					// 정제된 도로명주소
+					$('#doroPostNo').val(response.dsRecv[0].ZPRNR);
+					$('#doroAddr1').val(response.dsRecv[0].NADR1S);
+					$('#doroAddr2').val(response.dsRecv[0].NADR3S);
+
+					// 에러문구가 없다면, 2번째 선택
+					$('#flexRadioDefault2').prop("checked", true); 
+				}
 
 			}, error: function (response) {
 			}
