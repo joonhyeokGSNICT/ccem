@@ -2,15 +2,15 @@ var grid1;	// 상담등록 > 과목 grid
 var grid2;	// 상담등록 > 상담과목 grid
 var grid3;	// 상담등록 > 학습중인과목 grid
 
-var DS_COUNSEL = [];	// 상담정보
+var DS_COUNSEL = [];		// 상담정보 조회 data
 
-var DS_DM_RECEIPT  = {};		// DM 사은품 접수 정보 저장 data
-var DS_DROP_TEMP2  = {};		// 개인정보동의 정보 저장 data
-var DS_DROP_CHG    = {};		// 고객직접퇴회 정보 저장 data
-var DS_SCHEDULE	   = {};		// 재통화예약 정보 저장 data
+var DS_DM_RECEIPT  = {};	// DM 사은품 접수 정보 저장 data
+var DS_DROP_TEMP2  = {};	// 개인정보동의 정보 저장 data
+var DS_DROP_CHG    = {};	// 고객직접퇴회 정보 저장 data
+var DS_SCHEDULE	   = {};	// 재통화예약 정보 저장 data
 
-var procStsList = [];	// 처리상태 리스트
-var cselMkList = [];	// 상담구분 리스트
+var DS_PROC_STS_MK = [];	// 처리상태 코드 리스트
+var DS_CSEL_MK 	   = [];	// 상담구분 코드 리스트
 
 $(function () {
 
@@ -199,7 +199,7 @@ const setEvent = () => {
     $selectbox3.on("click", ev => {
         const $this = $(ev.target);
         if ($this.hasClass('open')) {
-            changeCselType();
+            changeCSEL_MK();
             $this.removeClass('open');
         } else {
             $this.addClass('open');
@@ -353,10 +353,10 @@ const setCodeData = async () => {
 			if (codeVal == "5" || codeVal == "6") continue;
 		}
 		if (codeType == "PROC_STS_MK") { // 처리상태
-			procStsList.push(code);
+			DS_PROC_STS_MK.push(code);
 		}
 		if (codeType == "CSEL_MK") {	// 상담구분
-			cselMkList.push(code);
+			DS_CSEL_MK.push(code);
 		}
 
 		// set
@@ -491,7 +491,7 @@ var getBaseData = (target, targetId, sJobType) => {
 		}
 		
 		setInitCselRstMkDS();	// 상담결과 저장정보 초기화
-		onDmReceiptChange();	// DM 사은품접수 저장정보 세팅
+		changeDM_TYPE_CDE();	// DM 사은품접수 저장정보 세팅
 
 		setLable(target);
 		getStudy(baseData.ID, sJobType);
@@ -1399,7 +1399,7 @@ const setInitCselRstMkDS = () => {
 /**
  * 지급사유 selectbox change 이벤트
  */
-const onDmReceiptChange = () => {
+const changeDM_TYPE_CDE = () => {
 
 	dmTypeText = $("#selectbox16 option:selected").text();
 	dmTypeValue = $("#selectbox16 option:selected").val();
@@ -1429,7 +1429,7 @@ const onDmReceiptChange = () => {
  * 상담구분 변경시 호출되는 함수
  * - as-is : CMB_CSEL_MK.OnCloseUp()
  */
-const changeCselType =() => {
+const changeCSEL_MK =() => {
 
     //상담분류 초기화
 	$("#textbox14").val("");
@@ -1465,7 +1465,7 @@ const changeCselType =() => {
  * - as-is : cns5810.CMB_LIMIT_MK.OnCloseUp()
  * @param {string} value LIMIT_MK
  */
-const changeLimitMk = (value) => {
+const changeLIMIT_MK = (value) => {
 
 	let iDay = 0;
 	switch (value) {
@@ -1510,7 +1510,7 @@ const filterPROC_STS_MK = (sPROC_STS_MK) => {
 	}
 	
 	// filtering
-	fData = procStsList.filter(el => sData.includes(el.CODE_ID));
+	fData = DS_PROC_STS_MK.filter(el => sData.includes(el.CODE_ID));
 
 	// sort
 	const sortKey = "CODE_ID";
@@ -1556,7 +1556,7 @@ const filterCSEL_MK = (sCSEL_MK) => {
 	}
 
 	// filtering
-	fData = cselMkList.filter(el => sData.includes(el.CODE_ID));
+	fData = DS_CSEL_MK.filter(el => sData.includes(el.CODE_ID));
 
 	// sort
 	// const sortKey = "CODE_ID";
@@ -1568,7 +1568,7 @@ const filterCSEL_MK = (sCSEL_MK) => {
 	if (sCSEL_MK) $("#selectbox3").val(sCSEL_MK);
 
 	// 상담구분 change event
-	changeCselType();	
+	changeCSEL_MK();	
 
 }
 
