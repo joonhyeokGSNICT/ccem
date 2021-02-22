@@ -366,10 +366,9 @@ const onSearch = async () => {
 		transData = DS_TRANS[0];
 	} else {
 		transData = new Object();
-		transData.RTN_FLAG = "0";		// 회신여부(초기값 "0" : 없음)
 	}
 	$("#selectbox3").val(transData.PROC_STS_MK);						// 처리상태구분
-	$("#selectbox1").val(transData.RTN_FLAG);							// 회신여부
+	$("#selectbox1").val(transData.RTN_FLAG || "0");					// 회신여부(초기값 "0" : 없음)
 	$("#textbox15").val(transData.CSEL_USER);							// 상담원
 	calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
 	$("#timebox1").val(transData.TRANS_TIME);							// 일시2
@@ -637,7 +636,7 @@ const getTransCondition = (row) => {
 		TRANS_CNTS		: row.CSEL_CNTS, 								// 상담내용		
 		PROC_HOPE_DATE	: calendarUtil.getImaskValue("calendar3"),  	// 처리예정일자			
 		PROC_STS_MK		: $("#selectbox3").val(), 						// 처리상태구분		
-		RTN_FLAG		: $("#selectbox1").val() || "0", 				// 회신여부 - 선택안하면 "없음"
+		RTN_FLAG		: $("#selectbox1").val(), 						// 회신여부
 		CSEL_DATE		: row.CSEL_DATE, 								// 상담일자		
 		CSEL_NO			: row.CSEL_NO, 									// 상담번호	
 		CSEL_SEQ		: row.CSEL_SEQ,									// 상담순번		
