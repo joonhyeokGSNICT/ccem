@@ -64,26 +64,20 @@ const createGrids = () => {
 	const grid1onClick = (rowKey) => {
 		if (typeof rowKey === "undefined") return;
 
-		const REFUND_SEQ 				= grid1.getValue(rowKey, "REFUND_SEQ");				// 환불요청 SEQ
-		const BANK_NAME			 		= grid1.getValue(rowKey, "BANK_NAME");				// 은행 
-		const ACCT_ID     		 		= grid1.getValue(rowKey, "ACCT_ID");				// 계좌번호
-		const REFUND_AMT     		 	= grid1.getValue(rowKey, "REFUND_AMT");				// 환불예상금액 
-		const ACCOUNT_HOLDER_NAME  		= grid1.getValue(rowKey, "ACCOUNT_HOLDER_NAME");	// 예금주  
-		const FML_CONNT_NAME 		 	= grid1.getValue(rowKey, "FML_CONNT_NAME");			// 관계   
-		const REFUND_NAME   		 	= grid1.getValue(rowKey, "REFUND_NAME");			// 중단사유 	
-		const REFUND_CNTS   		 	= grid1.getValue(rowKey, "REFUND_CNTS");			// 중단사유상세 
+		const rowData	= grid1.getRow(rowKey);
 
 		// 학습중단 과목 조회
-		getRefundPrdt(REFUND_SEQ);	
+		getRefundPrdt(rowData.REFUND_SEQ);	
 
 		// 퇴회신청내역 세팅
-		$("#textbox1").val(BANK_NAME);
-		$("#textbox2").val(ACCT_ID);
-		$("#textbox3").val(REFUND_AMT);
-		$("#textbox4").val(ACCOUNT_HOLDER_NAME);
-		$("#textbox5").val(FML_CONNT_NAME);
-		$("#textbox6").val(REFUND_NAME);
-		$("#textbox7").val(REFUND_CNTS);
+		$(`input[name='RFD_PROC_MK']:radio[value=${rowData.RFD_PROC_MK}]`).prop("checked", true); // 퇴회처리구분
+		$("#textbox1").val(rowData.BANK_NAME);				// 은행명
+		$("#textbox2").val(rowData.ACCT_ID);				// 계좌번호
+		$("#textbox3").val(rowData.REFUND_AMT);				// 환불예상금액
+		$("#textbox4").val(rowData.ACCOUNT_HOLDER_NAME);	// 예금주
+		$("#textbox5").val(rowData.FML_CONNT_NAME);			// 관계
+		$("#textbox6").val(rowData.REFUND_NAME);			// 중단사유
+		$("#textbox7").val(rowData.REFUND_CNTS);			// 중단사유상세
 	}
 
 	grid1.on("click", ev => {
