@@ -679,6 +679,12 @@ const onSave = async () => {
 		return false;
 	}
 
+	// OB관련 데이터 세팅
+	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+	cselData.OBLIST_CDE		= obData.OBLIST_CDE;
+	cselData.LIST_CUST_ID	= obData.LIST_CUST_ID;
+	cselData.CALLBACK_ID	= obData.CALLBACK_ID;
+
 	// 통화시작/종료시각 세팅
 	const { sCALL_STTIME, sCALL_EDTIME } = await getCallTimes(cselData.ZEN_TICKET_ID);
 	cselData.CALL_STTIME = sCALL_STTIME;
@@ -688,7 +694,6 @@ const onSave = async () => {
 	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 	
 	// CCEM 저장
-	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
 	const resSave = await saveEnterInfo(cselData, transData, obData);
 	
 	// 티켓 업데이트
