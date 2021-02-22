@@ -267,6 +267,9 @@ $(function(){
 			counselMain_counselHist_grid.addSelection(ev);
 			counselMain_counselHist_grid.clickSort(ev);
 			currentCounselInfo = counselMain_counselHist_grid.getRow(ev.rowKey);
+			
+			$("#csel_cust_modi").prop('disabled',false);								// 상담수정 버튼 활성화
+			
 			for(key in currentCounselInfo){												// input 자동 기입
 				if($("#counselInfo_" + key).length != 0){
 					if($("#counselInfo_" + key).hasClass('dateForm')){

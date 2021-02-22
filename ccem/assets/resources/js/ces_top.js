@@ -156,6 +156,7 @@ var currentDirectChargeInfo;					// 현재 선택된 회비관리의 정보
 var currentDueInfo;								// 현재 선택된 회비정보
 var currentSubDueInfo;							// 현재 선택된 과목별입금내역 정보
 var currentTchrInfo;							// 현재 선택된 선생님의 정보
+var currentTchrCounselInfo;						// 현재 선택된 선생님 상담이력의 정보
 
 var tempCustInfo;
 
@@ -244,6 +245,7 @@ function userSearch() {
 	$("#customerSearch").click(); 						// 고객찾기 탭 이동
 	sidebarClient.get('ticket').then(function(data){
 	var phone = "";
+	var onlineID = "";
 		client.request(`/api/v2/users/${data['ticket'].requester.id}.json`).then(function(reqUser){
 			if(currentTicketInfo.ticket.externalId == null && (currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.tags.includes("zopim_chat"))){
 				console.log(reqUser);
@@ -251,23 +253,54 @@ function userSearch() {
 				$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
 				$("#custSearchDiv").find("input[type=text]").val("");
 				$("#custSearchDiv").find("select").val("");
-				for(d of data['ticket'].requester.identities){
-					if(d.type == 'phone_number'){
-						phone = d.value;
+				
+				if(currentTicketInfo.ticket.tags.includes("in")){
+					// 총 세번의 인입전화번호 캐치
+					if(sidebarClient != null){
+						sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
+							if(d != null && d != ""){
+								phone = d;
+							}
+						});
+					}
+					
+					if(phone == ""){
+						for(d of data['ticket'].requester.identities){
+							if(d.type == 'phone_number'){
+								phone = d.value;
+							}
+						}
+					}
+					if(phone == ""){
+						phone = reqUser.user.phone;
+					}
+					setTimeout(function(){
+						if(phone != '' && phone != null){
+							$("#customerPhone").val(phone);
+							$("#customerPhoneCheck").prop('checked',true);
+						}
+						customerSearch("custSearchDiv","1");
+						$("#customerPhone").val("");
+						$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+					}, 500);
+				}
+				
+				if(currentTicketInfo.ticket.tags.includes("zopim_chat")){
+					if(sidebarClient != null){
+						sidebarClient.get(`ticket.requester.name`).then(function (d){
+							if(d != null && d != ""){
+								setTimeout(function(){
+									$("#customerOnline").val(d['ticket.requester.name']);
+									$("#customerOnlineCheck").prop('checked',true);
+									customerSearch("custSearchDiv","1");
+									$("#customerOnline").val("");
+									$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+								}, 500);
+							}
+						});
 					}
 				}
-				if(phone == ""){
-					phone = reqUser.user.phone;
-				}
-				setTimeout(function(){
-					if(phone != '' && phone != null){
-						$("#customerPhone").val(phone);
-						$("#customerPhoneCheck").prop('checked',true);
-					}
-					customerSearch("custSearchDiv","1");
-					$("#customerPhone").val("");
-					$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
-				}, 500);
+				
 			}else {
 				if(reqUser.user.user_fields.cust_mk == "교사"){
 					$("#teacherSearchTab").click();													// 선생님 탭 이동
@@ -434,6 +467,9 @@ function initSemi(){
 	$("#lunar").css('display','none');
 	$("#lunarSolarInput").val("1");
 	
+	// 상담수정 버튼 초기화
+	$("#csel_cust_modi").prop('disabled', true);
+	$("#csel_tchr_modi").prop('disabled', true);
 	
 	// input 내용 삭제
 	$("#customerInfoTab").find("input:text").each( function () {
@@ -742,13 +778,17 @@ $(function(){
 			$("#assignMemberbtn").css("display","");
 			$("#transferCallbtn").css("display","none");
 			$("#csel_cust").css("display","");
+			$("#csel_cust_modi").css("display","");
 			$("#csel_tchr").css("display","none");
+			$("#csel_tchr_modi").css("display","none");
 			$("#csel_t_cust").css("display","");
 			$("#csel_t_tchr").css("display","none");
 			break;
 		case 'teacherTab':
 			$("#csel_cust").css("display","none");
+			$("#csel_cust_modi").css("display","none");
 			$("#csel_tchr").css("display","");
+			$("#csel_tchr_modi").css("display","");
 			$("#csel_t_cust").css("display","none");
 			$("#csel_t_tchr").css("display","");
 			$("#assignMemberbtn").css("display","none");
@@ -1065,25 +1105,39 @@ $(function(){
 function onclickCselBtn(id) {
 	if(sidebarClient != null){
 		sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`).then(function (d){
-			if(id == 'cust'){
-				/*if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
-					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
-				}else {*/
-					PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
-				//}
-			}else {
-				/*if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != "" && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`] != null){
-					PopupUtil.open('CCEMPRO022', 1227, 655, '#csel_by_ticket');
-				}else {*/
-					PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
-				//}
+			switch(id){
+			case 'cust': 
+				PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
+				break;
+			case 'cust_modi': 
+				PopupUtil.open('CSELTOP', 1227, 655, "#csel_by_modify",{
+					'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
+					'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
+				});
+				break;
+			case 'tchr': 
+				PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
+				break;
+			case 'tchr_modi': 
+				PopupUtil.open('CSELTOP', 1227, 655, "#csel_by_modify",{
+					'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
+					'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
+				});
+				break;
 			}
 		});
 	}else {
-		if(id == 'cust'){
+		switch(id){
+		case 'cust': 
 			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
-		}else {
+			break;
+		case 'tchr': 
 			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
+			break;
 		}
 	}
 }
@@ -1387,35 +1441,14 @@ function onAutoSearch(sCustId, type){
 					if(type != '1'){
 						loadCustInfoMain();									// 고객정보 로드 함수
 					}
-					// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-					/*client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
+					// 젠데스크 고객 검색 ( requester id 사용자 유무 판단 위함 )
+					client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
 						console.log(d);
-						if(d.count >= 1){					
-							if(currentTicketInfo.ticket.externalId == null){
-								// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-								var option = {
-									url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-									type: 'PUT',
-									dataType: 'json',
-									contentType: "application/json",
-									data: JSON.stringify({
-										"user": {
-											"id": d.results[0].id,
-										}
-									})
-								}
-								client.request(option).then(function(d) {
-									client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-								});
-							}else {
-								updateUserforZen();
-							}
-						}else {
+						if(d.count < 1){					
 							updateUserforZen();
 						}
-					});*/
+					});
 					sOrgFAT_RSDNO = currentCustInfo.FAT_RSDNO; 			// 학부모 주민번호 변경여부 체크 변수
-					updateUserforZen();
 				}else {
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);

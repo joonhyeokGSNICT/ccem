@@ -120,24 +120,27 @@ $(function(){
 			if(ev.targetType=="cell"){
 				counselMainTeacher_counselHist_grid.addSelection(ev);
 				counselMainTeacher_counselHist_grid.clickSort(ev);
-				currentCounselInfo = counselMainTeacher_counselHist_grid.getRow(ev.rowKey);
-				for(key in currentCounselInfo){												// input 자동 기입
+				currentTchrCounselInfo = counselMainTeacher_counselHist_grid.getRow(ev.rowKey);
+				
+				$("#csel_tchr_modi").prop('disabled',false);									// 상담수정 버튼 활성화
+				
+				for(key in currentTchrCounselInfo){												// input 자동 기입
 					if($("#counselTchrInfo_" + key).length != 0){
 						if($("#counselTchrInfo_" + key).hasClass('dateForm')){
-							currentCounselInfo[key] = FormatUtil.date(currentCounselInfo[key]);
+							currentTchrCounselInfo[key] = FormatUtil.date(currentTchrCounselInfo[key]);
 						}
 						switch($("#counselTchrInfo_" + key)[0].localName){
 						case "select" :
-							$("#counselTchrInfo_" + key).val(currentCounselInfo[key]);
+							$("#counselTchrInfo_" + key).val(currentTchrCounselInfo[key]);
 							break;
 						case "input" :
-							$("#counselTchrInfo_" + key).val(currentCounselInfo[key]);
+							$("#counselTchrInfo_" + key).val(currentTchrCounselInfo[key]);
 							break;
 						case "span" :
-							$("#counselTchrInfo_" + key).text(currentCounselInfo[key]);
+							$("#counselTchrInfo_" + key).text(currentTchrCounselInfo[key]);
 							break;
 						case "textarea" :
-							$("#counselTchrInfo_" + key).val(currentCounselInfo[key]);
+							$("#counselTchrInfo_" + key).val(currentTchrCounselInfo[key]);
 							break;
 						}
 					}
