@@ -645,6 +645,7 @@ const getTransCondition = (row) => {
 		AREA_CDE		: $("#hiddenbox3").val(),						// 관할지역코드			
 		DEPT_EMP_ID		: $("#hiddenbox4").val(),						// 지점장ID			
 		DS_TRANS_USER	: [],											// 연계대상자사번
+		USER_ID			: currentUser.external_id,						// 상담원ID
 	}
 
 	// 연계 사업국 확인
