@@ -199,7 +199,7 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 			userSearch();												// 고객 검색
 			if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
 				if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
-					if(currentTicketInfo.ticket.tags.includes("in")){
+					if(currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.via.channel == 'chat'){
 						topBarClient.invoke("popover");					// 탑바 열기
 					}
 				};
@@ -285,16 +285,16 @@ function userSearch() {
 					}, 500);
 				}
 				
-				if(currentTicketInfo.ticket.tags.includes("zopim_chat")){
+				if(currentTicketInfo.ticket.via.channel == "chat"){									// 인입경로가 chat 일 경우.
 					if(sidebarClient != null){
 						sidebarClient.get(`ticket.requester.name`).then(function (d){
 							if(d != null && d != ""){
 								setTimeout(function(){
-									$("#customerOnline").val(d['ticket.requester.name']);
-									$("#customerOnlineCheck").prop('checked',true);
+									$("#customerMNum").val(d['ticket.requester.name']);					// 임시 )) 온라인 ID 개발 전까지 회원번호로 검색
+									$("#customerMNumCheck").prop('checked',true);
 									customerSearch("custSearchDiv","1");
-									$("#customerOnline").val("");
-									$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+									$("#customerMNum").val("");
+									$("#customerMNumCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 								}, 500);
 							}
 						});
@@ -1103,42 +1103,29 @@ $(function(){
  *  상담 등록 버튼 클릭
  */
 function onclickCselBtn(id) {
-	if(sidebarClient != null){
-		sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}`).then(function (d){
-			switch(id){
-			case 'cust': 
-				PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
-				break;
-			case 'cust_modi': 
-				PopupUtil.open('CSELTOP', 1227, 655, "#csel_by_modify",{
-					'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
-					'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
-					'CSEL_NO' : currentCounselInfo.CSEL_NO,
-					'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
-				});
-				break;
-			case 'tchr': 
-				PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
-				break;
-			case 'tchr_modi': 
-				PopupUtil.open('CSELTOP', 1227, 655, "#csel_by_modify",{
-					'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
-					'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
-					'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
-					'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
-				});
-				break;
-			}
+	switch(id){
+	case 'cust': 
+		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
+		break;
+	case 'cust_modi': 
+		PopupUtil.open('CCEMPRO022', 1227, 655, "#csel_by_modify",{
+			'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
+			'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
+			'CSEL_NO' : currentCounselInfo.CSEL_NO,
+			'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
 		});
-	}else {
-		switch(id){
-		case 'cust': 
-			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
-			break;
-		case 'tchr': 
-			PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
-			break;
-		}
+		break;
+	case 'tchr': 
+		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
+		break;
+	case 'tchr_modi': 
+		PopupUtil.open('CCEMPRO022', 1227, 655, "#csel_by_modify",{
+			'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
+			'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
+			'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
+			'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
+		});
+		break;
 	}
 }
 /**

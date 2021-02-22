@@ -17,6 +17,7 @@
     	"url" : "https://devccem.daekyo.co.kr/ccem/ccem_admin/ccem_pro_072/index.jsp"
 		},
 		"ticket_sidebar":{
+			"autoHide": true,
 			"url" : "assets/resources/html/ticket_sideBar.html"
 		},
 		"background":{
