@@ -120,6 +120,11 @@ $(function(){
 			botGrid.clear();
 			subjectGrid.clear();
 			
+			tempTop = null;
+        	tempMid = null;
+        	tempBot = null;
+        	tempSub = null;
+			
 			tempTop = topSelet;
 		}
     });
@@ -160,6 +165,10 @@ $(function(){
 			searchFunc2("CSEL_STYPE_CDE",midSelet,botGrid);
 			subjectGrid.clear();
 			
+        	tempMid = null;
+        	tempBot = null;
+        	tempSub = null;
+			
 			tempMid = midSelet;
 		}
     });
@@ -195,6 +204,9 @@ $(function(){
 			botGrid.addSelection(ev);
 			botGrid.clickSort(ev);
 			botGrid.clickCheck(ev);
+			
+        	tempBot = null;
+        	tempSub = null;
 			
 			botSelet = botGrid.getRow(ev.rowKey);
 			tempBot = botSelet;
@@ -261,6 +273,8 @@ $(function(){
 			subjectGrid.clickSort(ev);
 			subjectGrid.clickCheck(ev);
 			
+        	tempSub = null;
+			
 			subSelet = subjectGrid.getRow(ev.rowKey);
 			tempSub = subSelet;
 		}
@@ -293,11 +307,26 @@ $(function(){
 	    success: function (response) {
 	        console.log(response);
 	        if(response.errcode == "0"){
+	        	
+	        	if(cselCode == '7'){
+	        		var tempObj = [];
+	        		for(dataArr of response.recv1){
+	        			if(dataArr.CODE_ID == '761' || dataArr.CODE_ID == '765')
+	        			tempObj.push(dataArr);
+	        		}
+	        		response.recv1 = tempObj;
+	        	}
+	        	
 	        	topGrid.clear();
 	        	midGrid.clear();
 				botGrid.clear();
 				subjectGrid.clear();
 	        	topGrid.resetData(response.recv1);
+	        	
+	        	tempTop = null;
+	        	tempMid = null;
+	        	tempBot = null;
+	        	tempSub = null;
 	        	
 	        	tempTop = topGrid.findRows({
 			        	    CODE_ID: cselCode + openerTop
@@ -305,9 +334,6 @@ $(function(){
 	        	
 	        	if(tempTop == "" || tempTop == null || tempTop == undefined){return;}
 	        	
-	        	tempMid = null;
-	        	tempBot = null;
-	        	tempSub = null;
 	        	
 	        	console.log(tempTop);
 	        	topGrid.addSelection(tempTop);
@@ -330,13 +356,16 @@ $(function(){
 	        	        console.log(response);
 	        	        if(response.errcode == "0"){
 	        	        	midGrid.resetData(response.recv1);
+	        	        	
+	        	        	tempMid = null;
+	        	        	tempBot = null;
+	        	        	tempSub = null;
+	        	        	
 	        	        	tempMid = midGrid.findRows({
 	        			        	    CODE_ID: cselCode + openerTop + openerMid
 	        			        	})[0];
 	        	        	if(tempMid == "" || tempMid == null || tempMid == undefined){return;}
 	        	        	
-	        	        	tempBot = null;
-	        	        	tempSub = null;
 	        	        	
 	        	        	console.log(tempMid);
 	        	        	midGrid.addSelection(tempMid);
@@ -360,12 +389,14 @@ $(function(){
 	        	        	        if(response.errcode == "0"){
 	        	        	        	botGrid.resetData(response.recv1);
 	        	        	        	
+	        	        	        	tempBot = null;
+	        	        	        	tempSub = null;
+	        	        	        	
 	        	        	        	tempBot = botGrid.findRows({
 	        	        			        	    CODE_ID: cselCode + openerTop + openerMid + openerBot
 	        	        			        	})[0];
 	        	        	        	if(tempBot == "" || tempBot == null || tempBot == undefined){return;}
 	        	        	        	
-	        	        	        	tempSub = null;
 	        	        	        	
 	        	        	        	console.log(tempBot);
 	        	        	        	botGrid.addSelection(tempBot);
@@ -448,6 +479,13 @@ $(function(){
 	
 	// 확인 버튼
 	$("#confirm").click(function() {
+		$("#" + openerTop_ID, opener.document).val("");
+		$("#" + openerTop_NAME, opener.document).val("");
+		$("#" + openerMid_ID, opener.document).val("");
+		$("#" + openerMid_NAME, opener.document).val("");
+		$("#" + openerBot_ID, opener.document).val("");
+		$("#" + openerBot_NAME, opener.document).val("");
+		$("#" + openerSub_ID, opener.document).val("");
 		if(tempTop != null && tempTop != undefined){
 			$("#" + openerTop_ID, opener.document).val(tempTop.CODE_ID.slice(-2));
 			$("#" + openerTop_NAME, opener.document).val(tempTop.CODE_NAME);

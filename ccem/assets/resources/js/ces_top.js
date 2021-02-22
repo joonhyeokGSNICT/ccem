@@ -1108,23 +1108,80 @@ function onclickCselBtn(id) {
 		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
 		break;
 	case 'cust_modi': 
-		PopupUtil.open('CCEMPRO022', 1227, 655, "#csel_by_modify",{
-			'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
-			'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
-			'CSEL_NO' : currentCounselInfo.CSEL_NO,
-			'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
-		});
+		
+		if (opener.PopupUtil.contains("CSELTOP")) {
+			alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
+			return;
+		}
+
+		const proc = currentCounselInfo.PROC_MK;
+
+		switch (proc) {
+			case "6":
+				PopupUtil.open("CCEMPRO032", 1220, 610, "#tchr_by_modify",{		// 선생님소개 수정
+					'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
+					'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
+				});
+				break;
+			case "5":
+				PopupUtil.open("CCEMPRO031", 1220, 610, "#entr_by_modify",{		// 입회수정
+					'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
+					'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
+				});
+				break;
+			default:
+				PopupUtil.open('CCEMPRO022', 1227, 655, "#csel_by_modify",{		// 상담수정
+					'ZEN_TICKET_ID' : currentCounselInfo.ZEN_TICKET_ID,
+					'CSEL_DATE' : currentCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentCounselInfo.CSEL_SEQ
+				});
+				break;
+		}
+		
 		break;
 	case 'tchr': 
 		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
 		break;
 	case 'tchr_modi': 
-		PopupUtil.open('CCEMPRO022', 1227, 655, "#csel_by_modify",{
-			'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
-			'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
-			'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
-			'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
-		});
+		
+		if (opener.PopupUtil.contains("CSELTOP")) {
+			alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
+			return;
+		}
+
+		const proc = currentCounselInfo.PROC_MK;
+
+		switch (proc) {
+			case "6":
+				PopupUtil.open("CCEMPRO032", 1220, 610, "#tchr_by_modify",{		// 선생님소개 수정
+					'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
+					'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
+				});
+				break;
+			case "5":
+				PopupUtil.open("CCEMPRO031", 1220, 610, "#entr_by_modify",{		// 입회수정
+					'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
+					'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
+				});
+				break;
+			default:
+				PopupUtil.open('CCEMPRO022', 1227, 655, "#csel_by_modify",{		// 상담수정
+					'ZEN_TICKET_ID' : currentTchrCounselInfo.ZEN_TICKET_ID?currentTchrCounselInfo.ZEN_TICKET_ID:"",
+					'CSEL_DATE' : currentTchrCounselInfo.CSEL_DATE,
+					'CSEL_NO' : currentTchrCounselInfo.CSEL_NO,
+					'CSEL_SEQ' : currentTchrCounselInfo.CSEL_SEQ
+				});
+				break;
+		}
 		break;
 	}
 }
