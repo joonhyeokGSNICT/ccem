@@ -163,6 +163,19 @@ const createGrids = () => {
 }
 
 const setEvent = () => {
+
+	// 앱알림+SMS 버튼 event
+	$("#button6").on("click", ev => {
+		const loading = new Loading(getLoadingSet('앱+SMS 전송 중 입니다.'));
+		onAppSMSSend()
+			.then(succ => { if(succ) alert("앱+SMS가 전송되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`앱+SMS 전송중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
 	
 	// 앱알림 버튼 event
 	$("#button1").on("click", ev => {
@@ -468,6 +481,67 @@ const getCselProd = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => new Promise((resolve, reje
 });
 
 /**
+ * 앱알림+SMS 전송
+ */
+const onAppSMSSend = async () => {
+
+	// get checked rows
+	const checkedRows = grid1.getCheckedRows();
+	if(checkedRows.length === 0) {
+		alert("상담연계를 선택해 주세요.");
+		return false;
+	}
+	
+	// 앱알림 대상자 세팅
+	const AppUserData = await getAppUserCondition();
+	if (!AppUserData) return false;
+	// SMS 수신자 리스트 세팅
+	const SmsUserData = getSmsUserCondition();
+	if (!SmsUserData) return false;
+
+	// 저장정보 세팅
+	const transData = new Array();
+	const followerData = new Array();
+	const smsData = new Array();
+	let smsCnt = 0
+	for (const row of checkedRows) {
+		
+		// 연계정보 value check
+		const transCondition = getTransCondition(row);
+		if (!transCondition) return false;
+		transCondition.TRANS_CHNL_MK = "4"; // 연계방법 - 앱연계
+		transData.push(transCondition);
+
+		// 앱알림정보 value check
+		const followerCondition = getFollowerCondition(row);
+		if (!followerCondition) return false;
+		followerCondition.followers = AppUserData;
+		followerData.push(followerCondition);
+
+		// SMS전송정보 value check
+		const smsCondition = await getSmsCondition(row);
+		if (!smsCondition) return false;
+		smsCondition.DS_SMS_USER = SmsUserData;
+		smsData.push(smsCondition);
+
+		// SMS전송여부 확인을 위해
+		smsCnt += await getSmsCheck(row);
+
+	}
+
+	// SMS전송여부 확인
+	if (smsCnt > 0) {
+		if (!confirm("이미 발송하였습니다. 그래도 발송하시겠습니까?")) return false;
+	}
+	
+	await saveTrans(transData);			// 연계정보저장API 호출
+	await setFollower(followerData);	// 앱알림API 호출
+	await saveTransSms(smsData);		// SMS전송API 호출
+
+	return true;
+}
+
+/**
  * 앱알림 전송
  */
 const onAppSend = async () => {
@@ -483,28 +557,29 @@ const onAppSend = async () => {
 	const userData = await getAppUserCondition();
 	if (!userData) return false;
 
-	// 저장정보 value check
+	// 저장정보 세팅
 	const transData = new Array();
 	const followerData = new Array();
 	for (const row of checkedRows) {
 		
+		// 연계정보 value check
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
 		transCondition.TRANS_CHNL_MK = "4"; // 연계방법 - 앱연계
 		transData.push(transCondition);
 
+		// 앱알림정보 value check
 		const followerCondition = getFollowerCondition(row);
 		if (!followerCondition) return false;
 		followerCondition.followers = userData;
 		followerData.push(followerCondition);
 	}
 
-	// 저장API 호출
-	const saveResult = await saveTrans(transData);
-	if (!saveResult) return false;
+	
+	await saveTrans(transData);			// 연계정보저장API 호출
+	await setFollower(followerData);	// 앱알림API 호출
 
-	// 앱알림API 호출
-	return await setFollower(followerData);
+	return true;
 }
 
 /**
@@ -726,23 +801,25 @@ const onSMSSend = async () => {
 	let smsCnt = 0
 	for (const row of checkedRows) {
 
-		// check send data
+		// SMS전송정보 value check
 		const smsCondition = await getSmsCondition(row);
 		if (!smsCondition) return false;
 		smsCondition.DS_SMS_USER = userData;
 		sendData.push(smsCondition);
 
-		// SMS 여부를 확인하기 위해
+		// SMS전송여부 확인을 위해
 		smsCnt += await getSmsCheck(row);
 
 	}
 
-	// before send check
+	// SMS전송여부 확인
 	if (smsCnt > 0) {
 		if (!confirm("이미 발송하였습니다. 그래도 발송하시겠습니까?")) return false;
 	}
 
-	return await saveTransSms(sendData);
+	await saveTransSms(sendData);	// SMS전송API 호출
+
+	return true;
 }
 
 /**
@@ -976,28 +1053,28 @@ const onFAXSend = async () => {
 		return false;
 	}
 
-	// 저장정보 value check
+	// 저장정보 세팅
 	const transData = new Array();
 	const faxData 	= new Array();
 	for (const row of checkedRows) {
 
+		// 연계정보 value check
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
 		transCondition.TRANS_CHNL_MK = "3";	// 연계방법 - FAX로 셋팅
 		transData.push(transCondition);
 
+		// FAX발송정보 value check
 		const faxCondition = getFaxCondition(row);
 		if (!faxCondition) return false;
 		faxData.push(faxCondition);
 
 	}
 
-	// 저장API 호출
-	const saveResult = await saveTrans(transData);
-	if (!saveResult) return false;
+	await saveTrans(transData);		// 연계정보저장API 호출
+	await addTransSendFax(faxData);	// 팩스발송API 호출
 
-	// 팩스발송API 호출
-	return await addTransSendFax(faxData);	
+	return true;
 }
 
 /**
