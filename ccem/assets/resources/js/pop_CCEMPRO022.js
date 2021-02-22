@@ -1112,7 +1112,7 @@ const getCounselCondition = async (sJobType) => {
 	// 당월에 시정처리 등록건이 있는지 조회
     // 당월에 시정처리건이 등록되어 있으면, 또 등록할 것인지를 물어본다.
 	if (data.PROC_MK == "4") {
-		const saveChkRes = await getSaveChk(sCustId);
+		const saveChkRes = await getSaveChk(data.CUST_ID);
 		if(saveChkRes && saveChkRes[0] && saveChkRes[0].CNT_SIJUNG > 0) {
 			if (!confirm("동일한 월에 이미 시정처리한 내역이 존재 합니다.\n\n그래도 등록하시겠습니까?")) return;
 		}
