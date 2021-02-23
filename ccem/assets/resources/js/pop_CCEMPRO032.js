@@ -102,10 +102,28 @@ const onStart = async () => {
 		const sCSEL_TYPE 	= "T";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
 		const sEMP_ID 		= $("#tchrInfo_EMP_ID", topbarObject.document).val(); // 사원번호
 		getTchInfo(sEMP_ID, sCSEL_TYPE, "I");
-		
-	}
+	
+	// 탑바 > 고객정보, 선생님 > 상담수정 버튼으로 오픈
+	} else if (opener_name.includes("top_bar") && hash.includes("by_modify")) {	
+		topbarObject  = parent.opener;
+		topbarClient  = topbarObject.client;
+		sidebarClient = topbarObject.sidebarClient;
+		currentUser   = topbarObject.currentUserInfo.user;
+		codeData 	  = topbarObject.codeData;	
+
+		// 콤보박스 세팅
+		await setCodeData();
+
+		// 티켓오픈
+		if (POP_DATA.ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', POP_DATA.ZEN_TICKET_ID);  
+
+		// 상담정보 조회
+		calendarUtil.setImaskValue("calendar1", POP_DATA.CSEL_DATE);
+		$("#textbox6").val(POP_DATA.CSEL_NO);
+		onSearch(POP_DATA.CSEL_SEQ);
+	
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
-	else if (opener_name.includes("CCEMPRO035")) {	
+	} else if (opener_name.includes("CCEMPRO035")) {	
 		topbarObject  = parent.opener.topbarObject;
 		topbarClient  = topbarObject.client;
 		sidebarClient = topbarObject.sidebarClient;
