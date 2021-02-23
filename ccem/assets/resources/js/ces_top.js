@@ -1103,18 +1103,26 @@ $(function(){
  *  상담 등록 버튼 클릭
  */
 function onclickCselBtn(id) {
+	
+	if (PopupUtil.contains("CSELTOP")    || 
+	    PopupUtil.contains("CCEMPRO022") || 
+	    PopupUtil.contains("CCEMPRO031") || 
+	    PopupUtil.contains("CCEMPRO032") || 
+	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CSELTOP")    || 
+	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO022") || 
+	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO031") || 
+	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO032")) {
+		client.invoke("notify", "상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.", "error", 6000);
+		return;
+	}
+	
 	switch(id){
 	case 'cust': 
 		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
 		break;
 	case 'cust_modi': 
 		
-		if (PopupUtil.contains("CSELTOP")) {
-			client.invoke("notify", "상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.", "error", 6000);
-			return;
-		}
-
-		var proc = currentCounselInfo.PROC_MK;
+		var proc = $.trim(currentCounselInfo.PROC_MK);
 
 		switch (proc) {
 			case "6":
@@ -1149,12 +1157,7 @@ function onclickCselBtn(id) {
 		break;
 	case 'tchr_modi': 
 		
-		if (PopupUtil.contains("CSELTOP")) {
-			client.invoke("notify", "상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.", "error", 6000);
-			return;
-		}
-
-		var proc = currentCounselInfo.PROC_MK;
+		var proc = $.trim(currentCounselInfo.PROC_MK);
 
 		switch (proc) {
 			case "6":
@@ -1182,6 +1185,18 @@ function onclickCselBtn(id) {
 				});
 				break;
 		}
+		break;
+		
+	case 'entr':
+		PopupUtil.open('CSELTOP', 1227, 655, '#entr_by_cust');
+		break
+		
+	case 'cust_tchr' :
+		PopupUtil.open('CSELTOP', 1227, 655, '#tchr_by_cust');
+		break;
+		
+	case 'tchr_tchr' :
+		PopupUtil.open('CSELTOP', 1227, 655, '#tchr_by_tchr');
 		break;
 	}
 }
