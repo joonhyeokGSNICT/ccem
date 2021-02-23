@@ -194,7 +194,6 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 	initAll();															// 전체 초기화
 	setTimeout(function(){
 		sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-			console.log(data);
 			currentTicketInfo = data;
 			userSearch();												// 고객 검색
 			if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
@@ -202,11 +201,15 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 					if(currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.via.channel == 'chat'){
 						topBarClient.invoke("popover");					// 탑바 열기
 					}
+				}else {
+					topBarClient.invoke('popover','hide');				// 탑바 닫기
 				};
 			}else {
 				sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
 					if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
 						topBarClient.invoke("popover");					// 탑바 열기
+					}else {
+						topBarClient.invoke('popover','hide');
 					}
 				});
 				
@@ -2447,6 +2450,7 @@ function onFamilyBtnClick(){
     //txtREP_EMAIL_ADDR.value   = ""; 		 /* 대표E-MAIL주소*/
     //DS_CUST.nameValue(1,"MOBILNO_MBR") = ""; /*핸드폰번호_회원 */
     
+	tempCustInfo = currentCustInfo;								// 고객정보 임시저장
     
     setStatus(3);
 }

@@ -93,7 +93,7 @@ $(function(){
 					if(e.value != null){
 						switch(e.value){
 						case '2':result = '전송성공'; break;
-						case '99':result = '대기'; break;
+						case '99':result = '승인대기'; break;
 						case '1':result = '발송중'; break;
 						case '0':result = '발송대기'; break;
 						}

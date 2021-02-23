@@ -118,11 +118,6 @@ $(function(){
 			if(ev.targetType == 'cell'){
 				counselMain_studyTab_weeklyStat.addSelection(ev);
 				counselMain_studyTab_weeklyStat.clickSort(ev);
-			}
-	    });
-		
-		counselMain_studyTab_weeklyStat.on('dblclick', (ev) => {
-			if(ev.targetType == 'cell'){
 				currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(ev.rowKey);
 				loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				// 변동이력, 불출교재 조회
 				if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){
@@ -132,6 +127,11 @@ $(function(){
 				}
 			}
 	    });
+		
+		/*counselMain_studyTab_weeklyStat.on('dblclick', (ev) => {
+			if(ev.targetType == 'cell'){
+			}
+	    });*/
 		
 		// 주간 학습현황 끝
 	
