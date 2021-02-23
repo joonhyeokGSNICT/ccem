@@ -501,7 +501,6 @@ const onAppSMSSend = async () => {
 
 	// 저장정보 세팅
 	const transData = new Array();
-	const followerData = new Array();
 	const smsData = new Array();
 	let smsCnt = 0
 	for (const row of checkedRows) {
@@ -509,14 +508,9 @@ const onAppSMSSend = async () => {
 		// 연계정보 value check
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
-		transCondition.TRANS_CHNL_MK = "4"; // 연계방법 - 앱연계
+		transCondition.TRANS_CHNL_MK = "4"; 	// 연계방법 - 앱연계
+		transCondition.followers = AppUserData;	// 팔로워 세팅
 		transData.push(transCondition);
-
-		// 앱알림정보 value check
-		const followerCondition = getFollowerCondition(row);
-		if (!followerCondition) return false;
-		followerCondition.followers = AppUserData;
-		followerData.push(followerCondition);
 
 		// SMS전송정보 value check
 		const smsCondition = await getSmsCondition(row);
@@ -536,7 +530,6 @@ const onAppSMSSend = async () => {
 	
 	await saveTrans(transData);			// 연계정보저장API 호출
 	await updateTicket(transData);		// 티켓업데이트
-	await setFollower(followerData);	// 앱알림API 호출
 	await saveTransSms(smsData);		// SMS전송API 호출
 
 	return true;
@@ -560,26 +553,20 @@ const onAppSend = async () => {
 
 	// 저장정보 세팅
 	const transData = new Array();
-	const followerData = new Array();
 	for (const row of checkedRows) {
 		
 		// 연계정보 value check
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
-		transCondition.TRANS_CHNL_MK = "4"; // 연계방법 - 앱연계
+		transCondition.TRANS_CHNL_MK = "4"; 	// 연계방법 - 앱연계
+		transCondition.followers = userData;	// 팔로워 세팅
 		transData.push(transCondition);
 
-		// 앱알림정보 value check
-		const followerCondition = getFollowerCondition(row);
-		if (!followerCondition) return false;
-		followerCondition.followers = userData;
-		followerData.push(followerCondition);
 	}
 
 	
 	await saveTrans(transData);			// 연계정보저장API 호출
 	await updateTicket(transData);		// 티켓업데이트
-	await setFollower(followerData);	// 앱알림API 호출
 
 	return true;
 }
@@ -650,6 +637,13 @@ const getTransCondition = (row) => {
 		DS_TRANS_USER	: [],											// 연계대상자사번
 		USER_ID			: currentUser.external_id,						// 상담원ID
 		ZEN_TICKET_ID	: row.ZEN_TICKET_ID,							// 티켓ID
+		followers		: [], 											// 팔로워
+	}
+
+	// 티켓ID 확인
+	if (!data.ZEN_TICKET_ID) {
+		alert("젠데스크 티켓ID가 존재하지 않습니다.");
+		return false;
 	}
 
 	// 연계 사업국 확인
@@ -708,24 +702,6 @@ const getTransCondition = (row) => {
 }
 
 /**
- * 팔로워 정보 value check
- * @param {object} row grid row
- */
-const getFollowerCondition = (row) => {
-
-	if (!row.ZEN_TICKET_ID) {
-		alert("젠데스크 티켓ID가 존재하지 않습니다.");
-		return false;
-	}
-
-	return {
-		ticket_id: row.ZEN_TICKET_ID,
-		followers: []
-	}
-
-}
-
-/**
  * 상담/입회연계 저장
  * @param {array} transData 상담/입회연계 정보
  */
@@ -762,56 +738,33 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 
 /**
  * Zendesk 티켓 업데이트
+ * - 팔로워, 처리상태 업데이트
  * @param {array} DS_TRANS 연계정보
  */
 const updateTicket = async (DS_TRANS) => {
 
-	if (DS_TRANS?.length > 0) {
-		for (const row of DS_TRANS) {
-			if (!row.ZEN_TICKET_ID) continue;
-			
-			// 처리상태 세팅
-			const custom_fields = new Array();
-			custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: `proc_sts_mk_${Number(row.PROC_STS_MK)}` });
-
-			const option = {
-				url: `/api/v2/tickets/${row.ZEN_TICKET_ID}`,
-				method: 'PUT',
-				contentType: "application/json",
-				data: JSON.stringify({ 
-					ticket: { custom_fields }
-				}),
-			}
-
-			await topbarClient.request(option);
-
-		}
-	}
-
-}
-
-/**
- * 팔로워 등록
- * @param {array} followerData
- */
-const setFollower = async (followerData) => {
-
-	for (const el of followerData) {
-
-		await topbarClient.request({
-			url: `/api/v2/tickets/${el.ticket_id}`,
+	for (const row of DS_TRANS) {
+		
+		const option = {
+			url: `/api/v2/tickets/${row.ZEN_TICKET_ID}`,
 			method: 'PUT',
 			contentType: "application/json",
-			data: JSON.stringify({
-				ticket: { followers: el.followers }
-			})
-		});
+			data: JSON.stringify({ 
+				ticket: { 
+					followers: row.followers,
+					custom_fields: [
+						{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: `proc_sts_mk_${Number(row.PROC_STS_MK)}` },
+					],
+				}
+			}),
+		}
+
+		await topbarClient.request(option);
 
 	}
 
-	return true;
-
 }
+
 
 /**
  * SMS 전송
