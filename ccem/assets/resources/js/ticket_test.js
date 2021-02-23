@@ -2,8 +2,8 @@ var topBarClient;
 var navBarClient;
 
 client.on('app.activated', function(){
+	topBarClient.invoke('popover','hide');
 	topBarClient.trigger("getSidebarClient", client._instanceGuid);
-	topBarClient.invoke('popover','hide');								// 탑바 열기
 });
 
 client.get('instances').then(function (instancesData) {
