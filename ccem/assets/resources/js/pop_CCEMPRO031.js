@@ -1060,7 +1060,7 @@ const onNewTicket = async (parent_id) => {
 const getCustomData = async () => {
 
     const data = {
-	    prdtList 	    : grid5.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
+	    prdtList 	    : grid5.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
 		deptIdNm 	    : $("#textbox13").val(),			// 지점부서명(사업국명)
 	    aeraCdeNm 	    : "",	// 지역코드명
 	    procDeptIdNm    : "",	// 연계부서명
