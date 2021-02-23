@@ -137,9 +137,10 @@ const setEvent = () => {
 const onStart = async () => {
 
 	const opener_name = parent.opener.name;
+	const hash = parent.location.hash;
 
 	// 탑바 > 고객정보 > 고객 > 상담등록 버튼으로 오픈
-	if (opener_name.includes("top_bar")) {	
+	if (opener_name.includes("top_bar") && hash.includes("by_cust")) {	
 		topbarObject  = parent.opener;
 		topbarClient  = topbarObject.client;
 		sidebarClient = topbarObject.sidebarClient;
@@ -157,6 +158,25 @@ const onStart = async () => {
 		const sCUST_ID = topbarObject.document.getElementById("custInfo_CUST_ID").value; // 고객번호
 		const sMBR_ID  = topbarObject.document.getElementById("custInfo_MBR_ID").value;	 // 회원번호
 		getCust(sCUST_ID, "I");
+
+	// 탑바 > 고객정보, 선생님 > 상담수정 버튼으로 오픈
+	} else if (opener_name.includes("top_bar") && hash.includes("by_modify")) {	
+		topbarObject  = parent.opener;
+		topbarClient  = topbarObject.client;
+		sidebarClient = topbarObject.sidebarClient;
+		currentUser   = topbarObject.currentUserInfo.user;
+		codeData 	  = topbarObject.codeData;	
+
+		// 콤보박스 세팅
+		await setCodeData();
+
+		// 티켓오픈
+		if (POP_DATA.ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', POP_DATA.ZEN_TICKET_ID);  
+
+		// 상담정보 조회
+		calendarUtil.setImaskValue("calendar3", POP_DATA.CSEL_DATE);
+		$("#textbox7").val(POP_DATA.CSEL_NO);
+		onSearch(POP_DATA.CSEL_SEQ);
 
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
 	} else if (opener_name.includes("CCEMPRO035")) {	
@@ -253,9 +273,19 @@ const setCodeData = async () => {
 	else $("#selectbox4").val("1");		// 상담채널 : 착신
 	$("#selectbox9").val("01");			// 내담자 : 모
 	$("#selectbox5").val("3");			// 연계방법 : FAX
-	if (currentTicket?.via?.channel == "chat") {
-		$("#selectbox4").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
+
+	// 상담채널 세팅
+	if (currentTicket) {
+		const sOB_MK = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+		// OB구분이 정보이용동의 일경우
+		if (sOB_MK == "oblist_cde_10") {
+			$("#selectbox4").val("11");
+		// 티켓채널이 채팅일 경우
+		} else if (currentTicket?.via?.channel == "chat") {
+			$("#selectbox4").val("85");
+		}
 	}
+
 }
 
 /**

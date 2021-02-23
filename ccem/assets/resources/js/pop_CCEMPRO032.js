@@ -74,7 +74,7 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 		
 		// 선생님정보 조회
 		const sCSEL_CHNL_MK = "1";	// 접수채널구분        
@@ -95,17 +95,35 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 		
 		// 선생님정보 조회
 		const sCSEL_CHNL_MK = "1";	//접수채널구분        
 		const sCSEL_TYPE 	= "T";	// 대상구분 ( "C" : 고객, "T" : 선생님 ) 
 		const sEMP_ID 		= $("#tchrInfo_EMP_ID", topbarObject.document).val(); // 사원번호
 		getTchInfo(sEMP_ID, sCSEL_TYPE, "I");
-		
-	}
+	
+	// 탑바 > 고객정보, 선생님 > 상담수정 버튼으로 오픈
+	} else if (opener_name.includes("top_bar") && hash.includes("by_modify")) {	
+		topbarObject  = parent.opener;
+		topbarClient  = topbarObject.client;
+		sidebarClient = topbarObject.sidebarClient;
+		currentUser   = topbarObject.currentUserInfo.user;
+		codeData 	  = topbarObject.codeData;	
+
+		// 콤보박스 세팅
+		await setCodeData();
+
+		// 티켓오픈
+		if (POP_DATA.ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', POP_DATA.ZEN_TICKET_ID);  
+
+		// 상담정보 조회
+		calendarUtil.setImaskValue("calendar1", POP_DATA.CSEL_DATE);
+		$("#textbox6").val(POP_DATA.CSEL_NO);
+		onSearch(POP_DATA.CSEL_SEQ);
+	
 	// 상담조회 > 상담/입회수정 버튼으로 오픈
-	else if (opener_name.includes("CCEMPRO035")) {	
+	} else if (opener_name.includes("CCEMPRO035")) {	
 		topbarObject  = parent.opener.topbarObject;
 		topbarClient  = topbarObject.client;
 		sidebarClient = topbarObject.sidebarClient;
@@ -113,7 +131,7 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		const counselGrid	= parent.opener.grid1;				// 상담조회 grid
 		const rowKey 		= counselGrid.getSelectedRowKey();	// grid rowKey
@@ -138,7 +156,7 @@ const onStart = async () => {
  * 콤보박스 세팅
  * - as-is : clm3110.setCombo()
  */
-const setCodeData = () => {
+const setCodeData = async () => {
 
 	const CODE_MK_LIST = [
 		"CSEL_CHNL_MK",		// 상담채널
@@ -181,8 +199,17 @@ const setCodeData = () => {
 	$("#selectbox7").val("01");	// 처리상태 : 접수
 	$("#selectbox8").val("9");	// 상담구분 : 교사소개
 	$("#selectbox9").val("6");	// 처리구분 : 소개연계
-	if (currentTicket?.via?.channel == "chat") {
-		$("#selectbox3").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
+
+	// 상담채널 세팅
+	if (currentTicket) {
+		const sOB_MK = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+		// OB구분이 정보이용동의 일경우
+		if (sOB_MK == "oblist_cde_10") {
+			$("#selectbox3").val("11");
+		// 티켓채널이 채팅일 경우
+		} else if (currentTicket?.via?.channel == "chat") {
+			$("#selectbox3").val("85");
+		}
 	}
 
 }
