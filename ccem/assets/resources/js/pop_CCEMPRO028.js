@@ -363,7 +363,8 @@ const onSearch = async () => {
 	// 연계정보 세팅
 	let transData;
 	if (DS_TRANS?.length > 0) {
-		transData = DS_TRANS[0];
+		const fTrans = DS_TRANS.find(el => String(el.CSEL_SEQ) == String(sCSEL_SEQ[0]));
+		transData = fTrans || DS_TRANS[0];
 	} else {
 		transData = new Object();
 	}
