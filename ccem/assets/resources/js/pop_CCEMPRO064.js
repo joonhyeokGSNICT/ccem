@@ -147,4 +147,27 @@ var ccemApi = {
     }
   }
 
+/******************************************************
+ * _styleChanger : 화면 내 스타일 변경사항처리 JS
+ ******************************************************/
+var _styleChanger = {
+    /* 화면 크기 수정 */
+    resize(){
+        var widthSize = 550;
+        var heightSize = $('body').outerHeight()+75;
+        window.resizeTo(widthSize,heightSize);
+    }
+}
+
+/******************************************************
+ * document ready function모음
+ ******************************************************/
+$( document ).ready(function() {
+    /* 윈도우 크기에 따라 그리드 크기 조정 */ 
+	$(window).resize(function() {
+		_styleChanger.resize();
+	});
+});
+
+
   init();
