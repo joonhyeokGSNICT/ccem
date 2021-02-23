@@ -74,7 +74,7 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 		
 		// 선생님정보 조회
 		const sCSEL_CHNL_MK = "1";	// 접수채널구분        
@@ -95,7 +95,7 @@ const onStart = async () => {
 		currentTicket = origin?.ticket;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 		
 		// 선생님정보 조회
 		const sCSEL_CHNL_MK = "1";	//접수채널구분        
@@ -113,7 +113,7 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;
 
 		// 콤보박스 세팅
-		setCodeData();
+		await setCodeData();
 
 		const counselGrid	= parent.opener.grid1;				// 상담조회 grid
 		const rowKey 		= counselGrid.getSelectedRowKey();	// grid rowKey
@@ -138,7 +138,7 @@ const onStart = async () => {
  * 콤보박스 세팅
  * - as-is : clm3110.setCombo()
  */
-const setCodeData = () => {
+const setCodeData = async () => {
 
 	const CODE_MK_LIST = [
 		"CSEL_CHNL_MK",		// 상담채널
@@ -181,8 +181,17 @@ const setCodeData = () => {
 	$("#selectbox7").val("01");	// 처리상태 : 접수
 	$("#selectbox8").val("9");	// 상담구분 : 교사소개
 	$("#selectbox9").val("6");	// 처리구분 : 소개연계
-	if (currentTicket?.via?.channel == "chat") {
-		$("#selectbox3").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
+
+	// 상담채널 세팅
+	if (currentTicket) {
+		const sOB_MK = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+		// OB구분이 정보이용동의 일경우
+		if (sOB_MK == "oblist_cde_10") {
+			$("#selectbox3").val("11");
+		// 티켓채널이 채팅일 경우
+		} else if (currentTicket?.via?.channel == "chat") {
+			$("#selectbox3").val("85");
+		}
 	}
 
 }

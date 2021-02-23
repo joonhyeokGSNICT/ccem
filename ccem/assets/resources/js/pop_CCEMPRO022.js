@@ -369,11 +369,20 @@ const setCodeData = async () => {
 	$("#selectbox2").val("01");				// 내담자 : 모
 	$("#selectbox6").val("2");				// 고객반응 : 보통
 	$("#selectbox4").val("1");				// 처리구분 : 단순상담
-	if (currentTicket?.via?.channel == "chat") {
-		$("#selectbox15").val("85");		// 티켓채널이 채팅일 경우 상담채널을 채팅으로 세팅
+
+	// 상담채널 세팅
+	if (currentTicket) {
+		const sOB_MK = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+		// OB구분이 정보이용동의 일경우
+		if (sOB_MK == "oblist_cde_10") {
+			$("#selectbox15").val("11");
+		// 티켓채널이 채팅일 경우
+		} else if (currentTicket?.via?.channel == "chat") {
+			$("#selectbox15").val("85");
+		}
 	}
 
-	filterPROC_STS_MK(); // 처리구분 chage event
+	filterPROC_STS_MK(); // 처리구분에 따라 처리상태 filtering
 	filterCSEL_MK();	 // 상담채널에 따라 상담구분 filtering
 	
 }
