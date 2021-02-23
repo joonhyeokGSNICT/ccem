@@ -174,30 +174,39 @@ var btn = {
             return;
         }
 
-        sConfMsg = "[ "+$('#selectbox2 option:selected').text()+" ] 로 저장하시겠습니까?";
-        ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
-            var tempArray = {};
-
-            tempArray.CSEL_DATE = opener.calendarUtil.getImaskValue("textbox27"); // 상담일자
-            tempArray.CSEL_NO = opener.$('#textbox28').val();	// 상담번호
-            tempArray.CSEL_SEQ = opener.$('#selectbox14').val(); //	상담순번
-            tempArray.CUST_ID = opener.$('#hiddenbox6').val(); //	고객번호
-            tempArray.RST_MK = $('#selectbox2').val(); //	동의결과
-            tempArray.ENT_YN = $('#selectbox3').val(); //	회원입회약관
-            tempArray.INFO_YN = $('#selectbox4').val() ? $('#selectbox4').val() : "N"; //	개인정보수집이용동의
-            tempArray.SMS_YN = $('#selectbox5').val() ? $('#selectbox5').val() : "N"; //	마케팅동의
-            tempArray.SMS_SAVE_YN = $('#selectbox6').val() ? $('#selectbox6').val() : "N"; //	보존및마케팅
-            tempArray.THIRD_YN = $('#selectbox7').val() ? $('#selectbox7').val() : "N"; //	제3자제공동의
-            tempArray.CSEL_CNTS = $('#textbox8').val(); //	메모
-            tempArray.FAT_NAME = $('#textbox7').val() ? $('#textbox7').val() : ""; //	대리인명
-            tempArray.FAT_REL = $('#selectbox1').val(); //	대리인관계
-            tempArray.CTI_CHGDATE = opener.calendarUtil.getImaskValue("textbox27"); //	변경일
-            
-            opener.DS_DROP_TEMP2 = tempArray;
-            window.close();
-        }, function() {
+        if(! isEmpty($('#selectbox2 option:selected').text()) ) {
+            sConfMsg = "[ "+$('#selectbox2 option:selected').text()+" ] 로 저장하시겠습니까?";
+            ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
+                var tempArray = {};
+    
+                tempArray.CSEL_DATE = opener.calendarUtil.getImaskValue("textbox27"); // 상담일자
+                tempArray.CSEL_NO = opener.$('#textbox28').val();	// 상담번호
+                tempArray.CSEL_SEQ = opener.$('#selectbox14').val(); //	상담순번
+                tempArray.CUST_ID = opener.$('#hiddenbox6').val(); //	고객번호
+                tempArray.RST_MK = $('#selectbox2').val(); //	동의결과
+                tempArray.ENT_YN = $('#selectbox3').val(); //	회원입회약관
+                tempArray.INFO_YN = $('#selectbox4').val() ? $('#selectbox4').val() : "N"; //	개인정보수집이용동의
+                tempArray.SMS_YN = $('#selectbox5').val() ? $('#selectbox5').val() : "N"; //	마케팅동의
+                tempArray.SMS_SAVE_YN = $('#selectbox6').val() ? $('#selectbox6').val() : "N"; //	보존및마케팅
+                tempArray.THIRD_YN = $('#selectbox7').val() ? $('#selectbox7').val() : "N"; //	제3자제공동의
+                tempArray.CSEL_CNTS = $('#textbox8').val(); //	메모
+                tempArray.FAT_NAME = $('#textbox7').val() ? $('#textbox7').val() : ""; //	대리인명
+                tempArray.FAT_REL = $('#selectbox1').val(); //	대리인관계
+                tempArray.CTI_CHGDATE = opener.calendarUtil.getImaskValue("textbox27"); //	변경일
+                
+                opener.DS_DROP_TEMP2 = tempArray;
+                opener.document.getElementById('textbox13').value = $('#textbox8').val() + '\n' + opener.document.getElementById('textbox13').value
+    
+                window.close();
+            }, function() {
+                return;
+            });
+        } else {
+            sConfMsg = "동의결과가 선택되어 있지 않습니다.";
+            ModalUtil.modalPop("알림",sConfMsg);
+            $('#selectbox2').focus();
             return;
-        });
+        }
     },
     
     /*****************************************
