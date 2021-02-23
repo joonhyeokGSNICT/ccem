@@ -49,6 +49,13 @@ function onSearch(){
 		.done(data => {
 			console.log("정보내용->:",data);
 			currentMosData = data.dsRecv[0];
+			if(currentMosData == undefined){
+				$("#tempSave").prop('disabled',true);
+				$("#procSave").prop('disabled',true);
+				$("#finalSave").prop('disabled',true);
+				return;
+			}
+			
 			if(currentMosData.ANSWER_YN == 'Y'){
 				setDisableAns();
 			}else {
@@ -88,6 +95,12 @@ function onSearch(){
 		console.log("처리내용->:",data);
 		if(data.errcode == 0){
 			currentProcData = data.dsRecv[0];
+			if(currentProcData == undefined){
+				$("#tempSave").prop('disabled',true);
+				$("#procSave").prop('disabled',true);
+				$("#finalSave").prop('disabled',true);
+				return;
+			}
 			setActiveControl();
 			$("#mos_PROC_DATE").val(FormatUtil.date(currentProcData.PROC_DATE));
 			$("#mos_PROC_CNTS").val(currentProcData.PROC_CNTS);

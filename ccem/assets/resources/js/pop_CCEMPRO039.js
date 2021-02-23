@@ -1,8 +1,19 @@
+/**
+ * SMS 송/수신 리스트 조회
+ * 
+ */
+
 let grid
 var smsRecvListGrid;
 
 var currentSendInfo;
 var currentUser = opener.currentUserInfo;
+
+//현재 창이 꺼지면 자식 창 클로즈
+$(window).on('beforeunload', () => {
+    PopupUtil.closeAll();
+ });
+
 $(function(){
 
 	// 날짜 픽커

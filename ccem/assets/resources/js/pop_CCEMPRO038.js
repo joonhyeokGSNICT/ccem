@@ -1,3 +1,8 @@
+/**
+ * 입회조회(성과)
+ * AS-IS : CNS4900
+ */
+
 let grid
 var codeData = opener.codeData;
 var tempList;
@@ -7,6 +12,11 @@ var resultList = [];
 var finalList = [];
 
 var SSInitFlag = false;
+
+//현재 창이 꺼지면 자식 창 클로즈
+$(window).on('beforeunload', () => {
+    PopupUtil.closeAll();
+ });
 
 $(function(){
 

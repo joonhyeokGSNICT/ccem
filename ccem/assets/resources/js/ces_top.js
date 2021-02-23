@@ -622,6 +622,11 @@ function cancelCustInfo(){
 	}
 }
 
+// 현재 창이 꺼지면 자식 창 클로즈
+$(window).on('beforeunload', () => {
+    PopupUtil.closeAll();
+ });
+
 $(function(){
 	
 	var settings = {
@@ -1504,7 +1509,7 @@ function onAutoSearch(sCustId, type){
 						loadCustInfoMain();									// 고객정보 로드 함수
 					}
 					// 젠데스크 고객 검색 ( requester id 사용자 유무 판단 위함 )
-					client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
+					client.request(`/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
 						console.log(d);
 						if(d.count < 1){					
 							updateUserforZen();
@@ -1554,7 +1559,7 @@ function onAutoSearchTeacher(sEmpId, type){
 						loadTeacherInfoMain();									// 선생님정보 로드 함수
 					}
 					// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-					/*client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
+					/*client.request(`/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
 						console.log(d);
 						if(d.count >= 1){					
 							if(currentTicketInfo.ticket.externalId == null && (currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.tags.includes("zopim_chat"))){
