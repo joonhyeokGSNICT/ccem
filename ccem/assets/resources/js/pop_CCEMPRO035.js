@@ -918,7 +918,7 @@ const onModify = () => {
 	}
 
 	const rowKey = grid1.getSelectedRowKey();
-	const proc = grid1.getValue(rowKey, "PROC_MK");
+	const proc = grid1.getValue(rowKey, "PROC_MK")?.trim();
 
 	switch (proc) {
 		case "6":

@@ -162,8 +162,8 @@ $(function(){
             	ellipsis: true,
             },
             {
-                header: '회원부HP',
-                name: 'MOBILNO_FAT',
+                header: '대리인HP',
+                name: 'MOBILNO_LAW',
                 width: 100,
                 align: "center",
                 sortable: true,
