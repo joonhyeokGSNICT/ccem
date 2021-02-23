@@ -2,7 +2,6 @@ var topBarClient;
 var navBarClient;
 
 client.on('app.activated', function(){
-	topBarClient.invoke('popover','hide');
 	topBarClient.trigger("getSidebarClient", client._instanceGuid);
 });
 
