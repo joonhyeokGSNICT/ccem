@@ -535,6 +535,7 @@ const onAppSMSSend = async () => {
 	}
 	
 	await saveTrans(transData);			// 연계정보저장API 호출
+	await updateTicket(transData);		// 티켓업데이트
 	await setFollower(followerData);	// 앱알림API 호출
 	await saveTransSms(smsData);		// SMS전송API 호출
 
@@ -577,6 +578,7 @@ const onAppSend = async () => {
 
 	
 	await saveTrans(transData);			// 연계정보저장API 호출
+	await updateTicket(transData);		// 티켓업데이트
 	await setFollower(followerData);	// 앱알림API 호출
 
 	return true;
@@ -647,6 +649,7 @@ const getTransCondition = (row) => {
 		DEPT_EMP_ID		: $("#hiddenbox4").val(),						// 지점장ID			
 		DS_TRANS_USER	: [],											// 연계대상자사번
 		USER_ID			: currentUser.external_id,						// 상담원ID
+		ZEN_TICKET_ID	: row.ZEN_TICKET_ID,							// 티켓ID
 	}
 
 	// 연계 사업국 확인
@@ -756,6 +759,36 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 });
+
+/**
+ * Zendesk 티켓 업데이트
+ * @param {array} DS_TRANS 연계정보
+ */
+const updateTicket = async (DS_TRANS) => {
+
+	if (DS_TRANS?.length > 0) {
+		for (const row of DS_TRANS) {
+			if (!row.ZEN_TICKET_ID) continue;
+			
+			// 처리상태 세팅
+			const custom_fields = new Array();
+			custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: `proc_sts_mk_${Number(row.PROC_STS_MK)}` });
+
+			const option = {
+				url: `/api/v2/tickets/${row.ZEN_TICKET_ID}`,
+				method: 'PUT',
+				contentType: "application/json",
+				data: JSON.stringify({ 
+					ticket: { custom_fields }
+				}),
+			}
+
+			await topbarClient.request(option);
+
+		}
+	}
+
+}
 
 /**
  * 팔로워 등록
@@ -1073,6 +1106,7 @@ const onFAXSend = async () => {
 	}
 
 	await saveTrans(transData);		// 연계정보저장API 호출
+	await updateTicket(transData);	// 티켓업데이트
 	await addTransSendFax(faxData);	// 팩스발송API 호출
 
 	return true;
