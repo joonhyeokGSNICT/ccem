@@ -29,6 +29,8 @@ $(function () {
 	// input mask
 	$(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
+	createGrids();
+	setEvent();
 	onStart();
 
 });
@@ -38,7 +40,6 @@ const onStart = () => {
 	topbarClient = topbarObject.client;
 	currentUser = topbarObject.currentUserInfo.user;
 	codeData 	= topbarObject.codeData;
-	createGrids();
 	setCodeData();
 	getProd();
 	getUser();
@@ -273,6 +274,28 @@ const createGrids = () => {
 	grid2.on("click", ev => {
 		grid2.clickSort(ev);
 	});
+}
+
+const setEvent = () => {
+
+	// 삭제 버튼
+	$("#button8").on("click", ev => {
+		const loading = new Loading(getLoadingSet('상담정보 삭제 중 입니다.'));
+		onDelete()
+			.then((succ) => { 
+				if (succ) {
+					alert("정상적으로 삭제 되었습니다."); 
+					getCsel(1); // 상담이력 재조회
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`상담정보 삭제 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 }
 
 /**
@@ -941,69 +964,92 @@ const onModify = () => {
 const delCounselCondition = () => {
 
 	const rowKey = grid1.getSelectedRowKey();
-	const cselDate = grid1.getValue(rowKey,"CSEL_DATE");	// 상담일자
-	const cselNo = grid1.getValue(rowKey, "CSEL_NO");		// 접수
-	const cselSeq = grid1.getValue(rowKey, "CSEL_SEQ");		// 상담순번
-	const proc = grid1.getValue(rowKey, "PROC_MK");			// 처리구분코드
-	const procSts = grid1.getValue(rowKey, "PROC_STS_MK");  // 처리상태코드
-	const refund = grid1.getValue(rowKey, "REFUND_FLAG");	// 환불상태코드
-	const enterRst = grid2.getValue(0, "ENTER_RST_FLAG");	// 입회결과여부(1:입회)
+	const rowData = grid1.getRow(rowKey);
+	const sCSEL_DATE 		= rowData.CSEL_DATE		// 상담일자
+	const sCSEL_NO 			= rowData.CSEL_NO		// 접수
+	const sCSEL_SEQ 		= rowData.CSEL_SEQ		// 상담순번
+	const sPROC_MK 			= rowData.PROC_MK		// 처리구분코드
+	const sPROC_STS_MK 		= rowData.PROC_STS_MK	// 처리상태코드
+	const sREFUND_FLAG 		= rowData.REFUND_FLAG	// 환불상태코드
+	const sZEN_TICKET_ID 	= rowData.ZEN_TICKET_ID	// 티켓ID
+	const sENTER_RST_FLAG 	= grid2.getValue(0, "ENTER_RST_FLAG");	// 입회결과여부(1:입회)
 	
 	// 1. CSEL_SEQ가 1만 있으면 삭제 가능, SEQ가 1이 아닌 건 삭제 가능.
 	let isDelete = false;
 	const gridData = grid1.getData();
 	for (const row of gridData) {
-		if (row.CSEL_NO == cselNo && row.CSEL_SEQ != "1") {
+		if (row.CSEL_NO == sCSEL_NO && row.CSEL_SEQ != "1") {
 			isDelete = true;
 			break;
 		}
 	}
-	if (isDelete && cselSeq == "1") {
+	if (isDelete && sCSEL_SEQ == "1") {
 		alert("동일한 접수번호에 접수순번이 2가지 이상 존재합니다.\n\n먼저 접수순번이 1이 아닌건을 삭제해 주십시오.");
 		return false;
 	}
 
 	// 2. 결과등록한 상담이력은 삭제할 수 없음.
-	if (proc == "3" && (procSts == "04" || procSts == "15" || procSts == "99")) {
+	if (sPROC_MK == "3" && (sPROC_STS_MK == "04" || sPROC_STS_MK == "15" || sPROC_STS_MK == "99")) {
 		alert("결과등록한 상담이력은 삭제할 수 없습니다.");
 		return false;
 	}
 
 	// 3. 환불에 대해 승인이 된 상담이력은 삭제할 수 없음.
-	if (refund && refund != "0") {
+	if (sREFUND_FLAG && sREFUND_FLAG != "0") {
 		alert("환불에 대해 승인이 된 상담이력은 삭제할 수 없습니다.");
 		return false;
 	}
 
 	// 4. 입회완료된 상담이력은 삭제 불가능.
-	if (enterRst > 0) {
+	if (sENTER_RST_FLAG > 0) {
 		alert("입회완료된 상담이력은 삭제할 수 없습니다.");
 		return false;
 	}
 
 	let sMsg = "";
-	sMsg += "\n * 상담일자 : " + cselDate;
-	sMsg += "\n * 상담번호 : " + cselNo;
-	sMsg += "\n * 상담순번 : " + cselSeq;
+	sMsg += "\n * 상담일자 : " + sCSEL_DATE;
+	sMsg += "\n * 상담번호 : " + sCSEL_NO;
+	sMsg += "\n * 상담순번 : " + sCSEL_SEQ;
 	sMsg += "\n\n 위 항목에 해당하는 상담이력/상담과목을 정말로 삭제하시겠습니까?";
 	if (confirm(sMsg) == false) return false;
 
 	return {
-		CSEL_DATE	:	cselDate,	// 상담일자
-		CSEL_NO		:	cselNo,		// 상담번호
-		CSEL_SEQ	:	cselSeq,	// 상담순번
+		CSEL_DATE		: sCSEL_DATE,			// 상담일자
+		CSEL_NO			: sCSEL_NO,			// 상담번호
+		CSEL_SEQ		: sCSEL_SEQ,			// 상담순번
+		ZEN_TICKET_ID 	: sZEN_TICKET_ID, 	// 티켓ID
 	}
 
 }
 
 /**
- * 상담이력 삭제
+ * 삭제 버튼
+ * - as-is : cns6200.onDelete()
  */
-const delCounsel = () => {
-	const condition = delCounselCondition();
-	if (!condition) return;
+const onDelete = async () => {
+	
+	// 삭제정보 value check
+	const delData = delCounselCondition();
+	if (!delData) return false;
+
+	// 삭제API 호출
+	await delCounsel(delData.CSEL_DATE, delData.CSEL_NO, delData.CSEL_SEQ);
+	await delTicket(delData.ZEN_TICKET_ID);
+
+	return true;
+
+}
+
+/**
+ * 상담이력 삭제
+ * @param {string} CSEL_DATE 상담일자
+ * @param {string} CSEL_NO   상담번호
+ * @param {string} CSEL_SEQ  상담순번
+ */
+const delCounsel = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => new Promise((resolve, reject) => {
 
 	const settings = {
+		global: false,
 		url: `${API_SERVER}/cns.delCounsel.do`,
 		method: 'POST',
 		contentType: "application/json; charset=UTF-8",
@@ -1013,14 +1059,36 @@ const delCounsel = () => {
 			menuname: "상담조회",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
-			dsSend: [condition],
+			dsSend: [{ CSEL_DATE, CSEL_NO, CSEL_SEQ }],
 		}),
 		errMsg: "상담정보 삭제중 오류가 발생하였습니다.",
 	}
 
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-		alert("정상적으로 삭제 되었습니다.");
-		getCsel(1);
-	});
+	$.ajax(settings).done(res => {
+		if (res.errcode != "0") return reject(new Error(getApiMsg(res, settings)));
+		return resolve(true);
+	})
+	.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
+
+/**
+ * 티켓 삭제
+ * @param {string|number} ticket_id 
+ */
+const delTicket = async (ticket_id) => {
+	
+	if (!ticket_id) return;
+
+	try {
+
+		await topbarClient.request({
+			url: `/api/v2/tickets/${ticket_id}`,
+			method: "DELETE",
+		});	
+		
+	} catch (error) {
+		console.error("fail delTicket: ", error);
+	}
+
 }
