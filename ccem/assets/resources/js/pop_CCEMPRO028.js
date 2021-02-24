@@ -531,6 +531,7 @@ const onAppSMSSend = async () => {
 	await saveTrans(transData);			// 연계정보저장API 호출
 	await updateTicket(transData);		// 티켓업데이트
 	await saveTransSms(smsData);		// SMS전송API 호출
+	opener?.onSearch();					// 상담화면 재조회
 
 	return true;
 }
@@ -564,9 +565,9 @@ const onAppSend = async () => {
 
 	}
 
-	
 	await saveTrans(transData);			// 연계정보저장API 호출
 	await updateTicket(transData);		// 티켓업데이트
+	opener?.onSearch();					// 상담화면 재조회
 
 	return true;
 }
@@ -805,6 +806,7 @@ const onSMSSend = async () => {
 	}
 
 	await saveTransSms(sendData);	// SMS전송API 호출
+	opener?.onSearch();				// 상담화면 재조회
 
 	return true;
 }
@@ -1061,6 +1063,7 @@ const onFAXSend = async () => {
 	await saveTrans(transData);		// 연계정보저장API 호출
 	await updateTicket(transData);	// 티켓업데이트
 	await addTransSendFax(faxData);	// 팩스발송API 호출
+	opener?.onSearch();				// 상담화면 재조회
 
 	return true;
 }

@@ -645,14 +645,14 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 
 /**
  * 조회 버튼
- * @param {string} sCSEL_SEQ 상담순번
+ * @param {string} CSEL_SEQ 상담순번
  */
-const onSearch = async (sCSEL_SEQ) => {
-
-	const sCSEL_DATE = calendarUtil.getImaskValue("calendar3") // 상담일자
-	const sCSEL_NO	 = $("#textbox7").val(); 				   // 상담번호
+var onSearch = async (CSEL_SEQ) => {
 
 	// 입회정보 조회
+	const sCSEL_DATE = calendarUtil.getImaskValue("calendar3") // 상담일자
+	const sCSEL_NO	 = $("#textbox7").val(); 				   // 상담번호
+	const sCSEL_SEQ	 = CSEL_SEQ || $("#selectbox3").val();	   // 상담순번
 	const cselData = await getCounsel(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
 	
 	// 고객정보 조회
@@ -1060,7 +1060,7 @@ const onNewTicket = async (parent_id) => {
 const getCustomData = async () => {
 
     const data = {
-	    prdtList 	    : grid5.getData().map(el => `${el.PRDT_GRP}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
+	    prdtList 	    : grid5.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
 		deptIdNm 	    : $("#textbox13").val(),			// 지점부서명(사업국명)
 	    aeraCdeNm 	    : "",	// 지역코드명
 	    procDeptIdNm    : "",	// 연계부서명

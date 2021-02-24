@@ -1,3 +1,8 @@
+/**
+ * 입회조회 팝업
+ * AS-IS : CNS4800
+ */
+
 var grid
 var codeData = opener.codeData;
 var currentMemberData;
@@ -8,6 +13,11 @@ $(document).keydown(function(e){
 		onSearch();
 	}
 });
+
+//현재 창이 꺼지면 자식 창 클로즈
+$(window).on('beforeunload', () => {
+    PopupUtil.closeAll();
+ });
 
 $(function(){
 	
@@ -894,6 +904,7 @@ function onDelProc(date, no, seq){
 	var lsTransDel = "F";
 	var tDate = currentMemberData.TRANSDATE;
 	var tNo = currentMemberData.TRANSNO;
+	var zenID = currentMemberData.ZEN_TICKET_ID;
 
 	if(confirm("상담일자: " + date + "\n접수번호: " + no + "\n접수순번: " + seq +
 	   "\n위 항목에 해당하는 상담이력/상담과목/지점연계 삭제하시겠습니까?" +
@@ -952,7 +963,11 @@ function onDelProc(date, no, seq){
 		    		    success: function (response) {
 		    		        console.log(response);
 		    		        if(response.errcode == "0"){
-		    		        	alert("삭제가 완료되었습니다.");
+		    		        	opener.client.request({url:`/api/v2/tickets/${zenID}`,type:'DELETE'}).then(function(d){
+		    		        		alert("삭제가 완료되었습니다.");
+		    		        	}).catch(function(d){
+		    		        		alert('젠데스크 티켓을 삭제하는 도중 오류가 발생했습니다. \n 젠데스크에서 직접 티켓을 삭제 해 주세요. TICKET_ID : ' + zenID)
+		    		        		});
 		    		        	onSearch();
 		    		        }else {
 		    		        	loading.out();
