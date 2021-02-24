@@ -217,13 +217,14 @@ const setCodeData = async () => {
 /**
  * 조회
  * - as-is : clm3110.onSearch()
- * @param {string|number} sCSEL_SEQ 상담순번
+ * @param {string|number} CSEL_SEQ 상담순번
  */
-const onSearch = async (sCSEL_SEQ) => {
+var onSearch = async (CSEL_SEQ) => {
 
 	// 상담정보 조회
-	const sCSEL_DATE = calendarUtil.getImaskValue("calendar1");			
-	const sCSEL_NO 	 = $("#textbox6").val();							
+	const sCSEL_DATE = calendarUtil.getImaskValue("calendar1");	// 상담일자
+	const sCSEL_NO 	 = $("#textbox6").val();					// 상담번호
+	const sCSEL_SEQ	 = CSEL_SEQ || $("#selectbox2").val();	    // 상담순번
 	const cselData 	 = await getCselInfo(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);	
 	
 	// 선생님정보 조회

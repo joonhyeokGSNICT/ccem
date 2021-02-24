@@ -389,14 +389,14 @@ const setCodeData = async () => {
 
 /**
  * 조회
- * @param {string} sCSEL_SEQ 상담순번
+ * @param {string} CSEL_SEQ 상담순번
  */
-const onSearch = async (sCSEL_SEQ) => {
-
-	const sCSEL_DATE = calendarUtil.getImaskValue("textbox27"); // 상담일자
-	const sCSEL_NO	 = $("#textbox28").val();			     	// 상담번호
+var onSearch = async (CSEL_SEQ) => {
 
 	// 상담정보 조회
+	const sCSEL_DATE = calendarUtil.getImaskValue("textbox27"); // 상담일자
+	const sCSEL_NO	 = $("#textbox28").val();			     	// 상담번호
+	const sCSEL_SEQ	 = CSEL_SEQ || $("#selectbox14").val();		// 상담순번
 	const cselData = await getCounsel(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
 	
 	// 고객 기본정보조회
