@@ -168,10 +168,9 @@ const createGrids = () => {
 	});
 
 	grid1.on("focusChange", ev => {
-		const thisGrid = ev.instance;
-		thisGrid.addSelection(ev);
+		ev.instance.addSelection(ev);
 
-		const rowData = thisGrid.getRow(ev.rowKey);
+		const rowData = grid1.getRow(ev.rowKey);
 		const selCselUserId = rowData.CSEL_USER_ID;					  // 상담원ID
 		const currentUserLvl = currentUser?.user_fields?.user_lvl_mk; // 상담원등급
 		const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false; // 관리자유무
@@ -220,36 +219,17 @@ const createGrids = () => {
 		if (ZEN_TICKET_ID) topbarClient.invoke('routeTo', 'ticket', ZEN_TICKET_ID);
 	});
 
-	const grid1onFocus = ev => {
-
-		// 현재 페이지의 첫번째 rowKey를 알아내기 위해.
-		const pagination = ev.instance.getPagination();
-		const perPage = pagination._options.itemsPerPage;
-		const currentPage = pagination._currentPage;
-		const focusRowKey = (currentPage - 1) * perPage;
-
-		// 선택된 행이 없으면 모두 disabled
-		if(!ev.instance.focus(focusRowKey)) {
-			$("#button4").prop("disabled", true);	// 녹취매핑
-			$("#button5").prop("disabled", true);	// 녹취청취
-			$("#button6").prop("disabled", true);	// 결과
-			$("#button7").prop("disabled", true);	// 상담/입회수정
-			$("#button8").prop("disabled", true);	// 삭제
-		}
-
-	}
-
 	grid1.on("onGridUpdated", ev => {
-		$("#textbox4").val(ev.instance.getPaginationTotalCount());	// 조회건수
-		grid1onFocus(ev);
-	});
-
-	grid1.on("beforePageMove", ev => {
-		// getCsel(ev.page);
+		$("#textbox4").val(ev.instance.getPaginationTotalCount());
 	});
 
 	grid1.on("afterPageMove", ev => {
-		grid1onFocus(ev);
+		// 현재 페이지의 첫번째 rowKey를 알아내기 위해.
+		const pagination  = ev.instance.getPagination();
+		const perPage 	  = pagination._options.itemsPerPage;
+		const currentPage = pagination._currentPage;
+		const currentRowKey = (currentPage - 1) * perPage;
+		grid1FocusEvent(currentRowKey);
 	});
 
 	// 상담제품 grid
@@ -285,7 +265,7 @@ const setEvent = () => {
 			.then((succ) => { 
 				if (succ) {
 					alert("정상적으로 삭제 되었습니다."); 
-					getCsel(1); // 상담이력 재조회
+					onSearch(); // 상담이력 재조회
 				}
 			})
 			.catch((error) => {
@@ -295,6 +275,22 @@ const setEvent = () => {
 			})
 			.finally(() => loading.out());
 	});
+
+}
+
+const grid1FocusEvent = rowKey => {
+
+	// 선택된 행이 없으면 버튼 disabled
+	const isFocus = grid1.focus(rowKey);
+	if (!isFocus) {
+		$("#button4").prop("disabled", true);	// 녹취매핑
+		$("#button5").prop("disabled", true);	// 녹취청취
+		$("#button6").prop("disabled", true);	// 결과
+		$("#button7").prop("disabled", true);	// 상담/입회수정
+		$("#button8").prop("disabled", true);	// 삭제
+	}
+
+	return isFocus;
 
 }
 
@@ -635,25 +631,67 @@ const getCselCondition = (page, perPage) => {
 }
 
 /**
- * 상담조회
- * @param {number} page 
+ * 조회
+ * @param {boolean} isRefresh 재조회여부
  */
-const getCsel = (page) => {
-	
+var onSearch = async (isRefresh) => {
+
+	const selectedRowKey = grid1.getSelectedRowKey();
+	const sREFRESHKEY = isRefresh ? grid1.getValue(selectedRowKey, "REFRESHKEY") : "";
+
 	// 조회데이터 초기화
-	// grid1.resetData([]);
+	grid1.resetData([]);
 	grid2.resetData([]);
 	$("#form1")[0].reset();
 	calendarUtil.setImaskValue("txtPROC_HOPE_DATE", "");
 	calendarUtil.setImaskValue("txtPROC_DATE", "");
 
 	// 조회조건 체크
-	const perPage = grid1.getPaginationPerPage();
-	// const condition = getCselCondition(page, perPage);
 	const condition = getCselCondition();
-	if(!condition) return;
+	if (!condition) return;
 
-	// 상담조회 api call
+	// 상담조회
+	const cselData = await getCsel(condition);
+	grid1.resetData(cselData);
+
+	// 재조회키값이 존재하면 해당행 찾아서 focusing
+	let isFocus = false;
+	if (sREFRESHKEY) {
+
+		const gridData = grid1.getData();
+		const findData = gridData.find(el => el.REFRESHKEY == sREFRESHKEY);
+		const rowKey = findData?.rowKey;
+
+		if (rowKey) {
+
+			const totalCount = findData.TOTALCNT;
+			const perPage = grid1.getPaginationPerPage();
+			const page = parseInt((rowKey / perPage) + 1);
+	
+			grid1.resetData(cselData, {
+				pageState: {
+					page,
+					totalCount,
+					perPage,
+				}
+			});
+
+			isFocus = grid1FocusEvent(rowKey);
+
+		}
+		
+	}
+
+	// 재조회키값으로 선택한 행이 없으면 첫번째행 focusing
+	if (!isFocus) grid1FocusEvent(0);
+	
+}
+
+/**
+ * 상담조회
+ * @param {object} condition 조회조건
+ */
+const getCsel = (condition) => new Promise((resolve, reject) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getCsel.do`,
 		method: 'POST',
@@ -668,30 +706,19 @@ const getCsel = (page) => {
 		}),
 		errMsg: "상담조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-		const cselData = data.dsRecv;
-		const totalCount = (cselData.length > 0) ? cselData[0].TOTALCNT : 0;
-		// grid1.resetData(cselData, {
-		// 	pageState: {
-		// 		page,		 // Target page number.
-		// 		totalCount,	 // The total pagination count.
-		// 		perPage,	 // Number of rows per page.
-		// 	}
-		// });
-		grid1.resetData(cselData);
-	});	
-}
+	$.ajax(settings)
+		.done(data => {
+			if (!checkApi(data, settings)) return reject(new Error(getApiMsg(data, settings)));
+			return resolve(data.dsRecv || []);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
 
 /**
  * 상담조회 엑셀저장용
+ * @param {object} condition 조회조건
  */
-const getCselExcel = () => new Promise((resolve, reject) => {
-	// 조회조건 체크
-	const condition = getCselCondition();
-	if(!condition) return reject("");
-
-	// 상담조회 api call
+const getCselExcel = (condition) => new Promise((resolve, reject) => {
 	const settings = {
 		url: `${API_SERVER}/cns.getCselExcel.do`,
 		method: 'POST',
@@ -871,11 +898,18 @@ const createCselTable = data => {
 /**
  * 상담조회 엑셀저장
  */
-const saveExcelCsel = async () => {
-	const fileName = `상담조회(${getDateFormat()}).xls`;
-	const cselData = await getCselExcel();
+const onExcel = async () => {
+	
+	// 상담조회
+	const condition = getCselCondition();
+	if (!condition) return;
+	const cselData = await getCselExcel(condition);
 	const tableEl = createCselTable(cselData);
+
+	// 엑셀다운로드
+	const fileName = `상담조회(${getDateFormat()}).xls`;
 	tableToExcel(tableEl, fileName);
+
 }
 
 /**
