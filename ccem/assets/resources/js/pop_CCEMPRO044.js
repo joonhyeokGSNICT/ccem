@@ -15,6 +15,7 @@ var _searchedEmpList;	// 검색한 조직원 리스트(조회 후 트리에 맞�
 
 var _isChange; 			// 트리구조 내 리스트 변경여부 (기준 폐쇄기관의 체크 변경 확인)
 var _isEmpSearch; 		// 구성원 검색 시 (Ajax통신 사용)
+var _isSave;			// 사업국 저장시, 해당 트리로 바로 이동하기 위한 변수
 
 let hash = window.location.hash; // 구분처리
 /**
@@ -198,6 +199,7 @@ const _getList = {
 				var templist = response.dsRecv;
 				for(index in templist) {
 					templist[index].title = templist[index].DEPT_NAME;
+					templist[index].key = templist[index].DEPT_ID;
 				}
 				_openOrgList = templist;
 				_sortList.orgList(templist);
@@ -223,6 +225,7 @@ const _getList = {
 				var templist = response.dsRecv;
 				for(index in templist) {
 					templist[index].title = templist[index].DEPT_NAME;
+					templist[index].key = templist[index].DEPT_ID;
 				}
 				_closedOrgList = templist;
 			}, error: function (response) {
@@ -363,6 +366,13 @@ const _sortList = {
 
 		// 트리구조 삽입		
 		tree.reload(lv1List);
+
+		// 사업국 저장 후 선택한 노드 바로가기
+		if ( _isSave == true ) {
+			_isSave = false;
+			console.log(_selectedNode);
+			tree.getNodeByKey(_selectedNode.key).setActive();
+		}
 	},
 
 	/**
@@ -1080,6 +1090,7 @@ const _btn = {
 		var node = tree.getActiveNode();
 		_getList.saveZIPCNTS(param).then(function() {
 			_getList.orgList();
+			_isSave = true;
 		});
 	},
 
