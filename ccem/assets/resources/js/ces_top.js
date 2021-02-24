@@ -261,34 +261,36 @@ function userSearch() {
 					// 총 세번의 인입전화번호 캐치
 					if(sidebarClient != null){
 						sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
-							if(d != null && d != ""){
-								phone = d;
+							if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`] != null && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`] != ""){
+								phone = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`];
+								
+								console.log(phone);
+								
+								if(phone == "" || phone == null){
+									for(d of data['ticket'].requester.identities){
+										if(d.type == 'phone_number'){
+											phone = d.value;
+											console.log(phone);
+										}
+									}
+								}
+								if(phone == "" || phone == null){
+									phone = reqUser.user.phone;
+									console.log(phone);
+								}
+								setTimeout(function(){
+									if(phone != '' && phone != null){
+										$("#customerPhone").val(phone);
+										$("#customerPhoneCheck").prop('checked',true);
+									}
+									customerSearch("custSearchDiv","1");
+									//$("#customerPhone").val("");
+									//$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+								}, 500);
 							}
 						});
 					}
-					
-					if(phone == ""){
-						for(d of data['ticket'].requester.identities){
-							if(d.type == 'phone_number'){
-								phone = d.value;
-							}
-						}
-					}
-					if(phone == ""){
-						phone = reqUser.user.phone;
-					}
-					setTimeout(function(){
-						if(phone != '' && phone != null){
-							$("#customerPhone").val(phone);
-							$("#customerPhoneCheck").prop('checked',true);
-						}
-						customerSearch("custSearchDiv","1");
-						$("#customerPhone").val("");
-						$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
-					}, 500);
-				}
-				
-				if(currentTicketInfo.ticket.via.channel == "chat"){									// 인입경로가 chat 일 경우.
+				}else if(currentTicketInfo.ticket.via.channel == "chat"){									// 인입경로가 chat 일 경우.
 					if(sidebarClient != null){
 						sidebarClient.get(`ticket.requester.name`).then(function (d){
 							if(d != null && d != ""){
@@ -555,6 +557,27 @@ function gridReset(){
 		counselMainTeacher_classMemberGrid.clear();				// 상담메인 선생님 > 교실정보 > 교실별 회원정보 grid
 	}catch(e){
 		
+	}
+}
+
+function refreshGrid() {
+	switch($("#subMenuTabs").find('.active').attr('id')){
+	case 'customerCounselHist':
+		loadList('counselHist', counselMain_counselHist_grid);
+		// input 내용 삭제
+		$("#customerCounselHistTab").find("input:text").each( function () {
+	        $(this).val('');
+	    });
+		// span 내용 삭제
+		$("#customerCounselHistTab").find("span").not('.font-weight-bold').each( function () {
+	        $(this).text('');
+	    });
+		// textarea 내용 삭제
+		$("#customerCounselHistTab").find("textarea").each( function () {
+	        $(this).val('');
+	    });
+		counselMain_studyList_grid.clear();
+		break;
 	}
 }
 
@@ -3195,10 +3218,10 @@ function loadTeacherInfoMain() {
 }
 
 function smsOnClick(){
-	if(currentCustInfo.CUST_ID == null || currentCustInfo.CUST_ID == ""){
+	/*if(currentCustInfo.CUST_ID == null || currentCustInfo.CUST_ID == ""){
 		ModalUtil.modalPop("알림","고객조회를 먼저 해 주세요.");
 		return;
-	}
+	}*/
 	var user_grp = "";
 	
 	for(d of currentUserInfo.user.tags){

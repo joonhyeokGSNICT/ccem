@@ -3,7 +3,7 @@ $(function(){
 	// 상담메인 > 학습진행정보 grid
 	counselMain_studyProgressList_grid = new Grid({
 		el: document.getElementById('counselMain_studyProgressList_grid'),
-		bodyHeight: 200,
+		bodyHeight: 170,
 		rowHeaders: [{
             type: 'rowNum',
             header: "NO",
@@ -91,7 +91,7 @@ $(function(){
 	// 상담메인 > 상담이력 grid
 	counselMain_counselHist_grid = new Grid({
 		el: document.getElementById('counselMain_counselHist_grid'),
-		bodyHeight: 200,
+		bodyHeight: 100,
 		rowHeaders: [{
             type: 'rowNum',
             header: "NO",
