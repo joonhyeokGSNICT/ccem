@@ -140,7 +140,7 @@ class CustomRenderer {
  */
 class CustomIconRenderer {
     constructor(props) {
-        const { src, width, height, title } = props.columnInfo.renderer.options;
+        const { src, width, height, title, onClick } = props.columnInfo.renderer.options;
 
         const aEl = document.createElement('a');
         aEl.style = "cursor: pointer;"
@@ -152,6 +152,7 @@ class CustomIconRenderer {
         imgEl.title = title;
 
         aEl.append(imgEl);
+        aEl.onclick = () => onClick(props);
 
         this.el = aEl;
         this.render(props);
@@ -162,8 +163,7 @@ class CustomIconRenderer {
     }
 
     render(props) {
-        const { onClick } = props.columnInfo.renderer.options;
-        this.el.onclick = () => onClick(props);
+        
     }
 }
 
@@ -173,32 +173,32 @@ class CustomIconRenderer {
 class CustomRecRenderer {
 
     constructor(props) {
-        const record = props.value;
-        const rowData = props.grid.getRow(props.rowKey);
-
-        if (record == "MOREDATA") {
-            const el = document.createElement("button");
-            el.style = "padding: 0px;";
-            el.className = "btn btn-sm navBtn";
-            el.innerHTML = "선택청취";
-            el.onclick = () => PopupUtil.open("CCEMPRO047", 852, 240, "", rowData);
-            this.el = el;
-        } else if (record?.length == 18) {
-            const el = document.createElement("button");
-            el.style = "padding: 0px;";
-            el.className = "btn btn-sm navBtn";
-            el.innerHTML = "청취";
-            el.onclick = () => recordPlay(record);
-            this.el = el;
-        } else {
-            const el = document.createElement("div");
-            this.el = el;
-        }
-        
+        const el = document.createElement("button");
+        this.el = el;
+        this.render(props);
     }
 
     getElement() {
         return this.el;
+    }
+
+    render(props) {
+        const recordId = props.value;
+        const rowData = props.grid.getRow(props.rowKey);
+
+        if (recordId == "MOREDATA") {
+            this.el.style = "padding: 0px;";
+            this.el.className = "btn btn-sm navBtn";
+            this.el.innerHTML = "선택청취";
+            this.el.onclick = () => PopupUtil.open("CCEMPRO047", 852, 240, "", rowData);
+        } else if (recordId?.length == 18) {
+            this.el.style = "padding: 0px;";
+            this.el.className = "btn btn-sm navBtn";
+            this.el.innerHTML = "청취";
+            this.el.onclick = () => recordPlay(recordId);
+        } else {
+            this.el.style = "display:none;";
+        }
     }
 
 }
