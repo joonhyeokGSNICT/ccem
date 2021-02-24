@@ -221,8 +221,8 @@ function setGridTree() {
                         break;
 
                     case "plainTreeSelOrg" : 
-                        $("#counselSend_btn").addClass('invisible');
-                        $("#counselSave_btn").addClass('invisible');
+                        // $("#counselSend_btn").addClass('invisible');
+                        // $("#counselSave_btn").addClass('invisible');
                         break;
                 }
                 
@@ -261,7 +261,7 @@ function setGridTree() {
                         if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
                         break;
                     case "plainTreeSelOrg" : 
-                        $("#counselSend_btn").removeClass('invisible');
+                        // $("#counselSend_btn").removeClass('invisible');
                         break;
                 }
             } else if(data.node.data.LV == "3"){
@@ -297,7 +297,7 @@ function setGridTree() {
                         if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
                         break;
                     case "plainTreeSelOrg" : 
-                        $("#counselSend_btn").removeClass('invisible');
+                        // $("#counselSend_btn").removeClass('invisible');
                         break;
                 }
             } else if(data.node.data.LV == "4"){
@@ -333,7 +333,7 @@ function setGridTree() {
                         if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
                         break;
                     case "plainTreeSelOrg" : 
-                        $("#counselSend_btn").removeClass('invisible');
+                        // $("#counselSend_btn").removeClass('invisible');
                         break;
                 }
             }

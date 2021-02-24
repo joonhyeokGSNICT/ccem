@@ -140,7 +140,7 @@ function init(){
 			$("#counselSel_btn").addClass('invisible');
 			$("#counselDeSel_btn").addClass('invisible');
 			$("#counselSave_btn").addClass('d-none');
-			$("#counselSend_btn").addClass('invisible');
+			// $("#counselSend_btn").addClass('invisible');
 			$("#memSearch").closest('div').addClass('d-none');
 			$("#employee").closest('li').addClass('d-none');
 			$("#searchEmp_chk").closest('div').addClass('d-none');
@@ -880,6 +880,8 @@ const _btn = {
 					orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
 				} else if ( _selectedNode.data.LV =="3" ) {
 					orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
+				} else if ( _selectedNode.data.LV =="4" ) {
+					orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
 				}
 				orgList.PROC_DEPT_NAME = _selectedNode.data.DEPT_NAME;
 				orgList.EMP_NAME_LIST  = nameArray.join(', ')
@@ -946,13 +948,26 @@ const _btn = {
 					_isChange = false;
 				}
 			}
-	
+			
+			console.log($('#searchOrg_selectbox > option:selected').val());
+
 			// 검색 값 설정
 			var searchTxt = $('#searchOrg_txt').val();
 			if ( isEmpty(searchTxt) ) {										// 빈 값으로 검색하는 경우 : 전체 트리 표시
 				tree.clearFilter();
 				tree.expandAll(false);
-			} else if ( $('#searchOrg_radio1').prop("checked")==true ) { 	// 주소명 검색 : (광역시/도, 시/군/구/, 읍/면/동)
+			} 
+			else if ( $('#searchOrg_selectbox > option:selected').val() == '지점명') {
+				var txt = $.trim($('#searchOrg_txt').val());
+				var code = `node.data.DEPT_NAME.indexOf('`+txt+`') > -1`
+				tree.filterNodes( 
+					function(node) {
+						if ( !isEmpty(node.data.DEPT_NAME) ) {
+							return eval(code);
+						}
+					}, {mode : "hide"}
+				);
+			} else if ( $('#searchOrg_selectbox > option:selected').val() == '지점주소') {
 				var match = $.trim($('#searchOrg_txt').val());
 				tree.filterNodes( 
 					function(node) {
@@ -961,7 +976,7 @@ const _btn = {
 						}
 					}, {mode : "hide"}
 				);
-			} else if ( $('#searchOrg_radio2').prop("checked")==true ) {
+			} else if ( $('#searchOrg_selectbox > option:selected').val() == '관할주소') {
 				var txt = $.trim($('#searchOrg_txt').val());
 				_getList.boundAddrList(txt).then(function(resolvedData){
 					var code = '';
@@ -978,17 +993,47 @@ const _btn = {
 						}, {mode : "hide"}
 					);
 				})
-			} else {														// 본부/사업국/센터명
-				var txt = $.trim($('#searchOrg_txt').val());
-				var code = `node.data.DEPT_NAME.indexOf('`+txt+`') > -1`
-				tree.filterNodes( 
-					function(node) {
-						if ( !isEmpty(node.data.DEPT_NAME) ) {
-							return eval(code);
-						}
-					}, {mode : "hide"}
-				);
-			}
+			} 
+			
+
+
+			// else if ( $('#searchOrg_selectbox').prop("checked")==true ) { 	// 주소명 검색 : (광역시/도, 시/군/구/, 읍/면/동)
+			// 	var match = $.trim($('#searchOrg_txt').val());
+			// 	tree.filterNodes( 
+			// 		function(node) {
+			// 			if ( !isEmpty(node.data.ZIP_ADDR) ) {
+			// 				return node.data.ZIP_ADDR.indexOf(match) > -1;
+			// 			}
+			// 		}, {mode : "hide"}
+			// 	);
+			// } else if ( $('#searchOrg_radio2').prop("checked")==true ) {
+			// 	var txt = $.trim($('#searchOrg_txt').val());
+			// 	_getList.boundAddrList(txt).then(function(resolvedData){
+			// 		var code = '';
+			// 		for ( index in resolvedData ) {
+			// 			if ( index == resolvedData.length-1 ) code += 'node.data.DEPT_ID.indexOf(\''+resolvedData[index].DEPT_ID+'\') > -1'
+			// 			else code += 'node.data.DEPT_ID.indexOf(\''+resolvedData[index].DEPT_ID+'\') > -1 || '
+			// 		}
+			// 		// console.log(code);
+			// 		tree.filterNodes( 
+			// 			function(node) {
+			// 				if ( !isEmpty(node.data.DEPT_ID) ) {
+			// 					return eval(code);
+			// 				}
+			// 			}, {mode : "hide"}
+			// 		);
+			// 	})
+			// } else {														// 본부/사업국/센터명
+			// 	var txt = $.trim($('#searchOrg_txt').val());
+			// 	var code = `node.data.DEPT_NAME.indexOf('`+txt+`') > -1`
+			// 	tree.filterNodes( 
+			// 		function(node) {
+			// 			if ( !isEmpty(node.data.DEPT_NAME) ) {
+			// 				return eval(code);
+			// 			}
+			// 		}, {mode : "hide"}
+			// 	);
+			// }
 		} // 구성원 선택시 검색
 		else {
 			_isEmpSearch = true;
@@ -1048,7 +1093,7 @@ const _btn = {
 		$('#searchEmpNM_input').val("");
 		$('#searchEmp_selectbox').val("전체");
 		$('#deptSearch').click();
-		$('#searchOrg_radio1').click();
+		$('#searchOrg_radio3').click();
 		$('#searchEmpNM_chk').prop("checked",false);
 		$('#searchEmpOrgNM_chk').prop("checked",false);
 		$('#searchEmp_chk').prop("checked",true);
@@ -1154,7 +1199,21 @@ function getSelOrg() {
 			orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
 			orgList.LC_NAME = "";
 			orgList.TELPNO_LC = "";
-		} 
+		} else if ( _selectedNode.data.LV =="1" )  {
+			orgList.DIV_KIND_CDE = _selectedNode.data.BRAND_ID;
+			orgList.LC_ID = "";
+			orgList.LC_EMP_ID = "";
+			orgList.DIV_CDE = _selectedNode.data.DEPT_ID;
+			orgList.UPDEPTNAME = _selectedNode.data.DEPT_NAME;
+			orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+			orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+			orgList.DEPT_ID = "";
+			orgList.DEPT_NAME = "";
+			orgList.DEPT_EMP_ID = "";
+			orgList.TELPNO_DEPT = "";
+			orgList.LC_NAME = "";
+			orgList.TELPNO_LC = "";
+		}
 	} else {
 		if ( _selectedNode.data.LV =="3" ) {
 			orgList.BRAND_ID = _selectedNode.data.BRAND_ID;

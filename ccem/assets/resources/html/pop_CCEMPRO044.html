@@ -82,7 +82,13 @@
 					</td>
 					<td>
 						<div id="deptSearchRadio" style="margin-left:15px;">
-							<div class="form-check-inline">
+							<select class="" id="searchOrg_selectbox"  style="width: 25%; border: 1px solid #ced4da; border-radius: .25rem;">
+								<option value="지점명" selected="selected">지점명</option>
+								<option value="지점주소">지점주소</option>
+								<option value="관할주소">관할주소</option>
+							</select>
+							<!-- 라디오버튼 -->
+							<!-- <div class="form-check-inline">
 								<label class="form-check-label">
 								<input type="radio" class="form-check-input" name="dept_searchType" id="searchOrg_radio3" checked>본부/사업국/센터명
 								</label>
@@ -96,8 +102,8 @@
 								<label class="form-check-label">
 								<input type="radio" class="form-check-input" name="dept_searchType" id="searchOrg_radio2" >관할주소
 								</label>
-							</div>
-							<div class="form-check-inline"  style="width:21%;">
+							</div> -->
+							<div class="form-check-inline"  style="margin-left:-4px; width:60%; max-width: 270px;">
 								<input type="text" class="form-control form-control-sm" id="searchOrg_txt">
 							</div>
 						</div>
