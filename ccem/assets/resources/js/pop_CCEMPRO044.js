@@ -995,8 +995,7 @@ const _btn = {
 				})
 			} 
 			
-
-
+			// 라디오버튼
 			// else if ( $('#searchOrg_selectbox').prop("checked")==true ) { 	// 주소명 검색 : (광역시/도, 시/군/구/, 읍/면/동)
 			// 	var match = $.trim($('#searchOrg_txt').val());
 			// 	tree.filterNodes( 
