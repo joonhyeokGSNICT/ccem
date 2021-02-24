@@ -510,6 +510,10 @@ $(function(){
 			if(ev.targetType == 'cell'){
 				counselMain_studyTab_asignStuff.addSelection(ev);
 				counselMain_studyTab_asignStuff.clickSort(ev);
+				if(ev.columnName == 'TRANS_DOCNO'){
+					var sendNum = counselMain_studyTab_asignStuff.getRow(ev.rowKey).TRANS_DOCNO;
+					window.open('http://nexs.cjgls.com/web/detail.jsp?slipno='+sendNum,'sendStatus','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');	// 송장번호 조회
+				}
 			}
 	    });
 });
