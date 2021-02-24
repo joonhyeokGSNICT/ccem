@@ -1,0 +1,109 @@
+<!-- 
+	화면ID : CCEM-PRO-096
+		공통 - 조회 - [팝업] 고객 직접 퇴회조회
+	AS-IS : [CNS7200] 고객직접퇴회 조회
+
+	팝업사이즈
+		width: 1110, height: 610 
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[팝업] 입회조회</title>
+	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
+	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet"/>
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet"/>
+	<link rel="stylesheet" href="../lib/multiple-select/css/multiple-select.min.css">
+	<link rel="stylesheet" href="../lib/multiple-select/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/ces_top.css">
+</head>
+<body>
+	<div class="container customBody">
+		<div class="row" style="background: #123f8a; height: 35px;">
+			<div class="col-2">
+				<div class="input-group mt-2">
+					<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i> 총 신청과목수 :&nbsp;</span>
+					<input type="text" class="form-control form-control-sm" id="totalCnt">
+				</div>
+			</div>
+			<div class="col text-right">
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="onSearch();">조 회</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="excelExport(grid,'고객직접퇴회 Excel_'+getToday(0),'tableExcel')">엑셀저장</button>&nbsp;
+				<button type="button" class="btn btn-primary btn-sm baseLineMid ccemBtn" onclick="window.close()">닫 기</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col">
+				<table class="table table-xs table-bordered mt-2">
+					<colgroup>
+						<col span="1" style="width: 10%;">
+						<col span="1" style="width: 23%;">
+						<col span="1" style="width: 10%;">
+						<col span="1" style="width: 23%;">
+						<col span="1" style="width: 10%;">
+						<col span="1" style="width: 23%;">
+					</colgroup>
+					<tr>
+						<th>
+							<div class="form-check ml-1">
+								<input class="form-check-input" type="checkbox" id="calendarDateCheck" disabled>
+								<label class="form-check-label" for="checkbox1">등록일시</label>
+							</div>
+						</th>
+						<td colspan="1">
+							<div class="input-group">
+								<input type="text" class="form-control form-control-sm calendar searchInputCheck_dt" id="calendar_st">
+								<span class="ml-1 mr-1">~</span> 
+								<input type="text" class="form-control form-control-sm calendar searchInputCheck_dt" id="calendar_ed"/>
+							</div>
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="custQuit_mNumCheck">회원번호
+							</label>
+						</th>
+						<td>
+							<input type="text" class="form-control form-control-sm searchInputCheck" id="custQuit_mNum" name="searchInputCheck" maxlength="20" autocomplete="off">
+							<!-- INPUT -->
+						</td>
+						<th class="tdCheck thCheck" colspan="">
+							<label class="form-check-label"> <input type="checkbox" class="form-check-input" value="" id="custQuit_genTypeCheck">생성여부
+							</label>
+						</th>
+						<td colspan="">
+							<select class="form-control form-control-sm searchInputCheck" id="custQuit_genType" name="">
+								<!-- INPUT -->
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row"><div class="col"><div id="grid"></div></div></div>
+		<div id="Excel_div" style="display: none;">
+			<table id="tableExcel">
+
+			</table>
+		</div>
+	</div>
+
+	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
+	<script src="../lib/toast-grid/js/tui-pagination.js"></script>
+	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/imask.js"></script>
+    <script src="../lib/moment.min.js"></script>
+	<script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
+	<script src="../lib/multiple-select/js/multiple-select.min.js"></script>
+	<script src="../js/config.js"></script>
+	<script src="../js/ces_util.js"></script>
+	<script src="../js/pop_CCEMPRO096.js"></script>
+
+</body>
+</html>

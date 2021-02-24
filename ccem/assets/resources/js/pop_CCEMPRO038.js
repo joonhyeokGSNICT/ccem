@@ -658,7 +658,7 @@ const onDataMove = async () => {
 		Accept_Dt = iRowSource.CSEL_DATE;
 		sCustId = iRowSource.MBR_ID;
 
-		if(sCustId.length > 0) {
+		if(sCustId?.length > 0) {
 			// BW 조회
 			if(!(await getSearchRFC(sCustId))){			// 주간 학습이력 있는지?
 				bError = true;
@@ -1048,8 +1048,8 @@ async function setErrorDataMoveExension(){
 		errMbrId = v.MBR_ID;
 		errPhone = v.TEL_NO;
 		
-		phoneLen = errPhone.length;
-		errPhone = errPhone.substring(phoneLen-4,phoneLen);
+		phoneLen = errPhone?.length;
+		errPhone = errPhone?.substring(phoneLen-4,phoneLen);
 /*
 		DS_CNS4906.AddRow();
 
