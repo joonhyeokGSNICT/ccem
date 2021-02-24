@@ -1898,6 +1898,9 @@ const saveCselResult = (condition) => {
         // 저장성공시 
         updateTicket(condition.DS_TICKET); // 티켓업데이트
         onSearch();                        // 재조회
+        if (opener?.name == "CCEMPRO022") opener?.onSearch();       // 상담화면 재조회
+        if (opener?.name == "CCEMPRO035") opener?.onSearch(true);   // 조회화면 재조회
+        topbarObject?.refreshGrid();                                // 탑바화면 재조회
         alert("저장 되었습니다.");
 
     });
