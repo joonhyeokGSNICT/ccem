@@ -1,5 +1,6 @@
 let currentUser;		// 현재 사용중인 유저의 정보(ZENDESK)
 let topbarClient;
+let topbarObject;
 
 let grid1, grid2;
 
@@ -103,14 +104,14 @@ const createGrids = () => {
 		],
 	});
 
-	grid1.on("focusChange", (ev) => {
+	grid1.on("focusChange", async (ev) => {
 		ev.instance.addSelection(ev);
 		
 		const rowData = ev.instance.getRow(ev.rowKey);
 
 		// 입회건인 경우 제목 세팅
 		if (rowData.PROC_MK == "5" && !rowData.CSEL_TITLE) {
-			ev.instance.setValue(ev.rowKey, "CSEL_TITLE", "입회상담");
+			rowData.CSEL_TITLE = "입회상담";
 		}
 
 		// 상담정보 세팅
@@ -123,11 +124,44 @@ const createGrids = () => {
 		$("#textbox7").val(rowData.CSEL_TITLE);	// 제목
 		$("#textbox8").val(rowData.CSEL_CNTS);	// 상담내용
 
+		// 연계대상자 세팅
+		if (!rowData.LC_ID) {
+			rowData.EMP_ID_LIST 	= rowData.DEPT_EMP_ID;			// 지점장 ID
+			rowData.EMP_NAME_LIST 	= rowData.DEPT_EMP_NAME;		// 지점장명
+			rowData.EMP_PHONE_LIST 	= rowData.DEPT_EMP_MOBILNO;		// 지점장휴대폰
+		} else {
+			rowData.EMP_ID_LIST 	= rowData.LC_EMP_ID;			// 센터장 ID
+			rowData.EMP_NAME_LIST 	= rowData.LC_EMP_NAME;			// 센터장명
+			rowData.EMP_PHONE_LIST 	= rowData.LC_EMP_MOBILNO;		// 센터장휴대폰
+		}
+		if (rowData.TRANS_DATE && rowData.TRANS_NO) {
+			const { DS_TRANS_EMP } = await getEnterData(rowData.TRANS_DATE, rowData.TRANS_NO);
+			if (DS_TRANS_EMP?.length > 0) {
+				rowData.EMP_ID_LIST 	= DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
+				rowData.EMP_NAME_LIST 	= DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+				rowData.EMP_PHONE_LIST 	= DS_TRANS_EMP.map(el => el.TRANS_EMP_MOBILNO).join(", ");
+			}
+		}
+
+		// 입회정보 세팅
+		$("#selectbox3").val(rowData.PROC_STS_MK);							// 처리상태구분
+		$("#selectbox1").val(rowData.RTN_FLAG || "0");						// 회신여부(초기값 "0" : 없음)
+		$("#textbox15").val(rowData.CSEL_USER);								// 상담원
+		calendarUtil.setImaskValue("calendar1", rowData.TRANS_DATE);		// 일시1
+		$("#timebox1").val(rowData.TRANS_TIME);								// 일시2
+		calendarUtil.setImaskValue("calendar3",  rowData.PROC_HOPE_DATE);	// 처리희망일
+		setTransDisPlay(rowData);
+
+		// 처리상태구분 세팅
+		if (!rowData.PROC_STS_MK || rowData.PROC_STS_MK == "01") {
+			if (rowData.PROC_MK == "5") $("#selectbox3").val("99");	// 입회건인 경우 무조건 완료로 셋팅한다.
+			else $("#selectbox3").val("03"); // 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
+		}
+
 	});
 
 	grid1.on("click", (ev) => {
 		ev.instance.clickSort(ev);
-		ev.instance.clickCheck(ev);
 	});
 
 	grid1.on("onGridUpdated", (ev) => {
@@ -136,7 +170,7 @@ const createGrids = () => {
 		const gridData   	= ev.instance.getData();
 		const filterData 	= gridData.filter(el => sCSEL_SEQ.includes(String(el.CSEL_SEQ)));
 		filterData.forEach((el, i) => {
-			if (i == 0) grid1.focus(el.rowKey); // 첫번째 행 포커스
+			if (i == 0) grid1.focus(el.rowKey); // 첫번째 SEQ 포커스
 			grid1.check(el.rowKey);
 		});
 		
@@ -225,6 +259,7 @@ const onStart = async () => {
 	// 상담등록 화면에서 오픈했을때.
 	if (opener_name == "CCEMPRO022") {
 		currentUser = opener.currentUser;
+		topbarObject = opener.topbarObject;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
 		sPROC_MK 	= opener.document.getElementById("selectbox4").value;
@@ -237,6 +272,7 @@ const onStart = async () => {
 	// 입회등록 화면에서 오픈했을때.
 	} else if (opener_name == "CCEMPRO031") {
 		currentUser = opener.currentUser;
+		topbarObject = opener.topbarObject;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
 		sPROC_MK 	= "5";
@@ -249,6 +285,7 @@ const onStart = async () => {
 	// 선생님소개 화면에서 오픈했을때.
 	} else if (opener_name == "CCEMPRO032") {
 		currentUser = opener.currentUser;
+		topbarObject = opener.topbarObject;
 		topbarClient = opener.topbarClient;
 		setCodeData(opener.codeData);
 		sPROC_MK 	= opener.document.getElementById("selectbox9").value;
@@ -355,56 +392,9 @@ var setTransDisPlay = (data) => {
  */
 const onSearch = async () => {
 
-	const { DS_TRANS, DS_TRANS_EMP } = await getCselTrans(sCSEL_DATE, sCSEL_NO, sPROC_MK);
-
-	// 고객정보 grid - 상담정보 세팅
-	grid1.resetData(DS_TRANS || []);
-	
-	// 연계정보 세팅
-	let transData;
-	if (DS_TRANS?.length > 0) {
-		const fTrans = DS_TRANS.find(el => String(el.CSEL_SEQ) == String(sCSEL_SEQ[0]));
-		transData = fTrans || DS_TRANS[0];
-	} else {
-		transData = new Object();
-	}
-	$("#selectbox3").val(transData.PROC_STS_MK);						// 처리상태구분
-	$("#selectbox1").val(transData.RTN_FLAG || "0");					// 회신여부(초기값 "0" : 없음)
-	$("#textbox15").val(transData.CSEL_USER);							// 상담원
-	calendarUtil.setImaskValue("calendar1", transData.TRANS_DATE);		// 일시1
-	$("#timebox1").val(transData.TRANS_TIME);							// 일시2
-	calendarUtil.setImaskValue("calendar3",  transData.PROC_HOPE_DATE);	// 처리희망일
-	setTransDisPlay(transData);
-
-	// 처리상태구분 세팅
-	if (!transData.PROC_STS_MK || transData.PROC_STS_MK == "01") {
-		if (transData.PROC_MK == "5") $("#selectbox3").val("99");	// 입회건인 경우 무조건 완료로 셋팅한다.
-		else $("#selectbox3").val("03"); // 입회건을 제외하고, 연계가 처음인 경우 무조건 지점처리중으로 셋팅한다.
-	}
-
-	// 연계대상자 세팅
-	let ids = ""; 	
-	let names = ""; 	
-	let mobilnos = ""; 
-	if (DS_TRANS_EMP?.length > 0) {
-		ids 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
-		names 	 = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
-		mobilnos = DS_TRANS_EMP.map(el => el.TRANS_EMP_MOBILNO).join(", ");
-	// 조회된 연계대상자가 없으면 상담정보의 지점/센터장의 정보로 세팅
-	} else {
-		if (!transData.LC_ID) {
-			ids 	 = transData.DEPT_EMP_ID;		// 지점장 ID
-			names 	 = transData.DEPT_EMP_NAME;		// 지점장명
-			mobilnos = transData.DEPT_EMP_MOBILNO;	// 지점장휴대폰
-		} else {
-			ids 	 = transData.LC_EMP_ID;			// 센터장 ID
-			names 	 = transData.LC_EMP_NAME;		// 센터장명
-			mobilnos = transData.LC_EMP_MOBILNO;	// 센터장휴대폰
-		}
-	}
-	$("#hiddenbox8").val(ids);
-	$("#textbox17").val(names);	
-	$("#hiddenbox9").val(mobilnos);
+	// 상담/연계정보 조회
+	const { DS_TRANS } = await getCselTrans(sCSEL_DATE, sCSEL_NO, sPROC_MK);
+	grid1.resetData(DS_TRANS);
 
 	// 상담과목 조회
 	grid2.clear();
@@ -442,8 +432,8 @@ const getCselTrans = (CSEL_DATE, CSEL_NO, PROC_MK) => new Promise((resolve, reje
 	$.ajax(settings)
 		.done(res => {
 			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
-			const DS_TRANS = res.dsRecv1; 		// 상담연계정보
-			const DS_TRANS_EMP = res.dsRecv2;	// 연계대상자정보
+			const DS_TRANS = res.dsRecv1 	 || []; // 상담연계정보
+			const DS_TRANS_EMP = res.dsRecv2 || [];	// 연계대상자정보
 			return resolve({ DS_TRANS, DS_TRANS_EMP });
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
@@ -475,6 +465,39 @@ const getCselProd = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => new Promise((resolve, reje
 		.done(res => {
 			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 			return resolve(res.dsRecv);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+	
+});
+/**
+ * 
+ * 연계정보 조회
+ * @param {string} TRANS_DATE 연계일자
+ * @param {string} TRANS_NO   연계번호
+ */
+const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => {
+
+	const settings = {
+		url: `${API_SERVER}/cns.getEnterData.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담연계",
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv1", "dsRecv2"],
+			dsSend: [{ TRANS_DATE, TRANS_NO }],
+		}),
+		errMsg: "연계정보 조회중 오류가 발생하였습니다.",
+	}
+
+	$.ajax(settings)
+		.done(res => {
+			if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+			const DS_TRANS_DEPT = res.dsRecv1 || [];  // 지점연계정보
+			const DS_TRANS_EMP  = res.dsRecv2 || [];  // 지점연계대상자 정보
+			return resolve({ DS_TRANS_DEPT, DS_TRANS_EMP});
 		})
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 	
@@ -528,10 +551,10 @@ const onAppSMSSend = async () => {
 		if (!confirm("이미 발송하였습니다. 그래도 발송하시겠습니까?")) return false;
 	}
 	
-	await saveTrans(transData);			// 연계정보저장API 호출
-	await updateTicket(transData);		// 티켓업데이트
-	await saveTransSms(smsData);		// SMS전송API 호출
-	opener?.onSearch();					// 상담화면 재조회
+	await saveTrans(transData);		// 연계정보저장API 호출
+	await updateTicket(transData);	// 티켓업데이트
+	await saveTransSms(smsData);	// SMS전송API 호출
+	refreshDisplay();				// 오픈된 화면 재조회
 
 	return true;
 }
@@ -567,7 +590,7 @@ const onAppSend = async () => {
 
 	await saveTrans(transData);			// 연계정보저장API 호출
 	await updateTicket(transData);		// 티켓업데이트
-	opener?.onSearch();					// 상담화면 재조회
+	refreshDisplay();					// 오픈된 화면 재조회
 
 	return true;
 }
@@ -806,7 +829,7 @@ const onSMSSend = async () => {
 	}
 
 	await saveTransSms(sendData);	// SMS전송API 호출
-	opener?.onSearch();				// 상담화면 재조회
+	refreshDisplay();				// 오픈된 화면 재조회
 
 	return true;
 }
@@ -1063,7 +1086,7 @@ const onFAXSend = async () => {
 	await saveTrans(transData);		// 연계정보저장API 호출
 	await updateTicket(transData);	// 티켓업데이트
 	await addTransSendFax(faxData);	// 팩스발송API 호출
-	opener?.onSearch();				// 상담화면 재조회
+	refreshDisplay();				// 오픈된 화면 재조회
 
 	return true;
 }
@@ -1185,4 +1208,14 @@ const openCCEMPRO044 = (keyCode) => {
 	if (keyCode == 13) {
 		PopupUtil.open("CCEMPRO044", 1145, 475);
 	}
+}
+
+/**
+ * 오픈된 화면 재조회
+ */
+const refreshDisplay = () => {
+	opener?.onSearch();														// 상담/입회/선생님소개 등록화면 재조회
+	if (opener?.opener?.name == "CCEMPRO035") opener.opener.onSearch(true);	// 상담조회화면 재조회
+	if (opener?.opener?.name == "CCEMPRO037") opener.opener.onSearch();		// 입회조회화면 재조회
+	topbarObject?.refreshGrid();											// 탑바화면 재조회
 }

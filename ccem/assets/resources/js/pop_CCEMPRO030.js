@@ -1898,9 +1898,7 @@ const saveCselResult = (condition) => {
         // 저장성공시 
         updateTicket(condition.DS_TICKET); // 티켓업데이트
         onSearch();                        // 재조회
-        if (opener?.name == "CCEMPRO022") opener?.onSearch();       // 상담화면 재조회
-        if (opener?.name == "CCEMPRO035") opener?.onSearch(true);   // 조회화면 재조회
-        topbarObject?.refreshGrid();                                // 탑바화면 재조회
+        refreshDisplay();                  // 오픈된 화면 재조회
         alert("저장 되었습니다.");
 
     });
@@ -1946,4 +1944,14 @@ const updateTicket = (DS_TICKET) => {
 
     return topbarClient.request(option);
 
+}
+
+/**
+ * 오픈된 화면 재조회
+ */
+const refreshDisplay = () => {
+    if (opener?.name == "CCEMPRO022") opener.onSearch();                    // 상담등록화면 재조회
+    if (opener?.name == "CCEMPRO035") opener.onSearch(true);                // 상담조회화면 재조회
+	if (opener?.opener?.name == "CCEMPRO035") opener.opener.onSearch(true);	// 상담조회화면 재조회
+    topbarObject?.refreshGrid();                                            // 탑바화면 재조회
 }
