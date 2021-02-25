@@ -191,31 +191,31 @@ var custInfoStatus;
 //sideBar client 받기
 client.on("getSidebarClient", function(sidebarClient_d) {
 	sidebarClient = client.instance(sidebarClient_d);
-	initAll();															// 전체 초기화
-	setTimeout(function(){
-		sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-			currentTicketInfo = data;
+	sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+		currentTicketInfo = data;
+		if(currentCustInfo.CUST_ID != currentTicketInfo.ticket.requester.externalId){
+			initAll();															// 전체 초기화
 			userSearch();												// 고객 검색
-			if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
-				if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
-					if(currentTicketInfo.ticket.via.channel == 'chat'){					// currentTicketInfo.ticket.tags.includes("in") || 
-						topBarClient.invoke("popover");					// 탑바 열기
-					}
-				}else {
-					topBarClient.invoke('popover','hide');				// 탑바 닫기
-				};
+		}
+		if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
+			if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
+				if(currentTicketInfo.ticket.via.channel == 'chat'){					// currentTicketInfo.ticket.tags.includes("in") || 
+					topBarClient.invoke("popover");					// 탑바 열기
+				}
 			}else {
-				sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
-					if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
-						topBarClient.invoke("popover");					// 탑바 열기
-					}else {
-						topBarClient.invoke('popover','hide');
-					}
-				});
-				
-			}
-		});
-	}, 500);
+				topBarClient.invoke('popover','hide');				// 탑바 닫기
+			};
+		}else {
+			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+				if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+					topBarClient.invoke("popover");					// 탑바 열기
+				}else {
+					topBarClient.invoke('popover','hide');
+				}
+			});
+			
+		}
+	});
 });
 // 티켓이 열림
 client.on("ticketReady", function(){
@@ -284,8 +284,8 @@ function userSearch() {
 										$("#customerPhoneCheck").prop('checked',true);
 									}
 									customerSearch("custSearchDiv","1");
-									//$("#customerPhone").val("");
-									//$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+									$("#customerPhone").val("");
+									$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 								}, 500);
 							}
 						});
@@ -561,24 +561,46 @@ function gridReset(){
 }
 
 function refreshGrid() {
-	switch($("#subMenuTabs").find('.active').attr('id')){
-	case 'customerCounselHist':
-		loadList('counselHist', counselMain_counselHist_grid);
+	switch($("#mainMenuTabs").find('.active').attr('id')){
+	case 'customerTab':
+		
+		switch($("#subMenuTabs").find('.active').attr('id')){
+		case 'customerCounselHist':
+			loadList('counselHist', counselMain_counselHist_grid);
+			// input 내용 삭제
+			$("#customerCounselHistTab").find("input:text").each( function () {
+		        $(this).val('');
+		    });
+			// span 내용 삭제
+			$("#customerCounselHistTab").find("span").not('.font-weight-bold').each( function () {
+		        $(this).text('');
+		    });
+			// textarea 내용 삭제
+			$("#customerCounselHistTab").find("textarea").each( function () {
+		        $(this).val('');
+		    });
+			counselMain_studyList_grid.clear();
+			break;
+		}
+		
+		break;
+	case 'teacherTab':
 		// input 내용 삭제
-		$("#customerCounselHistTab").find("input:text").each( function () {
-	        $(this).val('');
-	    });
+		$("#tchrTabCounselDetail").find("input:text").each( function () {
+			$(this).val('');
+		});
 		// span 내용 삭제
-		$("#customerCounselHistTab").find("span").not('.font-weight-bold').each( function () {
-	        $(this).text('');
-	    });
+		$("#tchrTabCounselDetail").find("span").not('.font-weight-bold').each( function () {
+			$(this).text('');
+		});
 		// textarea 내용 삭제
-		$("#customerCounselHistTab").find("textarea").each( function () {
-	        $(this).val('');
-	    });
-		counselMain_studyList_grid.clear();
+		$("#tchrTabCounselDetail").find("textarea").each( function () {
+			$(this).val('');
+		});
+		loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 선생님 상담이력 조회
 		break;
 	}
+	
 }
 
 /**
