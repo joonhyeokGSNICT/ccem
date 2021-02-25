@@ -198,7 +198,7 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 			userSearch();												// 고객 검색
 			if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
 				if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
-					if(currentTicketInfo.ticket.tags.includes("in") || currentTicketInfo.ticket.via.channel == 'chat'){
+					if(currentTicketInfo.ticket.via.channel == 'chat'){					// currentTicketInfo.ticket.tags.includes("in") || 
 						topBarClient.invoke("popover");					// 탑바 열기
 					}
 				}else {
