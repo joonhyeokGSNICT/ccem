@@ -646,6 +646,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
             DS_DEPT_PROC.TRANS_DEPT_ID  =   DS_COUNSEL.DEPT_ID;         // 연계지점
             DS_DEPT_PROC.TRANS_TITLE    =   DS_COUNSEL.CSEL_TITLE;      // 연계 제목
             DS_DEPT_PROC.TRANS_CNTS     =   DS_COUNSEL.CSEL_CNTS;       // 연계 내용
+            DS_DEPT_PROC.TRANS_CHNL_MK  =   "1";                        // 연계방법(1: 전화)
             DS_DEPT_PROC.PROC_HOPE_DATE =   DS_COUNSEL.PROC_HOPE_DATE;  // 처리희망일
             DS_DEPT_PROC.PROC_TIME      =   "";                         // 처리시간                        
         }
