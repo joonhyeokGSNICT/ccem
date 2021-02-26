@@ -1533,6 +1533,7 @@ const onSave = (sBtnMk) => {
     
     if (DS_DEPT_PROC.ROW_TYPE != "N" || DS_HPCALL1.ROW_TYPE != "N" || DS_HPCALL2.ROW_TYPE != "N" || DS_GIFT.ROW_TYPE != "N" || sBtnMk == "CO") {
         const condition = getSaveCondition(sBtnMk);
+        if (!condition) return;
         saveCselResult(condition);
     }
 }
@@ -1710,7 +1711,7 @@ const getGiftValidityCheck = () => {
  */
 const getSaveCondition = (sBtnMk) => {
     const data = {
-        // 지점처리정보 데이터
+        // 지점처리 정보
         DS_TRANS: {
             ROW_TYPE         : DS_DEPT_PROC.ROW_TYPE,                   // 저장구분(I/U/D)
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                    // 상담일자
@@ -1738,7 +1739,7 @@ const getSaveCondition = (sBtnMk) => {
             DEPT_ACP_DATE   : calendarUtil.getImaskValue("calendar2"),  // 지점점수일자
             DEPT_ACP_TIME   : $("#timebox1").val(),                     // 지점접수시간 
         },
-        // 해피콜1차 정보 데이터
+        // 해피콜1차 정보 
         DS_HPCALL1: {
             ROW_TYPE         : DS_HPCALL1.ROW_TYPE,                      // 저장구분(I/U/D)  
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                     // 상담일자
@@ -1755,7 +1756,7 @@ const getSaveCondition = (sBtnMk) => {
             // GIFT_DATE        : "",
             // GIFT_NO          : "",
         },
-        // 해피콜2차 정보 데이터
+        // 해피콜2차 정보
         DS_HPCALL2: {
             ROW_TYPE         : DS_HPCALL2.ROW_TYPE,                      // 저장구분(I/U/D)
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                     // 상담일자      
@@ -1768,7 +1769,7 @@ const getSaveCondition = (sBtnMk) => {
             HPCALL_USER_ID   : currentUser.external_id,                  // 해피콜상담원ID          
             SATIS_CDE        : $("#selectbox3").val(),                   // 고객만족도      
         },
-        // 사은품 정보 데이터
+        // 사은품 정보
         DS_GIFT: {
             ROW_TYPE         : DS_GIFT.ROW_TYPE,                         // 저장구분(I/U/D)
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                     // 상담일자       
@@ -1786,10 +1787,10 @@ const getSaveCondition = (sBtnMk) => {
             PASS_USER        : $("#textbox31").val().trim(),             // 전달자       
             INVOICENUM       : $("#textbox32").val().trim(),             // 택배송장번호       
         },
-        // 젠데스크 티켓 데이터
+        // 티켓 정보
         DS_TICKET: {
             ZEN_TICKET_ID    : DS_COUNSEL.ZEN_TICKET_ID,                 // 티켓ID
-            GIFT_ROW_TYPE    : DS_GIFT.ROW_TYPE,                         // 사은품 저장구분(I/U/D)
+            GIFT_ROW_TYPE    : "",                                       // 사은품 저장구분(I/U/D)
             GIFT_CHNL_MKNM   : $("#selectbox7 option:selected").text(),  // 전달경로이름 
             GIFT_NAME        : $("#selectbox6 option:selected").text(),  // 사은품명
             GIFT_PRICE       : calendarUtil.getImaskValue("textbox30"),  // 사은품가격
@@ -1797,9 +1798,14 @@ const getSaveCondition = (sBtnMk) => {
             PASS_USER        : $("#textbox31").val().trim(),             // 전달자
             INVOICENUM       : $("#textbox32").val().trim(),             // 택배송장번호
             IS_HAPY          : $("#checkbox4").is(":checked"),           // 해피콜여부
+            PROC_STS_MK      : "",                                       // 처리상태구분
+            HPCALL1_ROW_TYPE : "",                                       // 1차해피콜 저장구분(I/U/D)
+            HPCALL2_ROW_TYPE : "",                                       // 2차해피콜 저장구분(I/U/D)
+            BTN_MK           : sBtnMk,                                   // 버튼구분(CO: 완료, SA: 저장)
         },
     }
 
+    // 처리상태 세팅
     // 완료 버튼을 클릭한 경우
     if (sBtnMk == "CO") {
         if (DS_COUNSEL.PROC_STS_MK == "99") { // 이미 완료인 경우
@@ -1823,9 +1829,9 @@ const getSaveCondition = (sBtnMk) => {
         } else {  // 접수, 지점처리중은는 완료할 수 없다... 버튼에서 컨트롤함.
             data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
         }
-    }
+
     // 저장 버튼을 클릭한 경우
-    else if (sBtnMk == "SA") {
+    } else if (sBtnMk == "SA") {
         if (DS_COUNSEL.PROC_STS_MK == "03" || DS_COUNSEL.PROC_STS_MK == "01") { // 지점처리중인 경우                
             if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                    
                 data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
@@ -1866,6 +1872,12 @@ const getSaveCondition = (sBtnMk) => {
 		data.DS_TRANS.DEPT_ACP_DATE = getDateFormat().replace(/[^0-9]/gi, '');
 		data.DS_TRANS.DEPT_ACP_TIME = getTimeFormat().replace(/[^0-9]/gi, '');
 	}
+
+    // 티켓정보 세팅
+    data.DS_TICKET.PROC_STS_MK = data.DS_TRANS.PROC_STS_MK;     // 처리상태
+    data.DS_TICKET.GIFT_ROW_TYPE = data.DS_GIFT.ROW_TYPE;       // 사은품 저장구분
+    data.DS_TICKET.HPCALL1_ROW_TYPE = data.DS_HPCALL1.ROW_TYPE; // 1차해피콜 저장구분
+    data.DS_TICKET.HPCALL2_ROW_TYPE = data.DS_HPCALL2.ROW_TYPE; // 2차해피콜 저장구분
 
     return data;
 
@@ -1912,7 +1924,7 @@ const updateTicket = (DS_TICKET) => {
     
     if (!DS_TICKET.ZEN_TICKET_ID) return;
 
-    // 티켓업데이트 정보 세팅
+    // 티켓필드 세팅
     const custom_fields = new Array();
     
     // 사은품정보 저장시 - 사은품관련 티켓필드 세팅
@@ -1925,13 +1937,19 @@ const updateTicket = (DS_TICKET) => {
         custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["INVOICENUM"],	     value: DS_TICKET.INVOICENUM });                 // 사은품 송장번호  
     }
 
-    // 해피콜여부 체크시 - OB구분과 처리상태를 1차해피콜로 세팅
-    if (DS_TICKET.IS_HAPY) {
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"],	     value: "oblist_cde_110" });  // OB구분
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: "proc_sts_mk_15" });  // 처리상태
+    // OB구분 티켓필드 세팅
+    let OB_MK_VAL;
+    if (DS_TICKET.IS_HAPY) OB_MK_VAL = "oblist_cde_110"; // 해피콜여부 체크시 1차해피콜
+    if (DS_TICKET.HPCALL1_ROW_TYPE == "I" || DS_TICKET.HPCALL1_ROW_TYPE == "U") OB_MK_VAL = "oblist_cde_111"; // 1차해피콜 저장시 2차해피콜
+    if (DS_TICKET.HPCALL2_ROW_TYPE == "I" || DS_TICKET.HPCALL2_ROW_TYPE == "U") OB_MK_VAL = ""; // 2차해피콜 저장시 빈값
+    if (DS_TICKET.BTN_MK == "CO") OB_MK_VAL = "";   // 완료시 빈값
+    if (typeof OB_MK_VAL == "string") {
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], value: OB_MK_VAL });
     }
 
-    if (custom_fields.length == 0) return;
+    // 처리상태 티켓필드 세팅
+    const PROC_STS_MK_VAL = `proc_sts_mk_${Number(DS_TICKET.PROC_STS_MK)}`;
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: PROC_STS_MK_VAL });  
 
     const option = {
         url: `/api/v2/tickets/${DS_TICKET.ZEN_TICKET_ID}`,
