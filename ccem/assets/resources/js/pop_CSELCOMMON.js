@@ -567,7 +567,7 @@ const checkTicket = async () => {
 	// 	return false;
 	// }
 
-	const CSEL_DATE_NO_SEQ = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]);
+	const CSEL_DATE_NO_SEQ = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]);
 	if (CSEL_DATE_NO_SEQ) {
 		alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
 		return false;
@@ -902,18 +902,36 @@ const getCallTimes = async (ticket_id) => {
 
 /**
  * 특정 커스텀필드값 반환
- * @param {string|number} ticket_id 
+ * @param {object} ticket
+ * @param {string|number} custom_field_id
  */
-const getCustomFieldValue = async (ticket_id, custom_field_id) => {
+const getCustomFieldValue = (ticket, custom_field_id) => {
 
 	let sData = undefined;
 
-	const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
 	if (ticket?.custom_fields?.length > 0) {
 		const fData = ticket.custom_fields.find(el => el.id == custom_field_id);
 		sData = fData?.value;
-	}	
+	}
 
 	return sData;
+
+}
+
+/**
+ * 현재 오픈된 티켓세팅
+ */
+const setCurrentTicket = async () => {
+	const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
+	const ticket_id = origin?.ticket?.id;
+	if (!ticket_id) return
+
+	// 티켓이 삭제된 경우 예외처리
+	try {
+		const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+		currentTicket = ticket;
+	} catch (error) {
+		console.error(error);
+	}
 
 }

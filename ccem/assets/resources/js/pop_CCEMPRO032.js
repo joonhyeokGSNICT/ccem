@@ -70,8 +70,7 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;	
 
 		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
+		await setCurrentTicket();
 
 		// 콤보박스 세팅
 		await setCodeData();
@@ -91,8 +90,7 @@ const onStart = async () => {
 		codeData 	  = topbarObject.codeData;	
 
 		// 오픈된 티켓세팅
-		const origin = sidebarClient ? await sidebarClient.get("ticket") : new Object();
-		currentTicket = origin?.ticket;
+		await setCurrentTicket();
 
 		// 콤보박스 세팅
 		await setCodeData();
@@ -202,7 +200,7 @@ const setCodeData = async () => {
 
 	// 상담채널 세팅
 	if (currentTicket) {
-		const sOB_MK = await getCustomFieldValue(currentTicket.id, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+		const sOB_MK = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
 		// OB구분이 정보이용동의 일경우
 		if (sOB_MK == "oblist_cde_10") {
 			$("#selectbox3").val("11");
