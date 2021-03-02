@@ -370,7 +370,7 @@ var getCust = (CUST_ID, sJobType) => {
 			$("#textbox5").val(custData.ZIPCDE);			// 우편번호	
 			// custData.MK				// 고객구분
 			$("#textbox6").val(custData.ADDR);				// 주소	
-			$("#hiddenbox6").val(custData.AREA_CDE);		// 지역코드		
+			// custData.AREA_CDE		// 지역코드		
 			// custData.AREA_NAME		// 지역코드명
 			// custData.DEPT_ID			// 지점(부서)코드(연계사업국코드)	
 			// custData.DEPT_NAME		// 지점(부서)코드명(연계사업국명)		
@@ -383,12 +383,10 @@ var getCust = (CUST_ID, sJobType) => {
 			// custData.FAXNO_DEPT		// 지점(부서) 팩스번호		
 			$("#selectbox13").val(custData.GRADE_CDE);		// 학년코드		
 			// custData.GRADE_NAME		// 학년코드명		
-			// custData.FST_CRS_CDE		// 첫상담경로코드		
-			$("#hiddenbox2").val(custData.DEPT_EMP_ID);		// 지점장사번		
+			// custData.FST_CRS_CDE		// 첫상담경로코드				
 			// custData.LC_ID			// 센터ID	(연계센터코드)
 			// custData.LC_NAME			// 센터명	(연계센터명)
 			// custData.TELPNO_LC		// 센터전화번호		
-			$("#hiddenbox4").val(custData.LC_EMP_ID);		// 센터장사번		
 			$("#textbox16").val(custData.FAT_NAME);			// 학부모명		
 			// custData.FAT_RSDNO		// 학부모주민번호		
 			// custData.TEL				// 전화번호
@@ -409,14 +407,17 @@ var getCust = (CUST_ID, sJobType) => {
 			if (sJobType == "I") {
 				$("#textbox8").val(custData.UP_DEPT_ID);		// 상위지점(부서)코드(연계본부코드)
 				$("#textbox9").val(custData.UPDEPTNAME);		// 상위지점(부서)코드명(연계본부명)
-				$("#textbox10").val(custData.TELPNO_LC || custData.TELPNO_DEPT);		// 연계본부 전화번호(사업국/센터 전화번호)	
+				$("#hiddenbox10").val(custData.DIV_KIND_CDE);	// 브랜드ID
+				$("#hiddenbox6").val(custData.AREA_CDE);		// 지역코드
+				$("#textbox10").val(custData.TELPNO_LC || custData.TELPNO_DEPT); // 연계사업국/센터 전화번호
 				$("#textbox12").val(custData.DEPT_ID);			// 지점(부서)코드(연계사업국코드)	
 				$("#textbox13").val(custData.DEPT_NAME);		// 지점(부서)코드명(연계사업국명)		
+				$("#hiddenbox2").val(custData.DEPT_EMP_ID);		// 지점장사번
 				$("#hiddenbox1").val(custData.LC_ID)			// 센터ID	(연계센터코드)
-				$("#textbox15").val(custData.LC_NAME);			// 센터명(연계센터명)
+				$("#textbox15").val(custData.LC_NAME);			// 센터명	(연계센터명)
+				$("#hiddenbox4").val(custData.LC_EMP_ID);		// 센터장사번
 				$("#selectbox2").val(custData.GRADE_CDE);		// 학년코드
 				$("#hiddenbox9").val(custData.AGE_CDE);			// 연령코드
-				$("#hiddenbox10").val(custData.DIV_KIND_CDE);	// 브랜드ID
 				setDate();										// 상담시간, 연계시간
 			}
 
@@ -531,7 +532,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.PROC_MK					// 처리구분				
 			$("#textbox12").val(cselData.DEPT_ID);								// 관할지점코드(연계사업국코드)		
 			$("#textbox8").val(cselData.DIV_CDE);								// 관할본부코드				
-			// cselData.AREA_CDE				// 관할지역코드				
+			$("#hiddenbox6").val(cselData.AREA_CDE);							// 관할지역코드
 			$("#selectbox2").val(cselData.GRADE_CDE);							// 학년코드				
 			$("#selectbox7").val(cselData.MOTIVE_CDE);							// 입회사유코드				
 			$("#selectbox8").val(cselData.FST_CRS_CDE);							// 첫상담경로					
@@ -542,7 +543,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.USER_GRP_CDE			// 상담원그룹코드					
 			// cselData.PLURAL_PRDT_ID			// 병행과목코드					
 			// cselData.MBR_ID					// 회원번호			
-			// cselData.DEPT_EMP_ID				// 지점장사번					
+			$("#hiddenbox2").val(cselData.DEPT_EMP_ID);		// 지점장사번
 			// cselData.CTI_CHGDATE				// cti변경일자					
 			// cselData.TO_TEAM_DEPT			// 지점장부서					
 			// cselData.OPEN_GBN				// 공개여부				
@@ -570,7 +571,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			// cselData.PROC_DEPT_ID			// 직원상담처리지점					
 			// cselData.PROC_DEPT_NAME			// 직원상담처리지점명					
 			$("#hiddenbox1").val(cselData.LC_ID);								// 센터코드	(연계센터코드)		
-			// cselData.LC_EMP_ID				// 센터장사번				
+			$("#hiddenbox4").val(cselData.LC_EMP_ID);							// 센터장사번
 			$("#textbox15").val(cselData.LC_NAME);								// 센터명(연계센터명)	
 			$("#textbox10").val(cselData.TELPNO_LC || cselData.TELPNO_DEPT);	// 센터전화번호(사업국/센터 전화번호)			
 			$("#hiddenbox5").val(cselData.ZEN_TICKET_ID);						// ZEN_티켓 ID	
@@ -1093,16 +1094,18 @@ const getCustomData = async () => {
  * @param {object} data 
  */
 var setDisPlay = (data) => {
+	console.debug("setDisPlay: ", data)
 	$("#textbox8").val(data.DIV_CDE);			// 상위지점(부서)코드		(연계본부코드)
 	$("#textbox9").val(data.UPDEPTNAME);		// 상위지점(부서)코드명		(연계본부명)
-	$("#textbox10").val(data.TELPNO_LC || data.TELPNO_DEPT); // 연계본부 전화번호 (사업국/센터 전화번호)
+	$("#hiddenbox10").val(data.DIV_KIND_CDE);	// 브랜드ID
+	$("#hiddenbox6").val(data.AREA_CDE)			// 지역코드
+	$("#textbox10").val(data.TELPNO_LC || data.TELPNO_DEPT); // 연계사업국/센터 전화번호
 	$("#textbox12").val(data.DEPT_ID);			// 지점(부서)코드			(연계사업국코드)	
 	$("#textbox13").val(data.DEPT_NAME);		// 지점(부서)코드명			(연계사업국명)		
 	$("#hiddenbox2").val(data.DEPT_EMP_ID);		// 지점장ID
 	$("#hiddenbox1").val(data.LC_ID)			// 센터ID					(연계센터코드)
 	$("#textbox15").val(data.LC_NAME);			// 센터명					(연계센터명)
 	$("#hiddenbox4").val(data.LC_EMP_ID);		// 센터장ID
-	$("#hiddenbox10").val(data.DIV_KIND_CDE);	// 브랜드ID
 }
 
 /**

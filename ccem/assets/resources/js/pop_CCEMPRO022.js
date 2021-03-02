@@ -465,7 +465,7 @@ var getBaseData = (target, targetId, sJobType) => {
 		// baseData.GRADE_NAME		// 학년코드명		
 		// baseData.FST_CRS_CDE		// 첫상담경로코드			
 		// baseData.MEDIA_CDE		// 매체구분코드		
-		$("#hiddenbox3").val(baseData.DEPT_EMP_ID);			// 지점장사번			
+		// baseData.DEPT_EMP_ID		// 지점장사번
 		// baseData.LC_ID			// 센터ID	
 		// baseData.LC_NAME			// 센터명		
 		// baseData.TELPNO_LC		// 센터전화번호		
@@ -484,17 +484,18 @@ var getBaseData = (target, targetId, sJobType) => {
 			$("#selectbox13").val(baseData.GRADE_CDE);					// 학년코드	
 			$("#textbox1").val(baseData.UP_DEPT_ID);					// 상위지점(부서)코드	(본부코드)
 			$("#textbox2").val(baseData.UPDEPTNAME);					// 상위지점(부서)코드명	(본부명)
+			$("#hiddenbox14").val(baseData.DIV_KIND_CDE);				// 브랜드ID
 			$("#textbox3").val(baseData.AREA_CDE);						// 지역코드			
 			$("#textbox4").val(baseData.AREA_NAME);						// 지역코드명
 			$("#textbox5").val(baseData.DEPT_ID);						// 지점(부서)코드	(사업국코드)
 			$("#textbox6").val(baseData.DEPT_NAME);						// 지점(부서)코드명	(사업국명)	
 			$("#textbox7").val(baseData.TELPNO_DEPT);					// 지점(부서) 전화번호	(사업국전화번호)	
+			$("#hiddenbox3").val(baseData.DEPT_EMP_ID);					// 지점장사번
 			$("#textbox9").val(baseData.LC_NAME);						// 센터명		
 			$("#hiddenbox1").val(baseData.LC_ID);						// 센터ID
 			$("#textbox10").val(baseData.TELPNO_LC);					// 센터전화번호	
 			$("#hiddenbox4").val(baseData.LC_EMP_ID);					// 센터장사번	
 			$("#hiddenbox13").val(baseData.AGE_CDE);					// 연령코드		
-			$("#hiddenbox14").val(baseData.DIV_KIND_CDE);				// 브랜드ID
 		}
 		
 		setInitCselRstMkDS();	// 상담결과 저장정보 초기화
@@ -647,7 +648,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		// cselData.USER_GRP_CDE	// 상담원그룹코드		
 		// cselData.PLURAL_PRDT_ID	// 병행과목코드		
 		// cselData.MBR_ID			// 회원번호
-		// cselData.DEPT_EMP_ID		// 지점장사번		
+		$("#hiddenbox3").val(cselData.DEPT_EMP_ID);											// 지점장사번		
 		// cselData.CTI_CHGDATE		// cti변경일자		
 		// cselData.TO_TEAM_DEPT	// 지점장부서		
 		$("#selectbox1").val(cselData.OPEN_GBN);											// 공개여부	(개인정보)
@@ -1624,8 +1625,7 @@ const setBtnCtrlAtLoadComp = () => {
  * @param {object} data 
  */
 var setDisPlayUp = (data) => {
-	$("#hiddenbox1").val(data.LC_ID);			// 센터코드
-	$("#hiddenbox4").val(data.LC_EMP_ID);		// 센터장
+	console.debug("setDisPlayUp: ", data)
 	$("#textbox1").val(data.DIV_CDE);			// 본부코드
 	$("#textbox2").val(data.UPDEPTNAME);		// 본부이름
 	$("#textbox3").val(data.AREA_CDE);			// 지역코드
@@ -1633,8 +1633,11 @@ var setDisPlayUp = (data) => {
 	$("#textbox5").val(data.DEPT_ID);			// 사업국코드
 	$("#textbox6").val(data.DEPT_NAME);			// 사업국이름
 	$("#textbox7").val(data.TELPNO_DEPT);		// 사업국전화번호
+	$("#hiddenbox3").val(data.DEPT_EMP_ID);		// 지점장사번
+	$("#hiddenbox1").val(data.LC_ID);			// 센터코드
 	$("#textbox9").val(data.LC_NAME);			// 센터이름
 	$("#textbox10").val(data.TELPNO_LC);		// 센터전화번호
+	$("#hiddenbox4").val(data.LC_EMP_ID);		// 센터장사번
 	$("#hiddenbox14").val(data.DIV_KIND_CDE);	// 브랜드ID		
 }
 
@@ -1643,6 +1646,7 @@ var setDisPlayUp = (data) => {
  * @param {object} data 
  */
 var setDisPlayDn = (data) => {
+	console.debug("setDisPlayDn: ", data)
 	$("#textbox11").val(data.PROC_DEPT_ID);		// 연계부서코드
 	$("#textbox26").val(data.PROC_DEPT_NAME);	// 연계부서이름
 	$("#hiddenbox11").val(data.EMP_ID_LIST);	// 연계담당자ID
