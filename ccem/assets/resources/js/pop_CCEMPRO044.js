@@ -16,6 +16,7 @@ var _searchedEmpList;	// 검색한 조직원 리스트(조회 후 트리에 맞�
 var _isChange; 			// 트리구조 내 리스트 변경여부 (기준 폐쇄기관의 체크 변경 확인)
 var _isEmpSearch; 		// 구성원 검색 시 (Ajax통신 사용)
 var _isSave;			// 사업국 저장시, 해당 트리로 바로 이동하기 위한 변수
+var _isFirst = true;	// 첫 진입 여부 확인
 
 let hash = window.location.hash; // 구분처리
 /**
@@ -34,7 +35,7 @@ let hash = window.location.hash; // 구분처리
  * 	2. #disPlayDn : 연계부서 찾기
  * CCEMPRO028 : [팝업] 상담연계 
  * CCEMPRO031 : [팝업] 입회등록
- * CCEMPRO031 : [팝업] 선생님소개
+ * CCEMPRO032 : [팝업] 선생님소개
  * CCEMPRO022 : 
  * app_CCEM_~ : 탑바(메인화면)
  * 	1. #menu : 상단 메뉴
@@ -160,17 +161,6 @@ function init(){
 			$("#counselSave_btn").removeClass('invisible');
 			break;
 	}
-
-	/* 화면 진입에 따른 검색 조건 설정 */
-		/* 1. 회원 기본정보 조직 설정 검색 */
-		if ( opener.name.indexOf('app_CCEM_top_bar') > -1 && hash =="#info" ) {
-			var textVal = opener.document.getElementById('custInfo_LC_NAME').value;
-			if(! isEmpty(textVal) ) $('#searchOrg_txt').val(textVal);
-			else $('#searchOrg_txt').val(opener.document.getElementById('custInfo_DEPT_NAME').value);
-			_btn.searchOrg();
-		}
-
-
 }
 
 
@@ -372,6 +362,50 @@ const _sortList = {
 			_isSave = false;
 			console.log(_selectedNode);
 			tree.getNodeByKey(_selectedNode.key).setActive();
+		} else if ( _isFirst == true ) {
+			/* 첫 화면 진입에 따른 검색 조건 설정 */
+				/* 1. 회원 기본정보 조직 설정 검색 */
+				if ( opener.name.indexOf('app_CCEM_top_bar') > -1 && hash =="#info" ) {
+					var textVal = opener.document.getElementById('custInfo_LC_NAME').value;
+					if(! isEmpty(textVal) ) $('#searchOrg_txt').val(textVal);
+					else $('#searchOrg_txt').val(opener.document.getElementById('custInfo_DEPT_NAME').value);
+					_btn.searchOrg();
+				}
+
+				/* 2. 상담등록 사업국/센터 선택 검색 */
+				if ( opener.name.indexOf('CCEMPRO022') > -1 && hash =="#disPlayUp" ) {
+					var textVal = opener.document.getElementById('textbox9').value;
+					if(! isEmpty(textVal) ) $('#searchOrg_txt').val(textVal);
+					else $('#searchOrg_txt').val(opener.document.getElementById('textbox6').value);
+					_btn.searchOrg();
+				}
+
+				/* 3. 상담등록 연계부서 검색 */
+				if ( opener.name.indexOf('CCEMPRO022') > -1 && hash =="#disPlayDn" ) {
+					var textVal = opener.document.getElementById('textbox26').value;
+					if(! isEmpty(textVal) ) {
+						$('#searchOrg_txt').val(textVal);
+						_btn.searchOrg();
+					}
+				}
+				
+				/* 4. 상담연계 검색 */
+				if ( opener.name.indexOf('CCEMPRO028') > -1) {
+					var textVal = opener.document.getElementById('textbox10').value;
+					if(! isEmpty(textVal) ) {
+						$('#searchOrg_txt').val(textVal);
+						_btn.searchOrg();
+					}
+				}
+
+				/* 5. 입회등록 검색 */
+				if ( opener.name.indexOf('CCEMPRO031') > -1) {
+					var textVal = opener.document.getElementById('textbox15').value;
+					if(! isEmpty(textVal) ) $('#searchOrg_txt').val(textVal);
+					else $('#searchOrg_txt').val(opener.document.getElementById('textbox13').value);
+					_btn.searchOrg();
+				}
+			_isFirst = false;
 		}
 	},
 
@@ -956,17 +990,17 @@ const _btn = {
 			if ( isEmpty(searchTxt) ) {										// 빈 값으로 검색하는 경우 : 전체 트리 표시
 				tree.clearFilter();
 				tree.expandAll(false);
-			} 
-			else if ( $('#searchOrg_selectbox > option:selected').val() == '지점명') {
+			} else if ( $('#searchOrg_selectbox > option:selected').val() == '지점명') {
 				var txt = $.trim($('#searchOrg_txt').val());
 				var code = `node.data.DEPT_NAME.indexOf('`+txt+`') > -1`
 				tree.filterNodes( 
-					function(node) {
+					function (node) {
 						if ( !isEmpty(node.data.DEPT_NAME) ) {
 							return eval(code);
 						}
 					}, {mode : "hide"}
-				);
+				)
+				tree.getNodeByKey(tree.findFirst(txt).key).setActive();
 			} else if ( $('#searchOrg_selectbox > option:selected').val() == '지점주소') {
 				var match = $.trim($('#searchOrg_txt').val());
 				tree.filterNodes( 
