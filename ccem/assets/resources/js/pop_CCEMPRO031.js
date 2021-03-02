@@ -618,23 +618,23 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 			const DS_TRANS_EMP = res.dsRecv2;
 			
 			// 지점연계정보 세팅
-			if (!DS_TRANS || DS_TRANS.length == 0) return resolve(null);
-			calendarUtil.setImaskValue("calendar4", DS_TRANS[0].TRANS_DATE); 	   // 연계일자
-			$("#hiddenbox7").val(DS_TRANS[0].TRANS_NO);					     	   // 연계번호
-			$("#timebox3").val(DS_TRANS[0].TRANS_TIME);				    		   // 연계일시
-			$("#selectbox5").val(DS_TRANS[0].TRANS_CHNL_MK);					   // 연계방법	
-			// DS_TRANS[0].TRANS_DEPT_ID		// 지점코드(연계사업국코드)	
-			// DS_TRANS[0].DEPT_ACP_ID			// 접수자사번
-			$("#textbox14").val(DS_TRANS[0].DEPT_ACP_NAME);						   // 접수자	
-			if ($("#textbox14").val()) $("#textbox14").prop("readonly", true);     // 접수자가 있으면 입력안되게
-			// DS_TRANS[0].TRANS_CNTS			// 상담내용
-			calendarUtil.setImaskValue("calendar5", DS_TRANS[0].DEPT_ACP_DATE); 	// 접수일자	
-			$("#timebox4").val(DS_TRANS[0].DEPT_ACP_TIME);					 		// 접수시간	
+			const transData = (DS_TRANS?.length > 0) ? DS_TRANS[0] : new Object();
+			calendarUtil.setImaskValue("calendar4", transData.TRANS_DATE); 	    // 연계일자
+			$("#hiddenbox7").val(transData.TRANS_NO);					        // 연계번호
+			$("#timebox3").val(transData.TRANS_TIME);				    	    // 연계일시
+			$("#selectbox5").val(transData.TRANS_CHNL_MK);					    // 연계방법	
+			// transData.TRANS_DEPT_ID		// 지점코드(연계사업국코드)	
+			// transData.DEPT_ACP_ID		// 접수자사번
+			$("#textbox14").val(transData.DEPT_ACP_NAME);						// 접수자	
+			if ($("#textbox14").val()) $("#textbox14").prop("readonly", true);  // 접수자가 있으면 입력안되게
+			// transData.TRANS_CNTS			// 상담내용
+			calendarUtil.setImaskValue("calendar5", transData.DEPT_ACP_DATE); 	// 접수일자	
+			$("#timebox4").val(transData.DEPT_ACP_TIME);					 	// 접수시간	
 
 			// 지점연계대상자정보 세팅
-			if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) return resolve(null);
-			const ids 	= DS_TRANS_EMP.map(el => el.TRANS_EMP_ID).join(", ");
-			const names = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+			const empData = (DS_TRANS_EMP?.length > 0) ? DS_TRANS_EMP : new Array();
+			const ids 	= empData.map(el => el.TRANS_EMP_ID).join(", ");
+			const names = empData.map(el => el.TRANS_EMP_NM).join(", ");
 			$("#hiddenbox8").val(ids);
 			$("#textbox11").val(names);
 

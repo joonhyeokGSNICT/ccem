@@ -471,21 +471,21 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 			const DS_TRANS_EMP = res.dsRecv2;
 			
 			// 지점연계정보 세팅
-			if (!DS_TRANS || DS_TRANS.length == 0) return resolve(null);
-			calendarUtil.setImaskValue("calendar2", DS_TRANS[0].TRANS_DATE); 	// 연계일자
-			// DS_TRANS[0].TRANS_NO				// 연계번호
-			$("#timebox2").val(DS_TRANS[0].TRANS_TIME);				    		// 연계일시
-			$("#selectbox10").val(DS_TRANS[0].TRANS_CHNL_MK);					// 연계방법	
-			// DS_TRANS[0].TRANS_DEPT_ID		// 지점코드	
-			// DS_TRANS[0].DEPT_ACP_ID			// 접수자사번
-			// DS_TRANS[0].DEPT_ACP_NAME		// 접수자	
-			// DS_TRANS[0].TRANS_CNTS			// 상담내용
-			// DS_TRANS[0].DEPT_ACP_DATE 		// 접수일자	
-			// DS_TRANS[0].DEPT_ACP_TIME		// 접수시간	
+			const transData = (DS_TRANS?.length > 0) ? DS_TRANS[0] : new Object();
+			calendarUtil.setImaskValue("calendar2", transData.TRANS_DATE); 	// 연계일자
+			// transData.TRANS_NO				// 연계번호
+			$("#timebox2").val(transData.TRANS_TIME);				    	// 연계일시
+			$("#selectbox10").val(transData.TRANS_CHNL_MK);					// 연계방법	
+			// transData.TRANS_DEPT_ID		// 지점코드	
+			// transData.DEPT_ACP_ID			// 접수자사번
+			// transData.DEPT_ACP_NAME		// 접수자	
+			// transData.TRANS_CNTS			// 상담내용
+			// transData.DEPT_ACP_DATE 		// 접수일자	
+			// transData.DEPT_ACP_TIME		// 접수시간	
 
 			// 지점연계대상자정보 세팅
-			if (!DS_TRANS_EMP || DS_TRANS_EMP.length == 0) return resolve(null);
-			const names = DS_TRANS_EMP.map(el => el.TRANS_EMP_NM).join(", ");
+			const empData = (DS_TRANS_EMP?.length > 0) ? DS_TRANS_EMP : new Array();
+			const names = empData.map(el => el.TRANS_EMP_NM).join(", ");
 			$("#textbox15").val(names);
 
 			return resolve({DS_TRANS, DS_TRANS_EMP});
