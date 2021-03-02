@@ -424,6 +424,7 @@ function onSearch(){
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
 		    send1: [{
+		    	"QUERY_PAGING":			0,
 		    	"CHK_DATE":				"",
 		    	"VAL_STDATE":			"",
 		    	"VAL_EDDATE":			"",

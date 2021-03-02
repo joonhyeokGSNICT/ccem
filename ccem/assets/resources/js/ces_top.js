@@ -40,6 +40,8 @@ var codeData;									// 전체 공통코드 정보
 var tableList;									// 전체 통합코드 정보
 var faxUrl = "";								// FAX URL
 
+var CTI_STATUS = "";
+
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo = {
 		CUST_ID			   : "",
@@ -203,14 +205,14 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 					topBarClient.invoke("popover");					// 탑바 열기
 				}
 			}else {
-				topBarClient.invoke('popover','hide');				// 탑바 닫기
+				//topBarClient.invoke('popover','hide');				// 탑바 닫기
 			};
 		}else {
 			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
 				if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
 					topBarClient.invoke("popover");					// 탑바 열기
 				}else {
-					topBarClient.invoke('popover','hide');
+					//topBarClient.invoke('popover','hide');
 				}
 			});
 			
@@ -237,6 +239,18 @@ client.on("getCodeData", function(d){
 client.on("pane.activated", (ev) => {
 	counselMain_studyProgressList_grid.refreshLayout();		// 상담메인 > 학습진행정보 grid
 	counselMain_counselHist_grid.refreshLayout();   		// 상담메인 > 상담이력 grid
+});
+
+
+// WiseNTalk CTI 상태 연동 트리거
+client.on('setCTIStatus', function(status){
+	CTI_STATUS = status;
+	console.log(CTI_STATUS);
+});
+
+// OB결과등록 
+client.on('openOBResult', function(data){
+	
 });
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 
@@ -828,6 +842,9 @@ $(function(){
 			break;
 		// 고객정보 - 고객, 선생님
 		case 'customerTab':
+			if(currentCustInfo.BL_BLACK_YN == 'Y' || currentCustInfo.BL_DEL_YN == 'Y' || currentCustInfo.VIP_CDE?.length > 0){
+				$("#blackAndVipArea").css("display","");
+			}
 			$("#assignMemberbtn").css("display","");
 			$("#transferCallbtn").css("display","none");
 			$("#csel_cust").css("display","");
@@ -838,6 +855,7 @@ $(function(){
 			$("#csel_t_tchr").css("display","none");
 			break;
 		case 'teacherTab':
+			$("#blackAndVipArea").css("display",'none');
 			$("#csel_cust").css("display","none");
 			$("#csel_cust_modi").css("display","none");
 			$("#csel_tchr").css("display","");
@@ -1174,6 +1192,12 @@ function onclickCselBtn(id) {
 		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_cust');
 		break;
 	case 'cust_modi': 
+		if(currentUserInfo.user.userMK <= 2 || currentCounselInfo.CSEL_USER_ID == currentUserInfo.user.external_id){
+			
+		}else {
+			client.invoke("notify", "수정권한이 없습니다.", "error", 3000);
+			return;
+		}
 		
 		var proc = $.trim(currentCounselInfo.PROC_MK);
 
@@ -1209,7 +1233,12 @@ function onclickCselBtn(id) {
 		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
 		break;
 	case 'tchr_modi': 
-		
+		if(currentUserInfo.user.userMK <= 2 || currentCounselInfo.CSEL_USER_ID == currentUserInfo.user.external_id){
+			
+		}else {
+			client.invoke("notify", "수정권한이 없습니다.", "error", 3000);
+			return;
+		}
 		var proc = $.trim(currentCounselInfo.PROC_MK);
 
 		switch (proc) {
@@ -1820,7 +1849,7 @@ function loadCustInfoMain() {
 		$("#custInfo_MOBILNO_LAW2").val(tempMobileNo.split("-")[1]);
 		$("#custInfo_MOBILNO_LAW3").val(tempMobileNo.split("-")[2]);
 	}
-	tempMobileNo = FormatUtil.tel(currentCustInfo.MOBILNO_MBR);
+	tempMobileNo = FormatUtil.tel(currentCustInfo.MOBILNO_MBR);$("#blackAndVipArea").css("display","");
 	if(tempMobileNo){
 		$("#custInfo_MOBILNO_MBR1").val(tempMobileNo.split("-")[0]);				// 학부모 휴대폰
 		$("#custInfo_MOBILNO_MBR2").val(tempMobileNo.split("-")[1]);
@@ -1851,11 +1880,34 @@ function loadCustInfoMain() {
 	
 	if(currentCustInfo.BL_BLACK_YN == "Y"){
 		$("#blackAndVipArea").css("display","");
+		$("#blackAndVip").removeClass('badge-danger');
+		$("#blackAndVip").removeClass('badge-warning');
+		$("#blackAndVip").removeClass('badge-primary');
+		$("#blackAndVip").addClass('badge-danger');
+		$("#blackAndVip").css('width','50%');
+		$("#blackAndVip").text("정성회원");
 		$("#blackAndVipDT").text(currentCustInfo.BLACK_CUST_MK_NAME);
+	}else if(currentCustInfo.BL_DEL_YN == "Y"){
+		$("#blackAndVipArea").css("display","");
+		$("#blackAndVip").removeClass('badge-danger');
+		$("#blackAndVip").removeClass('badge-warning');
+		$("#blackAndVip").removeClass('badge-primary');
+		$("#blackAndVip").css('width','100%');
+		$("#blackAndVip").addClass('badge-warning');
+		$("#blackAndVip").text(currentCustInfo.DEL_CUST_MK_NAME);
+		$("#blackAndVipDT").text("");
+	}else if(currentCustInfo.VIP_CDE?.length > 0){
+		$("#blackAndVipArea").css("display","");
+		$("#blackAndVip").removeClass('badge-danger');
+		$("#blackAndVip").removeClass('badge-warning');
+		$("#blackAndVip").removeClass('badge-primary');
+		$("#blackAndVip").addClass('badge-primary');
+		$("#blackAndVip").css('width','50%');
+		$("#blackAndVip").text("눈높이VIP");
+		$("#blackAndVipDT").text(currentCustInfo.VIP_CDE_NAME);
 	}else {
 		$("#blackAndVipArea").css("display","none");
 	}
-	
 		
 	familyInfoLoad();												// 관계회원정보 불러오기
 	studyInfoLoad();												// 복수학습정보 불러오기
