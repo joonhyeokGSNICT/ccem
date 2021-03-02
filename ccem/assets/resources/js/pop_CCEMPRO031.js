@@ -1098,8 +1098,10 @@ var setDisPlay = (data) => {
 	$("#textbox10").val(data.TELPNO_LC || data.TELPNO_DEPT); // 연계본부 전화번호 (사업국/센터 전화번호)
 	$("#textbox12").val(data.DEPT_ID);			// 지점(부서)코드			(연계사업국코드)	
 	$("#textbox13").val(data.DEPT_NAME);		// 지점(부서)코드명			(연계사업국명)		
+	$("#hiddenbox2").val(data.DEPT_EMP_ID);		// 지점장ID
 	$("#hiddenbox1").val(data.LC_ID)			// 센터ID					(연계센터코드)
 	$("#textbox15").val(data.LC_NAME);			// 센터명					(연계센터명)
+	$("#hiddenbox4").val(data.LC_EMP_ID);		// 센터장ID
 	$("#hiddenbox10").val(data.DIV_KIND_CDE);	// 브랜드ID
 }
 
