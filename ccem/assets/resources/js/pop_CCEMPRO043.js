@@ -161,6 +161,11 @@ function init(){
 				header: '전화번호',
 				name: 'TELNO',
 			},
+			{
+				header: '사업국장사번_hide',
+				name: 'DEPT_EMP_ID',
+				hidden: true
+			},
 		],
 		
 	});
@@ -194,7 +199,7 @@ function init(){
 	if ( _mode == "org"){
 		_orgBcdGrid.on("dblclick", (ev) => {
 			const rowData = _orgBcdGrid.getRow(ev.rowKey);
-			console.log(rowData);
+			// console.log(rowData);
 			/**
 				AREA_CDE : 	지역구분,
 				AREA_NAME : 지역명,
@@ -215,11 +220,12 @@ function init(){
 			sendRow.AREA_NAME = rowData.AREA_NAME;
 			sendRow.DEPT_ID = rowData.DEPT_ID;
 			sendRow.DEPT_NAME = rowData.DEPT_NAME;
+			sendRow.DEPT_EMP_ID = rowData.DEPT_EMP_ID;
 			sendRow.TELPNO_DEPT = rowData.TELNO;
 			sendRow.LC_NAME = "";
 			sendRow.TELNO_LC = "";
 			
-			console.log(sendRow);
+			// console.log(sendRow);
 			opener.setDisPlayUp(sendRow);
 			window.close();
 		});
@@ -300,7 +306,16 @@ function init(){
 				header: 'LC전화번호',
 				name: 'TELNO_LC',
 			},
-			
+			{
+				header: '센터장사번_hide',
+				name: 'LC_EMP_ID',
+				hidden: true
+			},
+			{
+				header: '사업국장사번_hide',
+				name: 'DEPT_EMP_ID',
+				hidden: true
+			},
 		],
 	});
 
@@ -333,7 +348,7 @@ function init(){
 	if ( _mode == "org"){
 		_orgCenterGrid.on("dblclick", (ev) => {
 			const rowData = _orgCenterGrid.getRow(ev.rowKey);
-			console.log(rowData);
+			// console.log(rowData);
 			/**
 			 * 	
 				LC_ID : 센터ID,
@@ -351,7 +366,8 @@ function init(){
 
 			var sendRow = {};
 			sendRow.LC_ID = rowData.LC_ID;
-			sendRow.LC_EMP_ID = "";
+			sendRow.LC_EMP_ID = rowData.LC_EMP_ID;
+			sendRow.DEPT_EMP_ID = rowData.DEPT_EMP_ID;
 			sendRow.DIV_CDE = rowData.DIV_CDE;
 			sendRow.UPDEPTNAME = rowData.DIV_NAME;
 			sendRow.AREA_CDE = rowData.AREA_CDE;
@@ -362,7 +378,7 @@ function init(){
 			sendRow.LC_NAME = rowData.LC_NAME;
 			sendRow.TELPNO_LC = rowData.TELNO_LC;
 
-			console.log(sendRow);
+			// console.log(sendRow);
 			opener.setDisPlayUp(sendRow);
 			window.close();
 		});
@@ -415,7 +431,7 @@ function init(){
     });
 
 	/* 고객의 상세주소가 있는 경우 자동으로 긁어오기 */
-	console.log( opener.document.getElementById('custInfo_ADDR').value );
+	// console.log( opener.document.getElementById('custInfo_ADDR').value );
 	if ( opener.name.indexOf('app_CCEM_top_bar') > -1 && !isEmpty(opener.document.getElementById('custInfo_ADDR').value) ) {
 		$('#addrZipAddr2_input').val(opener.document.getElementById('custInfo_ADDR').value);
 	}
@@ -580,7 +596,7 @@ const _getAddrList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("branchAddrList값",response.dsRecv);
+				// console.log("branchAddrList값",response.dsRecv);
 				var temp = response.dsRecv;
 				temp = temp.map(el => {
 					return {
@@ -591,6 +607,7 @@ const _getAddrList = {
 						AREA_NAME : el.AREA_NAME,
 						DEPT_ID : el.DEPT_ID,
 						DIV_CDE : 	el.DIV_CDE,
+						DEPT_EMP_ID : 	el.DEPT_EMP_ID,
 						TELNO : el.TELNO
 					};
 				});
@@ -619,7 +636,7 @@ const _getAddrList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("centerAddrList값",response.dsRecv);
+				// console.log("centerAddrList값",response.dsRecv);
 				var temp = response.dsRecv;
 				temp = temp.map(el => {
 					return {
@@ -633,7 +650,9 @@ const _getAddrList = {
 						DIV_CDE : 	el.DIV_CDE,
 						LC_ID : 	el.LC_ID,
 						TELNO : el.TELNO,
-						TELNO_LC : el.TELNO_LC
+						TELNO_LC : el.TELNO_LC,
+						LC_EMP_ID : el.LC_EMP_ID,
+						DEPT_EMP_ID : el.DEPT_EMP_ID
 					};
 				});
 				_orgCenterGrid.resetData(temp);
@@ -680,7 +699,7 @@ const _getAddrList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				console.log("chooseAddrList값",response.dsRecv);
+				// console.log("chooseAddrList값",response.dsRecv);
 				if( isEmpty(response.dsRecv[0].ZPRNJ) ) {
 					// 입력주소
 					$('#typedPostNo').val(postNo);
@@ -799,7 +818,7 @@ function sendAddr() {
 	 * @param org    : 선택한 본부/사업국/지점 정보
 	 * @param ADDR : 선택한 주소 정보 
 	 */
-	console.log("CCEMPRO043 전송 데이터 >> ",responseData);
+	// console.log("CCEMPRO043 전송 데이터 >> ",responseData);
 	
 	// 주소정보 업데이트
 	opener.document.getElementById("custInfo_ZIPCDE").value = responseData.ADDR.POST_NO;
