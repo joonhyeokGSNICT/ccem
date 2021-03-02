@@ -1094,7 +1094,6 @@ const getCustomData = async () => {
  * @param {object} data 
  */
 var setDisPlay = (data) => {
-	console.debug("setDisPlay: ", data)
 	$("#textbox8").val(data.DIV_CDE);			// 상위지점(부서)코드		(연계본부코드)
 	$("#textbox9").val(data.UPDEPTNAME);		// 상위지점(부서)코드명		(연계본부명)
 	$("#hiddenbox10").val(data.DIV_KIND_CDE);	// 브랜드ID

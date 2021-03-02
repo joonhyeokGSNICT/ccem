@@ -1625,7 +1625,6 @@ const setBtnCtrlAtLoadComp = () => {
  * @param {object} data 
  */
 var setDisPlayUp = (data) => {
-	console.debug("setDisPlayUp: ", data)
 	$("#textbox1").val(data.DIV_CDE);			// 본부코드
 	$("#textbox2").val(data.UPDEPTNAME);		// 본부이름
 	$("#textbox3").val(data.AREA_CDE);			// 지역코드
@@ -1646,7 +1645,6 @@ var setDisPlayUp = (data) => {
  * @param {object} data 
  */
 var setDisPlayDn = (data) => {
-	console.debug("setDisPlayDn: ", data)
 	$("#textbox11").val(data.PROC_DEPT_ID);		// 연계부서코드
 	$("#textbox26").val(data.PROC_DEPT_NAME);	// 연계부서이름
 	$("#hiddenbox11").val(data.EMP_ID_LIST);	// 연계담당자ID
