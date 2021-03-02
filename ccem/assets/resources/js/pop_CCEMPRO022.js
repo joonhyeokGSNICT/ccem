@@ -853,8 +853,7 @@ const onSave = async () => {
 	// 저장성공후
 	$("#textbox28").val(resSave.CSEL_NO); 	// 접수번호 세팅
 	onSearch(resSave.CSEL_SEQ);				// 상담 재조회
-	topbarObject?.refreshGrid(); 			// 탑바화면 재조회
-	if (opener?.name == "CCEMPRO035") opener.onSearch(true);   // 상담조회화면 재조회
+	refreshDisplay();						// 오픈된 화면 재조회
 
 	// topbar 숨김
 	topbarClient.invoke("popover", "hide");

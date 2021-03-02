@@ -935,3 +935,19 @@ const setCurrentTicket = async () => {
 	}
 
 }
+
+/**
+ * 오픈된 화면 재조회
+ */
+const refreshDisplay = () => {
+
+	// 탑바화면 재조회
+	topbarObject?.refreshGrid(); 			
+
+	// 상담조회화면 재조회
+	if (opener?.name == "CCEMPRO035") opener.onSearch(true);   
+	
+	// 입회조회화면 재조회
+	if (opener?.name == "CCEMPRO037") opener.onSearch();   	   
+
+}
