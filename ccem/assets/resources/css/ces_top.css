@@ -161,6 +161,7 @@ select {
 
 .ccemBtn {
 	background: #7fb6df;
+	font-weight: bold;
 }
 
 .table-xs td{
@@ -185,7 +186,7 @@ select {
 	background-color: #123f8a;
 	color:white;
 	font-weight:bold;
-	width: 3.95rem;
+	width: 3.9rem;
 }
 .customerBtn:hover {
 	background-color: #3f7ee6;
@@ -287,7 +288,6 @@ ul.fancytree-container {
 	opacity:1;
 }
 
-<!-- multiselect -->
 .dropdown-check-list {
   display: inline-block;
 }
@@ -345,3 +345,7 @@ ul.fancytree-container {
     padding: 0;
     margin: 0;
 }​
+
+.callBtn {
+	padding: 0 !important;
+}

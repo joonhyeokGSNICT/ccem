@@ -41,7 +41,7 @@ var tableList;									// 전체 통합코드 정보
 var faxUrl = "";								// FAX URL
 
 var CTI_STATUS = "";
-var WiseNTalk_ID;
+var WiseNTalk_ID = "";
 
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo = {
@@ -187,6 +187,12 @@ var autoPopMKList = [							// 자동으로 탑바 오픈되는 OB구분
 	'oblist_cde_10'
 ]
 
+var currentOBMK = "";
+
+const wiseNTalkUtil = {
+		
+}
+
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
 var custInfoStatus;
 
@@ -198,7 +204,11 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 		currentTicketInfo = data;
 		if(currentCustInfo.CUST_ID != currentTicketInfo.ticket.requester.externalId){
 			initAll();															// 전체 초기화
-			userSearch();												// 고객 검색
+			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+				currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
+				console.log(currentOBMK);
+				userSearch();												// 고객 검색
+			});
 		}
 		if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
 			if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
@@ -249,14 +259,6 @@ client.on('api_notification.setCTIStatus', function(status){
 	console.log(CTI_STATUS);
 });
 
-// OB결과등록 
-client.on('api_notification.openOBResult', function(data){
-	
-});
-
-client.on('api_notification.testSync', function(data){
-	console.log(data);
-});
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 
 /** 
@@ -477,6 +479,7 @@ function initAll() {
 	currentDueInfo = null;
 	currentDirectChargeInfo = null;				// 현재 선택된 회비관리 정보 초기화
 	currentTchrInfo = null;						// 현재 선택된 선생님 정보 초기화
+	
 	
 	initSemi();	// 인풋 초기화
 	
@@ -737,11 +740,14 @@ $(function(){
 		}
 	});
 
-	// wiseNtalk 클라이언트 저장(재민) // 210303 최준혁 수정
+	// wiseNtalk 앱 ID 저장(재민) // 210303 최준혁 수정
 	client.request('/api/v2/apps/installations').then(function (datas) {
-		// wiseNtalkClient = datas.installations.filter(data => data.settings.name == 'WiseNTalk-Dev')[0].app_id;
-		wiseNtalkClient = datas.installations.filter(data => data.settings.name == 'OB결과등록W')[0].app_id;
-		WiseNTalk_ID = datas.installations.filter(data=> data.settings.name == 'WiseN Talk')[0]['app_id'];
+		WiseNTalk_ID = datas.installations.filter(data => data.settings.name == 'WiseNTalk-Dev')[0]?.app_id;
+		if(WiseNTalk_ID){
+			
+		}else {
+			WiseNTalk_ID = datas.installations.filter(data=> data.settings.name == 'WiseN Talk')[0]?.app_id;
+		}
 	});
 	
 	// input mask
@@ -791,6 +797,38 @@ $(function(){
 			$("#lunar").css('display','none');
 			$("#lunarSolarInput").val("1");
 		}
+	});
+	
+	// 전화걸기 이벤트버튼
+	$(".callBtn").click(function(){
+		var tempStat = "";
+		var phoneNum = "";
+		switch($(this).attr('id')){
+		case 'homeCall_btn':
+			phoneNum = $.trim($("#custInfo_DDD").val() + $("#custInfo_TELPNO1").val() + $("#custInfo_TELPNO2").val());
+			break;
+		case 'memCall_btn':
+			phoneNum = $.trim($("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val());
+			break;
+		case 'lawCall_btn':
+			phoneNum = $.trim($("#custInfo_MOBILNO_LAW1").val() + $("#custInfo_MOBILNO_LAW2").val() + $("#custInfo_MOBILNO_LAW3").val());
+//			break;
+		case 'momCall_btn':
+			phoneNum = $.trim($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val());
+			break;
+		case 'deptCall_btn':
+			phoneNum = $.trim($("#custInfo_TELPNO_DEPT").val().replace(/-/gi,''));
+			break;
+		case 'lcCall_btn':
+			phoneNum = $.trim($("#custInfo_TELPNO_LC").val().replace(/-/gi,''));
+			break;
+		}
+		if($(this).hasClass('callOn')){
+			tempStat = 'callOn';
+		}else {
+			tempStat = 'callOff';
+		};
+		callStart(tempStat, phoneNum);
 	});
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
@@ -1574,6 +1612,7 @@ function onAutoSearch(sCustId, type){
 				recvdataids: ["recv1"],
 				send1: [{
 					"CUST_ID"		:sCustId,				// 회원번호
+					"OBLIST_CDE"	:currentOBMK			// OB구분
 				}]
 		};
 		$.ajax({
@@ -1855,11 +1894,15 @@ function loadCustInfoMain() {
 		$("#custInfo_MOBILNO_LAW2").val(tempMobileNo.split("-")[1]);
 		$("#custInfo_MOBILNO_LAW3").val(tempMobileNo.split("-")[2]);
 	}
-	tempMobileNo = FormatUtil.tel(currentCustInfo.MOBILNO_MBR);$("#blackAndVipArea").css("display","");
+	tempMobileNo = FormatUtil.tel(currentCustInfo.MOBILNO_MBR);
 	if(tempMobileNo){
 		$("#custInfo_MOBILNO_MBR1").val(tempMobileNo.split("-")[0]);				// 학부모 휴대폰
 		$("#custInfo_MOBILNO_MBR2").val(tempMobileNo.split("-")[1]);
 		$("#custInfo_MOBILNO_MBR3").val(tempMobileNo.split("-")[2]);
+	}
+	tempMobileNo = FormatUtil.tel(currentCustInfo.REP_TELNO);
+	if(tempMobileNo){
+		$("#custInfo_REP_TELNO").val(tempMobileNo);
 	}
 	if(currentCustInfo.FAT_DEPT_NAME == 'NODATA'){									// 직원자녀가 아닐 경우 공백으로 변경
 		$("#custInfo_FAT_DEPT_NAME").text('');
@@ -3419,3 +3462,23 @@ function smsOnClick_tchr(){
    * @param {string} external_id 고객번호
    */
   const zendeskUserSearch = (external_id) => client.request(`/api/v2/users/search.json?external_id=${external_id}`);
+  
+  
+  function callStart(status, phone){
+	  var targetPhone = phone?.replace(/-/gi,'');
+	  // 전화 걸 수 있는 상태
+	  if(status == 'callOn'){
+		  client.request({
+		      url:'/api/v2/apps/notify.json',
+		      method: 'POST',
+		      headers: { "Content-Type": "application/json" },
+		      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": targetPhone})
+		   }).then(function(d){
+		      console.log(d);
+		   }).catch(function(d){
+		      console.log(d);
+		   });
+	  }else {
+		  
+	  }
+  }
