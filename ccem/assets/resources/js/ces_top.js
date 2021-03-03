@@ -41,6 +41,7 @@ var tableList;									// 전체 통합코드 정보
 var faxUrl = "";								// FAX URL
 
 var CTI_STATUS = "";
+var WiseNTalk_ID;
 
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo = {
@@ -243,14 +244,18 @@ client.on("pane.activated", (ev) => {
 
 
 // WiseNTalk CTI 상태 연동 트리거
-client.on('setCTIStatus', function(status){
+client.on('api_notification.setCTIStatus', function(status){
 	CTI_STATUS = status;
 	console.log(CTI_STATUS);
 });
 
 // OB결과등록 
-client.on('openOBResult', function(data){
+client.on('api_notification.openOBResult', function(data){
 	
+});
+
+client.on('api_notification.testSync', function(data){
+	console.log(data);
 });
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 
@@ -732,10 +737,11 @@ $(function(){
 		}
 	});
 
-	// wiseNtalk 클라이언트 저장(재민)
+	// wiseNtalk 클라이언트 저장(재민) // 210303 최준혁 수정
 	client.request('/api/v2/apps/installations').then(function (datas) {
 		// wiseNtalkClient = datas.installations.filter(data => data.settings.name == 'WiseNTalk-Dev')[0].app_id;
 		wiseNtalkClient = datas.installations.filter(data => data.settings.name == 'OB결과등록W')[0].app_id;
+		WiseNTalk_ID = datas.installations.filter(data=> data.settings.name == 'WiseN Talk')[0]['app_id'];
 	});
 	
 	// input mask
