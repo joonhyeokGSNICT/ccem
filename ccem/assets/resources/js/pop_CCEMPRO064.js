@@ -17,7 +17,7 @@ var _insert = {
     status(response) {
         var initList = response;
 
-        console.log(response.recv1);
+        // console.log(response.recv1);
         // 상단통화건수 설정
         $('#IB_CNT').text(response.recv1[0].IB_CNT+'건');
         $('#OB_CNT').text(response.recv1[0].OB_CNT+'건');
@@ -46,10 +46,28 @@ var _insert = {
         }
 
         // 현황판 업데이트
-        if ( response.recv3.length != 0 ){ 
-            
-        } else {
 
+        // var tempArray3 = []
+        // tempArray3.push( {MESSAGE : "금융결제원 카드 결제 이슈 해결", RECV_DATE: '1550'} )
+        // tempArray3.push( {MESSAGE : "상담프로그램 업데이트(3/2예정)", RECV_DATE: '1450'} )
+        // tempArray3.push( {MESSAGE : "금융결제원 카드 결제 이슈 처리 중", RECV_DATE: '1015'} )
+        // tempArray3.push( {MESSAGE : "금융결제원 카드 결제 이슈 발생", RECV_DATE: '1000'} )
+        // tempArray3.push( {MESSAGE : "상담 시, 오류가 발생할 경우 관리자에게 문의하세요! 관리자 전화번호는 010-XXXX-XXXX입니다.", RECV_DATE: '0900'} )
+        // if ( tempArray3.length != 0 ){     
+        //     for( index in tempArray3 ) {
+        //         var str = tempArray3[index].RECV_DATE.replace(/(.{2})/g,"$1:")
+        //             str = '('+str.slice(0,-1)+')';
+        //         $('#txtAppend').append("<tr><td>"+tempArray3[index].MESSAGE+"</td><td class='cntRows' style='padding-right:6px;'>"+str+"</td>")
+        //     }
+
+
+        // console.log(response.recv3);
+        if ( response.recv3.length != 0 ){ 
+            for( index in response.recv3 ) {
+                var str = response.recv3[index].RECV_DATE.replace(/(.{2})/g,"$1:")
+                    str = '('+str.slice(0,-1)+')';
+                $('#txtAppend').append("<tr><td>"+response.recv3[index].MESSAGE+"</td><td class='cntRows' style='padding-right:6px;'>"+str+"</td>")
+            }
         }
     },
     top5(response) {
@@ -82,7 +100,7 @@ var _insert = {
  * 탑바를 다시 띄울 경우 값들 다시 가져오기
  */
 playAlert = setInterval(function() {
-    // ccemApi.getStatusBoard();
+    ccemApi.getStatusBoard();
     ccemApi.getCselStypeTop5();
     console.log(new Date());
  }, 30000);

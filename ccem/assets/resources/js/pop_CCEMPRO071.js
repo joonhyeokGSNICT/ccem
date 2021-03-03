@@ -1,7 +1,7 @@
 var _CUST_RESP_MK_OB ;
 
-client.on("api_notification.ob_result_modal_on", function (data) {
-	console.log('[CCEM TOPBAR] api_notification.ob_result_modal_on 진입 >>> ', data.body);
+client.on("api_notification.openOBResult", function (data) {
+	console.log('[CCEM TOPBAR] api_notification.openOBResult 진입 >>> ', data.body);
 	_api.getOB();
     client.invoke('popover', 'show').then(function () {
         $('#obResultModal').modal('show');
@@ -9,45 +9,17 @@ client.on("api_notification.ob_result_modal_on", function (data) {
 });
 
 var _api = {
-	getOB() { // 코드북 요청
-		var txtList = []
-		txtList.push("CALL_RST_MK_OB");		// 통화결과구분OB
-		txtList.push("CUST_RESP_MK_OB");	// 고객반응OB
-		txtList.push("CSEL_RST_MK_OB");		// 상담결과OB
+	async getOB() { // 코드북 요청
+		var tempList;
+		tempList = await getCodeListOBsave("CALL_RST_MK_OB");
+		_init.callRstMkOb( tempList );									// 통화결과구분OB
+		_CUST_RESP_MK_OB = await getCodeListOBsave("CUST_RESP_MK_OB") ;
+		_init.custRespMkOb(_CUST_RESP_MK_OB);							// 고객반응OB
+		tempList = await getCodeListOBsave("CSEL_RST_MK_OB");
+		_init.cselRstMkOb( tempList ); 									// 상담결과OB
 
-		for (index in txtList) {
-			var param = {
-				senddataids: ["dsSend"],
-				recvdataids: ["dsRecv"],
-				dsSend: [{CODE_MK: txtList[index]}]
-			};
-			$.ajax({
-				url: API_SERVER + '/sys.getCodeBook.do',
-				type: 'POST',
-				dataType: 'json',
-				contentType: "application/json",
-				data: JSON.stringify(param),
-				success: function (response) {
-					switch(response.dsRecv[0].CODE_MK){
-						case "CALL_RST_MK_OB" :
-							// console.log("getOB _ "+response.dsRecv[0].CODE_MK+" >> ",response.dsRecv);
-							_init.callRstMkOb(response.dsRecv);
-							break;
-						case "CUST_RESP_MK_OB" :
-							// console.log("getOB _ "+response.dsRecv[0].CODE_MK+" >> ",response.dsRecv);
-							_CUST_RESP_MK_OB = response.dsRecv ;
-							_init.custRespMkOb(response.dsRecv);
-							break;
-						case "CSEL_RST_MK_OB" :
-							// console.log("getOB _ "+response.dsRecv[0].CODE_MK+" >> ",response.dsRecv);
-							_init.cselRstMkOb(response.dsRecv);
-							break;
-					}
-				}, error: function (response) {
-				}
-			});
-		}
-	},
+		return "";
+	}
 }
 
 /**
@@ -55,8 +27,7 @@ var _api = {
  */
 var _init = {
 	callRstMkOb(respData) { // 통화결과구분OB
-		var initData = respData.filter(data => data.USE_YN == 'Y');
-			initData = initData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
+		var	initData = respData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
 		var html = '';
 		html += `<colgroup>
 					<col width="33.3%"></col>
@@ -68,7 +39,7 @@ var _init = {
 		for ( index in initData ) {
 			html += `<td>
 						<div class="custom-control custom-radio custom-control-inline">
-						<input id="call_rst_ob_`+index+`" name="call_rst" type="radio" class="custom-control-input" codeId="`+initData[index].CODE_ID+`">
+						<input id="call_rst_ob_`+index+`" name="call_rst" type="radio" class="custom-control-input" codeId="`+initData[index].CODE_ID+`" onclick="onClickRadio();">
 						<label class="custom-control-label" for="call_rst_ob_`+index+`">`+initData[index].CODE_NAME+`</label>
 						</div>
 					</td>`
@@ -81,8 +52,7 @@ var _init = {
 		p.innerHTML = html;
 	},
 	custRespMkOb(respData) { // 고객반응OB
-		var initData = respData.filter(data => data.USE_YN == 'Y');
-			initData = initData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
+		var	initData = respData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
 		if ( $("input[name=call_rst]:checked").attr("codeId") == "05" ) {	// 통화결과가 조사거부일 경우 고객반응 라디오버튼 변경
 			initData = initData.filter( data => Number(data.CODE_ID) > 10);
 		} else {
@@ -112,8 +82,7 @@ var _init = {
 		p.innerHTML = html;
 	},
 	cselRstMkOb(respData) { // 상담결과OB
-		var initData = respData.filter(data => data.USE_YN == 'Y');
-			initData = initData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
+		var	initData = respData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
 		var html = '';
 		html += `<colgroup>
 					<col width="33.3%"></col>
@@ -184,13 +153,6 @@ var save_call_rst = function(){
     $('#obResultModal').modal('hide');
 }
 
-$(document).ready(function(){
-	$("input:radio[name=call_rst]").click(function(){
-		$("input:radio[name=cust_rst]:checked").prop("checked", false);
-		$("input:radio[name=csel_rst]:checked").prop("checked", false);
-		_init.custRespMkOb(_CUST_RESP_MK_OB);
-	});
-});
 
 /**
  * 티켓필드에 입력된 리스트ID_고객번호를 반환.
@@ -202,7 +164,29 @@ const getOBMK = async () => {
 	return res[ticketFieldPath] ? res[ticketFieldPath] : "";
 }
 
-// _api.getOB();
+/******************************************************
+ * 공통코드 조회(소스)
+ ******************************************************/
+var getCodeListOBsave = (name) => {
+	return new Promise(function (resolve, reject) {
+		var CODE_MK_LIST = [];
+		if( name != "" && name != null){
+			CODE_MK_LIST.push(name);
+		}
+		// get code
+		const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+		console.log(codeList);
+		resolve(codeList);
+	});
+}
+
+function onClickRadio(){
+	$("input:radio[name=cust_rst]:checked").prop("checked", false);
+	$("input:radio[name=csel_rst]:checked").prop("checked", false);
+	_init.custRespMkOb(_CUST_RESP_MK_OB);
+};
+
+// getOB();
 // client.invoke('popover', 'show').then(function () {
 // 	$('#obResultModal').modal('show');
 // })

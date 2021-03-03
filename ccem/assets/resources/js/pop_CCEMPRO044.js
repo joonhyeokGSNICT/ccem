@@ -648,7 +648,24 @@ const _btn = {
 			var tempList = [];
 			for ( index in nodes ) {
 				var orgList = {};
-				if ( nodes[index].data.LV =="3" ) {
+				if ( nodes[index].data.LV =="4" ) {
+					orgList.BRAND_ID = nodes[index].data.BRAND_ID;
+					orgList.BRAND_NAME = nodes[index].data.BRAND_NAME;
+					orgList.UP_DEPT_ID = nodes[index].parent.parent.data.DEPT_ID;
+					orgList.UP_DEPT_NAME = nodes[index].parent.parent.data.DEPT_NAME;
+					orgList.UP_DEPT_TEL = nodes[index].parent.parent.data.TELPNO;
+					orgList.PARE_DEPT_ID = nodes[index].parent.data.DEPT_ID;
+					orgList.PARE_DEPT_NAME = nodes[index].parent.data.DEPT_NAME;
+					orgList.PARE_DEPT_TEL = nodes[index].parent.data.TELPNO;
+					orgList.LC_DEPT_ID = nodes[index].data.DEPT_ID;
+					orgList.LC_DEPT_NAME = nodes[index].data.DEPT_NAME;
+					orgList.LC_DEPT_TEL = nodes[index].data.TELPNO;
+					orgList.LV = nodes[index].data.LV;
+					orgList.AREA_CDE = nodes[index].data.AREA_CDE;
+					orgList.AREA_NAME = nodes[index].data.AREA_NAME;
+					orgList.REP_EMP_ID = nodes[index].data.REP_EMP_ID;
+					orgList.REP_EMP_NAME = nodes[index].data.REP_EMP_NAME;
+				} else if ( nodes[index].data.LV =="3" ) {
 					orgList.BRAND_ID = nodes[index].data.BRAND_ID;
 					orgList.BRAND_NAME = nodes[index].data.BRAND_NAME;
 					orgList.UP_DEPT_ID = nodes[index].parent.parent.data.DEPT_ID;
@@ -737,6 +754,15 @@ const _btn = {
 				sendLv3.push(lv3List[index].LC_DEPT_ID);
 				sendLv3Name.push(lv3List[index].LC_DEPT_NAME);
 			} 
+
+			var lv4List = tempList.filter(data => data.LV == "4" ); // 센터리스트
+				lv4List = removeDuplicates(lv4List, 'LC_DEPT_ID')
+			var sendLv4 = [];
+			var sendLv4Name = [];
+			for ( index in lv4List ) {
+				sendLv4.push(lv4List[index].LC_DEPT_ID);
+				sendLv4Name.push(lv4List[index].LC_DEPT_NAME);
+			} 
 				
 			var temp = [];
 			temp.brand = sendBrand;
@@ -747,6 +773,8 @@ const _btn = {
 			temp.lv2name = sendLv2Name.join(', ');
 			temp.lv3 = sendLv3;
 			temp.lv3name = sendLv3Name.join(', ');
+			temp.lv4 = sendLv4;
+			temp.lv4name = sendLv4Name.join(', ');
 
 			var rootkeys = tree.getSelectedNodes(true);
 			var selRootKeys = $.map(rootkeys, function(node){
@@ -806,14 +834,6 @@ const _btn = {
 						idArray.push(_selectedNode.data.REP_EMP_ID)
 						nameArray.push(_selectedNode.data.REP_EMP_NAME);
 						telArray.push(_selectedNode.data.REP_EMP_TELPNO);
-
-						// 전화번호 정보 입력
-						// if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length > 0 ) {
-						// 	var tempId = _selectedNode.data.REP_EMP_ID.trim();
-						// 	console.log(tempId);
-						// 	telArray.push(tempId[0].MOBILNO);
-						// }
-
 					}
 				}
 			}
@@ -826,7 +846,38 @@ const _btn = {
 			var orgList = {};
 			/* CCEMPRO028 : 상담연계/입회연계/소개연계 선택 값 전송 */
 			if ( opener.name == 'CCEMPRO028' ) {
-				if ( _selectedNode.data.LV =="3" ) {
+				if ( _selectedNode.data.LV =="4" ) {
+					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
+					orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
+					orgList.LV = _selectedNode.data.LV;
+					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;		
+					orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
+					orgList.DEPT_TELNO = _selectedNode.parent.data.TELPNO;
+					if (! isEmpty(_selectedNode.parent.data.FAXNO) ){
+						orgList.DEPT_FAX_DDD = _selectedNode.parent.data.FAXNO.split('-')[0];
+						orgList.DEPT_FAX_NO1 = _selectedNode.parent.data.FAXNO.split('-')[1];
+						orgList.DEPT_FAX_NO2 = _selectedNode.parent.data.FAXNO.split('-')[2];
+					}
+
+					orgList.LC_ID = _selectedNode.data.DEPT_ID;		
+					orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
+					orgList.LC_TELNO = _selectedNode.data.TELPNO;
+					if (! isEmpty(_selectedNode.data.FAXNO) ){
+						orgList.LC_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
+						orgList.LC_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
+						orgList.LC_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
+					}
+					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
+					orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
+					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+					orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
+					orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
+					orgList.EMP_NAME_LIST  = nameArray.join(', ');
+					orgList.EMP_ID_LIST = idArray.join(', ');
+					orgList.EMP_PHONE_LIST = telArray.join(', ');
+
+
+				} else if ( _selectedNode.data.LV =="3" ) {
 					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
 					orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
 					orgList.LV = _selectedNode.data.LV;

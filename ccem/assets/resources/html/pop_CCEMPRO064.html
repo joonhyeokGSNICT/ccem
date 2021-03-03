@@ -2,6 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <title>[팝업] 공지사항(내용)</title>
   <!-- zaf_sdk.min.js -->
   <script src="https://static.zdassets.com/zendesk_app_framework_sdk/2.0/zaf_sdk.min.js"></script>
   <!-- jquery-3.4.1 -->
@@ -13,11 +14,11 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
   <!-- main css -->
   <link rel="stylesheet" href="../css/pop_CCEMPRO064.css">
-   
+  
   <style>
     html {
-      height: 851px;
-      overflow: auto;
+        height: 851px;
+        overflow: auto;
     }
   </style>
 
@@ -32,31 +33,11 @@
             <div class="col-12" style="padding:10px 11px 0px;">
                 <div class="inBound" style="height:100px; overflow-x:hidden; padding: 0px 5px;">
                     <table class="table noMarginBottom">
-                        <tbody>
+                        <tbody id="txtAppend">
                             <colgroup>
                                 <col span="1" style="width: 88%;">
                                 <col span="1" style="width: 12%;">
                             </colgroup>
-                            <tr>
-                                <td>금융결제원 카드 결제 이슈 해결</td>
-                                <td class="cntRows" style="padding-right:6px;">(15:50)</td>
-                            </tr>
-                            <tr>
-                                <td>상담프로그램 업데이트(3/2예정)</td>
-                                <td class="cntRows" style="padding-right:6px;">(14:50)</td>
-                            </tr>
-                            <tr>
-                                <td>금융결제원 카드 결제 이슈 처리 중</td>
-                                <td class="cntRows" style="padding-right:6px;">(10:15)</td>
-                            </tr>
-                            <tr>
-                                <td>금융결제원 카드 결제 이슈 발생</td>
-                                <td class="cntRows" style="padding-right:6px;">(10:00)</td>
-                            </tr>
-                            <tr>  
-                                <td>상담 시, 오류가 발생할 경우 관리자에게 문의하세요! 관리자 전화번호는 010-XXXX-XXXX입니다.</td>
-                                <td class="cntRows" style="padding-right:6px;">(09:00)</td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -72,10 +53,10 @@
                         </div>
                         <div class="col-8 callContent">
                             <div>
-                                <span class="count" id="IB_CNT">10건</span>
+                                <span class="count" id="IB_CNT">-건</span>
                             </div>
                             <div  style="margin-top:-5px">
-                                <span class="timeCount" id="IB_TIME">(01:34:27)</span>
+                                <span class="timeCount" id="IB_TIME">(--:--:--)</span>
                             </div>
                         </div>
                     </div>
@@ -90,10 +71,10 @@
                         </div>
                         <div class="col-8 callContent">
                             <div>
-                                <span class="count" id="OB_CNT">20건</span>
+                                <span class="count" id="OB_CNT">-건</span>
                             </div>
                             <div  style="margin-top:-5px">
-                                <span class="timeCount" id="OB_TIME">(02:23:42)</span>
+                                <span class="timeCount" id="OB_TIME">(--:--:--)</span>
                             </div>
                         </div>
                     </div>
@@ -106,23 +87,23 @@
                 <div id="OBPersonalCount">
                     <div class="IVRcount"> 
                         <div class="obTitle">IVR</div>
-                        <div class="numbers">12</div>
+                        <div class="numbers">-</div>
                     </div> 
                     <div class="Resignation"> 
                         <div class="obTitle">고객직접퇴회</div>
-                        <div class="numbers">6</div>
+                        <div class="numbers">-</div>
                     </div> 
                     <div class="TelephoneSurvey"> 
                         <div class="obTitle">전화설문조사</div>
-                        <div class="numbers">29</div>
+                        <div class="numbers">-</div>
                     </div> 
                     <div class="RequestConsult"> 
                         <div class="obTitle">전화상담신청</div>
-                        <div class="numbers">4</div>
+                        <div class="numbers">-</div>
                     </div>
                     <div class="InfoAgreement"> 
                         <div class="obTitle">정보이용동의</div>
-                        <div class="numbers">5</div>
+                        <div class="numbers">-</div>
                     </div>
                 </div>
             </div>
@@ -151,29 +132,29 @@
                                         <div>고객불만</div>
                                     </div>
                                 </th>
-                                <th scope="row" id="complain_0">1</th>
-                                <td>체험학습관련불만</td>
-                                <td class="cntRows" style="padding-right:6px;">9건</td>
+                                <th scope="row" id="complain_0"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                             </tr>
                             <tr>
-                                <th scope="row" id="complain_1">2</th>
-                                <td>(주)지브로불만</td>
-                                <td class="cntRows" style="padding-right:6px;">7건</td>
+                                <th scope="row" id="complain_1"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                             </tr>
                             <tr>
-                                <th scope="row" id="complain_2">3</th>
-                                <td>남자교사로인한퇴회</td>
-                                <td class="cntRows" style="padding-right:6px;">4건</td>
+                                <th scope="row" id="complain_2"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                             </tr>
                             <tr>
-                                <th scope="row" id="complain_3">3</th>
-                                <td>켐페인/이벤트기타불만</td>
-                                <td class="cntRows" style="padding-right:6px;">4건</td>
+                                <th scope="row" id="complain_3"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="complain_4">5</th>
-                                <td>아티맘사이트이용불만</td>
-                                <td class="cntRows" style="padding-right:6px;">1건</td>
+                                <th scope="row" id="complain_4"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                         </tbody>
                     </table>
@@ -197,29 +178,29 @@
                                         <div>고객요청</div>
                                     </div>
                                 </th>
-                                <th scope="row" id="request_0">1</th>
-                                <td>맞춤문제집문제(내용)문의</td>
-                                <td class="cntRows" style="padding-right:6px;">12건</td>
+                                <th scope="row" id="request_0"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="request_1">2</th>
-                                <td>고객직접결제방법관련요청</td>
-                                <td class="cntRows" style="padding-right:6px;">11건</td>
+                                <th scope="row" id="request_1"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="request_2">3</th>
-                                <td>중등진로상담</td>
-                                <td class="cntRows" style="padding-right:6px;">5건</td>
+                                <th scope="row" id="request_2"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="request_3">4</th>
-                                <td>초등진로상담</td>
-                                <td class="cntRows" style="padding-right:6px;">4건</td>
+                                <th scope="row" id="request_3"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="request_4">5</th>
-                                <td>개인정보관련 퇴회 요청</td>
-                                <td class="cntRows" style="padding-right:6px;">1건</td>
+                                <th scope="row" id="request_4"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                         </tbody>
                     </table>
@@ -243,28 +224,28 @@
                                         <div>고객문의</div>
                                     </div>
                                 </th>
-                                <th scope="row" id="question_0">1</th>
-                                <td>자동이체내역확인</td>
-                                <td class="cntRows" style="padding-right:6px;">9건</td>
+                                <th scope="row" id="question_0"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="question_1">2</th>
-                                <td>홍보물관련문의</td>
-                                <td class="cntRows" style="padding-right:6px;">8건</td>
+                                <th scope="row" id="question_1"></th>
+                                <td></td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="question_2">3</th>
-                                <td>개인정보 관련 문의</td>
-                                <td class="cntRows" style="padding-right:6px;">5건</td>
+                                <th scope="row" id="question_2"></th>
+                                <td> </td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="question_3">4</th>
-                                <td>교사방문시간변경방법문의</td>
-                                <td class="cntRows" style="padding-right:6px;">3건</td>
+                                <th scope="row" id="question_3"></th>
+                                <td> </td>
+                                <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                               <tr>
-                                <th scope="row" id="question_4">5</th>
-                                <td>임시</td>
+                                <th scope="row" id="question_4"></th>
+                                <td> </td>
                                 <td class="cntRows" style="padding-right:6px;">&nbsp;</td>
                               </tr>
                         </tbody>
@@ -276,7 +257,7 @@
 </body>
 
 <script src="../js/config.js"></script>
-<!--<script src="../js/pop_CCEMPRO064.js"></script>-->
+<script src="../js/pop_CCEMPRO064.js"></script>
 
 
 </html>

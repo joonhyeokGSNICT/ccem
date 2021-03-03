@@ -155,200 +155,203 @@ function setGridTree() {
             mode: "hide"                // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
         },
         checkbox: _modeSelect[_mode].treeCheckBox,
+        clickFolderMode: 4,
         selectMode: 3,
-        dblclick: function(event, data) {
+        click: function(event, data) {
             console.log("test1");
         },
 
         // 본부/사업국/센터 설정 시 해당 정보 표시
-        activate: function(event, data) {
+        click: function(event, data) {
             // $("#statusLine").text(event.type + ": " + data.node);
-            // console.log(event, data, ", targetType=" + data.targetType);
             _selectedNode = data.node;
+            console.log("targetType=" + data.targetType);
             console.log("_selectedNode >> ", _selectedNode)
             // console.log("data.node >> ", data.node)
     
             // 본부/사업국/센터 정보창 변경
             // 재직구분 확인
-            var param = [{}];
-            if ( $('#searchEmp_chk').prop("checked")==true && !isEmpty($('#searchEmp_selectbox').val()) ) {
-                // SEARCH_STS_CDE_TXT : 0:퇴직, 1:휴직, 2:대기, 3:사업, 4:해지, 9:재직
-                if ($('#searchEmp_selectbox').val()=="전체") {
-                } else if ($('#searchEmp_selectbox').val()=="재직") {
-                    param[0].SEARCH_STS_CDE_TXT = ["9", "2", "1"];
-                    param[0].SEARCH_STS_CDE = "Y"
-                } else if ($('#searchEmp_selectbox').val()=="사업") {
-                    param[0].SEARCH_STS_CDE_TXT = ["3"];
-                    param[0].SEARCH_STS_CDE = "Y"
-                } else if ($('#searchEmp_selectbox').val()=="해지/퇴직") {
-                    param[0].SEARCH_STS_CDE_TXT = ["4", "0"];
-                    param[0].SEARCH_STS_CDE = "Y"
-                }	
-            } 
+            if ( data.targetType == 'title') {
+                var param = [{}];
+                if ( $('#searchEmp_chk').prop("checked")==true && !isEmpty($('#searchEmp_selectbox').val()) ) {
+                    // SEARCH_STS_CDE_TXT : 0:퇴직, 1:휴직, 2:대기, 3:사업, 4:해지, 9:재직
+                    if ($('#searchEmp_selectbox').val()=="전체") {
+                    } else if ($('#searchEmp_selectbox').val()=="재직") {
+                        param[0].SEARCH_STS_CDE_TXT = ["9", "2", "1"];
+                        param[0].SEARCH_STS_CDE = "Y"
+                    } else if ($('#searchEmp_selectbox').val()=="사업") {
+                        param[0].SEARCH_STS_CDE_TXT = ["3"];
+                        param[0].SEARCH_STS_CDE = "Y"
+                    } else if ($('#searchEmp_selectbox').val()=="해지/퇴직") {
+                        param[0].SEARCH_STS_CDE_TXT = ["4", "0"];
+                        param[0].SEARCH_STS_CDE = "Y"
+                    }	
+                } 
+        
+                // 선택 후 조직 내 구성원 조회
+                if (data.node.data.LV == "1"){
+                    $("#HQ_NAME").text(data.node.title);
+                    $("#DEPT_NAME").text("");
+                    $("#LC_NAME").text("");
+                    $("#HQ_NAME2").text(data.node.title);
+                    $("#DEPT_NAME2").text("");
+                    $("#LC_NAME2").text("");
+        
+                    // 본부내 인원 검색
+                    switch (_mode){
+                        case "search" :
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title);
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            break;
     
-            // 선택 후 조직 내 구성원 조회
-            if (data.node.data.LV == "1"){
-                $("#HQ_NAME").text(data.node.title);
-                $("#DEPT_NAME").text("");
-                $("#LC_NAME").text("");
-                $("#HQ_NAME2").text(data.node.title);
-                $("#DEPT_NAME2").text("");
-                $("#LC_NAME2").text("");
+                        case "plainTree" : 
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title);
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
+                            else $("#counselSend_btn").addClass('invisible');
+                            $("#counselSave_btn").addClass('invisible');
+                            break;
     
-                // 본부내 인원 검색
-                switch (_mode){
-                    case "search" :
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title);
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        break;
-
-                    case "plainTree" : 
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title);
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
-                        else $("#counselSend_btn").addClass('invisible');
-                        $("#counselSave_btn").addClass('invisible');
-                        break;
-
-                    case "plainTreeSelOrg" : 
-                        // $("#counselSend_btn").addClass('invisible');
-                        // $("#counselSave_btn").addClass('invisible');
-                        break;
+                        case "plainTreeSelOrg" : 
+                            // $("#counselSend_btn").addClass('invisible');
+                            // $("#counselSave_btn").addClass('invisible');
+                            break;
+                    }
+                    
+                    
+                } else if(data.node.data.LV == "2"){
+                    $("#HQ_NAME").text(data.node.parent.title);
+                    $("#DEPT_NAME").text(data.node.title);
+                    $("#LC_NAME").text("");
+                    $("#HQ_NAME2").text(data.node.parent.title);
+                    $("#DEPT_NAME2").text(data.node.title);
+                    $("#LC_NAME2").text("");
+        
+                    // 사업국 인원 검색
+                    switch (_mode){
+                        case "search" :
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title);
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            break;
+    
+                        case "plainTree" : 
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title);
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
+                            else $("#counselSend_btn").removeClass('invisible');
+                        case "plainTreeNoEmp" : 
+                            if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
+                            break;
+                        case "plainTreeSelOrg" : 
+                            // $("#counselSend_btn").removeClass('invisible');
+                            break;
+                    }
+                } else if(data.node.data.LV == "3"){
+                    $("#HQ_NAME").text(data.node.parent.parent.title);
+                    $("#DEPT_NAME").text(data.node.parent.title);
+                    $("#LC_NAME").text(data.node.title);
+                    $("#HQ_NAME2").text(data.node.parent.parent.title);
+                    $("#DEPT_NAME2").text(data.node.parent.title);
+                    $("#LC_NAME2").text(data.node.title);
+        
+                    // 센터 인원 검색
+                    switch (_mode){
+                        case "search" :
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title); 
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            break;
+                        case "plainTree" : 
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title); 
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
+                            else $("#counselSend_btn").removeClass('invisible');
+                        case "plainTreeNoEmp" : 
+                            if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
+                            break;
+                        case "plainTreeSelOrg" : 
+                            // $("#counselSend_btn").removeClass('invisible');
+                            break;
+                    }
+                } else if(data.node.data.LV == "4"){
+                    $("#HQ_NAME").text(data.node.parent.parent.title);
+                    $("#DEPT_NAME").text(data.node.parent.title);
+                    $("#LC_NAME").text(data.node.title);
+                    $("#HQ_NAME2").text(data.node.parent.parent.title);
+                    $("#DEPT_NAME2").text(data.node.parent.title);
+                    $("#LC_NAME2").text(data.node.title);
+        
+                    // 센터 인원 검색
+                    switch (_mode){
+                        case "search" :
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title); 
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            break;
+                        case "plainTree" : 
+                            if (_isEmpSearch) {
+                                _sortList.selTreeEmpList(data.node.title); 
+                            } else {
+                                param[0].SEARCH_DEPT_ID = "Y";
+                                param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
+                                _getList.employeeList(param);
+                            }
+                            if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
+                            else $("#counselSend_btn").removeClass('invisible');
+                        case "plainTreeNoEmp" : 
+                            if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
+                            break;
+                        case "plainTreeSelOrg" : 
+                            // $("#counselSend_btn").removeClass('invisible');
+                            break;
+                    }
                 }
-                
-                
-            } else if(data.node.data.LV == "2"){
-                $("#HQ_NAME").text(data.node.parent.title);
-                $("#DEPT_NAME").text(data.node.title);
-                $("#LC_NAME").text("");
-                $("#HQ_NAME2").text(data.node.parent.title);
-                $("#DEPT_NAME2").text(data.node.title);
-                $("#LC_NAME2").text("");
-    
-                // 사업국 인원 검색
-                switch (_mode){
-                    case "search" :
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title);
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        break;
-
-                    case "plainTree" : 
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title);
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
-                        else $("#counselSend_btn").removeClass('invisible');
-                    case "plainTreeNoEmp" : 
-                        if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
-                        break;
-                    case "plainTreeSelOrg" : 
-                        // $("#counselSend_btn").removeClass('invisible');
-                        break;
-                }
-            } else if(data.node.data.LV == "3"){
-                $("#HQ_NAME").text(data.node.parent.parent.title);
-                $("#DEPT_NAME").text(data.node.parent.title);
-                $("#LC_NAME").text(data.node.title);
-                $("#HQ_NAME2").text(data.node.parent.parent.title);
-                $("#DEPT_NAME2").text(data.node.parent.title);
-                $("#LC_NAME2").text(data.node.title);
-    
-                // 센터 인원 검색
-                switch (_mode){
-                    case "search" :
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title); 
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        break;
-                    case "plainTree" : 
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title); 
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
-                        else $("#counselSend_btn").removeClass('invisible');
-                    case "plainTreeNoEmp" : 
-                        if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
-                        break;
-                    case "plainTreeSelOrg" : 
-                        // $("#counselSend_btn").removeClass('invisible');
-                        break;
-                }
-            } else if(data.node.data.LV == "4"){
-                $("#HQ_NAME").text(data.node.parent.parent.title);
-                $("#DEPT_NAME").text(data.node.parent.title);
-                $("#LC_NAME").text(data.node.title);
-                $("#HQ_NAME2").text(data.node.parent.parent.title);
-                $("#DEPT_NAME2").text(data.node.parent.title);
-                $("#LC_NAME2").text(data.node.title);
-    
-                // 센터 인원 검색
-                switch (_mode){
-                    case "search" :
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title); 
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        break;
-                    case "plainTree" : 
-                        if (_isEmpSearch) {
-                            _sortList.selTreeEmpList(data.node.title); 
-                        } else {
-                            param[0].SEARCH_DEPT_ID = "Y";
-                            param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
-                            _getList.employeeList(param);
-                        }
-                        if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
-                        else $("#counselSend_btn").removeClass('invisible');
-                    case "plainTreeNoEmp" : 
-                        if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
-                        break;
-                    case "plainTreeSelOrg" : 
-                        // $("#counselSend_btn").removeClass('invisible');
-                        break;
-                }
+                $("#POSTNUM").val(data.node.data.ZIPCDE);
+                $("#POSTADDR").val(data.node.data.ZIP_ADDR);
+                $("#ADDR").val(data.node.data.ADDR);
+                $("#PHONE").val(data.node.data.TELPNO);
+                $("#FAXNUM").val(data.node.data.FAXNO);
+                $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
+                $("#POSTNUM2").val(data.node.data.ZIPCDE);
+                $("#POSTADDR2").val(data.node.data.ZIP_ADDR);
+                $("#ADDR2").val(data.node.data.ADDR);
+                $("#PHONE2").val(data.node.data.TELPNO);
+                $("#FAXNUM2").val(data.node.data.FAXNO);
+                $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
             }
-            $("#POSTNUM").val(data.node.data.ZIPCDE);
-            $("#POSTADDR").val(data.node.data.ZIP_ADDR);
-            $("#ADDR").val(data.node.data.ADDR);
-            $("#PHONE").val(data.node.data.TELPNO);
-            $("#FAXNUM").val(data.node.data.FAXNO);
-            $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
-            $("#POSTNUM2").val(data.node.data.ZIPCDE);
-            $("#POSTADDR2").val(data.node.data.ZIP_ADDR);
-            $("#ADDR2").val(data.node.data.ADDR);
-            $("#PHONE2").val(data.node.data.TELPNO);
-            $("#FAXNUM2").val(data.node.data.FAXNO);
-            $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
         },
     });
     tree = $.ui.fancytree.getTree("#tree");
