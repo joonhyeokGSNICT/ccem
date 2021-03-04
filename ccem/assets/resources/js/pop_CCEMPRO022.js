@@ -903,8 +903,8 @@ const getCounselCondition = async (sJobType) => {
 		// MOTIVE_CDE       : "",             // 입회사유코드       
 		FST_CRS_CDE      : $("#selectbox9").val(),             					// 첫상담경로         
 		// MEDIA_CDE     : "",                // 매체구분코드    
-		// TRANS_DATE       : "",             // 연계일자           
-		// TRANS_NO         : "",             // 연계번호           
+		TRANS_DATE       : $("#hiddenbox15").val(),             				// 연계일자           
+		TRANS_NO         : $("#hiddenbox16").val(),             				// 연계번호           
 		PROC_STS_MK      : $("#selectbox10").val(),             				// 처리상태구분       
 		// VENDER_CDE    : "",                // 동종업체코드    (타학습지)
 		// PRDT_ID       : "",                // 동종업체제품코드(제품명)
