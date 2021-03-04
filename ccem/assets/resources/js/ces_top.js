@@ -187,10 +187,122 @@ var autoPopMKList = [							// 자동으로 탑바 오픈되는 OB구분
 	'oblist_cde_10'
 ]
 
+
 var currentOBMK = "";
 
-const wiseNTalkUtil = {
+//var openedCallPop = {};
+
+//WISE N TALK 관련 객체
+var wiseNTalkUtil = {
 		
+		openedCallPop: {},
+		
+		// 현재 오픈 되어 있는 팝업 저장 func
+		saveWindowObj: function(obj){
+			wiseNTalkUtil.openedCallPop[obj.name] = obj;
+		},
+		
+		/**
+		   * 전화를 거는/끊는 function
+		   * @param 버튼상태
+		   * @param 해당번호
+		   */
+		callStart: function(status, targetPhone){
+			  targetPhone = targetPhone?.replace(/-/gi,'');
+			  // 전화 걸 수 있는 상태
+			  if(status == 'callOn'){
+				  client.request({
+				      url:'/api/v2/apps/notify.json',
+				      method: 'POST',
+				      headers: { "Content-Type": "application/json" },
+				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": targetPhone})
+				   }).then(function(d){
+				      console.log(d);
+				   }).catch(function(d){
+				      console.log(d);
+				   });
+			  }else if(status == 'callOff'){
+				  client.request({
+				      url:'/api/v2/apps/notify.json',
+				      method: 'POST',
+				      headers: { "Content-Type": "application/json" },
+				      data: JSON.stringify({"event": "endCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": ""})
+				   }).then(function(d){
+				      console.log(d);
+				   }).catch(function(d){
+				      console.log(d);
+				   });
+			  }
+		 },
+		 
+		 // 전화상태변경 적용
+		 applyPhoneIcon: function() {
+			 console.log('ap on');
+			 for(obj in wiseNTalkUtil.openedCallPop){
+				 wiseNTalkUtil.changePhoneIcon(obj);
+			 }
+			 wiseNTalkUtil.changePhoneIcon();
+		 },
+		
+		// 전화아이콘 상태변경
+		 changePhoneIcon: function(window){
+			console.log('cp', window);
+			console.log('cpstat', CTI_STATUS);
+			var tempType = 'on';
+			switch(CTI_STATUS){
+			case 'INITIATED':
+				tempType = 'on';
+				break;
+			case 'ACTIVE':
+				tempType = 'on';
+				break;
+			case 'WRAP_UP':
+				tempType = 'off';
+				break;
+			case 'DROPPED':
+				tempType = 'off';
+				break;
+			default:
+				tempType = 'on';
+				break;	
+			}
+			
+			if(tempType == 'on'){
+				if(window){
+					$('.callBtn', window.document).removeClass('callOn');
+					$('.callBtn', window.document).addClass('callOff');
+					$('.callIcon', window.document).attr('src','../img/phone-slash-solid.svg');
+				}else {
+					$('.callBtn').removeClass('callOn');
+					$('.callBtn').addClass('callOff');
+					$(".callIcon").attr('src','../img/phone-slash-solid.svg');
+				}
+				/*$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).removeClass('callOn');
+				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).addClass('callOff');
+				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).attr('src','../img/phone-slash-solid.svg');
+				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).removeClass('callOn');
+				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).addClass('callOff');
+				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-slash-solid.svg');*/
+
+			}else {
+				if(window){
+					$('.callBtn', window.document).removeClass('callOff');
+					$('.callBtn', window.document).addClass('callOn');
+					$('.callIcon', window.document).attr('src','../img/phone-solid.svg');
+				}else {
+					$('.callBtn').removeClass('callOff');
+					$('.callBtn').addClass('callOn');
+					$(".callIcon").attr('src','../img/phone-solid.svg');
+				}
+		/*		$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).removeClass('callOff');
+				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).addClass('callOn');
+				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).attr('src','../img/phone-solid.svg');
+				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).removeClass('callOff');
+				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).addClass('callOn');
+				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-solid.svg');
+		*/
+			}
+		}
 }
 
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
@@ -230,9 +342,9 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 		}
 	});
 });
-// 티켓이 열림
-client.on("ticketReady", function(){
-	
+// 다른 앱에서 탑바열기
+client.on("api_notification.openCCEM", function(){
+	topBarClient.invoke("popover");	
 });
 client.on("getCodeData", function(d){
 	codeData = d;
@@ -257,6 +369,14 @@ client.on("pane.activated", (ev) => {
 client.on('api_notification.setCTIStatus', function(status){
 	CTI_STATUS = status;
 	console.log(CTI_STATUS);
+	
+	//changePhoneIcon();
+	wiseNTalkUtil.applyPhoneIcon();
+});
+
+// WiseNTalk 응답 트리거
+client.on('api_notification.getResponse', function(obj){
+	
 });
 
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
@@ -812,7 +932,7 @@ $(function(){
 			break;
 		case 'lawCall_btn':
 			phoneNum = $.trim($("#custInfo_MOBILNO_LAW1").val() + $("#custInfo_MOBILNO_LAW2").val() + $("#custInfo_MOBILNO_LAW3").val());
-//			break;
+			break;
 		case 'momCall_btn':
 			phoneNum = $.trim($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val());
 			break;
@@ -822,13 +942,17 @@ $(function(){
 		case 'lcCall_btn':
 			phoneNum = $.trim($("#custInfo_TELPNO_LC").val().replace(/-/gi,''));
 			break;
+		case 'obCall_btn':
+			phoneNum = $.trim($("#custInfo_REP_TELNO").val().replace(/-/gi,''));
+			break;
 		}
+		
 		if($(this).hasClass('callOn')){
 			tempStat = 'callOn';
 		}else {
 			tempStat = 'callOff';
 		};
-		callStart(tempStat, phoneNum);
+		wiseNTalkUtil.callStart(tempStat, phoneNum);
 	});
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
@@ -3464,21 +3588,3 @@ function smsOnClick_tchr(){
   const zendeskUserSearch = (external_id) => client.request(`/api/v2/users/search.json?external_id=${external_id}`);
   
   
-  function callStart(status, phone){
-	  var targetPhone = phone?.replace(/-/gi,'');
-	  // 전화 걸 수 있는 상태
-	  if(status == 'callOn'){
-		  client.request({
-		      url:'/api/v2/apps/notify.json',
-		      method: 'POST',
-		      headers: { "Content-Type": "application/json" },
-		      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": targetPhone})
-		   }).then(function(d){
-		      console.log(d);
-		   }).catch(function(d){
-		      console.log(d);
-		   });
-	  }else {
-		  
-	  }
-  }

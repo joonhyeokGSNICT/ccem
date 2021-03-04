@@ -4,10 +4,18 @@ var param = {};
 var openerParam = {};
 
 var msgType = 0;
+var originObj;
 
 $(function(){
+	
+	if(opener.name.includes('top_bar')){
+		originObj = opener;
+	}else {
+		originObj = opener.topbarObject;
+	}
+	
 	getBasicList("13").then(function(d){$("#smsSendNum").val(CSNumber(d));});				// 대표전화번호
-	const codeList = opener.codeData.filter(el => "SMS_SENDER".includes(el.CODE_MK));
+	const codeList = originObj.codeData.filter(el => "SMS_SENDER".includes(el.CODE_MK));
 	console.log(codeList);
 	
 	$(".specialCharacter").click(function(){
@@ -116,7 +124,7 @@ $(function(){
 		dataType: 'json',
 		contentType: "application/json",
 		data: JSON.stringify({
-			userid: opener.currentUserInfo.user.external_id,
+			userid: originObj.currentUserInfo.user.external_id,
 		    menuname: 'SMS전송팝업',
 			senddataids: ["send1"],
 			recvdataids: ["recv1"],
@@ -201,7 +209,7 @@ function cleanContent(){
  */
 function sendSMS(){
 	param.send1 = [{}];
-	param.userid = opener.currentUserInfo.user.external_id;
+	param.userid = originObj.currentUserInfo.user.external_id;
 	param.menuname = 'SMS전송';
 	param.senddataids = ["send1"];
 	param.recvdataids = ["recv1"];
@@ -210,10 +218,10 @@ function sendSMS(){
 	param.send1[0].DEST_PHONE = $("#sendtoNum").val().replace(/-/gi,""); 													//수신번호
 	param.send1[0].DEST_NAME = $("#sendCustName").val();
 	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
-	param.send1[0].SEND_NAME =	opener.currentUserInfo.user.name;
+	param.send1[0].SEND_NAME =	originObj.currentUserInfo.user.name;
 	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
 	param.send1[0].STATUS = 0;
-	param.send1[0].EXTERNAL_ID = opener.currentUserInfo.user.external_id,         											//상담자ID
+	param.send1[0].EXTERNAL_ID = originObj.currentUserInfo.user.external_id,         											//상담자ID
 	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
 	param.send1[0].SMS_FIX_ID = "";         				
 	
