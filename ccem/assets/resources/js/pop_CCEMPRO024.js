@@ -1,3 +1,4 @@
+var topbarObject;
 let topbarClient;
 
 let currentUser;
@@ -97,6 +98,7 @@ const onStart = () => {
 
 	// 상담등록 화면에서 오픈했을때.
 	if (opener?.name == "CCEMPRO022") {  
+		topbarObject	= opener.topbarObject;
 		topbarClient	= opener.topbarClient;
 		currentUser 	= opener.currentUser;
 		currentTicket	= opener.currentTicket;

@@ -1,4 +1,4 @@
-let topbarObject;			// topbar window
+var topbarObject;			// topbar window
 let topbarClient;			// topbar client
 let sidebarClient;          // sidebar client
 let currentUser = {};       // 현재 사용중인 유저의 정보(ZENDESK)

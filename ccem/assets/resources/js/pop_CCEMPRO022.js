@@ -959,7 +959,7 @@ const getCounselCondition = async (sJobType) => {
 	const sMan_mk = data.CSEL_MAN_MK;
 
 	if (!data.CSEL_TITLE) {
-		alert("상담제목으로 입력하여 주십시요.");
+		alert("상담제목을 입력하여 주십시요.");
 		return false;
 	}
 	if (!data.CSEL_CNTS) {

@@ -27,7 +27,7 @@
 		<div class="col-2">
 			<div class="input-group mt-2 pl-1 pr-4">
 				<span class="font-weight-bold" style="color:white;"><i class="fas fa-caret-square-right subjectArrow"></i>조회건수 :</span>
-				<input type="text" class="form-control form-control-sm text-right ml-1" id="textbox4">
+				<input type="text" class="form-control form-control-sm text-right ml-1" id="textbox4" readonly>
 			</div>
 		</div>
 		<div class="col text-right">
@@ -325,13 +325,13 @@
 							<label class="form-check-label" for="checkbox33">재통화</label>
 						</div>
 					</th>
-					<th>
+					<td>
 						<select class="form-control form-control-sm" id="selectbox22" onchange="document.querySelector('#checkbox33').checked = true;">
 							<option value="" hidden></option>
 							<option value="N">재통화예약</option>
 							<option value="Y">재통화완료</option>
 						</select>
-					</th>
+					</td>
 				</tr>
 				<tr>
 					<th>
