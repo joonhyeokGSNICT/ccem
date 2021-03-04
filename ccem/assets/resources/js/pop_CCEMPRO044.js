@@ -837,7 +837,7 @@ const _btn = {
 					}
 				}
 			}
-			console.log(telArray);
+			// console.log(telArray);
 
 			/**
 			 * 전송할 데이터
@@ -972,7 +972,7 @@ const _btn = {
 				orgList.EMP_NAME_LIST  = nameArray.join(', ')
 				orgList.EMP_ID_LIST = idArray.join(', ')
 				opener.setDisPlayDn(orgList);
-				console.log(orgList);
+				// console.log(orgList);
 			}
 			window.close();
 
@@ -1051,7 +1051,7 @@ const _btn = {
 						}
 					}, {mode : "hide"}
 				)
-				tree.getNodeByKey(tree.findFirst(txt).key).setActive();
+				if (! isEmpty(tree.findFirst(txt).key)) tree.activateKey(tree.findFirst(txt).key);
 			} else if ( $('#searchOrg_selectbox > option:selected').val() == '지점주소') {
 				var match = $.trim($('#searchOrg_txt').val());
 				tree.filterNodes( 

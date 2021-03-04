@@ -155,14 +155,17 @@ function setGridTree() {
             mode: "hide"                // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
         },
         checkbox: _modeSelect[_mode].treeCheckBox,
+        focusOnSelect: false,
         clickFolderMode: 4,
         selectMode: 3,
         click: function(event, data) {
-            console.log("test1");
+            // if ( data.targetType == 'title') {}
+            // console.log("test1");
+            // console.log(data);
         },
 
         // 본부/사업국/센터 설정 시 해당 정보 표시
-        click: function(event, data) {
+        focus: function(event, data) {
             // $("#statusLine").text(event.type + ": " + data.node);
             _selectedNode = data.node;
             console.log("targetType=" + data.targetType);
@@ -171,7 +174,7 @@ function setGridTree() {
     
             // 본부/사업국/센터 정보창 변경
             // 재직구분 확인
-            if ( data.targetType == 'title') {
+            
                 var param = [{}];
                 if ( $('#searchEmp_chk').prop("checked")==true && !isEmpty($('#searchEmp_selectbox').val()) ) {
                     // SEARCH_STS_CDE_TXT : 0:퇴직, 1:휴직, 2:대기, 3:사업, 4:해지, 9:재직
@@ -351,8 +354,7 @@ function setGridTree() {
                 $("#PHONE2").val(data.node.data.TELPNO);
                 $("#FAXNUM2").val(data.node.data.FAXNO);
                 $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
-            }
-        },
+        }
     });
     tree = $.ui.fancytree.getTree("#tree");
 }
