@@ -638,8 +638,8 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		// cselData.MOTIVE_CDE		// 입회사유코드	
 		$("#selectbox9").val(cselData.FST_CRS_CDE);											// 첫상담경로		
 		// cselData.MEDIA_CDE		// 매체구분코드	
-		// cselData.TRANS_DATE		// 연계일자	
-		// cselData.TRANS_NO		// 연계번호	
+		$("#hiddenbox15").val(cselData.TRANS_DATE);											// 연계일자	
+		$("#hiddenbox16").val(cselData.TRANS_NO);											// 연계번호
 		filterPROC_STS_MK(cselData.PROC_STS_MK);											// 처리상태구분
 		$("#hiddenbox9").val(cselData.PROC_STS_MK);											// 처리상태구분 for 저장시 체크
 		// cselData.VENDER_CDE		// 동종업체코드	
