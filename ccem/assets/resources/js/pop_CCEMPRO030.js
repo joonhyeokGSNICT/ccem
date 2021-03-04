@@ -687,7 +687,7 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
         //     $("#timebox1").val(getTimeFormat());   
         // }
         // 사업국처리시간 세팅
-        const intervalTime = gf_getIntervalTime(DS_DEPT_PROC.DEPT_ACP_DATE, DS_DEPT_PROC.DEPT_ACP_TIME, DS_VOC_PROC.VOC_PROC_DATE, DS_VOC_PROC.VOC_PROC_TIME);
+        const intervalTime = gf_getIntervalTime(DS_DEPT_PROC.DEPT_ACP_DATE||"", DS_DEPT_PROC.DEPT_ACP_TIME||"", DS_VOC_PROC.VOC_PROC_DATE||"", DS_VOC_PROC.VOC_PROC_TIME||"");
         $("#textbox24").val(intervalTime);  
 
 	});
