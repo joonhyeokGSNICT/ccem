@@ -658,6 +658,7 @@ const getTransCondition = (row) => {
 		DIV_CDE			: $("#hiddenbox2").val(),						// 관할본부코드		
 		AREA_CDE		: $("#hiddenbox3").val(),						// 관할지역코드			
 		DEPT_EMP_ID		: $("#hiddenbox4").val(),						// 지점장ID			
+		LC_ID			: $("#hiddenbox5").val(),						// 센터ID
 		DS_TRANS_USER	: [],											// 연계대상자사번
 		USER_ID			: currentUser.external_id,						// 상담원ID
 		ZEN_TICKET_ID	: row.ZEN_TICKET_ID,							// 티켓ID
