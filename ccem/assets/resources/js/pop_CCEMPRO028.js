@@ -694,6 +694,8 @@ const getTransCondition = (row) => {
 	// 기존의 연계일자가 없을 경우 INSERT
 	} else if (!row.TRANS_DATE || row.TRANS_DATE.length < 8) {
 		data.ROW_TYPE = "I";
+		data.TRANS_DATE = getDateFormat().replace(/[^0-9]/gi, "");
+		data.TRANS_TIME = getTimeFormat().replace(/[^0-9]/gi, "");
 
 	// 기존의 연계일자가 있고, 연계번호가 있는 경우 UPDATE
 	} else if (row.TRANS_DATE && row.TRANS_DATE.length == 8 && row.TRANS_NO > 0) {
