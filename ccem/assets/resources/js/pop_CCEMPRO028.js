@@ -660,7 +660,7 @@ const getTransCondition = (row) => {
 		DEPT_EMP_ID		: $("#hiddenbox4").val(),						// 지점장ID			
 		DS_TRANS_USER	: [],											// 연계대상자사번
 		USER_ID			: currentUser.external_id,						// 상담원ID
-		TRANS_LC_ID		: $("#hiddenbox5").val(),						// 센터ID
+		LC_ID			: $("#hiddenbox5").val(),						// 센터ID
 		ZEN_TICKET_ID	: row.ZEN_TICKET_ID,							// 티켓ID
 		followers		: [], 											// 팔로워
 	}
