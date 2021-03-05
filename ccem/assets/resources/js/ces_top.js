@@ -279,7 +279,6 @@ var wiseNTalkUtil = {
 			}
 			console.log(tempType);
 			if(tempType == 'on'){
-				console.log('전화거는상황입니다.');
 				if(window){
 					$('.callBtn', window.document).removeClass('callOn');
 					$('.callBtn', window.document).addClass('callOff');
@@ -297,7 +296,6 @@ var wiseNTalkUtil = {
 				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-slash-solid.svg');*/
 
 			}else {
-				console.log('전화끊은상황입니다.');
 				if(window){
 					$('.callBtn', window.document).removeClass('callOff');
 					$('.callBtn', window.document).addClass('callOn');
@@ -315,7 +313,16 @@ var wiseNTalkUtil = {
 				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-solid.svg');
 		*/
 			}
-		}
+		},
+		 // 3자통화요청
+		 requestTransfer: function(num){
+			client.request({
+			      url:'/api/v2/apps/notify.json',
+			      method: 'POST',
+			      headers: { "Content-Type": "application/json" },
+			      data: JSON.stringify({"event": "transferCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": num})
+		   })
+		 }
 }
 
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
