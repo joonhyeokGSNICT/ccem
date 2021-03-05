@@ -251,6 +251,45 @@ var btn = {
 
             // callClient.onIVRCertify(cs,window); // wiseNtalk으로 전환 확인
             console.log("onIVRCertify >> ",cs);
+            var requestNum = '0';
+            switch(cs){
+            case '1':
+            	requestNum = '6111';
+            	break;
+            case '2':
+            	requestNum = '6112';
+            	break;
+            case '3':
+            	requestNum = '6113';
+            	break;
+            case '4':
+            	requestNum = '6114';
+            	break;
+            case '5':
+            	requestNum = '6115';
+            	break;
+            case '6':
+            	requestNum = '6116';
+            	break;
+            case '7':
+            	requestNum = '6117';
+            	break;
+            case '8':
+            	requestNum = '6118';
+            	break;
+            case '9':
+            	requestNum = '6119';
+            	break;
+            case '10':
+            	requestNum = '6120';
+            	break;
+            case '11':
+            	requestNum = '6121';
+            	break;
+            }
+            
+            topbarObject.wiseNTalkUtil.requestTransfer(requestNum);
+            
         }, function() {
             return;
         });

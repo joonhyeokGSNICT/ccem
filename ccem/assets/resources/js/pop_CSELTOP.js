@@ -1,10 +1,5 @@
 $(function () {
 
-	// TODO 녹취키 저장API 호출
-	$(window).on('beforeunload', () => {
-		opener.console.debug("beforeunload");
-	});
-
 	// grid refreshLayout
 	$('.nav-link').on('shown.bs.tab', refreshGrid);
 	

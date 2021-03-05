@@ -208,6 +208,17 @@ var wiseNTalkUtil = {
 		   * @param 해당번호
 		   */
 		callStart: function(status, targetPhone){
+			
+			if(currentTicketInfo == null || currentTicketInfo == undefined){
+				console.log('티켓이 열려있지 않습니다.');
+				return;
+			}
+			
+			/*if(currentTicketInfo?.ticket.requester.externalId == currentCustInfo.CUST_ID){
+				console.log('티켓의 고객과 CCEM의 고객이 다릅니다.');
+				return;
+			}*/
+			
 			  targetPhone = targetPhone?.replace(/-/gi,'');
 			  // 전화 걸 수 있는 상태
 			  if(status == 'callOn'){
@@ -215,7 +226,7 @@ var wiseNTalkUtil = {
 				      url:'/api/v2/apps/notify.json',
 				      method: 'POST',
 				      headers: { "Content-Type": "application/json" },
-				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": targetPhone})
+				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": [targetPhone, ""+currentTicketInfo.ticket.id]})
 				   }).then(function(d){
 				      console.log(d);
 				   }).catch(function(d){
@@ -249,7 +260,7 @@ var wiseNTalkUtil = {
 			console.log('cp', window);
 			console.log('cpstat', CTI_STATUS);
 			var tempType = 'on';
-			switch(CTI_STATUS){
+			switch(CTI_STATUS.body){
 			case 'INITIATED':
 				tempType = 'on';
 				break;
@@ -266,7 +277,7 @@ var wiseNTalkUtil = {
 				tempType = 'on';
 				break;	
 			}
-			
+			console.log(tempType);
 			if(tempType == 'on'){
 				if(window){
 					$('.callBtn', window.document).removeClass('callOn');
@@ -302,7 +313,16 @@ var wiseNTalkUtil = {
 				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-solid.svg');
 		*/
 			}
-		}
+		},
+		 // 3자통화요청
+		 requestTransfer: function(num){
+			client.request({
+			      url:'/api/v2/apps/notify.json',
+			      method: 'POST',
+			      headers: { "Content-Type": "application/json" },
+			      data: JSON.stringify({"event": "transferCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": num})
+		   })
+		 }
 }
 
 // 고객 조회 상태 // 1: 신규, 아무것도 없는 상태. 2: 고객조회된 상태. 3: 관계회원 조회된 상태
@@ -331,13 +351,16 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 				//topBarClient.invoke('popover','hide');				// 탑바 닫기
 			};
 		}else {
-			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+			if(data.ticket.status != 'solved' || data.ticket.status != 'closed'){							// 티켓 상태가 해결, 종료가 아닌 경우,
+				topBarClient.invoke("popover");					// 탑바 열기
+			}
+			/*sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
 				if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
 					topBarClient.invoke("popover");					// 탑바 열기
 				}else {
 					//topBarClient.invoke('popover','hide');
 				}
-			});
+			});*/
 			
 		}
 	});

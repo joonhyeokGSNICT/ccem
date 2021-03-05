@@ -374,11 +374,13 @@ var setTransDisPlay = (data) => {
 		$("#textbox13").val(data.LC_FAX_NO1); 	// 센터팩스1(FAX2)
 		$("#textbox14").val(data.LC_FAX_NO2); 	// 센터팩스2(FAX3)
 	}  
-	$("#hiddenbox7").val(data.DEPT_ID);			// 관할지점코드
-	$("#hiddenbox2").val(data.DIV_CDE);			// 관할본부코드
-	$("#hiddenbox3").val(data.AREA_CDE);		// 관할지역코드	
+	$("#hiddenbox2").val(data.DIV_CDE);			// 본부코드
+	$("#hiddenbox3").val(data.AREA_CDE);		// 지역코드	
+	$("#hiddenbox7").val(data.DEPT_ID);			// 지점코드
+	$("#hiddenbox10").val(data.DEPT_NAME);		// 지점명
 	$("#hiddenbox4").val(data.DEPT_EMP_ID);		// 지점장ID	 	
 	$("#hiddenbox5").val(data.LC_ID);			// 센터ID		 
+	$("#hiddenbox11").val(data.LC_NAME);		// 센터명
 	$("#hiddenbox6").val(data.LC_EMP_ID);		// 센터장ID	
 	$("#hiddenbox8").val(data.EMP_ID_LIST);		// 연계대상자ID
 	$("#textbox17").val(data.EMP_NAME_LIST);	// 연계대상자이름
@@ -660,9 +662,11 @@ const getTransCondition = (row) => {
 		DEPT_EMP_ID		: $("#hiddenbox4").val(),						// 지점장ID			
 		DS_TRANS_USER	: [],											// 연계대상자사번
 		USER_ID			: currentUser.external_id,						// 상담원ID
-		TRANS_LC_ID		: $("#hiddenbox5").val(),						// 센터ID
-		ZEN_TICKET_ID	: row.ZEN_TICKET_ID,							// 티켓ID
-		followers		: [], 											// 팔로워
+		LC_ID			: $("#hiddenbox5").val(),						// 센터ID
+		ZEN_TICKET_ID	: row.ZEN_TICKET_ID,							// 티켓ID for ticket update
+		followers		: [], 											// 팔로워 for ticket update
+		DEPT_NAME		: $("#hiddenbox10").val(),						// 지점명 for ticket update
+		LC_NAME			: $("#hiddenbox11").val(),						// 센터명 for ticket update
 	}
 
 	// 티켓ID 확인
@@ -694,6 +698,8 @@ const getTransCondition = (row) => {
 	// 기존의 연계일자가 없을 경우 INSERT
 	} else if (!row.TRANS_DATE || row.TRANS_DATE.length < 8) {
 		data.ROW_TYPE = "I";
+		data.TRANS_DATE = getDateFormat().replace(/[^0-9]/gi, "");
+		data.TRANS_TIME = getTimeFormat().replace(/[^0-9]/gi, "");
 
 	// 기존의 연계일자가 있고, 연계번호가 있는 경우 UPDATE
 	} else if (row.TRANS_DATE && row.TRANS_DATE.length == 8 && row.TRANS_NO > 0) {
@@ -769,6 +775,20 @@ const saveTrans = (transData) => new Promise((resolve, reject) => {
 const updateTicket = async (DS_TRANS) => {
 
 	for (const row of DS_TRANS) {
+
+		// 티켓필드 세팅
+		const custom_fields = [		
+			{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], 		value: `proc_sts_mk_${Number(row.PROC_STS_MK)}` },				// 처리상태
+			{ id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_CHNL_MK"], 	value: `trans_chnl_mk_${Number(row.TRANS_CHNL_MK)}` },			// 연계방법
+			{ id: ZDK_INFO[_SPACE]["ticketField"]["RTN_FLAG"], 			value: `rtn_flag_${Number(row.RTN_FLAG)}` },					// 회신여부
+			{ id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_DEPT_IDNM"], 	value: row.DEPT_NAME },											// 지점명
+			{ id: ZDK_INFO[_SPACE]["ticketField"]["LC_IDNM"], 			value: row.LC_NAME },											// 센터명
+		];
+		
+		if (row.TRANS_DATE?.length == 8 && row.TRANS_TIME?.length == 6) {
+			const TRANS_DATE_TIME = `${FormatUtil.date(row.TRANS_DATE)} ${FormatUtil.time(row.TRANS_TIME)}`;						
+			custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_DATE_TIME"],	value: TRANS_DATE_TIME }); 					// 연계일시
+		}
 		
 		const option = {
 			url: `/api/v2/tickets/${row.ZEN_TICKET_ID}`,
@@ -777,9 +797,7 @@ const updateTicket = async (DS_TRANS) => {
 			data: JSON.stringify({ 
 				ticket: { 
 					followers: row.followers,
-					custom_fields: [
-						{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: `proc_sts_mk_${Number(row.PROC_STS_MK)}` },
-					],
+					custom_fields,
 				}
 			}),
 		}
