@@ -496,6 +496,7 @@ const _sortList = {
 			}
 		}
 
+		console.log(respondeData);
 		var temp = respondeData;
 		for ( index in temp ){
 			// 구성원의 교사구분 처리
@@ -580,6 +581,13 @@ const _sortList = {
 						temp[index].UP_DEPT_ID = UP_DEPT_ID;
 					}
 				}
+			} else if (temp[index].LV == null) { // 레벨구분이 없는 경우
+				temp[index].UP_DEPT_ID = temp[index].DEPT_ID;
+				temp[index].UP_DEPT_NAME = temp[index].DEPT_NAME;
+				temp[index].PARE_DEPT_ID = '-';
+				temp[index].PARE_DEPT_NAME = '-';
+				temp[index].DEPT_ID = '-';
+				temp[index].DEPT_NAME = '-';
 			}
 		}
 
@@ -604,7 +612,7 @@ const _sortList = {
 				};
 			});
 			employeeListGrid.resetData(tempGrid);
-			
+
 			// 사업국장 자동 체크
 			if (! _isEmpSearch) {
 				var REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
@@ -624,24 +632,21 @@ const _sortList = {
 			var code = '';
 			for ( index in nameTempList ) {
 				if ( nameTempList[index].LV == "1" ){
-					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'1\' ';
-					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'1\'  || ';
+					code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'1\'  || ';
 				} else if ( temp[index].LV == "2" ){
-					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'2\' ';
-					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'2\'  || ';
+					code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'2\'  || ';
 				} else if ( temp[index].LV == "3" ){
-					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'3\' ';
-					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'3\'  || ';
+					code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'3\'  || ';
 				} else if ( temp[index].LV == "4" ){
-					if ( index == nameTempList.length-1 ) code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'4\' ';
-					else code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'4\'  || ';
+					code += 'node.data.DEPT_NAME.indexOf(\''+nameTempList[index].ORG_NAME+'\') > -1 && node.data.LV == \'4\'  || ';
 				}
 			}
+			code = code.slice(0,-3);
 			var attr = {mode:"hide", autoExpand : true};
 			
-			_openOrgList.filter(data => data.DEPT_NAME == '3' );
+			// _openOrgList.filter(data => data.DEPT_NAME == '3' );
 
-			// console.log(code);
+			console.log(code);
 			tree.filterNodes( 
 				function(node) {
 					if ( !isEmpty(node.data.DEPT_NAME) ) {

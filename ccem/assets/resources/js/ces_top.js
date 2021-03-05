@@ -252,7 +252,7 @@ var wiseNTalkUtil = {
 		 applyPhoneIcon: function() {
 			 console.log('ap on');
 			 for(obj in wiseNTalkUtil.openedCallPop){
-				 wiseNTalkUtil.changePhoneIcon(obj);
+				 wiseNTalkUtil.changePhoneIcon(wiseNTalkUtil.openedCallPop[obj]);
 			 }
 			 wiseNTalkUtil.changePhoneIcon();
 		 },
@@ -281,7 +281,7 @@ var wiseNTalkUtil = {
 			}
 			console.log(tempType);
 			if(tempType == 'on'){
-				if(window){
+				if(window != undefined){
 					$('.callBtn', window.document).removeClass('callOn');
 					$('.callBtn', window.document).addClass('callOff');
 					$('.callIcon', window.document).attr('src','../img/phone-slash-solid.svg');
@@ -298,7 +298,7 @@ var wiseNTalkUtil = {
 				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-slash-solid.svg');*/
 
 			}else {
-				if(window){
+				if(window != undefined){
 					$('.callBtn', window.document).removeClass('callOff');
 					$('.callBtn', window.document).addClass('callOn');
 					$('.callIcon', window.document).attr('src','../img/phone-solid.svg');
