@@ -880,7 +880,7 @@ const getCselCondition = async () => {
 		// CTI_CHGDATE      : "",             // cti변경일자        
 		// TO_TEAM_DEPT     : "",             // 지점장부서         
 		OPEN_GBN         : $("#selectbox1").val(),             					// 공개여부  (개인정보)         
-		VOC_MK           : $("#checkbox5").is(":checked") ? "Y" : "",           // VOC                
+		VOC_MK           : $("#checkbox5").is(":checked") ? "Y" : "N",          // VOC                
 		CSEL_GRD         : $("#selectbox11").val(),             				// 상담등급           
 		RE_PROC          : $("#checkbox4").is(":checked") ? "1" : "0",          // 재확인여부         
 		// CALL_STTIME      : "",             // 통화시작시간       
@@ -888,18 +888,18 @@ const getCselCondition = async () => {
 		// STD_STS       : "",                // 타학습이력학습상
 		// STD_MON_CDE   : "",                // 학습개월        
 		// RENEW_POTN    : "",                // 복회가능여부    
-		LC_MK            : $("#checkbox1").is(":checked") ? "Y" : "",           // 러닝센터(LC)           
+		LC_MK            : $("#checkbox1").is(":checked") ? "Y" : "N",          // 러닝센터(LC)           
 		PROC_DEPT_ID     : $("#textbox11").val(),             					// 직원상담 처리지점  (연계부서코드)
 		// TIME_APPO     : "",                // 시간약속        
 		LC_ID            : $("#hiddenbox1").val(),             					// 센터ID             
 		LC_EMP_ID        : $("#hiddenbox4").val(),             					// 센터장사번         
-		YC_MK            : $("#checkbox2").is(":checked") ? "Y" : "",           // YC                 
+		YC_MK            : $("#checkbox2").is(":checked") ? "Y" : "N",          // YC                 
 		ZEN_TICKET_ID    : $("#hiddenbox10").val(),             				// 티켓ID             
-		HL_MK            : $("#checkbox3").is(":checked") ? "Y" : "",           // HL                 
+		HL_MK            : $("#checkbox3").is(":checked") ? "Y" : "N",          // HL                 
 		// PLURAL_PRDT_LIST : "",  			   // 병행과목코드리스트 
 		// PLURAL_PRDT_NAME : "",			   // 병행과목코드명     
 		// ORG_CSEL_RST_MK1 : "",              // ORG상담결과구분    
-		RE_CALL_CMPLT    : $("#checkbox6").is(":checked") ? "Y" : "",           // 재통화완료여부     
+		RE_CALL_CMPLT    : $("#checkbox6").is(":checked") ? "Y" : "N",           // 재통화완료여부     
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -1665,6 +1665,7 @@ const getCustomData = async () => {
 		brandId			: $("#hiddenbox14").val(),				// 브랜드ID
 		empList    		: $("#hiddenbox11").val().split(","),	// 연계대상자
 		requesterId		: undefined, // requester_id
+		transMk			: "",		 // 연계구분
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -1678,6 +1679,14 @@ const getCustomData = async () => {
 		}
 
 		data.requesterId = users[0].id;
+	}
+
+	// 처리구분에 따라 연계구분 세팅
+	const sPROC_MK = $("#selectbox4").val();
+	if (sPROC_MK == "3") {
+		data.transMk = "1";
+	} else if (sPROC_MK == "4") {
+		data.transMk = "2";
 	}
 
 	return data;

@@ -781,6 +781,7 @@ const getCustomData = async () => {
 		brandId			: $("#hiddenbox3").val(), // 브랜드ID
 		empList    		: [], // 연계대상자
 		requesterId		: undefined, // requester_id
+		transMk			: "4",		 // 연계구분 - 소개연계
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
