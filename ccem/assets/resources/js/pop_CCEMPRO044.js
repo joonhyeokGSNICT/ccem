@@ -18,7 +18,11 @@ var _isEmpSearch; 		// 구성원 검색 시 (Ajax통신 사용)
 var _isSave;			// 사업국 저장시, 해당 트리로 바로 이동하기 위한 변수
 var _isFirst = true;	// 첫 진입 여부 확인
 
+var _topWindow;		// topBar window위치값
+
 let hash = window.location.hash; // 구분처리
+
+
 /**
  * Mode설정
  * @param _mode 
@@ -41,19 +45,30 @@ let hash = window.location.hash; // 구분처리
  * 	1. #menu : 상단 메뉴
  * 	2. #info : 유저정보
  */
-console.log(opener.name+' / '+ hash);
+
+// console.log(opener.name+' / '+ hash);
+// .wiseNTalkUtil.saveWindowObj(window)
 
 var _mode = "plainTree";
 if ( opener.name == 'CCEMPRO022' ) {
 	if (hash =="#disPlayUp") _mode ="plainTreeSelOrg";
 	else if (hash =="#disPlayDn") _mode ="plainTree";
+	_topWindow = opener.parent.opener;
 }
-else if ( opener.name == 'CCEMPRO028' ) _mode ="plainTree";
-else if ( opener.name == 'CCEMPRO031' || opener.name == 'CCEMPRO032' ) _mode ="plainTreeSelOrg";
+else if ( opener.name == 'CCEMPRO028' ) {
+	_mode ="plainTree";
+	_topWindow = opener.opener.parent.opener;
+}
+else if ( opener.name == 'CCEMPRO031' || opener.name == 'CCEMPRO032' ) {
+	_mode ="plainTreeSelOrg";
+	_topWindow = opener.parent.opener;
+}
 else if ( opener.name.indexOf('app_CCEM_top_bar') > -1) {
 	if (hash == "#menu" ) _mode="search";
 	else if (hash =="#info")  _mode="plainTreeSelOrg"; 
+	_topWindow = opener;
 }
+_topWindow.wiseNTalkUtil.saveWindowObj(window)
 
 console.log(_mode);
 
@@ -163,6 +178,24 @@ function init(){
 	}
 }
 
+
+/**
+ * wiseNtalk 연동
+ */
+// 탭 이동시, employeeListGrid가 refresh되어 표의 틀어짐 방지
+$("#button12").on("click", function(e) {
+	if (! isEmpty($('#PHONE').val()) ) {
+		if ( $(this).hasClass('callOn') ) {
+			_topWindow.wiseNTalkUtil.callStart('callOn', $('#PHONE').val());
+		} else if ( $(this).hasClass('callOff') ) {
+			_topWindow.wiseNTalkUtil.callStart('callOff', $('#PHONE').val());
+		}
+	} else {
+		alert("전화번호가 없습니다.\n: 트리에서 본부/사업국/센터를 선택해주세요.");
+		return;
+	}
+		// _topWindow.wiseNTalkUtil.callStart(window)
+});
 
 
 /**
@@ -376,7 +409,8 @@ const _sortList = {
 				if ( opener.name.indexOf('CCEMPRO022') > -1 && hash =="#disPlayUp" ) {
 					var textVal = opener.document.getElementById('textbox9').value;
 					if(! isEmpty(textVal) ) $('#searchOrg_txt').val(textVal);
-					else $('#searchOrg_txt').val(opener.document.getElementById('textbox6').value);
+					else if (! isEmpty(opener.document.getElementById('textbox6').value) ) $('#searchOrg_txt').val(opener.document.getElementById('textbox6').value);
+					else $('#searchOrg_txt').val(opener.document.getElementById('textbox2').value);
 					_btn.searchOrg();
 				}
 
@@ -1051,7 +1085,13 @@ const _btn = {
 						}
 					}, {mode : "hide"}
 				)
-				if (! isEmpty(tree.findFirst(txt).key)) tree.activateKey(tree.findFirst(txt).key);
+				if (! isEmpty(tree.findFirst(txt))) { 
+					tree.activateKey(tree.findFirst(txt).key);
+				} else {
+					_btn.resetFilter();
+					$('#searchOrg_txt').val("");
+					alert(txt+"로 검색된 본부/사업국/센터가 없습니다.\n: 다른 사업국을 선택해 주세요.");
+				}
 			} else if ( $('#searchOrg_selectbox > option:selected').val() == '지점주소') {
 				var match = $.trim($('#searchOrg_txt').val());
 				tree.filterNodes( 
