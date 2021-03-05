@@ -120,7 +120,6 @@ const setEvent = () => {
 	$("#button1").on("click", ev => {
 		loading = new Loading(getLoadingSet('입회등록중 입니다.'));
 		onSave()
-			.then((succ) => { if (succ) alert("저장 되었습니다."); })
 			.catch((error) => {
 				console.error(error);
 				const errMsg = error.responseText || error;
@@ -672,42 +671,13 @@ const onSave = async () => {
 	// 과목군을 전체로 변경하여 filter 초기화
 	$("#selectbox1").val("").trigger("change");
 
-	// 저장구분(I: 신규, U: 수정)
-	const selectbox = document.getElementById("selectbox3");
-	const selectedSeq = selectbox.value;
-	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;	
-
 	// 저장 validation check
-	const cselData = await getCounselCondition(sJobType);
+	const cselData = await getCselCondition();
 	if (!cselData) return false;
 	const transData = getTransCondition();
 	if (!transData) return false;
 	const customData  = await getCustomData();
 	if (!customData) return false;
-
-	// 상담순번이 1이고, 신규저장일떄.
-	if (sJobType == "I" && selectedSeq == 1) {
-
-		// 티켓이 유효한지 체크.
-		const ticket_id = await checkTicket();
-		if (!ticket_id) return false;
-		cselData.ZEN_TICKET_ID = ticket_id;
-
-	// 추가등록/관계회원 신규저장일때.
-	} else if (sJobType == "I" && selectedSeq > 1) {
-
-		// 티켓생성
-		const ticket_id = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
-		if (!ticket_id) return false;
-		cselData.ZEN_TICKET_ID = ticket_id;
-	
-	// 수정저장일떄.
-	} else if (sJobType == "U") {
-
-	} else {
-		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
-		return false;
-	}
 
 	// OB관련 데이터 세팅
 	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
@@ -715,28 +685,25 @@ const onSave = async () => {
 	cselData.LIST_CUST_ID	= obData.LIST_CUST_ID;
 	cselData.CALLBACK_ID	= obData.CALLBACK_ID;
 
-	// 통화시작/종료시각 세팅
-	const { sCALL_STTIME, sCALL_EDTIME } = await getCallTimes(cselData.ZEN_TICKET_ID);
-	cselData.CALL_STTIME = sCALL_STTIME;
-	cselData.CALL_EDTIME = sCALL_EDTIME;
-
 	// 티켓 요청자 체크
 	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 	
-	// CCEM 저장
+	// CCEM DB 저장
 	const resSave = await saveEnterInfo(cselData, transData, obData);
+	$("#textbox7").val(resSave.CSEL_NO);
+	cselData.CSEL_NO = resSave.CSEL_NO;
 	
 	// 티켓 업데이트
-	cselData.CSEL_NO = resSave.CSEL_NO;
 	await updateTicket(cselData, customData);
+
+	// 녹취정보 저장
+	await saveRecData(cselData);
 	
 	// 저장성공후
-	$("#textbox7").val(resSave.CSEL_NO);	// 접수번호 세팅
-	onSearch(resSave.CSEL_SEQ)				// 입회 재조회	
+	onSearch()								// 입회등록화면 재조회	
 	refreshDisplay();						// 오픈된 화면 재조회
-
-	// topbar 숨김
-	topbarClient.invoke("popover", "hide");
+	topbarClient.invoke("popover", "hide"); // topbar 숨김
+	alert("저장 되었습니다.");
 
 	return true;
 }
@@ -745,10 +712,10 @@ const onSave = async () => {
  * 입회정보 validation check
  * -as-is : cns4700.onNeedCheck(), setDataForSave(), 
  */
-const getCounselCondition = async (sJobType) => {
+const getCselCondition = async () => {
 
 	const data = {
-		ROW_TYPE			: sJobType, 									// 저장구분(I/U/D)		
+		ROW_TYPE			: "",		 									// 저장구분(I/U/D)		
 		CSEL_DATE			: calendarUtil.getImaskValue("calendar3"), 		// 상담일자		
 		CSEL_NO				: $("#textbox7").val(), 						// 상담번호	
 		CSEL_SEQ			: $("#selectbox3").val(), 						// 상담순번		
@@ -794,6 +761,12 @@ const getCounselCondition = async (sJobType) => {
 		// PLURAL_PRDT_NAME	: "", // 병행과목코드명		
 		PROC_MK				: "5" 											// 처리구분(5로 고정)	
 	}
+	
+	// 저장구분 세팅(I: 신규, U: 수정)
+	const selectbox = document.getElementById("selectbox3");
+	const selectedSeq = selectbox.value;
+	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
+	data.ROW_TYPE = sJobType;
 
 	// 날짜 및 시간 유효성 체크
 	data.CSEL_DATE 	  = data.CSEL_DATE.length != 8 ? "" 	: data.CSEL_DATE;
@@ -885,6 +858,34 @@ const getCounselCondition = async (sJobType) => {
 			alert("회원번호를 확인할 수 없습니다. \n\n회원의 성별, 이름, 주소, 지점정보는 필수 입력사항입니다.\n\n다시 확인해 주십시오.");
 			if (!confirm("회원번호 없이 저장하시겠습니까?")) return false;
 		}
+	}
+
+	// 저장구분에 따라 티켓체크
+	// 상담순번이 1이고, 신규저장일떄.
+	if (sJobType == "I" && selectedSeq == 1) {
+
+		// 티켓이 유효한지 체크.
+		const ticket_id = await checkTicket();
+		if (!ticket_id) return false;
+		data.ZEN_TICKET_ID = ticket_id;
+
+		// 녹취키세팅
+		data.RECORD_ID = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["RECORD_ID"]);
+
+	// 추가등록/관계회원 신규저장일때.
+	} else if (sJobType == "I" && selectedSeq > 1) {
+
+		// 티켓생성
+		const ticket_id = await onNewTicket(DS_COUNSEL[0].ZEN_TICKET_ID);
+		if (!ticket_id) return false;
+		data.ZEN_TICKET_ID = ticket_id;
+	
+	// 수정저장일떄.
+	} else if (sJobType == "U") {
+
+	} else {
+		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
+		return false;
 	}
 
 	return data;
@@ -1014,6 +1015,7 @@ var addCsel = () => {
 	  
 	// 상담내용 초기화.
 	$("#textbox25").val("");
+	$("#selectbox6").val("");
 
 	// 상담순번 추가
 	const newIdx = $("#selectbox3 option").length + 1;

@@ -951,3 +951,40 @@ const refreshDisplay = () => {
 	if (opener?.name == "CCEMPRO037") opener.onSearch();   	   
 
 }
+
+/**
+ * 녹취정보 저장
+ * @param {object} cselData 상담정보
+ */
+const saveRecData = (cselData) => new Promise((resolve, reject) => {
+	
+	if (!cselData.RECORD_ID) return resolve(false);
+
+	const settings = {
+		global: false,
+		url: `${API_SERVER}/sys.saveRecData.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담등록",
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+			dsSend: [{
+				RECORD_ID	 : cselData.RECORD_ID,  // 녹취키번호	
+				CUST_ID		 : cselData.CUST_ID, 	// 고객번호
+				CSEL_DATE	 : cselData.CSEL_DATE,  // 상담일자	
+				CSEL_NO		 : cselData.CSEL_NO, 	// 상담번호
+			}],
+		}),
+	}
+
+	$.ajax(settings)
+		.done(res => {
+			if (res.errcode != "0") return reject(new Error(getApiMsg(res, settings)));
+			return resolve(true);
+		})
+		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
