@@ -197,6 +197,8 @@ var wiseNTalkUtil = {
 		
 		openedCallPop: {},
 		
+		whileTransfer: false,
+		
 		// 현재 오픈 되어 있는 팝업 저장 func
 		saveWindowObj: function(obj){
 			wiseNTalkUtil.openedCallPop[obj.name] = obj;
@@ -260,7 +262,7 @@ var wiseNTalkUtil = {
 			console.log('cp', window);
 			console.log('cpstat', CTI_STATUS);
 			var tempType = 'on';
-			switch(CTI_STATUS.body){
+			switch(CTI_STATUS.state){
 			case 'INITIATED':
 				tempType = 'on';
 				break;
@@ -390,17 +392,39 @@ client.on("pane.activated", (ev) => {
 
 // WiseNTalk CTI 상태 연동 트리거
 client.on('api_notification.setCTIStatus', function(status){
-	CTI_STATUS = status;
+	CTI_STATUS = status.body;
 	console.log(CTI_STATUS);
 	
 	//changePhoneIcon();
 	wiseNTalkUtil.applyPhoneIcon();
+	
+	if(CTI_STATUS.callType == 'CONFERENCE'){
+		wiseNTalkUtil.whileTransfer = true;			// 3자 통화 boolean
+	}
+	
+	if(wiseNTalkUtil.whileTransfer && CTI_STATUS.callType == 'OUT'){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
+		wiseNTalkUtil.openedCallPop['CCEMPRO023'].loadAgreement();			// 동의결과 조회
+		wiseNTalkUtil.openedCallPop['CCEMPRO023'].loading.out();
+	}
 });
 
 // WiseNTalk 응답 트리거
 client.on('api_notification.getResponse', function(obj){
 	
 });
+
+// 고객찾기 트리거
+client.on('api_notification.custAutoSearch', function(obj){
+	$("#customerSearch").click();
+	$("#customerSearchTab").click();
+	$("#customerName").val(obj.body.custName);
+	$("#customerNameCheck").prop('checked',true);
+	$("#customerPhone").val(obj.body.custDnum);
+	$("#customerPhoneCheck").prop('checked',true);
+	$("#customerMNum").val(obj.body.custID);
+	$("#custSearchDivBtn").click();
+});
+
 
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 

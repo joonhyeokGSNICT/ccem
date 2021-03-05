@@ -12,12 +12,15 @@ var attorneyInfo // 대리인정보
 var tempData // 개인정보동의 정보 값
 var codeData = opener.codeData;
 
+var currentUserInfo = topbarObject.currentUserInfo;
+
 var transData;  // wiseNtalk리턴값
 
 /**
  * 초기로드
  */
 function init(){
+	topbarObject.wiseNTalkUtil.saveWindowObj(window);
     setCodeData();
     sJobType = openInfo.save();
     var dept_ID = opener.$('#textbox5').val();
@@ -287,6 +290,12 @@ var btn = {
             	requestNum = '6121';
             	break;
             }
+            if(topbarObject.CTI_STATUS.state != 'ACTIVE'){
+            	alert('연결 할 수 없는 상태입니다. \n 전화 연결 후에 시도 해 주세요.');
+            	return;
+            }
+            
+            loading = new Loading(getLoadingSet('전화 연결 중 입니다..'));
             
             topbarObject.wiseNTalkUtil.requestTransfer(requestNum);
             
@@ -380,6 +389,43 @@ const setCodeData = () => {
 
 function changeVal(temp) {
     temp.parentNode.previousSibling.previousSibling.firstChild.value = temp.value;
+}
+
+/**
+ * 개인정보이용동의 정보 조회
+ * @returns
+ */
+function loadAgreement(){
+	var param = {
+			userid: currentUserInfo.user.external_id,
+		    menuname: '개인정보동의',
+		    senddataids: ["send1"],
+		    recvdataids: ["recv1"],
+		    send1: 	[
+		    			{
+		    				"CALLKEY": 	currentUserInfo.user.user_fields.extension_number,
+		    			}
+		    		]
+		};
+	// 개인정보이용동의 정보 조회
+	$.ajax({
+		url: API_SERVER + '/cns.getIvrCertify.do',
+		type: 'POST',
+		dataType: 'json',
+		contentType: "application/json",
+		data: JSON.stringify(param),
+		success: function (response) {
+			console.log(response);
+			if(response.errcode == "0"){
+				if(response.recv1.length > 0){
+					$("#selectbox4").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+					$("#selectbox5").val(response.recv1[0].CERTIFY_NO.substring(1,2));
+					$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(2,3));
+					$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(3,4));
+				}
+			}
+		}
+	});
 }
 
 init();

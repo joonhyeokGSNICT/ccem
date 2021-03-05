@@ -14,6 +14,8 @@
 	<title>[팝업] 개인정보동의신청</title>
 	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+	<link href="../lib/customModal/css/modal-loading-animate.css" rel="stylesheet" />
+	<link href="../lib/customModal/css/modal-loading.css" rel="stylesheet" />
 	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css"/>
 	<link rel="stylesheet" href="../css/ces_top.css">
 </head>
@@ -102,8 +104,8 @@
 			</colgroup>
 			<tr>
 				<th class="text-center"><a href="#" onclick="btn.onIVRCertify('8')">①필수</a></th>
-				<td><input class="form-control form-control-sm"/></td>
-				<td><select id="selectbox4" class="form-control form-control-sm" onchange="changeVal(this)">
+				<td><input class="form-control form-control-sm" id="essential_Ag" readonly/></td>
+				<td><select id="selectbox4" class="form-control form-control-sm" onchange="changeVal(this)" disabled>
 					<option value=""></option>
 					<option value="Y">동의</option>
 					<option value="N">거부</option>
@@ -112,8 +114,8 @@
 			</tr>
 			<tr>
 				<th class="text-center"><a href="#" onclick="btn.onIVRCertify('9')">②마케팅</a></th>
-				<td><input class="form-control form-control-sm"/></td>
-				<td><select id="selectbox5" class="form-control form-control-sm" onchange="changeVal(this)">
+				<td><input class="form-control form-control-sm" id="marketing_Ag" readonly/></td>
+				<td><select id="selectbox5" class="form-control form-control-sm" onchange="changeVal(this)" disabled>
 					<option value=""></option>
 					<option value="Y">동의</option>
 					<option value="N">거부</option>
@@ -122,8 +124,8 @@
 			</tr>
 			<tr>
 				<th class="text-center"><a href="#" onclick="btn.onIVRCertify('10')">③보존 및 마케팅</a></th>
-				<td><input class="form-control form-control-sm"/></td>
-				<td><select id="selectbox6" class="form-control form-control-sm" onchange="changeVal(this)">
+				<td><input class="form-control form-control-sm" id="conserve_Ag" readonly/></td>
+				<td><select id="selectbox6" class="form-control form-control-sm" onchange="changeVal(this)" disabled>
 					<option value=""></option>
 					<option value="Y">동의</option>
 					<option value="N">거부</option>
@@ -132,8 +134,8 @@
 			</tr>
 			<tr>
 				<th class="text-center"><a href="#" onclick="btn.onIVRCertify('11')">④제3자 제공 동의</a></th>
-				<td><input class="form-control form-control-sm"/></td>
-				<td><select id="selectbox7" class="form-control form-control-sm" onchange="changeVal(this)">
+				<td><input class="form-control form-control-sm" id="thirdPerson_Ag" readonly/></td>
+				<td><select id="selectbox7" class="form-control form-control-sm" onchange="changeVal(this)" disabled>
 					<option value=""></option>
 					<option value="Y">동의</option>
 					<option value="N">거부</option>
@@ -189,6 +191,7 @@
 	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
 	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
 	<script src="../js/config.js"></script>
 	<script src="../js/ces_util.js"></script>
 	<script src="../js/ces_common.js"></script>
