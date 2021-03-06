@@ -687,7 +687,8 @@ const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
         // DS_DEPT_PROC.RTN_USER_ID       // 피드백접수자ID
         // DS_DEPT_PROC.RTN_DATE          // 피드백일자
         // DS_DEPT_PROC.RTN_TIME          // 피드백시간
-        // DS_DEPT_PROC.CTI_CHGDATE       // CTI변경일자    
+        // DS_DEPT_PROC.CTI_CHGDATE       // CTI변경일자   
+        // DS_DEPT_PROC.TRANS_LC_ID,      // 연계센터코드 
 
 
         // 접수일자 체크
@@ -1751,6 +1752,8 @@ const getSaveCondition = (sBtnMk) => {
             DEPT_ACP_NAME   : $("#textbox18").val().trim(),             // 지점접수자 
             DEPT_ACP_DATE   : calendarUtil.getImaskValue("calendar2"),  // 지점점수일자
             DEPT_ACP_TIME   : $("#timebox1").val(),                     // 지점접수시간 
+            TRANS_LC_ID     : DS_DEPT_PROC.TRANS_LC_ID,                 // 연계센터코드    
+            USER_ID         : currentUser.external_id,                  // 사용자ID
         },
         // 해피콜1차 정보 
         DS_HPCALL1: {
