@@ -1007,6 +1007,8 @@ const getSmsCondition = async (row) => {
 		SMS_FIX_ID	: sSmsFixId, 				// 구분코드	
 		SEND_PHONE	: SEND_PHONE,				// 발신번호
 		PROC_MK		: row.PROC_MK,				// 처리구분
+		DEPT_ID		: $("#hiddenbox7").val(), 	// 관할지점코드
+		TRANS_LC_ID : $("#hiddenbox5").val(), 	// 센터ID
 	}
 }
 
