@@ -522,7 +522,7 @@ const getSaveCondition = (sBtnMk) => {
             CSEL_SEQ        : DS_CSEL_PROC.CSEL_SEQ,                    // 상담순번
             PROC_DATE       : calendarUtil.getImaskValue("calendar2"),  // 처리일자
             PROC_USER_ID    : DS_CSEL_PROC.PROC_USER_ID,                // 처리자ID
-            PROC_CNTS       : $("#textbox24").val(),                    // 처리내용
+            PROC_CNTS       : $("#textbox24").val().trim(),             // 처리내용
             PROC_STS_MK     : DS_CSEL_PROC.PROC_STS_MK,                 // 처리상태구분
         },
         DS_HPCALL   : {
@@ -531,8 +531,8 @@ const getSaveCondition = (sBtnMk) => {
             CSEL_NO         : DS_CSEL_PROC.CSEL_NO,                     // 상담번호       
             HPCALL_DATE     : calendarUtil.getImaskValue("calendar3"),  // 해피콜일자           
             HPCALL_TIME     : $("#timebox1").val(),                     // 해피콜시간           
-            HPCALL_TITLE    : $("#textbox26").val(),                    // 해피콜제목               
-            HPCALL_CNTS     : $("#textbox27").val(),                    // 해피콜내용           
+            HPCALL_TITLE    : $("#textbox26").val().trim(),             // 해피콜제목               
+            HPCALL_CNTS     : $("#textbox27").val().trim(),             // 해피콜내용           
             HPCALL_CHNL_MK  : $("#selectbox2").val(),                   // 해피콜경로구분               
             HPCALL_USER_ID  : DS_CSEL_PROC.HPCALL_USER_ID,              // 해피콜상담원ID               
             SATIS_CDE       : $("#selectbox1").val(),                   // 고객만족도코드           
@@ -552,8 +552,8 @@ const getSaveCondition = (sBtnMk) => {
             GIFT_PRICE      : calendarUtil.getImaskValue("textbox28"),  // 사은품가격       
             SEND_DATE       : calendarUtil.getImaskValue("calendar4"),  // 발송일자       
             GIFT_CHNL_MK    : $("#selectbox5").val(),                   // 전달경로구분           
-            PASS_USER       : $("#textbox29").val(),                    // 전달자명       
-            INVOICENUM      : $("#textbox30").val(),                    // 택배송장번호       
+            PASS_USER       : $("#textbox29").val().trim(),             // 전달자명       
+            INVOICENUM      : $("#textbox30").val().trim(),             // 택배송장번호       
         },
         DS_TICKET: {
             ZEN_TICKET_ID   : DS_CSEL_PROC.ZEN_TICKET_ID,               // 티켓ID
@@ -568,13 +568,18 @@ const getSaveCondition = (sBtnMk) => {
             PROC_STS_MK     : "",                                       // 처리상태구분
             HPCALL_ROW_TYPE : "",                                       // 해피콜 저장구분(I/U/D)
             BTN_MK          : sBtnMk,                                   // 버튼구분(CO: 완료, SA: 저장)
+            PROC_DATE       : "",                                       // 처리일자
+            PROC_USER_NM    : $("#textbox23").val(),                    // 처리자명
+            PROC_CNTS       : "",                                       // 처리내용
         },
     }
 
     // 티켓정보 세팅
-    data.DS_TICKET.PROC_STS_MK = data.DS_CHKDATA.PROC_STS_MK;   // 처리상태
-    data.DS_TICKET.GIFT_ROW_TYPE = data.DS_GIFT.ROW_TYPE;       // 사은품 저장구분
-    data.DS_TICKET.HPCALL_ROW_TYPE = data.DS_HPCALL.ROW_TYPE;   // 해피콜 저장구분
+    data.DS_TICKET.PROC_STS_MK      = data.DS_CHKDATA.PROC_STS_MK;              // 처리상태
+    data.DS_TICKET.GIFT_ROW_TYPE    = data.DS_GIFT.ROW_TYPE;                    // 사은품 저장구분
+    data.DS_TICKET.HPCALL_ROW_TYPE  = data.DS_HPCALL.ROW_TYPE;                  // 해피콜 저장구분
+    data.DS_TICKET.PROC_DATE        = FormatUtil.date(data.DS_PROC.PROC_DATE);  // 처리일자(YYYY-MM-DD)
+    data.DS_TICKET.PROC_CNTS        = data.DS_PROC.PROC_CNTS;                   // 처리내용
 
     return data;
 
@@ -643,9 +648,12 @@ const updateTicket = (DS_TICKET) => {
         custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], value: OB_MK_VAL });
     }
 
-    // 처리상태 티켓필드 세팅
+    // 기타 티켓필드 세팅
     const PROC_STS_MK_VAL = `proc_sts_mk_${Number(DS_TICKET.PROC_STS_MK)}`;
-    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"], value: PROC_STS_MK_VAL });  
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],            value: PROC_STS_MK_VAL });          // 처리상태 
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_DATE"],         value: DS_TICKET.PROC_DATE });      // 상담원처리 처리일시
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_USER_NAME"],    value: DS_TICKET.PROC_USER_NM });   // 상담원처리 처리자명
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_PROC_CNTS"],         value: DS_TICKET.PROC_CNTS });      // 상담원처리 처리내용
 
     const option = {
         url: `/api/v2/tickets/${DS_TICKET.ZEN_TICKET_ID}`,
