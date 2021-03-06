@@ -1384,7 +1384,8 @@ const getSmsCondition = async (sType, recevier) => {
         MSG8         :  "", //       
         MSG9         :  "", //       
         SMS_TRGT_ID  :  "", //           
-        SMS_FIX_ID   :  "", //           
+        SMS_FIX_ID   :  "", //  
+        TRANS_HIST   :  "", // 이력구분((L :러닝센터, D 지점)         
     }
 
     // 회원 SMS 발송
@@ -1405,6 +1406,7 @@ const getSmsCondition = async (sType, recevier) => {
         DS_SMSDATA.MSG          = "사업국장(사업국)의 고객의견이 접수되어 신속한 상담 부탁 드립니다.-대교 상담실-";
         DS_SMSDATA.CUST_ID      = DS_COUNSEL.DEPT_REP_EMPID;// 지점장 사번
         DS_SMSDATA.MBR_ID       = DS_COUNSEL.DEPT_REP_EMPID;// 지점장 사번
+        DS_SMSDATA.TRANS_HIST   = "D";
     }
     // 센터장 SMS 발송
     else {
@@ -1412,6 +1414,7 @@ const getSmsCondition = async (sType, recevier) => {
         DS_SMSDATA.MSG          = "센터장님(센터)의 고객의견이 접수되어 신속한 상담 부탁 드립니다.-대교 상담실-";;
         DS_SMSDATA.CUST_ID      = DS_COUNSEL.LC_REP_EMPID;// 지점장 사번
         DS_SMSDATA.MBR_ID       = DS_COUNSEL.LC_REP_EMPID;// 지점장 사번
+        DS_SMSDATA.TRANS_HIST   = "L";
     }
 
     return {
@@ -1428,7 +1431,8 @@ const getSmsCondition = async (sType, recevier) => {
         CSEL_SEQ    : DS_SMSDATA.CSEL_SEQ,  // 상담순번      
         EXTERNAL_ID : DS_SMSDATA.USER_ID,   // 상담자ID      
         SMS_TRGT_ID : "",                   // 대상구분(1:지점,2:학부모,3:교사)      
-        SMS_FIX_ID  : "",                   // 구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)      
+        SMS_FIX_ID  : "",                   // 구분코드(1:입회,2:시정처리,3:상담연계,4:계좌변경)   
+        TRANS_HIST  : DS_SMSDATA.TRANS_HIST,// 이력구분((L :러닝센터, D 지점)
     }
 
 }
