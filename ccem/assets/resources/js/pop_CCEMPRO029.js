@@ -33,8 +33,8 @@ const createGrids = () => {
             height: 28,
             position: 'bottom',
             columnContent: {
-                name1: "Total",
-                name2: { template: valueMap => valueMap.cnt },
+                CNT_WHERE: "Total",
+                FAT_REL_NAME: { template: valueMap => valueMap.cnt },
             },
         },
     });
