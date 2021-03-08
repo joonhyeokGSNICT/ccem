@@ -256,7 +256,7 @@ $(function(){
 			},
 			{
 				header: '연계본부',
-				name: 'TRNAS_DIV',
+				name: 'TRANS_DIV',
 				width: 130,
 				align: "center",
 				sortable: true,

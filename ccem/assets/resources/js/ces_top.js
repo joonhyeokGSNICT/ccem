@@ -405,6 +405,7 @@ client.on('api_notification.setCTIStatus', function(status){
 	if(wiseNTalkUtil.whileTransfer && CTI_STATUS.callType == 'OUT'){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
 		wiseNTalkUtil.openedCallPop['CCEMPRO023'].loadAgreement();			// 동의결과 조회
 		wiseNTalkUtil.openedCallPop['CCEMPRO023'].loading.out();
+		wiseNTalkUtil.whileTransfer = false;
 	}
 });
 

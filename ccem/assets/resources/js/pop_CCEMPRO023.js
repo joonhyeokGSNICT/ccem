@@ -12,6 +12,8 @@ var attorneyInfo // 대리인정보
 var tempData // 개인정보동의 정보 값
 var codeData = opener.codeData;
 
+var currentSelectedNum = '';
+
 var currentUserInfo = topbarObject.currentUserInfo;
 
 var transData;  // wiseNtalk리턴값
@@ -30,23 +32,27 @@ function init(){
     var tempArray = {}; // 
 
     // 사업국 정보 입력
-    api.getOrgInfo( { "DEPT_ID" : dept_ID }, '/cns.getDeptInfo.do', ["dsRecv"] ).then( function(data){
-        // console.log(data);
-        deptInfo = data.dsRecv[0];
-        $('#textbox1').val(deptInfo.DEPT_NAME); // 사업국 삽입
-        $('#textbox2').val(deptInfo.DEPT_EMP_NAME ? deptInfo.DEPT_EMP_NAME : ""); // 사업국 국장 삽입
-        $('#textbox3').val(deptInfo.DEPT_REP_EMP_HP ? deptInfo.DEPT_REP_EMP_HP : ""); // 사업국장 핸드폰 삽입
-    })
+    if(dept_ID != ""){
+    	api.getOrgInfo( { "DEPT_ID" : dept_ID }, '/cns.getDeptInfo.do', ["dsRecv"] ).then( function(data){
+    		// console.log(data);
+    		deptInfo = data.dsRecv[0];
+    		$('#textbox1').val(deptInfo.DEPT_NAME); // 사업국 삽입
+    		$('#textbox2').val(deptInfo.DEPT_EMP_NAME ? deptInfo.DEPT_EMP_NAME : ""); // 사업국 국장 삽입
+    		$('#textbox3').val(deptInfo.DEPT_REP_EMP_HP ? deptInfo.DEPT_REP_EMP_HP : ""); // 사업국장 핸드폰 삽입
+    	})
+    }
     
     // 센터 정보 입력
-    if (! isEmpty(lc_ID) ){
-        api.getOrgInfo( { "LC_ID" : lc_ID }, '/cns.getLCInfo.do', ["dsRecv"] ).then( function(data){
-            // console.log(data);
-            lcInfo = data.dsRecv[0];
-            $('#textbox4').val(lcInfo.LC_NAME); // 센터 삽입
-            $('#textbox5').val(lcInfo.LC_EMP_NAME ? lcInfo.LC_EMP_NAME : ""); // 센터장 삽입
-            $('#textbox6').val(lcInfo.LC_REP_EMP_HP ? lcInfo.LC_REP_EMP_HP : ""); // 센터장 핸드폰 삽입
-        })
+    if(lc_ID != ""){
+    	if (! isEmpty(lc_ID) ){
+    		api.getOrgInfo( { "LC_ID" : lc_ID }, '/cns.getLCInfo.do', ["dsRecv"] ).then( function(data){
+    			// console.log(data);
+    			lcInfo = data.dsRecv[0];
+    			$('#textbox4').val(lcInfo.LC_NAME); // 센터 삽입
+    			$('#textbox5').val(lcInfo.LC_EMP_NAME ? lcInfo.LC_EMP_NAME : ""); // 센터장 삽입
+    			$('#textbox6').val(lcInfo.LC_REP_EMP_HP ? lcInfo.LC_REP_EMP_HP : ""); // 센터장 핸드폰 삽입
+    		})
+    	}
     }
     
     // 대리인 정보 입력
@@ -229,7 +235,7 @@ var btn = {
     //============================================================================    
     onIVRCertify(cs){
         // window // 현재 윈도우 값
-
+    	currentSelectedNum = cs;
         // if( callClient.isWorking() ) return; // Wise N talk에서 현재 통화중인지 확인        
         var sConfMsg = "IVR을 통해 증빙번호를 가져오시겠습니까?"
         ModalUtil.confirmPop("확인 메세지", sConfMsg, function(){
@@ -315,11 +321,7 @@ var btn = {
     //============================================================================    
     cancelTran() {
         // callClient.cancelTran(); // wiseNtalk로 호전환중단 요청
-        console.log("cancleTran >> 클릭");
-        
-        transWiseApp("exampleFunction","transData", opener.parent.opener);
-        console.log(transData);
-        
+    	//loadAgreement();
     },
 
     //============================================================================
@@ -414,18 +416,63 @@ function loadAgreement(){
 		dataType: 'json',
 		contentType: "application/json",
 		data: JSON.stringify(param),
+		global: false,
 		success: function (response) {
 			console.log(response);
 			if(response.errcode == "0"){
 				if(response.recv1.length > 0){
-					$("#selectbox4").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+					/*$("#selectbox4").val(response.recv1[0].CERTIFY_NO.substring(0,1));
 					$("#essential_Ag").val($("#selectbox4").val());
 					$("#selectbox5").val(response.recv1[0].CERTIFY_NO.substring(1,2));
 					$("#marketing_Ag").val($("#selectbox5").val());
 					$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(2,3));
-					$("#conserve_Ag").val($("##selectbox6").val());
+					$("#conserve_Ag").val($("#selectbox6").val());
 					$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(3,4));
 					$("#thirdPerson_Ag").val($("#selectbox7").val());
+					*/
+					switch(currentSelectedNum){
+		            case '5':
+		            	$("#selectbox4").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#essential_Ag").val($("#selectbox4").val());
+						$("#selectbox5").val(response.recv1[0].CERTIFY_NO.substring(1,2));
+						$("#marketing_Ag").val($("#selectbox5").val());
+						$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(2,3));
+						$("#conserve_Ag").val($("#selectbox6").val());
+						$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(3,4));
+						$("#thirdPerson_Ag").val($("#selectbox7").val());
+		            	break;
+		            case '6':
+		            	$("#selectbox5").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#marketing_Ag").val($("#selectbox5").val());
+						$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(1,2));
+						$("#conserve_Ag").val($("#selectbox6").val());
+						$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(2,3));
+						$("#thirdPerson_Ag").val($("#selectbox7").val());
+		            	break;
+		            case '7':
+		            	$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#conserve_Ag").val($("#selectbox6").val());
+						$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(1,2));
+						$("#thirdPerson_Ag").val($("#selectbox7").val());
+		            	break;
+		            case '8':
+		            	$("#selectbox4").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#essential_Ag").val($("#selectbox4").val());
+		            	break;
+		            case '9':
+		            	$("#selectbox5").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#marketing_Ag").val($("#selectbox5").val());
+		            	break;
+		            case '10':
+		            	$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#conserve_Ag").val($("#selectbox6").val());
+		            	break;
+		            case '11':
+		            	$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+						$("#thirdPerson_Ag").val($("#selectbox7").val());
+		            	break;
+		            }
+					
 				}
 			}
 		}
