@@ -209,7 +209,7 @@ var wiseNTalkUtil = {
 		   * @param 버튼상태
 		   * @param 해당번호
 		   */
-		callStart: function(status, targetPhone){
+		callStart: function(status, targetPhone, originName){
 			
 			if(currentTicketInfo == null || currentTicketInfo == undefined){
 				console.log('티켓이 열려있지 않습니다.');
@@ -423,7 +423,7 @@ client.on('custAutoSearch', function(obj){
 	// $("#customerPhoneCheck").prop('checked',true);
 	$("#customerMNum").val(obj.custID);
 	$("#customerMNumCheck").prop('checked',true);
-	$("#custSearchDivBtn").click();
+	customerSearch("custSearchDiv","1");
 });
 
 
