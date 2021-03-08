@@ -414,14 +414,15 @@ client.on('api_notification.getResponse', function(obj){
 });
 
 // 고객찾기 트리거
-client.on('api_notification.custAutoSearch', function(obj){
+client.on('custAutoSearch', function(obj){
 	$("#customerSearch").click();
 	$("#customerSearchTab").click();
-	$("#customerName").val(obj.body.custName);
-	$("#customerNameCheck").prop('checked',true);
-	$("#customerPhone").val(obj.body.custDnum);
-	$("#customerPhoneCheck").prop('checked',true);
-	$("#customerMNum").val(obj.body.custID);
+	$("#customerName").val(obj.custName);
+	// $("#customerNameCheck").prop('checked',true);
+	$("#customerPhone").val(obj.custDnum);
+	// $("#customerPhoneCheck").prop('checked',true);
+	$("#customerMNum").val(obj.custID);
+	$("#customerMNumCheck").prop('checked',true);
 	$("#custSearchDivBtn").click();
 });
 
