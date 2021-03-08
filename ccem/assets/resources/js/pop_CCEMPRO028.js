@@ -250,6 +250,19 @@ const setEvent = () => {
 			.finally(() => loading.out());
 	});
 
+	// 전화 버튼 event
+	$("#button7").on("click", ev => {
+		const loading = new Loading(getLoadingSet('전화걸기 중 입니다.'));
+		onMakeCall(ev)
+			.then(succ => { if (succ) { } })
+			.catch(error => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`전화걸기 중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 }
 
 const onStart = async () => {
@@ -295,6 +308,10 @@ const onStart = async () => {
 		setDisPlay();
 		onSearch();
 	}
+	
+	// 전화아이콘 상태를 컨트롤 하기위해
+	topbarObject?.wiseNTalkUtil.saveWindowObj(window);
+	topbarObject?.wiseNTalkUtil.changePhoneIcon(window);
 
 }
 
@@ -1239,4 +1256,51 @@ const refreshDisplay = () => {
 	if (opener?.opener?.name == "CCEMPRO035") opener.opener.onSearch(true);	// 상담조회화면 재조회
 	if (opener?.opener?.name == "CCEMPRO037") opener.opener.onSearch();		// 입회조회화면 재조회
 	topbarObject?.refreshGrid();											// 탑바화면 재조회
+}
+
+/**
+ * 전화걸기
+ * - as-is : cns2510.onMakeCall(), onCallnSave()
+ */
+ const onMakeCall = async (ev) => {
+
+	const status = $(ev.currentTarget).hasClass("callOn") ? "callOn" : "callOff";
+	const targetPhone = $("#textbox9").val().trim().replace(/-/gi,''); // 사업국/센터 전화번호
+	
+	if (status == "callOn") {
+
+		if (targetPhone.length < 4) {
+			alert("전화걸기를 할 수 없습니다.\n\n전화번호가 유효하지 않습니다.");
+			return false;
+		}
+
+		// get checked rows
+		const checkedRows = grid1.getCheckedRows();
+		if(checkedRows.length === 0) {
+			alert("상담연계를 선택해 주세요.");
+			return false;
+		}
+
+		// 저장정보 세팅
+		const transData = new Array();
+		for (const row of checkedRows) {
+			
+			// 연계정보 value check
+			const transCondition = getTransCondition(row);
+			if (!transCondition) return false;
+			transCondition.TRANS_CHNL_MK = "1"; // 연계방법 - 전화
+			transData.push(transCondition);
+
+		}
+
+		await saveTrans(transData);			// 연계정보저장API 호출
+		await updateTicket(transData);		// 티켓업데이트
+		refreshDisplay();					// 오픈된 화면 재조회
+
+	}
+	
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO028");
+
+	return true;
+
 }

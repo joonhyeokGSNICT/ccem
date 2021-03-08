@@ -229,6 +229,10 @@ const onStart = async () => {
 		onSearch(sCSEL_SEQ);
 
 	}
+
+	// 전화아이콘 상태를 컨트롤 하기위해
+	topbarObject?.wiseNTalkUtil.saveWindowObj(window);
+	topbarObject?.wiseNTalkUtil.changePhoneIcon(window);
 	
 }
 
@@ -1146,3 +1150,31 @@ const getNewMbrId = (CUST_ID) => new Promise((resolve, reject) => {
 		})
 		.fail(() => resolve(""));
 });
+
+/**
+ * 전화걸기
+ * - as-is : cns4700.onMakeCall()
+ */
+ const onMakeCall = (elm) => {
+
+	const status = $(elm).hasClass("callOn") ? "callOn" : "callOff";
+	const selectbox = document.getElementById("selectbox3");
+	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
+	const sCselSeq = selectbox.value;
+	const targetPhone = $("#textbox10").val().trim().replace(/-/gi,''); // 연계사업국/센터 전화번호
+
+	// 고객과의 통화시간을 저장하기 위해서
+	// 고객과 통화종료후 SEQ=1인것을 저장을 하지 않은상태에서 지점 전화걸기를 막는다.
+	if (status == "callOn" && sJobType == "I" && sCselSeq == "1") {
+		alert("먼저 입회등록 정보를 저장하신 후에\n\n사업국/센터로 전화를 걸기 바랍니다.");
+		return;
+	}
+
+	if (status == "callOn" && targetPhone.length < 4) {
+		alert("전화걸기를 할 수 없습니다.\n\n전화번호가 유효하지 않습니다.");
+		return;
+	}
+	
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO031");
+
+}

@@ -80,6 +80,10 @@ const onStart = async (openerNm) => {
         sCselSeq    = "";  // 상담순번
         sCustId     = "";  // 고객번호
     }
+    
+	// 전화아이콘 상태를 컨트롤 하기위해
+	topbarObject?.wiseNTalkUtil.saveWindowObj(window);
+	topbarObject?.wiseNTalkUtil.changePhoneIcon(window);
 
 }
 
@@ -676,4 +680,30 @@ const refreshDisplay = () => {
     if (opener?.name == "CCEMPRO035") opener.onSearch(true);                // 상담조회화면 재조회
 	if (opener?.opener?.name == "CCEMPRO035") opener.opener.onSearch(true);	// 상담조회화면 재조회
     topbarObject?.refreshGrid();                                            // 탑바화면 재조회
+}
+
+/**
+ * 전화걸기
+ * - as-is : cns6000.onMakeCall()
+ */
+const onMakeCall = (elm, iIdx) => {
+
+    const status = $(elm).hasClass("callOn") ? "callOn" : "callOff";
+    let targetPhone = "";
+
+    if (iIdx == "1") {
+        targetPhone = $("#textbox4").val().trim().replace(/-/gi, ''); // 학습장소
+    } else if (iIdx == "2") {
+        targetPhone = $("#textbox6").val().trim().replace(/-/gi, ''); // 회원HP
+    } else {
+        targetPhone = $("#textbox7").val().trim().replace(/-/gi, ''); // 회원모HP
+    }
+
+    if (status == "callOn" && targetPhone.length < 4) {
+        alert("전화걸기를 할 수 없습니다.\n\n전화번호가 유효하지 않습니다.");
+        return;
+    }
+
+    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO095");
+
 }
