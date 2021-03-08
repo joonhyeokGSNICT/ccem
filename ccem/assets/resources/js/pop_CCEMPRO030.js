@@ -1220,11 +1220,11 @@ const onSMS = (sType) => {
         arrInData[7] = DS_COUNSEL.CSEL_DATE;        // 상담일자
         arrInData[8] = DS_COUNSEL.CSEL_NO;          // 상담번호
         arrInData[9] = DS_COUNSEL.CSEL_SEQ;         // 상담순번
-        arrInData[10]= "cns2700";      // url정보
+        arrInData[10]= "cns2700";                   // url정보
+        arrInData[11]= "";                          // 이력구분
     }
     // 지점장 SMS 발송인 경우
     else if (sType == "2") {
-       
         arrInData[0] = DS_COUNSEL.DEPT_REP_EMPID;   // 지점장 사원번호
         arrInData[1] = $("#textbox10").val();       // 지점장명
         arrInData[2] = DS_COUNSEL.DEPT_REP_EMP_HP;  // 지점장 HP 
@@ -1235,7 +1235,8 @@ const onSMS = (sType) => {
         arrInData[7] = DS_COUNSEL.CSEL_DATE;        // 상담일자
         arrInData[8] = DS_COUNSEL.CSEL_NO;          // 상담번호
         arrInData[9] = DS_COUNSEL.CSEL_SEQ;         // 상담순번	    	
-        arrInData[10]= "cns2700";      // url정보
+        arrInData[10]= "cns2700";                   // url정보
+        arrInData[11]= "D";                         // 이력구분
     }
     // 센터장 SMS 발송인 경우
     else {
@@ -1249,7 +1250,8 @@ const onSMS = (sType) => {
         arrInData[7] = DS_COUNSEL.CSEL_DATE;        // 상담일자
         arrInData[8] = DS_COUNSEL.CSEL_NO;          // 상담번호
         arrInData[9] = DS_COUNSEL.CSEL_SEQ;         // 상담순번	    	
-        arrInData[10]= "cns2700";      // url정보	    	
+        arrInData[10]= "cns2700";                   // url정보	    	
+        arrInData[11]= "L";                         // 이력구분
     }
 
     PopupUtil.open("CCEMPRO046", 980, 600, "", arrInData);
