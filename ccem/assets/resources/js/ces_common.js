@@ -263,3 +263,78 @@ const checkByte = (value, limit) => {
 	return byteCnt < limit;
 
 }
+
+/**
+ * 상담 통화시간 저장
+ * @param {object} param 저장정보
+ */
+ var saveCallTime = async (param) => {
+	console.debug("saveCallTime: ", param);
+
+	const settings = {
+		global: false,
+		url: `${API_SERVER}/sys.saveCallTime.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid		: param.userid,
+			menuname	: param.menuname,
+			senddataids	: ["dsSend"],
+			recvdataids	: ["dsRecv"],
+			dsSend		: [{
+				CSEL_NO		: param.CSEL_NO, 		// 상담번호	
+				CSEL_DATE	: param.CSEL_DATE, 		// 상담일자		
+				CALL_STTIME	: param.CALL_STTIME, 	// 통화시작시간(시분초:172951)		
+				CALL_EDTIME	: param.CALL_EDTIME, 	// 통화종료시간(시분초:173428)		
+				RECORD_ID	: param.RECORD_ID, 		// 녹취키(리스트) 없는 경우 []		
+			}]
+		}),
+		errMsg: "상담 통화시간 저장중 오류가 발생하였습니다.",
+	}
+	
+	$.ajax(settings)
+		.done(res => {
+			if (res.errcode != "0") console.error(getApiMsg(res, settings));
+		})
+		.fail((jqXHR) => {
+			console.error(getErrMsg(jqXHR.statusText));
+		});
+
+};
+
+/**
+ * 해당 티켓필드에서 통화시작/종료시각/녹취키his 반환.
+ * @param {string|number} ticket_id
+ */
+var getCallTimeCondition = async (client, ticket_id) => {
+
+	let CALL_STTIME = "";   		// 통화시작시각 	   
+	let CALL_EDTIME = "";   		// 통화종료시각  
+	let RECORD_ID_HIS = ""; 		// 녹취키History (string)
+	let RECORD_ID_HIS_Arr = [];		// 녹취키History (array)
+
+	try {
+
+		const { ticket } = await client.request(`/api/v2/tickets/${ticket_id}`);
+
+		if (ticket?.custom_fields?.length > 0) {
+
+			const fCALL_STTIME 	 = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALL_STTIME"]);
+			const fCALL_EDTIME 	 = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALL_EDTIME"]);
+			const fRECORD_ID_HIS = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["RECORD_ID_HIS"]);
+
+			CALL_STTIME   = fCALL_STTIME?.value 	|| "";
+			CALL_EDTIME   = fCALL_EDTIME?.value 	|| "";
+			RECORD_ID_HIS = fRECORD_ID_HIS?.value   || "";
+			RECORD_ID_HIS_Arr = RECORD_ID_HIS ? RECORD_ID_HIS.split(",") : [];
+
+		}
+
+	} catch (error) {
+		console.error(error);
+	} 
+
+	return { CALL_STTIME, CALL_EDTIME, RECORD_ID: RECORD_ID_HIS_Arr };
+
+}

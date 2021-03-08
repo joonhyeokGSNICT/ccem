@@ -15,9 +15,11 @@ let sCustMk   = "";
 
 $(function () {
 
+    // 창이 닫힐때 발생하는 event
     $(window).on('beforeunload', () => {
-		PopupUtil.closeAll();
-	});
+        PopupUtil.closeAll();   // 오픈된 모든 자식창 close
+        onSaveCallTime();       // 상담 통화시간 저장
+    });
 
     // create calendar
     $(".calendar").each((i, el) => {
@@ -125,7 +127,7 @@ const getGiftList = () => new Promise((resolve, reject) => {
         dataType: "json",
         data: JSON.stringify({
 			userid: currentUser?.external_id,
-			menuname: "상담결과등록",
+			menuname: "상담결과등록-상담원처리",
             senddataids: ["dsSend"],
             recvdataids: ["dsRecv"],
             dsSend: [{}],
@@ -204,7 +206,7 @@ const getCselProc = () => {
 		dataType: "json",
 		data: JSON.stringify({
 			userid: currentUser?.external_id,
-			menuname: "상담결과등록",
+			menuname: "상담결과등록-상담원처리",
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
@@ -623,7 +625,7 @@ const saveCselProc = (condition) => {
         dataType: "json",
         data: JSON.stringify({
 			userid: currentUser?.external_id,
-			menuname: "상담결과등록",
+			menuname: "상담결과등록-상담원처리",
             senddataids : ["DS_CHKDATA", "DS_PROC", "DS_HPCALL", "DS_GIFT"],
             recvdataids : ["dsRecv"],
             DS_CHKDATA  : [condition.DS_CHKDATA],
@@ -728,5 +730,27 @@ const onMakeCall = (elm, iIdx) => {
     }
 
     topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO095");
+
+}
+
+/**
+ * 상담 통화시간 저장
+ */
+ const onSaveCallTime = async () => {
+
+    const ticket_id = DS_CSEL_PROC.ZEN_TICKET_ID;
+    if (!ticket_id) return;
+
+    const data = await getCallTimeCondition(topbarClient, ticket_id);
+    
+    topbarObject.saveCallTime({
+        userid			: currentUser?.external_id,
+        menuname		: "상담결과등록-상담원처리",
+        CSEL_NO			: DS_CSEL_PROC.CSEL_NO,   // 상담번호	
+        CSEL_DATE		: DS_CSEL_PROC.CSEL_DATE, // 상담일자		
+        CALL_STTIME		: data.CALL_STTIME, 	  // 통화시작시간(시분초:172951)
+        CALL_EDTIME		: data.CALL_EDTIME, 	  // 통화종료시간(시분초:173428)
+        RECORD_ID		: data.RECORD_ID, 		  // 녹취키(리스트) 없는 경우 []
+    });
 
 }

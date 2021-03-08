@@ -885,38 +885,6 @@ var getJobType = (id, flag) => {
 }
 
 /**
- * 티켓필드에서 통화시작/종료시각을 가져온다.
- * @param {string|number} ticket_id
- */
-const getCallTimes = async (ticket_id) => {
-
-	try {
-
-		// 조회 데이터가 없으면 저장이 안되기 위해 undefined로 선언.
-		let sCALL_STTIME = undefined; 
-		let sCALL_EDTIME = undefined;
-
-		const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
-
-		if (ticket?.custom_fields?.length > 0) {
-			const fCALL_STTIME = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALL_STTIME"]);
-			const fCALL_EDTIME = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALL_EDTIME"]);
-			sCALL_STTIME = fCALL_STTIME?.value || undefined; // 통화시작시각 		
-			sCALL_EDTIME = fCALL_EDTIME?.value || undefined; // 통화종료시각
-		}
-
-		return { sCALL_STTIME, sCALL_EDTIME };
-
-	} catch (error) {
-
-		console.error(error);
-		throw new Error("티켓필드에서 통화시작/종료시각을 불러올수 없습니다.", error);
-
-	} 
-
-}
-
-/**
  * 특정 커스텀필드값 반환
  * @param {object} ticket
  * @param {string|number} custom_field_id

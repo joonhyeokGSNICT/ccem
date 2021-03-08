@@ -14,8 +14,10 @@ var DS_CSEL_MK 	   = [];	// 상담구분 코드 리스트
 
 $(function () {
 
+	// 창이 닫힐때 발생하는 event
 	$(window).on('beforeunload', () => {
-		PopupUtil.closeAll();
+		PopupUtil.closeAll();   // 오픈된 모든 자식창 close
+		onSaveCallTime();       // 상담 통화시간 저장
 	});
 
 	// create calendar
@@ -1762,5 +1764,32 @@ const onMakeCall = (elm, iIdx) => {
 	}
 
 	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO022");
+
+}
+
+/**
+ * 상담 통화시간 저장
+ */
+const onSaveCallTime = async () => {
+
+	// 현재 상담건의 저장구분이 수정(U) 일 경우 상담 통화시간 저장
+	if (getJobType("selectbox14") == "U") {
+
+		const ticket_id = $("#hiddenbox10").val();
+		if (!ticket_id) return;
+
+		const data = await getCallTimeCondition(topbarClient, ticket_id);
+		
+		topbarObject.saveCallTime({
+			userid			: currentUser?.external_id,
+			menuname		: "상담등록",
+			CSEL_NO			: $("#textbox28").val(), 					// 상담번호	
+			CSEL_DATE		: calendarUtil.getImaskValue("textbox27"),  // 상담일자		
+			CALL_STTIME		: data.CALL_STTIME, 						// 통화시작시간(시분초:172951)
+			CALL_EDTIME		: data.CALL_EDTIME, 						// 통화종료시간(시분초:173428)
+			RECORD_ID		: data.RECORD_ID, 							// 녹취키(리스트) 없는 경우 []
+		});
+
+	}
 
 }
