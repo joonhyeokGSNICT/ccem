@@ -1,7 +1,7 @@
 var topbarObject;			// topbar window
 let topbarClient;			// topbar client
 let sidebarClient;          // sidebar client
-let currentUser = {};       // 현재 사용중인 유저의 정보(ZENDESK)
+var currentUser = {};       // 현재 사용중인 유저의 정보(ZENDESK)
 
 let giftList = [];      // 사은품내역2 코드
 
@@ -14,9 +14,9 @@ let DS_HPCALL2      = {};   // 2차 해피콜 내역
 // let DS_TRANS_DEPT   = {};   // 형제회원 지점확인을 위한 조회
 let DS_DEPT_PROC    = {};   // 센터처리 내역
 
-let sCSEL_DATE  = "";   // 상담일자
-let sCSEL_NO    = "";   // 상담번호
-let sCSEL_SEQ   = "";   // 상담순번
+var sCSEL_DATE  = "";   // 상담일자
+var sCSEL_NO    = "";   // 상담번호
+var sCSEL_SEQ   = "";   // 상담순번
 let sPROC_MK    = "";   // 처리구분
 
 let SEND_PHONE = "";    // 대표번호
