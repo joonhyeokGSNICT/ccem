@@ -195,6 +195,27 @@ const onChangeGift = (value) => {
 }
 
 /**
+ * 발송경로 change event
+ * @param {string} value 발송경로
+ */
+const onChangeGiftChnl = (value) => {
+
+    // 발송경로 세팅
+    $("#selectbox7").val(value);
+
+    // 발송경로가 SMS일 경우 전화번로 표시
+    if (value == "4") {
+        $("#thText1").css("display", "none");
+        $("#thText2").css("display", "");
+    // 그외는 송장번호 표시
+    } else {
+        $("#thText1").css("display", "");
+        $("#thText2").css("display", "none");
+    }
+
+}
+
+/**
  * 조회
  */
 const onSearch = (DS_TICKET) => {
@@ -442,13 +463,13 @@ const getGift = () => {
         // DS_GIFT.GIFT_CDE        // 사은품코드     (내역2)
         // DS_GIFT.GIFT_PRICE      // 사은품가격    
         calendarUtil.setImaskValue("calendar1", DS_GIFT.SEND_DATE);      // 발송일자    
-        $("#selectbox7").val(DS_GIFT.GIFT_CHNL_MK);                      // 전달경로구분        
+        // DS_GIFT.GIFT_CHNL_MK    // 전달경로구분        
         $("#textbox31").val(DS_GIFT.PASS_USER);                          // 전달자    
         // DS_GIFT.CTI_CHGDATE     // CTI변경일자                        
         $("#textbox32").val(DS_GIFT.INVOICENUM);                         // 배송송장번호    
 
-        // 사은품코드와 가격 세팅
-        onChangeGiftType(DS_GIFT.GIFT_CDE, DS_GIFT.GIFT_PRICE);
+        onChangeGiftType(DS_GIFT.GIFT_CDE, DS_GIFT.GIFT_PRICE);          // 사은품코드와 가격 세팅
+        onChangeGiftChnl(DS_GIFT.GIFT_CHNL_MK);                          // 전달경로구분 세팅
         
 	});
 }

@@ -172,6 +172,27 @@ const onChangeGift = (value) => {
 }
 
 /**
+ * 발송경로 change event
+ * @param {string} value 발송경로
+ */
+const onChangeGiftChnl = (value) => {
+
+    // 발송경로 세팅
+    $("#selectbox5").val(value);
+
+    // 발송경로가 SMS일 경우 전화번로 표시
+    if (value == "4") {
+        $("#thText1").css("display", "none");
+        $("#thText2").css("display", "");
+    // 그외는 송장번호 표시
+    } else {
+        $("#thText1").css("display", "");
+        $("#thText2").css("display", "none");
+    }
+
+}
+
+/**
  * 상담내역 조회
  * - as-is : cns6000.onSearch()
  */
@@ -233,7 +254,7 @@ const getCselProc = () => {
             $("#selectbox4").val(DS_CSEL_PROC.GIFT_CDE);                            // CMB_TB_GIFTCODE           // 사은품코드        
             calendarUtil.setImaskValue("textbox28", DS_CSEL_PROC.GIFT_PRICE);       // txtGIFT_PRICE         // 사은품가격        
             calendarUtil.setImaskValue("calendar4", DS_CSEL_PROC.SEND_DATE);        // MSK_SEND_DATE          // 발송일자  
-            $("#selectbox5").val(DS_CSEL_PROC.GIFT_CHNL_MK);                        // CMB_GIFT_CHNL_MK       // 전달경로구분            
+            // DS_CSEL_PROC.GIFT_CHNL_MK                                            // CMB_GIFT_CHNL_MK       // 전달경로구분
             $("#textbox29").val(DS_CSEL_PROC.PASS_USER);                            // txtPASS_USER          // 전달자명        
             $("#textbox10").val(DS_CSEL_PROC.DEPT_ID_NM);                           // txtDEPT_ID_NM         // 지점명        
             $("#textbox8").val(DS_CSEL_PROC.DIV_CDE_NM);                            // txtDIV_CDE_NM         // 본부명        
@@ -261,6 +282,8 @@ const getCselProc = () => {
             $("#textbox30").val(DS_CSEL_PROC.INVOICENUM);                           // txtInVoiceNum         // 택배송장번호        
             $("#textbox12").val(DS_CSEL_PROC.LC_ID_NM);                             // txtLC_ID_NM           // 센터명   
             // DS_CSEL_PROC.ZEN_TICKET_ID        // 티켓ID
+
+            onChangeGiftChnl(DS_CSEL_PROC.GIFT_CHNL_MK); // 전달경로구분 세팅         
             
             // 저장구분 체크 - 해당정보가 있으면 수정(U), 없으면 신규(I)
             DS_CSEL_PROC.PROC_STAT   = DS_CSEL_PROC.PROC_DATE   ? "U" : "I";    // 처리내역

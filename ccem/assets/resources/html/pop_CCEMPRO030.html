@@ -411,7 +411,7 @@
 					<tr>
 						<th>발송경로</th>
 						<td>
-							<select class="form-control form-control-sm" id="selectbox7" name="GIFT_CHNL_MK">
+							<select class="form-control form-control-sm" id="selectbox7" name="GIFT_CHNL_MK" onchange="onChangeGiftChnl(this.value)">
 								<option value=""></option>
 							</select>
 						</td>
@@ -419,7 +419,8 @@
 						<td><input type="text" class="form-control form-control-sm" id="textbox31" maxlength="50" autocomplete="off"></td>
 					</tr>
 					<tr>
-						<th><a href="javascript:openLogen(document.getElementById('textbox32').value)">송장번호</a></th>
+						<th id="thText1"><a href="javascript:openLogen(textbox32.value)">송장번호</a></th>
+						<th id="thText2" style="display: none;">전화번호</th>
 						<td><input type="text" class="form-control form-control-sm" id="textbox32" maxlength="50" autocomplete="off"></td>
 						<td colspan="2"></td>
 					</tr>
