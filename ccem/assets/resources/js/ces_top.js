@@ -276,7 +276,7 @@ var wiseNTalkUtil = {
 				tempType = 'off';
 				break;
 			default:
-				tempType = 'on';
+				tempType = 'off';
 				break;	
 			}
 			console.log(tempType);
@@ -410,7 +410,7 @@ client.on('api_notification.setCTIStatus', function(status){
 
 // WiseNTalk 응답 트리거
 client.on('api_notification.getResponse', function(obj){
-	
+	console.log('origin window',obj);
 });
 
 // 고객찾기 트리거
