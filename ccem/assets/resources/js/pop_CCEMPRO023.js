@@ -419,9 +419,13 @@ function loadAgreement(){
 			if(response.errcode == "0"){
 				if(response.recv1.length > 0){
 					$("#selectbox4").val(response.recv1[0].CERTIFY_NO.substring(0,1));
+					$("#essential_Ag").val($("#selectbox4").val());
 					$("#selectbox5").val(response.recv1[0].CERTIFY_NO.substring(1,2));
+					$("#marketing_Ag").val($("#selectbox5").val());
 					$("#selectbox6").val(response.recv1[0].CERTIFY_NO.substring(2,3));
+					$("#conserve_Ag").val($("##selectbox6").val());
 					$("#selectbox7").val(response.recv1[0].CERTIFY_NO.substring(3,4));
+					$("#thirdPerson_Ag").val($("#selectbox7").val());
 				}
 			}
 		}

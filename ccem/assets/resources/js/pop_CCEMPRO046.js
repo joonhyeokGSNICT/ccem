@@ -5,6 +5,7 @@ var openerParam = {};
 
 var msgType = 0;
 var originObj;
+var transHist = '';
 
 $(function(){
 	
@@ -223,7 +224,10 @@ function sendSMS(){
 	param.send1[0].STATUS = 0;
 	param.send1[0].EXTERNAL_ID = originObj.currentUserInfo.user.external_id,         											//상담자ID
 	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
-	param.send1[0].SMS_FIX_ID = "";         				
+	param.send1[0].SMS_FIX_ID = "";         	
+	if(transHist != null && transHist != undefined){
+		param.send1[0].TRANS_HIST = transHist;
+	}
 	
 	console.log(param);
 	
@@ -282,7 +286,7 @@ function sendSMS(){
 		  param.send1[0].CSEL_NO 	= POP_DATA[8]; 	// 상담번호
 		  param.send1[0].CSEL_SEQ 	= POP_DATA[9]; 	// 상담순번
 		  var sUrl  		 		= POP_DATA[10]; // 부모창 URL(clm3700, cns2100, cns2700, cns5400)
-		  
+		  transHist					= POP_DATA[11]; // 이력 구분
 		  if (!isNaN(rdoSelect)) {
 			  $("#inputTable").find('input:radio').eq(rdoSelect-1).prop('checked', true);
 			  $("#sendtoNum").val($("#inputTable").find('input:radio').eq(rdoSelect-1).parent().parent().next().val());
