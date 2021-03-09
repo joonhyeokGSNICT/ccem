@@ -209,10 +209,14 @@ var wiseNTalkUtil = {
 		   * @param 버튼상태
 		   * @param 해당번호
 		   */
-		callStart: function(status, targetPhone, originName){
+		callStart: function(status, targetPhone, originName, ticketID){
 			
 			if(currentTicketInfo == null || currentTicketInfo == undefined){
-				console.log('티켓이 열려있지 않습니다.');
+				if(originName == '' || originName == null || originName == undefined){
+					wiseNTalkUtil.openedCallPop[originName].alert('티켓이 열려있지 않습니다.');
+				}else {
+					client.invoke("notify", "티켓이 열려있지 않습니다.", "error", 6000);
+				}
 				return;
 			}
 			
@@ -228,7 +232,7 @@ var wiseNTalkUtil = {
 				      url:'/api/v2/apps/notify.json',
 				      method: 'POST',
 				      headers: { "Content-Type": "application/json" },
-				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": [targetPhone, ""+currentTicketInfo.ticket.id]})
+				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": [targetPhone, ""+ticketID, originName]})
 				   }).then(function(d){
 				      console.log(d);
 				   }).catch(function(d){
@@ -290,13 +294,6 @@ var wiseNTalkUtil = {
 					$('.callBtn').addClass('callOff');
 					$(".callIcon").attr('src','../img/phone-slash-solid.svg');
 				}
-				/*$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).removeClass('callOn');
-				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).addClass('callOff');
-				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).attr('src','../img/phone-slash-solid.svg');
-				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).removeClass('callOn');
-				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).addClass('callOff');
-				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-slash-solid.svg');*/
-
 			}else {
 				if(window != undefined){
 					$('.callBtn', window.document).removeClass('callOff');
@@ -307,13 +304,6 @@ var wiseNTalkUtil = {
 					$('.callBtn').addClass('callOn');
 					$(".callIcon").attr('src','../img/phone-solid.svg');
 				}
-		/*		$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).removeClass('callOff');
-				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).addClass('callOn');
-				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO031.document).attr('src','../img/phone-solid.svg');
-				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).removeClass('callOff');
-				$('.callBtn', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).addClass('callOn');
-				$('.callIcon', PopupUtil.pops["CSELTOP"]?.document.CCEMPRO032.document).attr('src','../img/phone-solid.svg');
-		*/
 			}
 		},
 		 // 3자통화요청
@@ -387,6 +377,8 @@ client.on("getCodeData", function(d){
 client.on("pane.activated", (ev) => {
 	counselMain_studyProgressList_grid.refreshLayout();		// 상담메인 > 학습진행정보 grid
 	counselMain_counselHist_grid.refreshLayout();   		// 상담메인 > 상담이력 grid
+	customerSearchList_grid.refreshLayout();				// 고객찾기
+	teacherSearchList_grid.refreshLayout();					// 선생님찾기
 });
 
 
@@ -1001,7 +993,7 @@ $(function(){
 		}else {
 			tempStat = 'callOff';
 		};
-		wiseNTalkUtil.callStart(tempStat, phoneNum);
+		wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo.ticket.id);
 	});
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
