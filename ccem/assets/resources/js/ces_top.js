@@ -211,13 +211,13 @@ var wiseNTalkUtil = {
 		   */
 		callStart: function(status, targetPhone, originName, ticketID){
 			
-			if(currentTicketInfo == null || currentTicketInfo == undefined){
-				if(originName == '' || originName == null || originName == undefined){
-					wiseNTalkUtil.openedCallPop[originName].alert('티켓이 열려있지 않습니다.');
-				}else {
+			if(ticketID == '' || ticketID == null || ticketID == undefined){
+				if(originName == null || originName == undefined || originName == ''){
 					client.invoke("notify", "티켓이 열려있지 않습니다.", "error", 6000);
+				}else{
+					wiseNTalkUtil.openedCallPop[originName].alert('티켓이 열려있지 않습니다.');
+					return;
 				}
-				return;
 			}
 			
 			/*if(currentTicketInfo?.ticket.requester.externalId == currentCustInfo.CUST_ID){
@@ -993,7 +993,7 @@ $(function(){
 		}else {
 			tempStat = 'callOff';
 		};
-		wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo.ticket.id);
+		wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket.id);
 	});
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
