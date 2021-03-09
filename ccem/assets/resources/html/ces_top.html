@@ -49,6 +49,7 @@
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO039', 1145, 700);" href="#">SMS 송/수신 리스트 조회</a>
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="window.open(faxUrl,'fax','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');" href="#">FAX 조회</a>
 								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO044', 1145, 475, '#menu');" href="#">사업국/센터/구성원찾기</a> 
+								<a class="dropdown-item" id="deptCenterSearch_pop" onclick="PopupUtil.open('CCEMPRO041_2', 500, 700);" href="#">전화걸기/주소록</a>
 							</div>
 						</li>
 					</ul>
@@ -113,7 +114,7 @@
 									<input type="button" class="btn btn-sm counselMainBtn" onclick="onclickCselBtn('entr');" value="입회등록" id="assignMemberbtn">
 									<input type="button" class="btn btn-sm counselMainBtn" onclick="onclickCselBtn('cust_tchr');" value="선생님소개" id="csel_t_cust"> 
 									<input type="button" class="btn btn-sm counselMainBtn" onclick="onclickCselBtn('tchr_tchr');" value="선생님소개" id="csel_t_tchr" style="display: none;">
-									<input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CCEMPRO041', 500, 700);" value="호전환" id="transferCallbtn" style="background: #6fd899; display: none;">
+									<!-- <input type="button" class="btn btn-sm counselMainBtn" onclick="PopupUtil.open('CCEMPRO041', 500, 700);" value="호전환" id="transferCallbtn" style="background: #6fd899; display: none;"> -->
 								</div>
 							</div>
 						</div>
@@ -1155,7 +1156,12 @@
 											<td>
 												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_WED_DATE" readonly>
 											</td>
-											<th>휴대폰</th>
+											<th>
+												<button id="t_mobileCall_btn" class="btn btn-sm callOn callBtn" style="padding: 0; display:flex; justify-content: space-between;">
+												<span class="font-weight-bold align-middle">휴대폰<span class="font-weight-bold" style="color: red;">*</span></span>
+												<img src="../img/phone-solid.svg" class="callIcon" style="width:25%; margin: auto 0;">
+												</button>
+											</th>
 											<td>
 												<input type="text" class="form-control form-control-sm" autocomplete='off' id="tchrInfo_MOBILNO" readonly>
 											</td>

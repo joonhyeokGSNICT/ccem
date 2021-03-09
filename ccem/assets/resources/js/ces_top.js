@@ -182,9 +182,10 @@ var sidebarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // Si
 var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT // Background)
 var wiseNtalkClient = null;						// wiseNtalk 클라이언트 (ZAF CLIENT // TopBar)(재민)
 
-var autoPopMKList = [							// 자동으로 탑바 오픈되는 OB구분
-	'oblist_cde_30',
-	'oblist_cde_10'
+var autoPopMKList = [							// 자동으로 선생님탭 탑바 오픈되는 OB구분
+	//'oblist_cde_30',
+	//'oblist_cde_10',
+	'oblist_cde_80'
 ]
 
 
@@ -332,7 +333,11 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
 				currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
 				console.log(currentOBMK);
-				userSearch();												// 고객 검색
+				if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+					teacherSearch();											// 선생님 검색
+				}else {
+					userSearch();												// 고객 검색
+				}
 			});
 		}
 		if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
@@ -521,6 +526,22 @@ function userSearch() {
 		});
 	});
 }
+
+/** 
+* 젠데스크에서 티켓 열린 후 선생님 조회 부분
+* @returns
+*/
+function teacherSearch() {
+	$("#customerSearch").click(); 						// 선생님 탭 이동
+	sidebarClient.get('ticket').then(function(data){
+		$("#teacherSearchTab").click();
+		$("#teacherDNumCheck").prop('checked',true);
+		$("#teacherDNum").val(data.ticket?.requester?.externalId);
+		$("#teacherSearchDivBtn").click();
+		customerSearch('teacherSearchDiv', '1');
+	});
+}
+
 /**
  * 페이지의 모든 요소 초기화
  * @returns
@@ -987,6 +1008,10 @@ $(function(){
 		case 'obCall_btn':
 			phoneNum = $.trim($("#custInfo_REP_TELNO").val().replace(/-/gi,''));
 			break;
+		case 't_mobileCall_btn':
+			phoneNum = $.trim($("#tchrInfo_MOBILNO").val().replace(/-/gi,''));
+			break;
+			
 		}
 		
 		if($(this).hasClass('callOn')){
@@ -1063,7 +1088,7 @@ $(function(){
 				$("#blackAndVipArea").css("display","");
 			}
 			$("#assignMemberbtn").css("display","");
-			$("#transferCallbtn").css("display","none");
+			//$("#transferCallbtn").css("display","none");
 			$("#csel_cust").css("display","");
 			$("#csel_cust_modi").css("display","");
 			$("#csel_tchr").css("display","none");
@@ -1080,7 +1105,7 @@ $(function(){
 			$("#csel_t_cust").css("display","none");
 			$("#csel_t_tchr").css("display","");
 			$("#assignMemberbtn").css("display","none");
-			$("#transferCallbtn").css("display","");
+			//$("#transferCallbtn").css("display","");
 			counselMainTeacher_counselHist_grid.refreshLayout();
 			break;
 		// 고객찾기
