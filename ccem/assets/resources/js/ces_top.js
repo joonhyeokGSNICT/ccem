@@ -994,7 +994,10 @@ $(function(){
 		}else {
 			tempStat = 'callOff';
 		};
-		wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
+		sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+			currentTicketInfo = data;
+			wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
+		});
 	});
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
