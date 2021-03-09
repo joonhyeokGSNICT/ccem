@@ -214,6 +214,7 @@ var wiseNTalkUtil = {
 			if(ticketID == '' || ticketID == null || ticketID == undefined){
 				if(originName == null || originName == undefined || originName == ''){
 					client.invoke("notify", "티켓이 열려있지 않습니다.", "error", 6000);
+					return;
 				}else{
 					wiseNTalkUtil.openedCallPop[originName].alert('티켓이 열려있지 않습니다.');
 					return;
