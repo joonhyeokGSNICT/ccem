@@ -994,7 +994,7 @@ $(function(){
 		}else {
 			tempStat = 'callOff';
 		};
-		sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+		sidebarClient?.get('ticket').then(function(data){				// 티켓 정보 불러오기
 			currentTicketInfo = data;
 			wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
 		});
