@@ -994,10 +994,14 @@ $(function(){
 		}else {
 			tempStat = 'callOff';
 		};
-		sidebarClient?.get('ticket').then(function(data){				// 티켓 정보 불러오기
-			currentTicketInfo = data;
-			wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
-		});
+		if(sidebarClient != null){
+			sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+				currentTicketInfo = data;
+				wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
+			});
+		}else {
+			client.invoke("notify", "열린 티켓이 없습니다.", "error", 60000);
+		}
 	});
 	
 	// === === === === === === === === === === === === === === === === === === === === === === === === === === 고객찾기 선생님찾기 검색
