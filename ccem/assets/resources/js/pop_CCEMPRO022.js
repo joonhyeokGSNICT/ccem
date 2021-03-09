@@ -1744,6 +1744,7 @@ const onMakeCall = (elm, iIdx) => {
 	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
 	const sCselSeq = selectbox.value;
 	let targetPhone = "";
+	const ticket_id = $("#hiddenbox10").val();
 
 	// 고객과의 통화시간을 저장하기 위해서
 	// 고객과 통화종료후 SEQ=1인것을 저장을 하지 않은상태에서 지점 전화걸기를 막는다.
@@ -1763,7 +1764,7 @@ const onMakeCall = (elm, iIdx) => {
 		return;
 	}
 
-	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO022");
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO022", ticket_id);
 
 }
 

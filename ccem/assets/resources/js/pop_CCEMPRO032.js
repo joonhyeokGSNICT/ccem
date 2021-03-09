@@ -865,10 +865,11 @@ const getProcStsMk = () => {
  const onMakeCall = (elm) => {
 
 	const status = $(elm).hasClass("callOn") ? "callOn" : "callOff";
+	const targetPhone = $("#textbox7").val().trim().replace(/-/gi,''); // 본부 전화번호
 	const selectbox = document.getElementById("selectbox2");
 	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
 	const sCselSeq = selectbox.value;
-	const targetPhone = $("#textbox7").val().trim().replace(/-/gi,''); // 본부 전화번호
+	const ticket_id = $("#hiddenbox1").val();
 
 	// 고객과의 통화시간을 저장하기 위해서
 	// 고객과 통화종료후 SEQ=1인것을 저장을 하지 않은상태에서 지점 전화걸기를 막는다.
@@ -882,7 +883,7 @@ const getProcStsMk = () => {
 		return;
 	}
 	
-	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO032");
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO032", ticket_id);
 
 }
 

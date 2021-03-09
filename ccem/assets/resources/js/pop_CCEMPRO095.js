@@ -729,7 +729,7 @@ const onMakeCall = (elm, iIdx) => {
         return;
     }
 
-    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO095");
+    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO095", DS_CSEL_PROC.ZEN_TICKET_ID);
 
 }
 

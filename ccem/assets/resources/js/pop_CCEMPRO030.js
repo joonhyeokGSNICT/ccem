@@ -2153,7 +2153,7 @@ const onMakeCall = (elm, iIdx) => {
         return;
     }
 
-    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO030");
+    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO030", DS_COUNSEL.ZEN_TICKET_ID);
 
 }
 

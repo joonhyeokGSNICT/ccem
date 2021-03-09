@@ -115,15 +115,16 @@ const createGrids = () => {
 		}
 
 		// 상담정보 세팅
-		$("#textbox1").val(rowData.TELNO);		// 전화번호
-		$("#textbox2").val(rowData.MOBILNO);	// 핸드폰
-		$("#textbox3").val("");					// 직장전화
-		$("#textbox4").val(rowData.FAT_NAME);	// 학부모명
-		$("#textbox5").val(rowData.ZIPCDE);		// 주소1
-		$("#textbox6").val(rowData.FULLADDR);	// 주소2
-		$("#textbox7").val(rowData.CSEL_TITLE);	// 제목
-		$("#textbox8").val(rowData.CSEL_CNTS);	// 상담내용
-
+		$("#textbox1").val(rowData.TELNO);				// 전화번호
+		$("#textbox2").val(rowData.MOBILNO);			// 핸드폰
+		$("#textbox3").val("");							// 직장전화
+		$("#textbox4").val(rowData.FAT_NAME);			// 학부모명
+		$("#textbox5").val(rowData.ZIPCDE);				// 주소1
+		$("#textbox6").val(rowData.FULLADDR);			// 주소2
+		$("#textbox7").val(rowData.CSEL_TITLE);			// 제목
+		$("#textbox8").val(rowData.CSEL_CNTS);			// 상담내용
+		$("#hiddenbox12").val(rowData.ZEN_TICKET_ID);	// 티켓ID
+		
 		// 연계대상자 세팅
 		if (!rowData.LC_ID) {
 			rowData.EMP_ID_LIST 	= rowData.DEPT_EMP_ID;			// 지점장 ID
@@ -1266,6 +1267,7 @@ const refreshDisplay = () => {
 
 	const status = $(ev.currentTarget).hasClass("callOn") ? "callOn" : "callOff";
 	const targetPhone = $("#textbox9").val().trim().replace(/-/gi,''); // 사업국/센터 전화번호
+	const ticket_id = $("#hiddenbox12").val();
 	
 	if (status == "callOn") {
 
@@ -1299,7 +1301,7 @@ const refreshDisplay = () => {
 
 	}
 	
-	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO028");
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO028", ticket_id);
 
 	return true;
 

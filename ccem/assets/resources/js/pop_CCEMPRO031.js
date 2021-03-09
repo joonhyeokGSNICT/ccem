@@ -1164,6 +1164,7 @@ const getNewMbrId = (CUST_ID) => new Promise((resolve, reject) => {
 	const sJobType = selectbox.options[selectbox.selectedIndex].dataset.jobType;
 	const sCselSeq = selectbox.value;
 	const targetPhone = $("#textbox10").val().trim().replace(/-/gi,''); // 연계사업국/센터 전화번호
+	const ticket_id = $("#hiddenbox5").val();
 
 	// 고객과의 통화시간을 저장하기 위해서
 	// 고객과 통화종료후 SEQ=1인것을 저장을 하지 않은상태에서 지점 전화걸기를 막는다.
@@ -1177,7 +1178,7 @@ const getNewMbrId = (CUST_ID) => new Promise((resolve, reject) => {
 		return;
 	}
 	
-	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO031");
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO031", ticket_id);
 
 }
 
