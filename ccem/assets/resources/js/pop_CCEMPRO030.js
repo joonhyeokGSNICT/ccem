@@ -218,6 +218,29 @@ const onChangeGiftChnl = (value) => {
 }
 
 /**
+ * 수신자 전화번호 radio 버튼 change event
+ */
+const onChangeRdoTel = () => {
+
+    const id = $("input[name='rdoTel']:checked").attr("id");
+
+    // 전화번호 선택
+    if (id == "radio1") {
+        $("#thText3").text("전화번호");
+        $("#textbox37").val($("#textbox2").val());
+    // 회원HP 선택
+    } else if (id == "radio2") {
+        $("#thText3").text("회원HP");
+        $("#textbox37").val($("#textbox5").val());
+    // 회원모HP 선택
+    } else if (id == "radio3") {
+        $("#thText3").text("회원모HP");
+        $("#textbox37").val($("#textbox7").val());
+    }
+
+}
+
+/**
  * 조회
  */
 const onSearch = (DS_TICKET) => {
@@ -313,6 +336,7 @@ const getCounselRst = (DS_TICKET) => {
         setText(DS_COUNSEL.CUST_MK);                                  // 고객 또는 선생님 셋팅
         setButton(DS_COUNSEL.PROC_STS_MK);                            // 버튼 셋팅
         setDisplay(DS_COUNSEL.PROC_STS_MK, DS_COUNSEL.CSEL_RST_MK);   // 화면 셋팅
+        onChangeRdoTel();                                             // 회원 전화번호 세팅
 
         // 저장후 제조회시 티켓업데이트
         if (DS_TICKET) {
