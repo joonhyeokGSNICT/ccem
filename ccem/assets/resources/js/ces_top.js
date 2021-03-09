@@ -234,7 +234,7 @@ var wiseNTalkUtil = {
 				      headers: { "Content-Type": "application/json" },
 				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": [targetPhone, ""+ticketID, originName]})
 				   }).then(function(d){
-				      console.log(d);
+					   client.invoke('routeTo', 'ticket', ticketID);
 				   }).catch(function(d){
 				      console.log(d);
 				   });
