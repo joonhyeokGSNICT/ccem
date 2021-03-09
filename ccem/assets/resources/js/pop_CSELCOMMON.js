@@ -328,9 +328,20 @@ const updateTicket = async (cselData, customData) => {
 
 	// 팔로워 세팅
 	const followerData 	= await getFollowers(customData.empList, "UP");
+	
+	// 상담번호 티켓필드 세팅
+	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`; 
+
+	// 상담결과	티켓필드 세팅
+	let CSEL_RST_MK1 = ""; 
+	if (cselData.CSEL_RST_MK1) {
+		CSEL_RST_MK1 = `csel_rst_mk_${Number(cselData.CSEL_RST_MK1)}`;
+	} else {
+		if (cselData.ORG_CSEL_RST_MK1 == "12") CSEL_RST_MK1 = "";
+		else CSEL_RST_MK1 = `csel_rst_mk_${Number(cselData.ORG_CSEL_RST_MK1)}`;
+	}
 
 	// 티켓필드 세팅
-	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`; // 상담번호
 	const custom_fields = [
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"], 		value: CSEL_DATE_NO_SEQ }, 									// 상담번호
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_LTYPE_CDE"],		value: cselData.CSEL_LTYPE_CDE }, 							// 상담분류(대)  
@@ -340,7 +351,7 @@ const updateTicket = async (cselData, customData) => {
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"],			value: `csel_chnl_mk_${Number(cselData.CSEL_CHNL_MK)}` },	// 상담채널   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"],			value: `cust_resp_mk_${Number(cselData.CUST_RESP_MK)}` },	// 고객반응   
 		// { id: ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"],			value: `call_rst_mk_${Number(cselData.CALL_RST_MK)}` },		// 통화결과(O/B결과)
-		{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"],			value: `csel_rst_mk_${Number(cselData.CSEL_RST_MK1)}` },	// 상담결과   
+		{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"],			value: CSEL_RST_MK1 },										// 상담결과   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"],				value: `proc_mk_${Number(cselData.PROC_MK)}` },				// 처리구분   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"],				value: `cust_mk_${cselData.CUST_MK}`.toLowerCase() },		// 고객구분   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],			value: `proc_sts_mk_${Number(cselData.PROC_STS_MK)}` },		// 처리상태   
@@ -444,8 +455,19 @@ const setTicket = async (cselData, customData) => {
 	// 팔로워 세팅
 	const followerData = await getFollowers(customData.empList, "SET");
 
-	// 티켓필드 세팅
+	// 상담번호 티켓필드 세팅
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
+
+	// 상담결과	티켓필드 세팅
+	let CSEL_RST_MK1 = ""; 
+	if (cselData.CSEL_RST_MK1) {
+		CSEL_RST_MK1 = `csel_rst_mk_${Number(cselData.CSEL_RST_MK1)}`;
+	} else {
+		if (cselData.ORG_CSEL_RST_MK1 == "12") CSEL_RST_MK1 = "";
+		else CSEL_RST_MK1 = `csel_rst_mk_${Number(cselData.ORG_CSEL_RST_MK1)}`;
+	}
+
+	// 티켓필드 세팅
 	const req = new Object()
 	req["ticket.requester"]  = { id: customData.requesterId };	// 요청자ID
 	req["ticket.subject"] 	 = cselData.CSEL_TITLE;				// 제목
@@ -458,7 +480,7 @@ const setTicket = async (cselData, customData) => {
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_CHNL_MK"]}`]            = `csel_chnl_mk_${Number(cselData.CSEL_CHNL_MK)}`;		  // 상담채널   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_RESP_MK"]}`]            = `cust_resp_mk_${Number(cselData.CUST_RESP_MK)}`;		  // 고객반응   
 	// req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CALL_RST_MK"]}`]             = `call_rst_mk_${Number(cselData.CALL_RST_MK)}`;	  	// 통화결과(O/B결과)
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"]}`]             = `csel_rst_mk_${Number(cselData.CSEL_RST_MK1)}`;		  // 상담결과   
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_RST_MK"]}`]             = CSEL_RST_MK1;		  							      // 상담결과   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"]}`]                 = `proc_mk_${Number(cselData.PROC_MK)}`;				  // 처리구분   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"]}`]                 = `cust_mk_${cselData.CUST_MK}`.toLowerCase();           // 고객구분   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"]}`]             = `proc_sts_mk_${Number(cselData.PROC_STS_MK)}`;		  // 처리상태   
