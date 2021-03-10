@@ -20,24 +20,7 @@ var tempStat = "";				// 전화 걸수 있는 상태
 // #01 init_화면 초기화
 function init(){
 	
-	switch(opener.CTI_STATUS.state){
-	case 'INITIATED':
-		tempStat = 'callOff';
-		break;
-	case 'ACTIVE':
-		tempStat = 'callOff';
-		break;
-	case 'WRAP_UP':
-		tempStat = 'callOn';
-		break;
-	case 'DROPPED':
-		tempStat = 'callOn';
-		break;
-	default:
-		tempStat = 'callOn';
-		break;	
-	}
-	
+	setStatus();
 	//탑바에 윈도우 객체 전달
 	opener.wiseNTalkUtil.saveWindowObj(window);
 
@@ -141,6 +124,15 @@ function init(){
 					width: "120",
 					sortable: true,
 					ellipsis: true,
+				},
+				{
+					header: '직무_hidden',
+					name: 'WORK_CNTS',
+					align: "center",
+					width: "120",
+					sortable: true,
+					ellipsis: true,
+					hidden: true
 				}
 			],
 		});
@@ -148,6 +140,7 @@ function init(){
 			_daekyoInterPhone_grid.addSelection(ev);
 			_daekyoInterPhone_grid.clickSort(ev);
 			_daekyoInterPhone_grid.clickCheck(ev);
+			$('#inter_textarea').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "WORK_CNTS"));
 			$('#top_input_name').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "EMP_NM"));
 			$('#top_input_tel').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "TELPNO"));
 		});
@@ -239,13 +232,13 @@ var _styleChanger = {
 	},
 	// #03_02 그리드 세로 수정
 	resizeHeight(){
-		var heightSize = window.innerHeight - 168;
-		if (window.innerHeight <= 300) {
-			heightSize = 140;
+		var heightSize = window.innerHeight - 268;
+		if (window.innerHeight <= 450) {
+			heightSize = 300;
 		}
-		_centerInterPhone_grid.setHeight(heightSize+1);
+		_centerInterPhone_grid.setHeight(heightSize+101);
 		_daekyoInterPhone_grid.setHeight(heightSize);
-		_branchInterPhone_grid.setHeight(heightSize+1);
+		_branchInterPhone_grid.setHeight(heightSize+101);
 	}
 }
 
@@ -394,7 +387,8 @@ const _searchTable = {
 				DEPT_NM: el.DEPT_NM,
 				EMP_NM: el.EMP_NM,
 				JIC_NM: el.JIC_NM,
-				TELPNO: el.TELPNO
+				TELPNO: el.TELPNO,
+				WORK_CNTS: el.WORK_CNTS,
 			};
 		});
 		_daekyoInterPhone_grid.resetData(temp);
@@ -478,11 +472,35 @@ function callRequest(){
 		return;
 	}
 	if(opener.currentTicketInfo?.ticket?.id != null && opener.currentTicketInfo?.ticket?.id != undefined && opener.currentTicketInfo?.ticket?.id != ''){
-		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', opener.currentTicketInfo?.ticket?.id);
+		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', opener.currentTicketInfo?.ticket?.id, '1');
 	}else {
-		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
+		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '', '1');
 	}
 }
+
+// cti 상태 설정
+function setStatus(){
+		switch(opener.CTI_STATUS.state){
+		case 'INITIATING':
+			tempType = 'callOff';
+			break;
+		case 'INITIATED':
+			tempStat = 'callOff';
+			break;
+		case 'ACTIVE':
+			tempStat = 'callOff';
+			break;
+		case 'WRAP_UP':
+			tempStat = 'callOn';
+			break;
+		case 'DROPPED':
+			tempStat = 'callOn';
+			break;
+		default:
+			tempStat = 'callOn';
+		break;	
+		}
+	}
 
 init();
 

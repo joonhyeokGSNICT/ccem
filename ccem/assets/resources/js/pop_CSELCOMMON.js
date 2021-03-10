@@ -994,3 +994,68 @@ const saveRecData = (cselData) => new Promise((resolve, reject) => {
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 
 });
+
+/**
+ * 상담채널, 상담경로 최초 세팅값 반환.
+ */
+const getInitChanel = () => {
+
+	/*
+		[티켓필드_OB구분]		=> 	[상담채널] 	    	=> 	[상담경로]
+		1. 정보이용동의 		=> 	정보동의(11) 	    => 	 변경없음
+		2. 전화설문    			=> 	발신(2)		   		=> 	변경없음	
+		3. 고객직접퇴회 		=> 	고객직접퇴회(12)	=> 	 변경없음		
+		4. 전화상담신청 		=> 	마카다미아(13)		=> 	 변경없음		
+		5. 방문상담신청			=> 	변경없음			=> 	 변경없음			
+		6. IVR콜백   		   =>  착신(1)			   =>   콜백(50)
+		7. MOS      		   =>  MOS(14)			  =>   변경없음	
+		8. WEB설문   		   =>  조사(9)			   => 	변경없음	
+		9. 팩스수신   		   =>  FAX(5)			   => 	변경없음
+	*/
+
+	let sCSEL_CHNL_MK, sSTD_CRS_CDE;
+
+	if (currentTicket) {
+
+		// 티켓채널이 chat일 경우
+		if (currentTicket.via?.channel == "chat") {
+			sCSEL_CHNL_MK = "85";
+		}
+
+		// OB구분에 따라 상담채널 및 상담경로 세팅
+		const sOB_MK = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+		// OB구분이 정보이용동의 일 경우
+		if (sOB_MK == "oblist_cde_10") {
+			sCSEL_CHNL_MK = "11";
+		// OB구분이 전화설문 일 경우
+		} else if (sOB_MK == "oblist_cde_20") {
+			sCSEL_CHNL_MK = "2";
+		// OB구분이 고객직접퇴회 일 경우
+		} else if (sOB_MK == "oblist_cde_30") {
+			sCSEL_CHNL_MK = "12";
+		// OB구분이 전화상담신청 일 경우
+		} else if (sOB_MK == "oblist_cde_40") {
+			sCSEL_CHNL_MK = "13";
+		// OB구분이 방문상담신청 일 경우
+		} else if (sOB_MK == "oblist_cde_50") {
+
+		// OB구분이 IVR콜백 일 경우
+		} else if (sOB_MK == "oblist_cde_60") {
+			sCSEL_CHNL_MK = "1";
+			sSTD_CRS_CDE = "50";
+		// OB구분이 MOS 일 경우
+		} else if (sOB_MK == "oblist_cde_80") {
+			sCSEL_CHNL_MK = "14";
+		// OB구분이 WEB설문 일 경우
+		} else if (sOB_MK == "oblist_cde_90") {
+			sCSEL_CHNL_MK = "9";
+		// OB구분이 팩스수신 일 경우
+		} else if (sOB_MK == "oblist_cde_100") {
+			sCSEL_CHNL_MK = "5";
+		}
+
+	}
+
+	return { sCSEL_CHNL_MK, sSTD_CRS_CDE };
+	
+}
