@@ -117,6 +117,8 @@ function isEmpty(data) {
 var ccemApi = {
     getStatusBoard() {
       var param = {
+              userid: currentUser.external_id,
+              menuname: '미니전광판',
               senddataids: ["send"],
               recvdataids: ["recv1","recv2","recv3"],
         send: [{USER_ID:currentUser.external_id}]
@@ -138,6 +140,8 @@ var ccemApi = {
     },
     getCselStypeTop5() {
       var param = {
+              userid: currentUser.external_id,
+              menuname: '미니전광판',
               senddataids: ["send"],
               recvdataids: ["recv1","recv2","recv3"],
               send: [{}]

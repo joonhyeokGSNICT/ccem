@@ -221,6 +221,7 @@ function setGridTree() {
                                 _getList.employeeList(param);
                             }
                             if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
+                            else if ( opener.name == 'CCEMPRO028' ) $("#counselSend_btn").removeClass('invisible');
                             else $("#counselSend_btn").addClass('invisible');
                             $("#counselSave_btn").addClass('invisible');
                             break;

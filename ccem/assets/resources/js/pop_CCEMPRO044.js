@@ -53,15 +53,15 @@ var _mode = "plainTree";
 if ( opener.name == 'CCEMPRO022' ) {
 	if (hash =="#disPlayUp") _mode ="plainTreeSelOrg";
 	else if (hash =="#disPlayDn") _mode ="plainTree";
-	_topWindow = opener.parent.opener;
+	_topWindow = opener.topbarObject;
 }
 else if ( opener.name == 'CCEMPRO028' ) {
 	_mode ="plainTree";
-	_topWindow = opener.opener.parent.opener;
+	_topWindow = opener.opener.topbarObject;
 }
 else if ( opener.name == 'CCEMPRO031' || opener.name == 'CCEMPRO032' ) {
 	_mode ="plainTreeSelOrg";
-	_topWindow = opener.parent.opener;
+	_topWindow = opener.topbarObject;
 }
 else if ( opener.name.indexOf('app_CCEM_top_bar') > -1) {
 	if (hash == "#menu" ) _mode="search";
@@ -496,7 +496,7 @@ const _sortList = {
 			}
 		}
 
-		console.log(respondeData);
+		// console.log(respondeData);
 		var temp = respondeData;
 		for ( index in temp ){
 			// 구성원의 교사구분 처리
@@ -975,21 +975,25 @@ const _btn = {
 				} else if ( _selectedNode.data.LV =="1" )  {
 					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
 					orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
-					orgList.UP_DEPT_ID = _selectedNode.data.DEPT_ID;
-					orgList.UP_DEPT_NAME = _selectedNode.data.DEPT_NAME;
-					orgList.UP_DEPT_TEL = _selectedNode.data.TELPNO;
-					orgList.UP_DEPT_FAX = _selectedNode.data.FAXNO;
-					orgList.PARE_DEPT_ID = "";
-					orgList.PARE_DEPT_NAME = "";
-					orgList.PARE_DEPT_TEL = "";
-					orgList.LC_DEPT_ID = "";
-					orgList.LC_DEPT_NAME = "";
-					orgList.LC_DEPT_TEL = ""
 					orgList.LV = _selectedNode.data.LV;
+					orgList.DEPT_ID = _selectedNode.data.DEPT_ID;		
+					orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+					orgList.DEPT_TELNO = _selectedNode.data.TELPNO;
+					if (! isEmpty(_selectedNode.data.FAXNO) ){
+						orgList.DEPT_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
+						orgList.DEPT_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
+						orgList.DEPT_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
+					}
+					orgList.LC_ID = "";		
+					orgList.LC_NAME = "";
+					orgList.LC_TELNO = "";
+					orgList.LC_FAX_DDD = "";
+					orgList.LC_FAX_NO1 = "";
+					orgList.LC_FAX_NO2 = "";
+					orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
 					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
-					orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
-					orgList.REP_EMP_ID = _selectedNode.data.REP_EMP_ID;
-					orgList.REP_EMP_NAME = _selectedNode.data.REP_EMP_NAME;
+					orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+					orgList.LC_EMP_ID = "";
 					orgList.EMP_NAME_LIST  = nameArray.join(', ');
 					orgList.EMP_ID_LIST = idArray.join(', ');
 					orgList.EMP_PHONE_LIST = telArray.join(', ');
