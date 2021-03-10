@@ -368,23 +368,16 @@ const setCodeData = async () => {
 	}
 
 	// init setting
-	$("#selectbox3").val("1");				// 상담구분 : 문의
-	$("#selectbox1").val("0");				// 개인정보 : 비공개
-	$("#selectbox2").val("01");				// 내담자 : 모
-	$("#selectbox6").val("2");				// 고객반응 : 보통
-	$("#selectbox4").val("1");				// 처리구분 : 단순상담
+	$("#selectbox3").val("1");	// 상담구분 : 문의
+	$("#selectbox1").val("0");	// 개인정보 : 비공개
+	$("#selectbox2").val("01");	// 내담자 	: 모
+	$("#selectbox6").val("2");	// 고객반응 : 보통
+	$("#selectbox4").val("1");	// 처리구분 : 단순상담
 
-	// 상담채널 세팅
-	if (currentTicket) {
-		const sOB_MK = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
-		// OB구분이 정보이용동의 일경우
-		if (sOB_MK == "oblist_cde_10") {
-			$("#selectbox15").val("11");
-		// 티켓채널이 채팅일 경우
-		} else if (currentTicket?.via?.channel == "chat") {
-			$("#selectbox15").val("85");
-		}
-	}
+	// 상담채널 및 상담경로 초기세팅
+	const { sCSEL_CHNL_MK, sSTD_CRS_CDE } = getInitChanel();
+	if (sCSEL_CHNL_MK) $("#selectbox15").val(sCSEL_CHNL_MK);
+	if (sSTD_CRS_CDE)  $("#selectbox9").val(sSTD_CRS_CDE);
 
 	filterPROC_STS_MK(); // 처리구분에 따라 처리상태 filtering
 	filterCSEL_MK();	 // 상담채널에 따라 상담구분 filtering

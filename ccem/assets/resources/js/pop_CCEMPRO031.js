@@ -274,21 +274,14 @@ const setCodeData = async () => {
 	const S_USER_GRP_CDE = currentUser.user_fields.user_grp_cde;
 	if(S_USER_GRP_CDE == "7096") $("#selectbox4").val("71");
 	else if(S_USER_GRP_CDE == "7100") $("#selectbox4").val("61");
-	else $("#selectbox4").val("1");		// 상담채널 : 착신
-	$("#selectbox9").val("01");			// 내담자 : 모
-	$("#selectbox5").val("3");			// 연계방법 : FAX
+	else $("#selectbox4").val("1");	// 상담채널 : 착신
+	$("#selectbox9").val("01");		// 내담자 	: 모
+	$("#selectbox5").val("3");		// 연계방법 : FAX
 
-	// 상담채널 세팅
-	if (currentTicket) {
-		const sOB_MK = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
-		// OB구분이 정보이용동의 일경우
-		if (sOB_MK == "oblist_cde_10") {
-			$("#selectbox4").val("11");
-		// 티켓채널이 채팅일 경우
-		} else if (currentTicket?.via?.channel == "chat") {
-			$("#selectbox4").val("85");
-		}
-	}
+	// 상담채널 및 입회경로 초기세팅
+	const { sCSEL_CHNL_MK, sSTD_CRS_CDE } = getInitChanel();
+	if (sCSEL_CHNL_MK) $("#selectbox4").val(sCSEL_CHNL_MK);
+	if (sSTD_CRS_CDE)  $("#selectbox8").val(sSTD_CRS_CDE);
 
 }
 
