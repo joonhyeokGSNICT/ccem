@@ -19,11 +19,11 @@ const _SPACE = "sandbox";
 const API_INFO = {
     ops: {
         url: "",
-        recPlayer: "https://rec.daekyo.co.kr/player/player.jsp",
+        recPlayer: "https://ccm-rec.daekyo.co.kr/player/player.jsp",
     },
     dev: {
         url: "https://devccem.daekyo.co.kr",
-        recPlayer: "https://rec.daekyo.co.kr/player/player.jsp",
+        recPlayer: "https://ccm-rec.daekyo.co.kr/player/player.jsp",
     },
 }
 

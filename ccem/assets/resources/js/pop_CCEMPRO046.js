@@ -1,6 +1,6 @@
 var smsContentsListGrid;
 
-var param = {};
+var param = {send1:[{}]};
 var openerParam = {};
 
 var msgType = 0;
@@ -209,7 +209,7 @@ function cleanContent(){
  * 21-01-28 최준혁
  */
 function sendSMS(){
-	param.send1 = [{}];
+	//param.send1 = [{}];
 	param.userid = originObj.currentUserInfo.user.external_id;
 	param.menuname = 'SMS전송';
 	param.senddataids = ["send1"];
