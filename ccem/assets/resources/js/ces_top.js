@@ -410,6 +410,7 @@ client.on('api_notification.setCTIStatus', function(status){
 // WiseNTalk 응답 트리거
 client.on('api_notification.getResponse', function(obj){
 	console.log('origin window',obj);
+	wiseNTalkUtil.openedCallPop[obj.popup_name].alert('티켓이 열려있지 않습니다.');
 });
 
 // 고객찾기 트리거
