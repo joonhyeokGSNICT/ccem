@@ -59,12 +59,11 @@ function init(){
 			_centerInterPhone_grid.addSelection(ev);
 			_centerInterPhone_grid.clickSort(ev);
 			_centerInterPhone_grid.clickCheck(ev);
-		});
-
-		_centerInterPhone_grid.on("dblclick", ev => {
 			$('#top_input_name').val(_centerInterPhone_grid.getFormattedValue(ev.rowKey, "USER_NAME"));
 			$('#top_input_tel').val(_centerInterPhone_grid.getFormattedValue(ev.rowKey, "USER_IN_TEL"));
 		});
+		// _centerInterPhone_grid.on("dblclick", ev => {
+		// });
 
 		// #01_001_02 대교내선
 		_daekyoInterPhone_grid = new Grid({
@@ -118,6 +117,15 @@ function init(){
 					width: "120",
 					sortable: true,
 					ellipsis: true,
+				},
+				{
+					header: '직무_hidden',
+					name: 'WORK_CNTS',
+					align: "center",
+					width: "120",
+					sortable: true,
+					ellipsis: true,
+					hidden: true
 				}
 			],
 		});
@@ -125,11 +133,13 @@ function init(){
 			_daekyoInterPhone_grid.addSelection(ev);
 			_daekyoInterPhone_grid.clickSort(ev);
 			_daekyoInterPhone_grid.clickCheck(ev);
-		});
-		_daekyoInterPhone_grid.on("dblclick", ev => {
+
+			$('#inter_textarea').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "WORK_CNTS"));
 			$('#top_input_name').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "EMP_NM"));
 			$('#top_input_tel').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "TELPNO"));
 		});
+		// _daekyoInterPhone_grid.on("dblclick", ev => {
+		// });
 		
 		// #01_001_03 지점
 		_branchInterPhone_grid = new Grid({
@@ -171,11 +181,12 @@ function init(){
 			_branchInterPhone_grid.addSelection(ev);
 			_branchInterPhone_grid.clickSort(ev);
 			_branchInterPhone_grid.clickCheck(ev);
-		});
-		_branchInterPhone_grid.on("dblclick", ev => {
 			$('#top_input_name').val(_branchInterPhone_grid.getFormattedValue(ev.rowKey, "DEPT_NAME"));
 			$('#top_input_tel').val(_branchInterPhone_grid.getFormattedValue(ev.rowKey, "TELNO"));
 		});
+		// _branchInterPhone_grid.on("dblclick", ev => {
+			
+		// });
 
 	// #01_002 그리드 사이즈 초기화
 	_styleChanger.resizeWidth();
@@ -214,13 +225,13 @@ var _styleChanger = {
 	},
 	// #03_02 그리드 세로 수정
 	resizeHeight(){
-		var heightSize = window.innerHeight - 168;
-		if (window.innerHeight <= 300) {
-			heightSize = 140;
+		var heightSize = window.innerHeight - 268;
+		if (window.innerHeight <= 450) {
+			heightSize = 300;
 		}
-		_centerInterPhone_grid.setHeight(heightSize+1);
+		_centerInterPhone_grid.setHeight(heightSize+101);
 		_daekyoInterPhone_grid.setHeight(heightSize);
-		_branchInterPhone_grid.setHeight(heightSize+1);
+		_branchInterPhone_grid.setHeight(heightSize+101);
 	}
 }
 
@@ -271,7 +282,7 @@ const _getTelList = {
 			contentType: "application/json",
 			data: JSON.stringify(param),
 			success: function (response) {
-				// console.log(response);
+				console.log(response);
 				_daekyoInterPhone_list = response.dsRecv;
 				_daekyoInterPhone_grid.resetData(response.dsRecv);
 			}, error: function (response) {
@@ -369,7 +380,8 @@ const _searchTable = {
 				DEPT_NM: el.DEPT_NM,
 				EMP_NM: el.EMP_NM,
 				JIC_NM: el.JIC_NM,
-				TELPNO: el.TELPNO
+				TELPNO: el.TELPNO,
+				WORK_CNTS: el.WORK_CNTS,
 			};
 		});
 		_daekyoInterPhone_grid.resetData(temp);
