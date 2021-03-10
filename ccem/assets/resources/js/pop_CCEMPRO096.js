@@ -82,9 +82,9 @@ $(function(){
 	});
 	
     // create grid
-    /*grid = new Grid({
+    grid = new Grid({
         el: document.getElementById("grid"),
-        bodyHeight: 405,
+        bodyHeight: 540,
 		pageOptions: {
 		  perPage: 20,
 		  useClient: true
@@ -94,25 +94,15 @@ $(function(){
 				type: 'rowNum',
                 header: "NO",
             },
-            {
-                type: 'checkbox',
-                header: `
-                    <input id='all-checkbox' type="checkbox" name="_checked">
-                    <span onclick='document.getElementById("all-checkbox").click();' style='cursor: default'>FAX</span>
-                `,
-                width: 50,
-			},
         ],
         columnOptions: {
             minWidth: 50,
             resizable: true,
-            frozenCount: 6,
-            frozenBorderWidth: 0
         },
 		columns: [
 			{
-				header: '접수일자',
-				name: 'CSEL_DATE',
+				header: '회원명',
+				name: 'CUST_NAME',
 				width: 90,
 				align: "center",
 				sortable: true,
@@ -120,192 +110,103 @@ $(function(){
 				formatter: columnInfo => FormatUtil.date(columnInfo.value)
 			},
 			{
-				header: '접수번호',
-				name: 'CSEL_NO',
-				width: 80,
+				header: '회원번호',
+				name: 'MBR_ID',
+				width: 90,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
 			{
-				header: '순번',
-				name: 'CSEL_SEQ',
-				width: 60,
+				header: '고객번호',
+				name: 'CUST_ID',
+				width: 90,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
+				hidden: true
 			},
 			{
-				header: '접수채널',
-				name: 'CSEL_CHNL_NM',
-				width: 80,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '접수시간',
-				name: 'CSEL_TIME',
-				width: 80,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				formatter: function(e){
-					return e.value.substring(0,2) + ":" + e.value.substring(2,4)
-				}
-			},
-			{
-				header: '회원명',
-				name: 'CUST_NAME',
-				width: 80,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '학년',
-				name: 'GRADE_CDE',
-				width: 60,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '입회과목',
+				header: '중단과목',
 				name: 'PRDT_NAME',
-				width: 160,
-				align: "left",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '전화번호',
-				name: 'TELNO',
 				width: 120,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
 			{
-				header: '주소',
-				name: 'ADDRESS',
-				width: 300,
-				align: "left",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '분류(대)',
-				name: 'CSEL_LTYPE_NM',
+				header: '연락처',
+				name: 'MOBILNO',
 				width: 100,
-				align: "left",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '분류(중)',
-				name: 'CSEL_MTYPE_NM',
-				width: 100,
-				align: "left",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '연계일자',
-				name: 'TRANS_DATE',
-				width: 90,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-				formatter: columnInfo => FormatUtil.date(columnInfo.value)
-			},
-			{
-				header: '연계방법',
-				name: 'TRANS_CHNL_NM',
-				width: 90,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '연계본부',
-				name: 'TRNAS_DIV',
-				width: 130,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '연계사업국',
-				name: 'TRANS_DEPT',
-				width: 130,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '연계센터',
-				name: 'TRANS_LC',
-				width: 130,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '접수자',
-				name: 'DEPT_ACP_NM',
-				width: 110,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '결과',
-				name: 'ENTER_RST_FLAG',
-				width: 70,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 				formatter: function(e){
-					if(e.value == "1"){
-						return '입회';
-					}else {
-						return '미입회';
-					}
+					return FormatUtil.tel(e.value);
 				}
 			},
 			{
-				header: '상담원',
-				name: 'USER_NAME',
-				width: 70,
-				align: "center",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '상담내용',
-				name: 'CSEL_CNTS',
-				width: 510,
-				align: "left",
-				sortable: true,
-				ellipsis: true,
-			},
-			{
-				header: '입회경로',
-				name: 'FST_CRS_NM',
+				header: '은행',
+				name: 'BANK_NAME',
 				width: 80,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
 			{
-				header: '입회사유',
-				name: 'MOTIVE_NM',
-				width: 110,
+				header: '계좌번호',
+				name: 'ACCT_ID',
+				width: 120,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
-			}
+			},
+			{
+				header: '환불예상금액',
+				name: 'REFUND_AMT',
+				width: 120,
+				align: "center",
+				sortable: true,
+				ellipsis: true,
+				formatter: function(e){
+					return e.value.format();
+				}
+			},
+			{
+				header: '중단사유',
+				name: 'REFUND_NAME',
+				width: 160,
+				align: "left",
+				sortable: true,
+				ellipsis: true,
+			},
+			{
+				header: 'I/B생성여부',
+				name: 'PROC_GB',
+				width: 70,
+				align: "left",
+				sortable: true,
+				ellipsis: true,
+			},
+			{
+				header: '등록일시',
+				name: 'CTI_CREDATE',
+				width: 100,
+				align: "left",
+				sortable: true,
+				ellipsis: true,
+				formatter: function(e){
+					return FormatUtil.dateTime(e.value);
+				}
+			},
+			{
+				header: '상담원명',
+				name: 'USER_NAME',
+				width: 100,
+				align: "left",
+				sortable: true,
+				ellipsis: true,
+			},
 		],
     });
     grid.on("click", ev => {
@@ -319,7 +220,7 @@ $(function(){
 		if (ev.targetType != "cell") return;
 		const ZEN_TICKET_ID = ev.instance.getValue(ev.rowKey, "ZEN_TICKET_ID");
 		if (ZEN_TICKET_ID) opener.client.invoke('routeTo', 'ticket', ZEN_TICKET_ID);
-	});*/
+	});
 });
 
 /** 

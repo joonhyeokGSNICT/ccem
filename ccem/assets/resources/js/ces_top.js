@@ -182,7 +182,7 @@ var sidebarClient = null;						// 사이드바 클라이언트 (ZAF CLIENT // Si
 var backgroundClient = null;					// 백그라운드 클라이언트 (ZAF CLIENT // Background)
 var wiseNtalkClient = null;						// wiseNtalk 클라이언트 (ZAF CLIENT // TopBar)(재민)
 
-var autoPopMKList = [							// 자동으로 선생님탭 탑바 오픈되는 OB구분
+var teacherPopMKList = [							// 자동으로 선생님탭 탑바 오픈되는 OB구분
 	//'oblist_cde_30',
 	//'oblist_cde_10',
 	'oblist_cde_80'
@@ -210,17 +210,22 @@ var wiseNTalkUtil = {
 		   * @param 버튼상태
 		   * @param 해당번호
 		   */
-		callStart: function(status, targetPhone, originName, ticketID){
+		callStart: function(status, targetPhone, originName, ticketID, type){
 			
-			if(ticketID == '' || ticketID == null || ticketID == undefined){
-				if(originName == null || originName == undefined || originName == ''){
-					client.invoke("notify", "티켓이 열려있지 않습니다.", "error", 6000);
-					return;
-				}else{
-					wiseNTalkUtil.openedCallPop[originName].alert('티켓이 열려있지 않습니다.');
-					return;
+			if(type != '1'){			// 티켓 여부 확인 타입
+				if(status == 'callOn'){
+					if(ticketID == '' || ticketID == null || ticketID == undefined){
+						if(originName == null || originName == undefined || originName == ''){
+							client.invoke("notify", "티켓이 열려있지 않습니다.", "error", 6000);
+							return;
+						}else{
+							wiseNTalkUtil.openedCallPop[originName].alert('티켓이 열려있지 않습니다.');
+							return;
+						}
+					}
 				}
 			}
+			
 			
 			/*if(currentTicketInfo?.ticket.requester.externalId == currentCustInfo.CUST_ID){
 				console.log('티켓의 고객과 CCEM의 고객이 다릅니다.');
@@ -256,9 +261,13 @@ var wiseNTalkUtil = {
 		 
 		 // 전화상태변경 적용
 		 applyPhoneIcon: function() {
-			 console.log('ap on');
 			 for(obj in wiseNTalkUtil.openedCallPop){
-				 wiseNTalkUtil.changePhoneIcon(wiseNTalkUtil.openedCallPop[obj]);
+				 console.log(obj);
+				 if(obj == 'CCEMPRO041_2') {
+					 wiseNTalkUtil.openedCallPop[obj].setStatus();
+				 }else {
+					 wiseNTalkUtil.changePhoneIcon(wiseNTalkUtil.openedCallPop[obj]);
+				 }
 			 }
 			 wiseNTalkUtil.changePhoneIcon();
 		 },
@@ -269,6 +278,9 @@ var wiseNTalkUtil = {
 			console.log('cpstat', CTI_STATUS);
 			var tempType = 'on';
 			switch(CTI_STATUS.state){
+			case 'INITIATING':
+				tempType = 'on';
+				break;
 			case 'INITIATED':
 				tempType = 'on';
 				break;
@@ -333,8 +345,16 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
 				currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
 				console.log(currentOBMK);
-				if(autoPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+				if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
 					teacherSearch();											// 선생님 검색
+				}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
+					if(currentTicketInfo.ticket.requester.externalId != null){
+						userSearch();												// 고객 검색	
+					}else {																										// IVR 콜백건인데 고객이 조회가 되지 않으면 상담메인의 OB전화번호에 번호만 입력된다.
+						$("#customerInfo").click();
+						$("#customerTab").click();
+						$("#custInfo_REP_TELNO").val(FormatUtil.tel(currentTicketInfo.ticket.requester?.identities[0]?.value));
+					}
 				}else {
 					userSearch();												// 고객 검색
 				}
@@ -401,8 +421,8 @@ client.on('api_notification.setCTIStatus', function(status){
 	}
 	
 	if(wiseNTalkUtil.whileTransfer && CTI_STATUS.callType == 'OUT'){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
-		wiseNTalkUtil.openedCallPop['CCEMPRO023'].loadAgreement();			// 동의결과 조회
-		wiseNTalkUtil.openedCallPop['CCEMPRO023'].loading.out();
+		wiseNTalkUtil.openedCallPop['CCEMPRO023']?.loadAgreement();			// 동의결과 조회
+		wiseNTalkUtil.openedCallPop['CCEMPRO023']?.loading.out();
 		wiseNTalkUtil.whileTransfer = false;
 	}
 });
@@ -410,7 +430,7 @@ client.on('api_notification.setCTIStatus', function(status){
 // WiseNTalk 응답 트리거
 client.on('api_notification.getResponse', function(obj){
 	console.log('origin window',obj);
-	wiseNTalkUtil.openedCallPop[obj.popup_name].alert('티켓이 열려있지 않습니다.');
+	wiseNTalkUtil.openedCallPop[obj.popup_name].alert(obj.msg);
 });
 
 // 고객찾기 트리거
@@ -1025,7 +1045,7 @@ $(function(){
 				currentTicketInfo = data;
 				wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
 			});
-		}else {
+		}else if(tempStat == 'callOn'){
 			client.invoke("notify", "열린 티켓이 없습니다.", "error", 60000);
 		}
 	});
@@ -1687,7 +1707,7 @@ function customerSearch(currentDiv, type){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	customerSearchList_grid.resetData(response.recv1);
-		        	customerSearchList_grid.refreshLayout();
+		        	//customerSearchList_grid.refreshLayout();
 		        	// 조회된 수가 1명 일 경우 자동 조회, 전화인입일경우 
 		        	if(response.recv1.length == "1" && type == '1'){
 		        		initAll(); 													// 기존 정보 초기화
@@ -1777,7 +1797,7 @@ function customerSearch(currentDiv, type){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	teacherSearchList_grid.resetData(response.recv1);
-		        	teacherSearchList_grid.refreshLayout();
+		        	//teacherSearchList_grid.refreshLayout();
 		        	// 조회된 수가 1명 일 경우 자동 조회, 전화인입일경우 
 		        	if(response.recv1.length == "1" && type == '1'){
 		        		initAll(); 													// 기존 정보 초기화
@@ -2604,7 +2624,7 @@ function loadList(id, grid, listID) {
 				if(response.errcode == "0"){
 					console.log("DATA ===> :" , response);
 					grid.resetData(response.recv1);
-					grid.refreshLayout();
+					//grid.refreshLayout();
 					
 					// 후처리
 					switch(id){
@@ -2813,10 +2833,10 @@ function onFamilyBtnClick(){
 function isCustDataChanged() {
 	if($("#custInfo_NAME").val() != currentCustInfo.NAME){										// 고객명
 		if($("#custInfo_NAME").val() == "" && currentCustInfo.NAME == null){
-			return;
+		}else {
+			console.log(currentCustInfo.NAME);
+			return true;
 		}
-		console.log(currentCustInfo.NAME);
-		return true;
 	}
 	if(currentCustInfo.FML_RANK != null){
 		if($("#custInfo_FML_RANK").val() != currentCustInfo.FML_RANK){							// 형제서열
@@ -2829,101 +2849,101 @@ function isCustDataChanged() {
 	
 	if($("#custInfo_GND").val() != currentCustInfo.GND){									// 성별
 		if($("#custInfo_GND").val() == "" && currentCustInfo.GND == null){
-			return;
+		}else {
+			console.log(currentCustInfo.GND);
+			return true;
 		}
-		console.log(currentCustInfo.GND);
-		return true;
 	}
 	if($("#custInfo_BIRTH_YMD").val().replace(/-/gi,"") != currentCustInfo.BIRTH_YMD){		// 생년월일
 		if($("#custInfo_BIRTH_YMD").val().replace(/-/gi,"") == "" && currentCustInfo.BIRTH_YMD == null){
-			return;
+		}else {
+			console.log(currentCustInfo.BIRTH_YMD);
+			return true;
 		}
-		console.log(currentCustInfo.BIRTH_YMD);
-		return true;
 	}
 	if($("#lunarSolarInput").val() != currentCustInfo.BIRTH_MK){							// 양력,음력
 		if($("#lunarSolarInput").val() == "" && currentCustInfo.BIRTH_MK == null){
-			return;
+		}else {
+			console.log(currentCustInfo.BIRTH_MK);
+			return true;
 		}
-		console.log(currentCustInfo.BIRTH_MK);
-		return true;
 	}
 	if($("#custInfo_GRADE_CDE").val() != currentCustInfo.GRADE_CDE){						// 학년
 		if($("#custInfo_GRADE_CDE").val() == "" && currentCustInfo.GRADE_CDE == null){
-			return;
+		}else {
+			console.log(currentCustInfo.GRADE_CDE);
+			return true;
 		}
-		console.log(currentCustInfo.GRADE_CDE);
-		return true;
 	}
 	if($("#custInfo_DDD").val() != currentCustInfo.DDD){									// 자택전화
 		if($("#custInfo_DDD").val() == "" && currentCustInfo.DDD == null){
-			return;
+		}else {
+			console.log(currentCustInfo.DDD);
+			return true;
 		}
-		console.log(currentCustInfo.DDD);
-		return true;
 	}
 	if($("#custInfo_TELPNO1").val() != currentCustInfo.TELPNO1){
 		if($("#custInfo_TELPNO1").val() == "" && currentCustInfo.TELPNO1 == null){
-			return;
+		}else {
+			console.log(currentCustInfo.TELPNO1);
+			return true;
 		}
-		console.log(currentCustInfo.TELPNO1);
-		return true;
 	}
 	if($("#custInfo_TELPNO2").val() != currentCustInfo.TELPNO2){
 		if($("#custInfo_TELPNO2").val() == "" && currentCustInfo.TELPNO2 == null){
-			return;
+		}else {
+			console.log(currentCustInfo.TELPNO2);
+			return true;
 		}
-		console.log(currentCustInfo.TELPNO2);
-		return true;
 	}
 	if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() != currentCustInfo?.MOBILNO?.replace(/-/gi,"")){						// 회원전화번호
 		if($("#custInfo_MOBILNO1").val()+$("#custInfo_MOBILNO2").val()+$("#custInfo_MOBILNO3").val() == "" && currentCustInfo?.MOBILNO?.replace(/-/gi,"") == null){
-			return;
+		}else {
+			console.log(currentCustInfo.MOBILNO);
+			return true;
 		}
-		console.log(currentCustInfo.MOBILNO);
-		return true;
 	}
 	if($("#custInfo_ZIPCDE").val() != currentCustInfo.ZIPCDE){								// 우편번호
 		if($("#custInfo_ZIPCDE").val() == "" && currentCustInfo.ZIPCDE == null){
-			return;
+		}else {
+			console.log(currentCustInfo.ZIPCDE);
+			return true;
 		}
-		console.log(currentCustInfo.ZIPCDE);
-		return true;
 	}
 	if($("#custInfo_ZIP_ADDR").val() != currentCustInfo.ZIP_ADDR){							// 기본주소
 		if($("#custInfo_ZIP_ADDR").val() == "" && currentCustInfo.ZIP_ADDR == null){
-			return;
+		}else {
+			console.log(currentCustInfo.ZIP_ADDR);
+			return true;
 		}
-		console.log(currentCustInfo.ZIP_ADDR);
-		return true;
 	}
 	if($("#custInfo_ADDR").val() != currentCustInfo.ADDR){									// 상세주소
 		if($("#custInfo_ADDR").val() == "" && currentCustInfo.ADDR == null){
-			return;
+		}else {
+			console.log(currentCustInfo.ADDR);
+			return true;
 		}
-		console.log(currentCustInfo.ADDR);
-		return true;
 	}
 	if($("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val() != currentCustInfo?.MOBILNO_LAW?.replace(/-/gi,"")){			// 대리인 전화번호
 		if($("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val() == "" && currentCustInfo?.MOBILNO_LAW?.replace(/-/gi,"") == null){
-			return;
+		}else {
+			console.log(currentCustInfo.MOBILNO_LAW);
+			return true;
 		}
-		console.log(currentCustInfo.MOBILNO_LAW);
-		return true;
 	}
 	if($("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val() != currentCustInfo?.MOBILNO_MBR?.replace(/-/gi,"")){			// 학부모 전화번호
 		if($("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val() == "" && currentCustInfo?.MOBILNO_MBR?.replace(/-/gi,"") == null){
-			return;
+		}else {
+			console.log(currentCustInfo.MOBILNO_MBR);
+			return true;
 		}
-		console.log(currentCustInfo.MOBILNO_MBR);
-		return true;
 	}
 	if($("#custInfo_FAT_NAME").val() != currentCustInfo.FAT_NAME){							// 대리인명
 		if($("#custInfo_FAT_NAME").val() == "" && currentCustInfo.FAT_NAME == null){
-			return;
+		}else {
+			console.log(currentCustInfo.FAT_NAME);
+			return true;
 		}
-		console.log(currentCustInfo.FAT_NAME);
-		return true;
 	}
 	if(currentCustInfo.FAT_REL != null){
 		if($("#custInfo_FAT_REL").val() != currentCustInfo.FAT_REL){							// 대리인관계
@@ -2947,45 +2967,45 @@ function isCustDataChanged() {
 	}
 	if($("#custInfo_UPDEPTNAME").val() != currentCustInfo.UPDEPTNAME){						// 본부
 		if($("#custInfo_UPDEPTNAME").val() == "" && currentCustInfo.UPDEPTNAME == null){
-			return;
+		}else {
+			console.log(currentCustInfo.UPDEPTNAME);
+			return true;
 		}
-		console.log(currentCustInfo.UPDEPTNAME);
-		return true;
 	}
 	if($("#custInfo_DEPT_ID").val() != currentCustInfo.DEPT_ID){							// 사업국
 		if($("#custInfo_DEPT_ID").val() == "" && currentCustInfo.DEPT_ID == null){
-			return;
+		}else {
+			console.log(currentCustInfo.DEPT_ID);
+			return true;
 		}
-		console.log(currentCustInfo.DEPT_ID);
-		return true;
 	}
 	if($("#custInfo_DEPT_NAME").val() != currentCustInfo.DEPT_NAME){						// 사업국명
 		if($("#custInfo_DEPT_NAME").val() == "" && currentCustInfo.DEPT_NAME == null){
-			return;
+		}else {
+			console.log(currentCustInfo.DEPT_NAME);
+			return true;
 		}
-		console.log(currentCustInfo.DEPT_NAME);
-		return true;
 	}
 	if($("#custInfo_TELPNO_DEPT").val() != currentCustInfo.TELPNO_DEPT){					// 사업국 번호
 		if($("#custInfo_TELPNO_DEPT").val() == "" && currentCustInfo.TELPNO_DEPT == null){
-			return;
+		}else {
+			console.log(currentCustInfo.TELPNO_DEPT);
+			return true;
 		}
-		console.log(currentCustInfo.TELPNO_DEPT);
-		return true;
 	}
 	if($("#custInfo_LC_NAME").val() != currentCustInfo.LC_NAME){							// 센터
 		if($("#custInfo_LC_NAME").val() == "" && currentCustInfo.LC_NAME == null){
-			return;
+		}else {
+			console.log(currentCustInfo.LC_NAME);
+			return true;
 		}
-		console.log(currentCustInfo.LC_NAME);
-		return true;
 	}
 	if($("#custInfo_TELPNO_LC").val() != currentCustInfo.TELPNO_LC){						// 센터번호
 		if($("#custInfo_TELPNO_LC").val() == "" && currentCustInfo.TELPNO_LC == null){
-			return;
+		}else {
+			console.log(currentCustInfo.TELPNO_LC);
+			return true;
 		}
-		console.log(currentCustInfo.TELPNO_LC);
-		return true;
 	}
 	
 	return false;

@@ -40,7 +40,7 @@
 					<td class="top_Table_Title"><span>대상명</span></td>
 					<td style="width:30%"><input id="top_input_name" class="col-12 top_Table_Input" readonly></td>
 					<td class="top_Table_Title"><span>전화번호</span></td>
-					<td style="width:35%"><input id="top_input_tel" class="col-12 top_Table_Input" readonly></td>
+					<td style="width:35%"><input id="top_input_tel" class="col-12 top_Table_Input" onKeyup='$("#top_input_name").val("")'></td>
 				</tr>
 			</table>
 		</div>
@@ -97,6 +97,7 @@
 											<option value="EMP_NM">성명</option>
 											<option value="DEPT_NM">팀명</option>
 											<option value="JIC_NM">직책</option>
+											<option value="WORK_CNTS">직무</option>
 											<option value="CO_NM">회사명</option>
 										</select>
 									</div>
@@ -114,6 +115,7 @@
 								</td>
 							</tr>
 						</table>
+						<textarea id="inter_textarea" style="height:100px; width:100%;resize: none; margin-bottom: -4px;"></textarea>
 					</div>
 				</div>
 				
