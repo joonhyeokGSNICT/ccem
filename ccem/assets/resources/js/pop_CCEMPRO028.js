@@ -166,14 +166,17 @@ const createGrids = () => {
 	});
 
 	grid1.on("onGridUpdated", (ev) => {
+		const thisGrid = ev.instance;
 
-		// sCSEL_SEQ에 포한된 상담건 체크
-		const gridData   	= ev.instance.getData();
-		const filterData 	= gridData.filter(el => sCSEL_SEQ.includes(String(el.CSEL_SEQ)));
-		filterData.forEach((el, i) => {
-			if (i == 0) grid1.focus(el.rowKey); // 첫번째 SEQ 포커스
-			grid1.check(el.rowKey);
-		});
+		const gridData   = thisGrid.getData();
+		const filterData = gridData.filter(el => sCSEL_SEQ.includes(String(el.CSEL_SEQ)));
+		
+		if (filterData?.length > 0) {
+			// sCSEL_SEQ에 포한된 첫번째 상담건 focusing
+			thisGrid.focus(filterData[0].rowKey); 
+			// sCSEL_SEQ에 포한된 상담건 check
+			filterData.forEach(el => thisGrid.check(el.rowKey));
+		}
 		
 	});
 
