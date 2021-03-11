@@ -159,6 +159,9 @@ const onStart = async () => {
 		const sMBR_ID  = topbarObject.document.getElementById("custInfo_MBR_ID").value;	 // 회원번호
 		getCust(sCUST_ID, "I");
 
+		// 상담시간 및 연계시간 세팅
+		setDate();										
+
 	// 탑바 > 고객정보, 선생님 > 상담수정 버튼으로 오픈
 	} else if (opener_name.includes("top_bar") && hash.includes("by_modify")) {	
 		topbarObject  = parent.opener;
@@ -416,7 +419,6 @@ var getCust = (CUST_ID, sJobType) => {
 				$("#hiddenbox4").val(custData.LC_EMP_ID);		// 센터장사번
 				$("#selectbox2").val(custData.GRADE_CDE);		// 학년코드
 				$("#hiddenbox9").val(custData.AGE_CDE);			// 연령코드
-				setDate();										// 상담시간, 연계시간
 			}
 
 		});
@@ -1012,9 +1014,19 @@ const setBtnCtrlAtLoadComp = () => {
  */
 var addCsel = () => {
 	  
+	// 연계정보 초기화
+	$("#selectbox5").val("3");	// 연계방법 : FAX
+	$("#textbox11").val("");	// 연계대상자
+	$("#textbox14").val("");	// 접수자
+	calendarUtil.setImaskValue("calendar5", "");	// 접수일자
+	$("#timebox4").val("");		// 접수시간
+	setDate();					// 상담시간 및 연계시간
+	$("#hiddenbox7").val("");	// 연계번호
+
 	// 상담내용 초기화.
-	$("#textbox25").val("");
-	$("#selectbox6").val("");
+	$("#textbox25").val("");	// 기타요구사항
+	$("#selectbox6").val("");	// 안내문구
+	$("#selectbox9").val("01");	// 내담자 : 모
 
 	// 상담순번 추가
 	const newIdx = $("#selectbox3 option").length + 1;
@@ -1026,10 +1038,6 @@ var addCsel = () => {
 	// 버튼 제어
 	$("#button3").prop("disabled", true);	// 입회연계 비활성화
 	$("#button4").prop("disabled", true);	// 추가등록 비활성화
-
-	// init value
-	$("#selectbox9").val("01");	// 내담자 : 모
-	$("#selectbox5").val("3");	// 연계방법 : FAX
 
 }
 
