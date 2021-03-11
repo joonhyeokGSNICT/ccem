@@ -732,7 +732,7 @@ function initSemi(){
 	
 	// 기본 조회 날짜 세팅
 	$(".defaultDate_ed").val(getToday(0).substring(0,7));
-	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -36)).substring(0,7));
+	$(".defaultDate_bf").val(dateFormatWithBar(addMonth(new Date(), -12)).substring(0,7));
 	
 	// disabled false
 	$("#custInfo_FAT_RSDNO").attr('disabled',false);
@@ -1099,8 +1099,10 @@ $(function(){
 		switch($(this).attr('id')){
 		// 고객정보
 		case 'customerInfo':
-			refreshLayoutForCustTab();
-			counselMainTeacher_counselHist_grid.refreshLayout();
+			setTimeout(function(){
+				refreshLayoutForCustTab();
+				counselMainTeacher_counselHist_grid.refreshLayout();
+			},500);
 			break;
 		// 고객정보 - 고객, 선생님
 		case 'customerTab':
@@ -1148,6 +1150,9 @@ $(function(){
 				loadList('ifsStudyClass', counselMain_studyTab_weeklyStat);
 			}
 			counselMain_studyTab_weeklyStat.refreshLayout();
+			counselMain_studyTab_changeHist.refreshLayout();
+			counselMain_studyTab_asignStuff.refreshLayout();
+			counselMain_studyTab_asignStuff2.refreshLayout();
 			break;
 		// 변동이력
 		case 'studyTab_changeHist':

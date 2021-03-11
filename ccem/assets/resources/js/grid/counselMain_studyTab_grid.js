@@ -454,9 +454,10 @@ $(function(){
 				{
 					header: '송장번호',
 					name: 'TRANS_DOCNO',
-					width: 80,
+					width: 100,
 					align: "center",
 					ellipsis: true,
+					className:'underLineColumn'
 				},
 				{
 					header: '구분',

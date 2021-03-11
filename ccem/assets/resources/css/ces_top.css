@@ -349,3 +349,7 @@ ul.fancytree-container {
 .callBtn {
 	padding: 0 !important;
 }
+
+.underLineColumn {
+	text-decoration:underline;
+}
