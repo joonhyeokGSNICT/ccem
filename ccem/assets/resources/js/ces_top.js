@@ -1099,8 +1099,7 @@ $(function(){
 		switch($(this).attr('id')){
 		// 고객정보
 		case 'customerInfo':
-			counselMain_counselHist_grid.refreshLayout();
-			counselMain_studyProgressList_grid.refreshLayout();
+			refreshLayoutForCustTab();
 			counselMainTeacher_counselHist_grid.refreshLayout();
 			break;
 		// 고객정보 - 고객, 선생님
@@ -1116,6 +1115,7 @@ $(function(){
 			$("#csel_tchr_modi").css("display","none");
 			$("#csel_t_cust").css("display","");
 			$("#csel_t_tchr").css("display","none");
+			refreshLayoutForCustTab();
 			break;
 		case 'teacherTab':
 			$("#blackAndVipArea").css("display",'none');
@@ -3682,4 +3682,24 @@ function smsOnClick_tchr(){
    */
   const zendeskUserSearch = (external_id) => client.request(`/api/v2/users/search.json?external_id=${external_id}`);
   
+// 고객 탭의 모든 그리드 새로고침
+function refreshLayoutForCustTab(){
+	counselMain_counselHist_grid.refreshLayout();
+	counselMain_studyProgressList_grid.refreshLayout();
+	counselMain_studyTab_weeklyStat.refreshLayout();
+	counselMain_membershipDueTab_dueList.refreshLayout();			// 상담메인 > 회비	   > 회비정보 grid
+	counselMain_membershipDueTab_subChargeList.refreshLayout();		// 상담메인 > 회비	   > 과목별 입금내역 grid
+	counselMain_membershipDueTab_chargeList.refreshLayout();
+	counselMain_directCharge_duesInfo_grid.refreshLayout();
+	counselMain_directCharge_reciverInfo_grid.refreshLayout();
+	counselMain_changeHist_studySpot_grid.refreshLayout();
+	counselMain_changeHist_changeDetail_grid.refreshLayout();
+	counselMain_infoAgree_infoAgreeList_grid.refreshLayout();
+	counselMain_infoAgree_termsVersion_grid.refreshLayout();
+	counselMain_autoResign_resignDetail_grid.refreshLayout();
+	counselMain_autoResign_resignSendList_grid.refreshLayout();
+	counselMain_researchCust_rsrchCust_grid.refreshLayout();
+	counselMainTeacher_asignClassGrid.refreshLayout();
+	counselMainTeacher_classMemberGrid.refreshLayout();
+}
   

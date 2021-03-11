@@ -103,7 +103,7 @@ $(function(){
 			{
 				header: '회원명',
 				name: 'CUST_NAME',
-				width: 90,
+				width: 60,
 				align: "center",
 				sortable: true,
 				ellipsis: true,
@@ -130,7 +130,7 @@ $(function(){
 				header: '중단과목',
 				name: 'PRDT_NAME',
 				width: 120,
-				align: "center",
+				align: "left",
 				sortable: true,
 				ellipsis: true,
 			},
@@ -157,19 +157,23 @@ $(function(){
 				header: '계좌번호',
 				name: 'ACCT_ID',
 				width: 120,
-				align: "center",
+				align: "right",
 				sortable: true,
 				ellipsis: true,
 			},
 			{
 				header: '환불예상금액',
 				name: 'REFUND_AMT',
-				width: 120,
-				align: "center",
+				width: 100,
+				align: "right",
 				sortable: true,
 				ellipsis: true,
 				formatter: function(e){
-					return e.value.format();
+					if(e.value != null){
+						return e.value.format();
+					}else {
+						return '0';
+					}
 				}
 			},
 			{
@@ -184,14 +188,14 @@ $(function(){
 				header: 'I/B생성여부',
 				name: 'PROC_GB',
 				width: 70,
-				align: "left",
+				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
 			{
 				header: '등록일시',
 				name: 'CTI_CREDATE',
-				width: 100,
+				width: 140,
 				align: "left",
 				sortable: true,
 				ellipsis: true,
@@ -202,8 +206,8 @@ $(function(){
 			{
 				header: '상담원명',
 				name: 'USER_NAME',
-				width: 100,
-				align: "left",
+				width: 60,
+				align: "center",
 				sortable: true,
 				ellipsis: true,
 			},
@@ -290,41 +294,19 @@ const getProd = () => {
 	});
 }
 
-// 입회 리스트 조회
+// 고객직접퇴회 리스트 조회
 function onSearch(){
 	var param = {
 			userid: opener.currentUserInfo.user.external_id,
-		    menuname: '입회조회',
+		    menuname: '고객직접퇴회',
 		    senddataids: ["send1"],
 		    recvdataids: ["recv1"],
 		    send1: [{
-		    	"CHK_DATE":				"",
-		    	"VAL_STDATE":			"",
-		    	"VAL_EDDATE":			"",
-		    	"CHK_USER_GRP_CDE":		"",
-		    	"VAL_USER_GRP_CDE":		[],
-		    	"CHK_TB_USER":		"",
-		    	"VAL_TB_USER":		"",
-		    	"CHK_LC_NM":		"",
-		    	"VAL_LC_NM":		"",
-		    	"CHK_DEPT_NM":		"",
-		    	"VAL_DEPT_NM":		"",
-		    	"CHK_DIV_CDE":		"",
-		    	"VAL_DIV_CDE":		[],
-		    	"CHK_RST":		"",
-		    	"VAL_RST":		"",
-		    	"CHK_FST_CRS":		"",
-		    	"VAL_FST_CRS":		"",
-		    	"CHK_CSEL_LTYPE":		"",
-		    	"VAL_CSEL_LTYPE":		"",
-		    	"CHK_CSEL_MTYPE":		"",
-		    	"VAL_CSEL_MTYPE":		"",
-		    	"CHK_CSEL_CHNL_MK":		"",
-		    	"VAL_CSEL_CHNL_MK":		[],
-		    	"CHK_PRDT_GRP":		"",
-		    	"VAL_PRDT_GRP":		"",
-		    	"CHK_TB_PROD":		"",
-		    	"VAL_TB_PROD":		"",
+		    	"STRDATE":			"",
+		    	"ENDDATE":			"",
+		    	"PROC_GB":			"",
+		    	"CHK_MBR_ID":		"",
+		    	"MBR_ID":			"",
 		    }]
 		};
 		var validationBool = false;
@@ -334,6 +316,7 @@ function onSearch(){
 			validationBool = true;
 		}else {
 			alert("기간을 확인 해 주세요.");
+			return;
 		}
 		if($("#custQuit_mNumCheck").is(":checked")){			// 회원번호여부 
 			param.send1[0].CHK_MBR_ID = "Y";
@@ -341,7 +324,6 @@ function onSearch(){
 			validationBool = true;
 		}
 		if($("#custQuit_genTypeCheck").is(":checked")){				// 생성여부
-			//param.send1[0].CHK_TB_USER = "Y";
 			param.send1[0].PROC_GB = $("#custQuit_genType").val();
 			validationBool = true;
 		}
@@ -351,7 +333,7 @@ function onSearch(){
 		}
 		
 		$.ajax({
-		    url: API_SERVER + '/cns.getEnter.do',
+		    url: API_SERVER + '/cns.getRefundHist.do',
 		    type: 'POST',
 		    dataType: 'json',
 		    contentType: "application/json",
@@ -360,19 +342,26 @@ function onSearch(){
 		        console.log(response);
 		        if(response.errcode == "0"){
 		        	console.log(response);
-		        	var tot = 0;
-		        	for(d of response.recv1){
-		        		if(d.PRDT_NAME.slice(-1) == ','){
-		        			tot += d.PRDT_NAME.split(',').length-1;
-		        		}else {
-		        			tot += d.PRDT_NAME.split(',').length;
-		        		}
-		        	}
-		        	$("#totalCnt").val(tot);
-		        	for(d of response.recv1){
-		        		d.TELNO = d.TELNO.replace(/ /gi,"");
-		        	}
 		        	grid.resetData(response.recv1);
+		        	$.ajax({
+		    		    url: API_SERVER + '/cns.getRefundHistCnt.do',
+		    		    type: 'POST',
+		    		    dataType: 'json',
+		    		    global: false,
+		    		    contentType: "application/json",
+		    		    data: JSON.stringify(param),
+		    		    success: function (response) {
+		    		        console.log(response);
+		    		        if(response.errcode == "0"){
+		    		        	console.log(response);
+		    		        	$("#totalCnt").val(response.recv1[0].CNT);
+		    		        }else {
+		    		        	loading.out();
+		    		        	alert(response.errmsg);
+		    		        }
+		    		    }, error: function (response) {
+		    		    }
+		    		});
 		        }else {
 		        	loading.out();
 		        	alert(response.errmsg);
