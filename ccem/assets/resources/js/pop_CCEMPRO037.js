@@ -456,12 +456,18 @@ function onSearch(){
 		};
 		var validationBool = false;
 		if($("#calendarDateCheck").is(":checked")){					// 입회일자
-			param.send1[0].CHK_DATE = "Y";
-			param.send1[0].VAL_STDATE = $("#calendar_st").val().replace(/-/gi,"");
-			param.send1[0].VAL_EDDATE = $("#calendar_ed").val().replace(/-/gi,"");
-			validationBool = true;
+			if(new Date($("#calendar_ed").val()).getTime() >= new Date($("#calendar_st").val()).getTime()){
+				param.send1[0].CHK_DATE = "Y";
+				param.send1[0].VAL_STDATE = $("#calendar_st").val().replace(/-/gi,"");
+				param.send1[0].VAL_EDDATE = $("#calendar_ed").val().replace(/-/gi,"");
+				validationBool = true;
+			}else {
+				alert("시작일보다 종료일이 더 커야 합니다.");
+				return;
+			}
 		}else {
 			alert("기간을 확인 해 주세요.");
+			return;
 		}
 		if($("#asignList_cselGrpCheck").is(":checked")){			// 상담원그룹 (리스트)
 			param.send1[0].CHK_USER_GRP_CDE = "Y";
