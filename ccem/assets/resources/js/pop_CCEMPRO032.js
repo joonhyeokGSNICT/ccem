@@ -656,11 +656,6 @@ const getCselCondition = async () => {
 		alert("관심부분을 선택해 주십시요.");
 		return false;
 	}
-	// 재사업시기
-	if (!data.RE_ACTIVITY_MK) {
-		alert("재사업시기를 선택해 주십시요.");
-		return false;
-	}
 	// 제목
 	if (!data.CSEL_TITLE) {
 		alert("제목을 입력하여 주십시요.");
@@ -678,7 +673,13 @@ const getCselCondition = async () => {
 		$("#textbox19").focus();
 		return false;
 	}
+	// 사업구분이 [신규(신임배정)] 가 아닐경우
 	if (data.ACTIVITY_MK != "7A") {
+		// 재사업시기
+		if (!data.RE_ACTIVITY_MK) {
+			alert("재사업시기를 선택해 주십시요.");
+			return false;
+		}
 		// 해지사유
 		if (!data.CANCELLATION_CDE) {
 			alert("해지사유를 선택하여 주십시요.");
