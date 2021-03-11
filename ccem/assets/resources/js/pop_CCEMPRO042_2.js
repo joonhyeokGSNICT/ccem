@@ -61,7 +61,7 @@ $(function(){
     	openerTop_ID = "textbox20";
     	openerMid_ID = "textbox22";
     	openerBot_ID = "textbox24";
-    	openerSub_ID = "";
+    	openerSub_ID = "textbox18";
     	
     	openerTop_NAME = "textbox21";
     	openerMid_NAME = "textbox23";
