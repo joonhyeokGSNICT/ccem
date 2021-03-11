@@ -156,12 +156,22 @@ function setGridTree() {
         },
         checkbox: _modeSelect[_mode].treeCheckBox,
         focusOnSelect: false,
-        clickFolderMode: 4,
+        clickFolderMode: 1,
         selectMode: 3,
         click: function(event, data) {
             // if ( data.targetType == 'title') {}
             // console.log("test1");
             // console.log(data);
+        },
+
+        // plainTreeSelOrg 모드에서 더블클릭 시 선택
+        dblclick: function (event, data) {
+            switch (_mode){
+                case "plainTreeSelOrg" : 
+                    data.node.setSelected(true);
+                    _btn.selectedList();
+                    break;
+            }
         },
 
         // 본부/사업국/센터 설정 시 해당 정보 표시

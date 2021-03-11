@@ -1340,10 +1340,10 @@ function getSelOrg() {
 			orgList.UPDEPTNAME = _selectedNode.data.DEPT_NAME;
 			orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
 			orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
-			orgList.DEPT_ID = "";
-			orgList.DEPT_NAME = "";
+			orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
+			orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
 			orgList.DEPT_EMP_ID = "";
-			orgList.TELPNO_DEPT = "";
+			orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
 			orgList.LC_NAME = "";
 			orgList.TELPNO_LC = "";
 		}
