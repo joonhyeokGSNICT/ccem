@@ -847,10 +847,17 @@ const onSMSSend = async () => {
 	const userData = getSmsUserCondition();
 	if (!userData) return false;
 
-	// SMS 전송정보 세팅
+	// 저장정보 세팅
+	const transData = new Array();
 	const sendData = new Array();
 	let smsCnt = 0
 	for (const row of checkedRows) {
+
+		// 연계정보 value check
+		const transCondition = getTransCondition(row);
+		if (!transCondition) return false;
+		transCondition.TRANS_CHNL_MK = "5";	// 연계방법 - SMS로 셋팅
+		transData.push(transCondition);
 
 		// SMS전송정보 value check
 		const smsCondition = await getSmsCondition(row);
@@ -868,6 +875,8 @@ const onSMSSend = async () => {
 		if (!confirm("이미 발송하였습니다. 그래도 발송하시겠습니까?")) return false;
 	}
 
+	await saveTrans(transData);		// 연계정보저장API 호출
+	await updateTicket(transData);	// 티켓업데이트
 	await saveTransSms(sendData);	// SMS전송API 호출
 	refreshDisplay();				// 오픈된 화면 재조회
 
