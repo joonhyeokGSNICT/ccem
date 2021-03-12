@@ -15,8 +15,39 @@ var _centerInterPhone_list;		// 센터내선 list
 var _daekyoInterPhone_list;		// 대교내선 list
 var _branchInterPhone_list;		// 지점 list
 
+var cenFlag = false;			// 최초 조회 flag
+var empFlag = false;
+var brnFlag = false;
+
 var tempStat = "";				// 전화 걸수 있는 상태
 
+$(function(){
+	//탭 이동시 이벤트
+	$("a[data-toggle='tab']").on("shown.bs.tab", function(e) {
+		id = $(this).attr('id');
+		console.log(id);
+		switch(id){
+		/*case 'centerInterPhoneTab' :
+			if(!cenFlag){
+				_getTelList.centerTelList();
+				cenFlag = true;
+			}
+			break;*/
+		case 'daekyoInterPhone' :
+			if(empFlag == false){
+				_getTelList.inDeptTelList();
+				empFlag = true;
+			}
+			break;
+		case 'branchInterPhone' :
+			if(brnFlag == false){
+				_getTelList.deptTelList();
+				brnFlag = true;
+			}
+			break;
+		}
+	});
+});
 // #01 init_화면 초기화
 function init(){
 	
@@ -200,10 +231,11 @@ function init(){
 	_styleChanger.resizeHeight();
 
 	_getTelList.centerTelList();
-	_getTelList.inDeptTelList();
-	_getTelList.deptTelList();
+	/*_getTelList.inDeptTelList();
+	_getTelList.deptTelList();*/
 
 	// _getComboList.codeBook('USER_GRP_CDE');
+	
 };
 
 // #02 document ready function모음
@@ -467,10 +499,10 @@ function isEmpty(data) {
 
 // 전화 걸기 func
 function callRequest(){
-	if(tempStat != 'callOn'){
+	/*if(tempStat != 'callOn'){
 		alert('전화 걸 수 없는 상태입니다.');
 		return;
-	}
+	}*/
 	if(opener.currentTicketInfo?.ticket?.id != null && opener.currentTicketInfo?.ticket?.id != undefined && opener.currentTicketInfo?.ticket?.id != ''){
 		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', opener.currentTicketInfo?.ticket?.id, '1');
 	}else {

@@ -216,6 +216,19 @@ var btn = {
             $('#selectbox2').focus();
             return;
         }
+        
+        var sendTalkData = $("#essential_Ag").val() + '&' + $("#marketing_Ag").val() + '&' + $("#conserve_Ag").val() + '&' + $("#thirdPerson_Ag").val() + "&";
+        
+        // wiseNtalk에 데이터 송신
+        topbarObject.client.request({
+		      url:'/api/v2/apps/notify.json',
+		      method: 'POST',
+		      headers: { "Content-Type": "application/json" },
+		      data: JSON.stringify({"event": "conferenceStr", "app_id": topbarObject.WiseNTalk_ID, "agent_id": topbarObject.currentUserInfo.user.id, "body":sendTalkData})
+		   }).then(function(d){
+		   }).catch(function(d){
+		      console.log(d);
+		   });
     },
     
     /*****************************************
