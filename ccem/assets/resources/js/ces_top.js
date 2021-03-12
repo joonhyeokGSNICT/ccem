@@ -265,9 +265,9 @@ var wiseNTalkUtil = {
 				 console.log(obj);
 				 if(obj == 'CCEMPRO041_2') {
 					 wiseNTalkUtil.openedCallPop[obj].setStatus();
-				 }else {
-					 wiseNTalkUtil.changePhoneIcon(wiseNTalkUtil.openedCallPop[obj]);
 				 }
+				 wiseNTalkUtil.changePhoneIcon(wiseNTalkUtil.openedCallPop[obj]);
+				 
 			 }
 			 wiseNTalkUtil.changePhoneIcon();
 		 },
@@ -300,9 +300,18 @@ var wiseNTalkUtil = {
 			console.log(tempType);
 			if(tempType == 'on'){
 				if(window != undefined){
-					$('.callBtn', window.document).removeClass('callOn');
-					$('.callBtn', window.document).addClass('callOff');
-					$('.callIcon', window.document).attr('src','../img/phone-slash-solid.svg');
+					console.log('call on window', window);
+					if(window.name == 'CCEMPRO041_2'){
+						console.log('call on window 222', window);
+						$('.callBtn', window.document).removeClass('callOn');
+						$('.callBtn', window.document).addClass('callOff');
+						$('.callBtn', window.document).css('background','#d20000');
+						$('.callBtn', window.document).val('끊기');
+					}else {k
+						$('.callBtn', window.document).removeClass('callOn');
+						$('.callBtn', window.document).addClass('callOff');
+						$('.callIcon', window.document).attr('src','../img/phone-slash-solid.svg');
+					}
 				}else {
 					$('.callBtn').removeClass('callOn');
 					$('.callBtn').addClass('callOff');
@@ -310,9 +319,16 @@ var wiseNTalkUtil = {
 				}
 			}else {
 				if(window != undefined){
-					$('.callBtn', window.document).removeClass('callOff');
-					$('.callBtn', window.document).addClass('callOn');
-					$('.callIcon', window.document).attr('src','../img/phone-solid.svg');
+					if(window.name == 'CCEMPRO041_2'){
+						$('.callBtn', window.document).removeClass('callOff');
+						$('.callBtn', window.document).addClass('callOn');
+						$('.callBtn', window.document).css('background','');
+						$('.callBtn', window.document).val('걸기');
+					}else {
+						$('.callBtn', window.document).removeClass('callOff');
+						$('.callBtn', window.document).addClass('callOn');
+						$('.callIcon', window.document).attr('src','../img/phone-solid.svg');
+					}
 				}else {
 					$('.callBtn').removeClass('callOff');
 					$('.callBtn').addClass('callOn');
@@ -420,7 +436,7 @@ client.on('api_notification.setCTIStatus', function(status){
 		wiseNTalkUtil.whileTransfer = true;			// 3자 통화 boolean
 	}
 	
-	if(wiseNTalkUtil.whileTransfer && CTI_STATUS.callType == 'OUT'){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
+	if((wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'OUT') || (wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'PREROUTE_ACD_IN' || CTI_STATUS.callType == 'ACD_IN')){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
 		wiseNTalkUtil.openedCallPop['CCEMPRO023']?.loadAgreement();			// 동의결과 조회
 		wiseNTalkUtil.openedCallPop['CCEMPRO023']?.loading.out();
 		wiseNTalkUtil.whileTransfer = false;
@@ -430,7 +446,7 @@ client.on('api_notification.setCTIStatus', function(status){
 // WiseNTalk 응답 트리거
 client.on('api_notification.getResponse', function(obj){
 	console.log('origin window',obj);
-	wiseNTalkUtil.openedCallPop[obj.popup_name].alert(obj.msg);
+	wiseNTalkUtil.openedCallPop[obj.body.popup_name].alert(obj.msg);
 });
 
 // 고객찾기 트리거
@@ -1341,6 +1357,7 @@ $(function(){
 			$("#custInfo_DEPT_ID").val($(this).val());
 			$("#custInfo_DEPT_NAME").val($(this).find('option:selected').text());
 			$("#custInfo_TELPNO_DEPT").val($(this).find('option:selected').attr('tel'));
+			$("#custInfo_UPDEPTNAME").val($(this).find('option:selected').attr('updept'));
 			//$("#custInfo_LC_NM_study").find('option:selected').text();
 			$("#custInfo_LC_NM_study").empty();
 			lcData.forEach(d => {
@@ -2380,7 +2397,7 @@ function studyInfoLoad() {
 	        				lcData = response_lc.recv1;
 	        				
 	        				deptData.forEach(d => {
-	        					$("#custInfo_DEPT_NAME_study").append(`<option value=${d.DEPT_ID} tel=${d.TELPNO}>${d.DEPT_NAME}</option>`);
+	        					$("#custInfo_DEPT_NAME_study").append(`<option value=${d.DEPT_ID} updept=${d.UPDEPTNAME} tel=${d.TELPNO}>${d.DEPT_NAME}</option>`);
 	        				});
 	        				lcData.forEach(d => {
 	        					if($("#custInfo_DEPT_NAME_study").find('option:selected').val() == d.DEPT_ID){
