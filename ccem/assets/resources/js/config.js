@@ -130,8 +130,9 @@ const ZDK_INFO = {
             CALL_STTIME                :    "1500001725741",    // 통화시작시각
             RECORD_ID                  :    "1500001725761",    // 녹취키
             RECORD_ID_HIS              :    "360057792133",     // 녹취키 History    
-
+            CALL_RST_MK_OB             :    "360054868214",    // OB결과
         },
+        defaultUser : '',                             // 운영서버 이민형대리님 ID
     },
     sandbox: {
         ticketForm: {
@@ -216,7 +217,7 @@ const ZDK_INFO = {
             OFCL_RSPN                  :    "1500000699902",    // 직책                                        
             JOB                        :    "1500000668861",    // 직무                                
             DIV_KIND_CDE               :    "1500000801342",    // 브랜드   
-            CSEL_RST_MK_OB             :    "1500000133202",    // 상담결과OB
+            CSEL_RST_MK_OB             :    "360056259394",     // 상담결과OB
             CHNL                       :    "1500001388502",    // 채널
             AREA                       :    "1500001339001",    // 관할지역
             CANCEL_CUST_MK             :    "360056397954",     // 해지고객구분
@@ -232,8 +233,9 @@ const ZDK_INFO = {
             CALL_STTIME                :    "1500001725701",    // 통화시작시각
             RECORD_ID                  :    "1500001787242",    // 녹취키
             RECORD_ID_HIS              :    "1500001725721",    // 녹취키 History
-            
+            CALL_RST_MK_OB             :    "1500000133222",    // OB결과 
         },
+        defaultUser : 426505541054,                             // 개발서버 이민형대리님 ID
     },
 }
 

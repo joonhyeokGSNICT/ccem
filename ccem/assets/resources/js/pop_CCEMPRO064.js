@@ -1,4 +1,4 @@
-var currentUser = opener.currentUserInfo;
+var currentUser = opener.currentUserInfo.user;
 
 function init() {
     // display
