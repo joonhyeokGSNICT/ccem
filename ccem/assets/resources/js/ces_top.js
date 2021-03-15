@@ -307,7 +307,7 @@ var wiseNTalkUtil = {
 						$('.callBtn', window.document).addClass('callOff');
 						$('.callBtn', window.document).css('background','#d20000');
 						$('.callBtn', window.document).val('끊기');
-					}else {k
+					}else {
 						$('.callBtn', window.document).removeClass('callOn');
 						$('.callBtn', window.document).addClass('callOff');
 						$('.callIcon', window.document).attr('src','../img/phone-slash-solid.svg');
@@ -448,7 +448,9 @@ client.on('api_notification.setCTIStatus', function(status){
 // WiseNTalk 응답 트리거
 client.on('api_notification.getResponse', function(obj){
 	console.log('origin window',obj);
-	wiseNTalkUtil.openedCallPop[obj.body.popup_name].alert(obj.msg);
+	if(obj.body.popup_name != "" && obj.body.popup_name != null){
+		wiseNTalkUtil.openedCallPop[obj.body.popup_name].alert(obj.msg);
+	}
 });
 
 // 고객찾기 트리거
@@ -1468,7 +1470,7 @@ function onclickCselBtn(id) {
 	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO022") || 
 	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO031") || 
 	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO032")) {
-		client.invoke("notify", "상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.", "error", 6000);
+		ModalUtil.modalPop("알림","상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
 		return;
 	}
 	

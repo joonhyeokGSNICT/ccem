@@ -328,10 +328,9 @@ function onSearch(){
 			param.send1[0].MBR_ID = $("#custQuit_mNum").val();
 			validationBool = true;
 		}
-		if($("#custQuit_genTypeCheck").is(":checked")){				// 생성여부
-			param.send1[0].PROC_GB = $("#custQuit_genType").val();
-			validationBool = true;
-		}
+		
+		param.send1[0].PROC_GB = $("#custQuit_genType").val();// 생성여부
+		
 		if(validationBool == false){
 			alert("조회조건을 하나 선택해야 합니다.");
 			return;

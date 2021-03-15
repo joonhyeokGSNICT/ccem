@@ -536,3 +536,6 @@ function setStatus(){
 
 init();
 
+$(window).bind("beforeunload", function (e){
+	delete opener.wiseNTalkUtil.openedCallPop.CCEMPRO041_2
+});
