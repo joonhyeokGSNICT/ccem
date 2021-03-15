@@ -120,7 +120,7 @@ const setEvent = () => {
 
 	// 저장 버튼
 	$("#button1").on("click", ev => {
-		loading = new Loading(getLoadingSet('입회등록중 입니다.'));
+		const loading = new Loading(getLoadingSet('입회등록중 입니다.'));
 		onSave()
 			.catch((error) => {
 				console.error(error);
@@ -852,8 +852,9 @@ const getCselCondition = async () => {
 	}
 	
 	if (!data.MBR_ID) {
-		// 회원번호가 없으면 회원번호 생성
+		// 회원번호가 없으면 회원번호 생성 및 세팅
 		data.MBR_ID = await getNewMbrId(data.CUST_ID);
+		$("#textbox3").val(data.MBR_ID);
 		// 회원번호 생성 실패시
 		if (!data.MBR_ID) { 
 			alert("회원번호를 확인할 수 없습니다. \n\n회원의 성별, 이름, 주소, 지점정보는 필수 입력사항입니다.\n\n다시 확인해 주십시오.");
