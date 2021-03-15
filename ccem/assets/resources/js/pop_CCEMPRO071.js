@@ -124,10 +124,13 @@ var _checkVal = {
 		if (isEmpty( $("input[name=call_rst]:checked").attr("codeId") )) {
 			client.invoke('notify',"[OB결과등록] 통화결과 값을 선택해야 합니다.", 'alert', 5000);
 			return true;
-		} else if (isEmpty( $("input[name=cust_rst]:checked").attr("codeId") )) {
+		} else if ( $("input[name=call_rst]:checked").attr("codeId")==01 && isEmpty( $("input[name=cust_rst]:checked").attr("codeId") )) {
 			client.invoke('notify',"[OB결과등록] 고객반응 값을 선택해야 합니다.", 'alert', 5000);
 			return true;
-		} else if (isEmpty( $("input[name=csel_rst]:checked").attr("codeId") )) {
+		} else if ( $("input[name=call_rst]:checked").attr("codeId")==05 && isEmpty( $("input[name=cust_rst]:checked").attr("codeId") )) {
+			client.invoke('notify',"[OB결과등록] 고객반응 값을 선택해야 합니다.", 'alert', 5000);
+			return true;
+		} else if ( $("input[name=call_rst]:checked").attr("codeId")==01 && isEmpty( $("input[name=csel_rst]:checked").attr("codeId") )) {
 			client.invoke('notify',"[OB결과등록] 상담결과 값을 선택해야 합니다.", 'alert', 5000);
 			return true;
 		}
@@ -194,6 +197,7 @@ async function save_call_rst(){
 									});
 								}
 							}
+
 							console.log(tempSolveTicket);
 							updateManyOBresult(tempSolveTicket);
 						}
@@ -330,6 +334,13 @@ var getCodeListOBsave = (name) => {
  * 라디오 버튼 클릭 시 변경
  ******************************************************/
 function onClickRadio(){
+	if ( $("input[name=call_rst]:checked").attr("codeId") == '01' || $("input[name=call_rst]:checked").attr("codeId") == '05' ) {
+		$("section[name=cust_resp]:checked").addClass('d-none');
+		$("section[name=csel_rst]:checked").addClass('d-none');
+	} else {
+		$("section[name=cust_resp]:checked").removeClass('d-none');
+		$("section[name=csel_rst]:checked").removeClass('d-none');
+	}
 	$("input:radio[name=cust_rst]:checked").prop("checked", false);
 	$("input:radio[name=csel_rst]:checked").prop("checked", false);
 	_init.custRespMkOb(_CUST_RESP_MK_OB);
