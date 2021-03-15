@@ -487,37 +487,50 @@ function userSearch() {
 				$("#custSearchDiv").find("select").val("");
 				
 				if(currentTicketInfo.ticket.tags.includes("in")){
-					// 총 세번의 인입전화번호 캐치
 					if(sidebarClient != null){
-						sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
-							if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`] != null && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`] != ""){
-								phone = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`];
-								
-								console.log(phone);
-								
-								if(phone == "" || phone == null){
-									for(d of data['ticket'].requester.identities){
-										if(d.type == 'phone_number'){
-											phone = d.value;
-											console.log(phone);
+						
+						if(currentTicketInfo.ticket.tags.includes("호전환")){
+							setTimeout(function(){
+								$("#customerMNum").val(reqUser.user.external_id);
+								$("#customerMNumCheck").prop('checked',true);
+								customerSearch("custSearchDiv","1");
+								$("#customerMNum").val("");
+								$("#customerMNumCheck").prop('checked',false);						// 자동조회된 정보는 사라짐
+							}, 500);
+						}else {
+							
+							// 총 세번의 인입전화번호 캐치
+							sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
+								if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`] != null && d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`] != ""){
+									phone = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`];
+									
+									console.log(phone);
+									
+									if(phone == "" || phone == null){
+										for(d of data['ticket'].requester.identities){
+											if(d.type == 'phone_number'){
+												phone = d.value;
+												console.log(phone);
+											}
 										}
 									}
-								}
-								if(phone == "" || phone == null){
-									phone = reqUser.user.phone;
-									console.log(phone);
-								}
-								setTimeout(function(){
-									if(phone != '' && phone != null){
-										$("#customerPhone").val(phone);
-										$("#customerPhoneCheck").prop('checked',true);
+									if(phone == "" || phone == null){
+										phone = reqUser.user.phone;
+										console.log(phone);
 									}
-									customerSearch("custSearchDiv","1");
-									$("#customerPhone").val("");
-									$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
-								}, 500);
-							}
-						});
+									setTimeout(function(){
+										if(phone != '' && phone != null){
+											$("#customerPhone").val(phone);
+											$("#customerPhoneCheck").prop('checked',true);
+										}
+										customerSearch("custSearchDiv","1");
+										$("#customerPhone").val("");
+										$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+									}, 500);
+								}
+							});
+							
+						}
 					}
 				}else if(currentTicketInfo.ticket.via.channel == "chat"){									// 인입경로가 chat 일 경우.
 					if(sidebarClient != null){
@@ -1298,7 +1311,9 @@ $(function(){
 				loadList('getErrEntInfo', counselMain_infoAgree_termsVersion_grid);
 			}
 			counselMain_infoAgree_infoAgreeList_grid.refreshLayout();
+			counselMain_infoAgree_iaRecordList_grid.refreshLayout();
 			counselMain_infoAgree_termsVersion_grid.refreshLayout();
+			counselMain_infoAgree_termsRecordList_grid.refreshLayout();
 			break;
 		// 자동퇴회
 		case 'autoQuit':
@@ -3332,8 +3347,8 @@ function onSave(){
 		param.DS_CUST[0].NAME_ENG = 		"";
 		param.DS_CUST[0].GND = 			$("#custInfo_GND").val();
 		param.DS_CUST[0].BIRTH_MK = 		$("#lunarSolarInput").val();
-		param.DS_CUST[0].BIRTH_YR =		$("#custInfo_BIRTH_YMD").val().split("-")[0];
-		param.DS_CUST[0].BIRTH_MD = 		$("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2];
+		param.DS_CUST[0].BIRTH_YR =		$("#custInfo_BIRTH_YMD").val().split("-")[0].replace(/_/gi,"");
+		param.DS_CUST[0].BIRTH_MD = 		($("#custInfo_BIRTH_YMD").val().split("-")[1]+$("#custInfo_BIRTH_YMD").val().split("-")[2]).replace(/_/gi,"");
 		param.DS_CUST[0].GRADE_CDE = 		$("#custInfo_GRADE_CDE").val();
 		param.DS_CUST[0].FAT_RSDNO = 		$("#custInfo_FAT_RSDNO").val().replace(/-/gi,"");
 		param.DS_CUST[0].FAT_NAME = 		$("#custInfo_FAT_NAME").val();

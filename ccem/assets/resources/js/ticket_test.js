@@ -20,3 +20,4 @@ client.get('instances').then(function (instancesData) {
 
 // 티켓필드 disabled
 client.invoke(`ticketFields:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]}.disable`);
+

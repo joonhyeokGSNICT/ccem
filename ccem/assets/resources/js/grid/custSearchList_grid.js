@@ -170,36 +170,29 @@ $(function(){
 			        currentCustInfo = response.recv1[0];				// 고객정보 상주
 			        loadCustInfoMain();									// 고객정보 로드 함수
 			        // 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-					/*client.request(`https://daekyo-ccm.zendesk.com/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
+					client.request(`/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
 						console.log(d);
 						if(d.count >= 1){					
-							if(currentTicketInfo.ticket.externalId == null){
-								// 신규 인입 티켓이며, 기존 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-								var option = {
-										url: `https://daekyo-ccm.zendesk.com/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-										type: 'PUT',
-										dataType: 'json',
-										contentType: "application/json",
-										data: JSON.stringify({
-											"user": {
-												"id": d.results[0].id,
-										}
-									})
+							console.log(d.results[0].id);
+							if(currentTicketInfo != undefined && currentTicketInfo != null){
+								if(currentTicketInfo.ticket.externalId != d.results[0].external_id){
+									ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
+							        	client.request({
+							        		url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+							        		type: 'PUT', 
+							        		dataType: 'json',
+							    		    contentType: "application/json",
+							        		data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
+							        		console.log(response);
+							        	});
+							        });
 								}
-								client.request(option).then(function(d) {
-									console.log(d);
-									client.invoke("notify", "해당 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-								});
-							}else {
-								updateUserforZen();
 							}
-						}else {
-							updateUserforZen();
 						}
-					});*/
-			        updateUserforZen();
-		        	$("#customerInfo").click();	// 탭 이동
-		        	$("#customerTab").click();	// 탭 이동
+					});
+					updateUserforZen();
+					$("#customerInfo").click();	// 탭 이동
+					$("#customerTab").click();	// 탭 이동
 		        }else {
 		        	loading.out();
 		        	client.invoke("notify", response.errmsg, "error", 60000);
@@ -207,7 +200,7 @@ $(function(){
 		    }, error: function (response) {
 		    }
 		});
-    });
+	});
 	
 	// 고객찾기 고객찾기 GRID 끝
 	

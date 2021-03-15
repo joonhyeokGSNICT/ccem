@@ -15,11 +15,12 @@ var _centerInterPhone_list;		// 센터내선 list
 var _daekyoInterPhone_list;		// 대교내선 list
 var _branchInterPhone_list;		// 지점 list
 
+
+var tempStat = "";				// 전화 걸수 있는 상태
+
 var cenFlag = false;			// 최초 조회 flag
 var empFlag = false;
 var brnFlag = false;
-
-var tempStat = "";				// 전화 걸수 있는 상태
 
 $(function(){
 	//탭 이동시 이벤트
