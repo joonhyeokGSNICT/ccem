@@ -1,4 +1,5 @@
-var _CUST_RESP_MK_OB ;
+var _CUST_RESP_MK_OB ;  // custRespMkOb
+var _CSEL_RST_MK_OB ;   // cselRstMkOb
 var _OB_CDE;
 
 client.on("api_notification.openOBResult", function (data) {
@@ -23,8 +24,8 @@ var _api = {
 		_init.callRstMkOb( tempList );									// 통화결과구분OB
 		_CUST_RESP_MK_OB = await getCodeListOBsave("CUST_RESP_MK_OB") ;
 		_init.custRespMkOb(_CUST_RESP_MK_OB);							// 고객반응OB
-		tempList = await getCodeListOBsave("CSEL_RST_MK_OB");
-		_init.cselRstMkOb( tempList ); 									// 상담결과OB
+		_CSEL_RST_MK_OB = await getCodeListOBsave("CSEL_RST_MK_OB");
+		_init.cselRstMkOb( _CSEL_RST_MK_OB ); 									// 상담결과OB
 
 		return "";
 	}
@@ -91,6 +92,11 @@ var _init = {
 	},
 	cselRstMkOb(respData) { // 상담결과OB
 		var	initData = respData.sort( function(a, b){ return a["CODE_ID"] - b["CODE_ID"]; });
+		if ( $("input[name=call_rst]:checked").attr("codeId") == "01" || $("input[name=call_rst]:checked").attr("codeId") == "05"  ) {	// 통화결과가 통화 혹은 조사거부일 경우 고객반응 라디오버튼 변경
+		} else if ( $("input[name=call_rst]:checked").attr("codeId") != "01" && $("input[name=call_rst]:checked").attr("codeId") != "05" && $("input[name=call_rst]:checked").attr("codeId") != undefined) {
+			initData = initData.filter( data => Number(data.CODE_ID) > 9);
+		} else {
+		}
 		var html = '';
 		html += `<colgroup>
 					<col width="33.3%"></col>
@@ -335,15 +341,14 @@ var getCodeListOBsave = (name) => {
  ******************************************************/
 function onClickRadio(){
 	if ( $("input[name=call_rst]:checked").attr("codeId") == '01' || $("input[name=call_rst]:checked").attr("codeId") == '05' ) {
-		$("section[name=cust_resp]:checked").addClass('d-none');
-		$("section[name=csel_rst]:checked").addClass('d-none');
+		$("section[name=cust_resp]").removeClass('d-none');
 	} else {
-		$("section[name=cust_resp]:checked").removeClass('d-none');
-		$("section[name=csel_rst]:checked").removeClass('d-none');
+		$("section[name=cust_resp]").addClass('d-none');
 	}
 	$("input:radio[name=cust_rst]:checked").prop("checked", false);
 	$("input:radio[name=csel_rst]:checked").prop("checked", false);
 	_init.custRespMkOb(_CUST_RESP_MK_OB);
+	_init.cselRstMkOb(_CSEL_RST_MK_OB);
 };
 
 /******************************************************

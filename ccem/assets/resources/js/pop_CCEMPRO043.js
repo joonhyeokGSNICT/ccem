@@ -14,9 +14,15 @@
  *        = org             : 상담등록 주소 팝업시  / 사업국의 정보를 찾아주는 기능 / 더블클릭으로 해당 정보 전송
  */
 var _mode = "customer";
+var _currentUserInfo	// 현재 상담사 정보
 
-if ( opener.name == 'CCEMPRO022' ) _mode ="org";
-else if ( opener.name == 'app_CCEM_top_bar_38e2ab2c-665c-4ac5-be58-65f649da8317') _mode="customer";
+if ( opener.name == 'CCEMPRO022' ) {
+	_mode ="org";
+	_currentUserInfo = opener.currentUser;
+} else if ( opener.name.indexOf('app_CCEM_top_bar') > -1 ) {
+	_mode="customer";
+	_currentUserInfo = opener.currentUserInfo.user;
+}
 
 var _addrGrid;
 var _orgBcdGrid;
@@ -506,6 +512,8 @@ const _searchTable = {
 const _getAddrList = {
 	addrList(prop){
 		var param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '주소찾기',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{JUSO_TXT:prop}]
@@ -584,6 +592,8 @@ const _getAddrList = {
 		let todaydate = year+month+date;
 
 		var param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '주소찾기',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ZIPCDE:prop, ACT_EDDATE:todaydate}]
@@ -621,6 +631,8 @@ const _getAddrList = {
 	centerAddrList(prop){
 		// console.log(prop);
 		var param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '주소찾기',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{
@@ -669,6 +681,8 @@ const _getAddrList = {
 		// console.log(postNo+"/"+addr1+"/"+addr2);
 
 		var param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '주소찾기',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{

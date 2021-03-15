@@ -6,6 +6,8 @@ var employeeListGrid; 	// 구성원 그리드
 var tree;				// 트리구성표
 
 var _tchrMkCDEList;		// 통합코드 TCHR_MK_CDE : 선생님 직책리스트 - 그리드 내 코드 직책 변환
+var _currentUserInfo	// 현재 상담사 정보
+var _codeData;			// 전체코드정보
 
 var _closedOrgList; 	// 폐쇄기관 포함된 조직 리스트
 var _openOrgList;		// 오픈한 조직 리스트(폐쇄 제외)
@@ -54,19 +56,27 @@ if ( opener.name == 'CCEMPRO022' ) {
 	if (hash =="#disPlayUp") _mode ="plainTreeSelOrg";
 	else if (hash =="#disPlayDn") _mode ="plainTree";
 	_topWindow = opener.topbarObject;
+	_currentUserInfo = opener.currentUser;
+	_codeData = opener.codeData;
 }
 else if ( opener.name == 'CCEMPRO028' ) {
 	_mode ="plainTree";
 	_topWindow = opener.opener.topbarObject;
+	_currentUserInfo = opener.opener.currentUser;
+	_codeData = opener.opener.codeData;
 }
 else if ( opener.name == 'CCEMPRO031' || opener.name == 'CCEMPRO032' ) {
 	_mode ="plainTreeSelOrg";
 	_topWindow = opener.topbarObject;
+	_currentUserInfo = opener.currentUser;
+	_codeData = opener.codeData;
 }
 else if ( opener.name.indexOf('app_CCEM_top_bar') > -1) {
 	if (hash == "#menu" ) _mode="search";
 	else if (hash =="#info")  _mode="plainTreeSelOrg"; 
 	_topWindow = opener;
+	_currentUserInfo = opener.currentUserInfo.user;
+	_codeData = opener.codeData;
 }
 _topWindow.wiseNTalkUtil.saveWindowObj(window)
 
@@ -206,6 +216,8 @@ const _getList = {
 	// 본부/사업국/센터 찾기 전체리스트 가져오기
 	orgList(){
 		var param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '사업국/센터/구성원',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ACTIVE_FLAG:"Y"}]
@@ -232,6 +244,8 @@ const _getList = {
 		});
 
 		param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '사업국/센터/구성원',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: [{ACTIVE_FLAG:"N"}]
@@ -258,7 +272,9 @@ const _getList = {
 
 	// 지점 내 구성원 목록 가져오기
 	employeeList(dsSend){
-			var param = {
+		var param = {
+			userid : _currentUserInfo.external_id,
+			menuname : '사업국/센터/구성원',
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
 			dsSend: dsSend
@@ -280,24 +296,8 @@ const _getList = {
 
 	// 교사구분코드
 	tchrMkCDEList(){
-		var param = {
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-			dsSend: [{CODE_MK:"TCHR_MK_CDE"}]
-		};
-
-		$.ajax({
-			url: API_SERVER + '/sys.getCodeBook.do',
-			type: 'POST',
-			dataType: 'json',
-			contentType: "application/json",
-			data: JSON.stringify(param),
-			success: function (response) {
-				// console.log("tchrMkCDEList >> ",response.dsRecv);
-				_tchrMkCDEList = response.dsRecv;
-			}, error: function (response) {
-			}
-		});
+		var CODE_MK_LIST = ["TCHR_MK_CDE"];
+		_tchrMkCDEList = _codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
 	},
 
 	// 관할주소 목록 가져오기
@@ -309,6 +309,8 @@ const _getList = {
 			else isYN = 'Y';
 			
 			var param = {
+				userid : _currentUserInfo.external_id,
+				menuname : '사업국/센터/구성원',
 				senddataids: ["dsSend"],
 				recvdataids: ["dsRecv"],
 				dsSend: [{ACTIVE_FLAG:isYN, SEARCH_AREA:"Y", SEARCH_AREA_TXT: addr}]
@@ -332,6 +334,8 @@ const _getList = {
 	saveZIPCNTS(prop) {
 		return new Promise(function(resolve, reject){
 			var param = {
+				userid : _currentUserInfo.external_id,
+				menuname : '사업국/센터/구성원',
 				senddataids: ["dsSend"],
 				recvdataids: ["dsRecv"],
 				dsSend: prop
