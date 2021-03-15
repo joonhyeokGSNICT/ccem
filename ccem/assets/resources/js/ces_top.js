@@ -417,10 +417,12 @@ client.on("getCodeData", function(d){
  * 탑바를 표시할 때 발생하는 이벤트
  */
 client.on("pane.activated", (ev) => {
-	counselMain_studyProgressList_grid.refreshLayout();		// 상담메인 > 학습진행정보 grid
-	counselMain_counselHist_grid.refreshLayout();   		// 상담메인 > 상담이력 grid
-	customerSearchList_grid.refreshLayout();				// 고객찾기
-	teacherSearchList_grid.refreshLayout();					// 선생님찾기
+	setTimeout(function(){
+		counselMain_studyProgressList_grid.refreshLayout();		// 상담메인 > 학습진행정보 grid
+		counselMain_counselHist_grid.refreshLayout();   		// 상담메인 > 상담이력 grid
+		customerSearchList_grid.refreshLayout();				// 고객찾기
+		teacherSearchList_grid.refreshLayout();					// 선생님찾기
+	},500);
 });
 
 
@@ -1115,10 +1117,8 @@ $(function(){
 		switch($(this).attr('id')){
 		// 고객정보
 		case 'customerInfo':
-			setTimeout(function(){
-				refreshLayoutForCustTab();
-				counselMainTeacher_counselHist_grid.refreshLayout();
-			},500);
+			refreshLayoutForCustTab();
+			counselMainTeacher_counselHist_grid.refreshLayout();
 			break;
 		// 고객정보 - 고객, 선생님
 		case 'customerTab':
