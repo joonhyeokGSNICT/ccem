@@ -355,7 +355,7 @@ const updateTicket = async (cselData, customData) => {
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_MK"],				value: `proc_mk_${Number(cselData.PROC_MK)}` },				// 처리구분   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"],				value: `cust_mk_${cselData.CUST_MK}`.toLowerCase() },		// 고객구분   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],			value: `proc_sts_mk_${Number(cselData.PROC_STS_MK)}` },		// 처리상태   
-		// { id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],				value: `std_motive_cde_${Number(cselData.MOTIVE_CDE)}` },	// 입회사유   
+		{ id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],			value: `std_motive_cde_${Number(cselData.MOTIVE_CDE)}` },	// 입회사유   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: `${Number(customData.ageCde)}::${cselData.GRADE_CDE}`.toLowerCase() },// 학년(연령::학년)
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PRDT"],					value: customData.prdtList },								// 과목   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"],				value: customData.deptIdNm },								// 지점부서명(사업국명)   
