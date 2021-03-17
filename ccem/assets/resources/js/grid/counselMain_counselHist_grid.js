@@ -76,7 +76,7 @@ $(function(){
         ],
     });
 	counselMain_studyProgressList_grid.on('click', (ev) => {
-		console.log(ev);
+		// console.log(ev);
 		if(ev.targetType == 'cell'){
 			counselMain_studyProgressList_grid.addSelection(ev);
 			counselMain_studyProgressList_grid.clickSort(ev);
@@ -236,7 +236,7 @@ $(function(){
                 sortable: true,
                 ellipsis: true,
                 formatter: function(data){
-                    // console.log(data);
+                    // // console.log(data);
                     var text = ``;
                     if ( data.value==null ) text =``;
                     else if ( data.value=="MOREDATA" ) text += `<button style="padding: 0px;" class="btn btn-sm navBtn" type="button"><span>선택청취</span></button>`;
@@ -247,7 +247,7 @@ $(function(){
         ],
     });
 	counselMain_counselHist_grid.on('click', (ev) => {
-        console.log(ev);
+        // console.log(ev);
         if(ev.targetType == 'cell'){
             if ( ev.columnName == 'RECORD_ID' ) {
                 const tempArr = {
@@ -255,9 +255,9 @@ $(function(){
                     CSEL_NO : counselMain_counselHist_grid.getRow(ev.rowKey).CSEL_NO,
                     RECORD_ID : counselMain_counselHist_grid.getRow(ev.rowKey).RECORD_ID
                 }
-                console.log(tempArr.RECORD_ID);
+                // console.log(tempArr.RECORD_ID);
                 if( tempArr.RECORD_ID == "MOREDATA") {
-                    console.log(tempArr);
+                    // console.log(tempArr);
                     PopupUtil.open("CCEMPRO047",852,240,"",tempArr);
                 } else if ( tempArr.RECORD_ID == null ) {
                 } else  {

@@ -47,7 +47,7 @@ function onSearch(){
 
 	$.ajax(settings)
 		.done(data => {
-			console.log("정보내용->:",data);
+			// console.log("정보내용->:",data);
 			currentMosData = data.dsRecv[0];
 			if(currentMosData == undefined){
 				$("#tempSave").prop('disabled',true);
@@ -92,7 +92,7 @@ function onSearch(){
 	
 	$.ajax(settingsProc)
 	.done(data => {
-		console.log("처리내용->:",data);
+		// console.log("처리내용->:",data);
 		if(data.errcode == 0){
 			currentProcData = data.dsRecv[0];
 			if(currentProcData == undefined){
@@ -233,7 +233,7 @@ function onSave(sVal){
 			data: JSON.stringify(param),
 		})
 	.done(data => {
-		console.log("답변저장->:",data);
+		// console.log("답변저장->:",data);
 	})
 	.fail(error => {
 	});
@@ -337,7 +337,7 @@ function onProcSave(){
 			data: JSON.stringify(param),
 		})
 		.done(data => {
-			console.log("처리저장->:",data);
+			// console.log("처리저장->:",data);
 			alert("저장 되었습니다.");
 		})
 		.fail(error => {

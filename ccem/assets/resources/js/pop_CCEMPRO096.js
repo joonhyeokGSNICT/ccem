@@ -284,7 +284,7 @@ const getProd = () => {
 	$.ajax(settings).done(data => {
 		if(data.errcode == "0"){
 			prods = data.dsRecv;
-			console.log(prods);
+			// console.log(prods);
 			for(p of prods){
 				codeNm = p.PRDT_NAME;
 				codeVal = p.PRDT_ID;
@@ -343,9 +343,9 @@ function onSearch(){
 		    contentType: "application/json",
 		    data: JSON.stringify(param),
 		    success: function (response) {
-		        console.log(response);
+		        // console.log(response);
 		        if(response.errcode == "0"){
-		        	console.log(response);
+		        	// console.log(response);
 		        	grid.resetData(response.recv1);
 		        	$.ajax({
 		    		    url: API_SERVER + '/cns.getRefundHistCnt.do',
@@ -355,9 +355,9 @@ function onSearch(){
 		    		    contentType: "application/json",
 		    		    data: JSON.stringify(param),
 		    		    success: function (response) {
-		    		        console.log(response);
+		    		        // console.log(response);
 		    		        if(response.errcode == "0"){
-		    		        	console.log(response);
+		    		        	// console.log(response);
 		    		        	$("#totalCnt").val(response.recv1[0].CNT);
 		    		        }else {
 		    		        	loading.out();
@@ -471,7 +471,7 @@ function excelExport(gridId, excelfile, tableId){
 		$("#"+tableId+">tbody").append(appendStr);
 	}
 	$("#"+tableId).append("</tbody>");
-	console.log(gridData);
+	// console.log(gridData);
 		var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
 		tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
 		tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
@@ -614,7 +614,7 @@ function onSendFax(){
 			
 			paramSet.send1.push(param);
 		}
-		console.log(paramSet);
+		// console.log(paramSet);
 		
 		$.ajax({
 			url: API_SERVER + '/cns.addEnterSendFax.do',
@@ -623,9 +623,9 @@ function onSendFax(){
 			contentType: "application/json",
 			data: JSON.stringify(paramSet),
 			success: function (response) {
-				console.log(response);
+				// console.log(response);
 				if(response.errcode == "0"){
-					console.log(response);
+					// console.log(response);
 					alert("요청이 완료 되었습니다.");
 				}else {
 					loading.out();
@@ -691,7 +691,7 @@ function onDelete(){
 		    		}
 		    ),
 		    success: function (response) {
-		        console.log(response);
+		        // console.log(response);
 		        if(response.errcode == "0"){
 		        	if(response.recv1.length > 0){
 		        		alert("입회 완료된 상담이력은 삭제 불가능 합니다.");
@@ -748,7 +748,7 @@ function onDelProc(date, no, seq){
 		    		}
 		    ),
 		    success: function (response) {
-		        console.log(response);
+		        // console.log(response);
 		        if(response.errcode == "0"){
 		        	
 		        	if(response.recv1.length < 2){
@@ -777,7 +777,7 @@ function onDelProc(date, no, seq){
 		    		    		}
 		    		    ),
 		    		    success: function (response) {
-		    		        console.log(response);
+		    		        // console.log(response);
 		    		        if(response.errcode == "0"){
 		    		        	opener.client.request({url:`/api/v2/tickets/${zenID}`,type:'DELETE'}).then(function(d){
 		    		        		alert("삭제가 완료되었습니다.");

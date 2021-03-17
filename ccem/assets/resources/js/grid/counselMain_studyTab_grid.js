@@ -122,8 +122,10 @@ $(function(){
 				loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				// 변동이력, 불출교재 조회
 				if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){
 					loadList('ifsShipHist', counselMain_studyTab_asignStuff);	
+					counselMain_studyTab_asignStuff.refreshLayout();
 				}else {
 					loadList('ifsShipHist', counselMain_studyTab_asignStuff2);
+					counselMain_studyTab_asignStuff2.refreshLayout();
 				}
 			}
 	    });

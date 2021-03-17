@@ -240,7 +240,7 @@ function onSearch(auto){
 		contentType: "application/json",
 		data: JSON.stringify(param),
 		success: function (response) {
-			console.log(response);
+			// console.log(response);
 			if(response.errcode == "0"){
 				
 				// 대기건수가 없거나, 사용자 권한이 3이상이면 SMS발송 비활성화	
@@ -291,7 +291,7 @@ function onSmssend(){
 			]
 		}),
 		success: function (response) {
-			console.log(response);
+			// console.log(response);
 			if(response.errcode == "0"){
 				
 			}
@@ -327,7 +327,7 @@ function excelExport(gridId, excelfile, tableId){
 		$("#"+tableId+">tbody").append(appendStr);
 	}
 	$("#"+tableId).append("</tbody>");
-	console.log(gridData);
+	// console.log(gridData);
 		var tab_text = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
 		tab_text = tab_text + '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
 		tab_text = tab_text + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'

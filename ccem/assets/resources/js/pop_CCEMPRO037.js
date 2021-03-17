@@ -791,6 +791,7 @@ function onSendFax(){
 			param.CUST_NAME = listData.CUST_NAME?listData.CUST_NAME:"";
 			param.GRADE_CDE = listData.GRADE_CDE?listData.GRADE_CDE:"";
 			param.PRDT_NAME = listData.PRDT_NAME?listData.PRDT_NAME:"";
+			param.LC_ID = listData.LC_ID?listData.LC_ID:"";
 			
 			// 상담채널 구분(에듀피아인 경우)에 따른 추가 데이터 세팅
 			if(chnlMk=="3" || chnlMk=="83"){

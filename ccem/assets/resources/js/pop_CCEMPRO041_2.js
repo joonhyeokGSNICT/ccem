@@ -101,7 +101,6 @@ function init(){
 		});
 
 		_centerInterPhone_grid.on("dblclick", ev => {
-			callRequest();
 		});
 
 		// #01_001_02 대교내선
@@ -177,7 +176,6 @@ function init(){
 			$('#top_input_tel').val(_daekyoInterPhone_grid.getFormattedValue(ev.rowKey, "TELPNO"));
 		});
 		_daekyoInterPhone_grid.on("dblclick", ev => {
-			callRequest();
 		});
 		
 		// #01_001_03 지점
@@ -224,7 +222,6 @@ function init(){
 			$('#top_input_tel').val(_branchInterPhone_grid.getFormattedValue(ev.rowKey, "TELNO"));
 		});
 		_branchInterPhone_grid.on("dblclick", ev => {
-			callRequest();
 		});
 
 	// #01_002 그리드 사이즈 초기화
@@ -499,12 +496,12 @@ function isEmpty(data) {
 }
 
 // 전화 걸기 func
-function callRequest(){
+function callRequest(type){
 	/*if(tempStat != 'callOn'){
 		alert('전화 걸 수 없는 상태입니다.');
 		return;
 	}*/
-	if(opener.currentTicketInfo?.ticket?.id != null && opener.currentTicketInfo?.ticket?.id != undefined && opener.currentTicketInfo?.ticket?.id != ''){
+	if(opener.currentTicketInfo?.ticket?.id != null && opener.currentTicketInfo?.ticket?.id != undefined && opener.currentTicketInfo?.ticket?.id != '' && type == 'ticketCall'){
 		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', opener.currentTicketInfo?.ticket?.id, '1');
 	}else {
 		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '', '1');

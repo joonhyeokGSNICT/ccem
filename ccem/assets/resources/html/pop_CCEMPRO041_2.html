@@ -30,9 +30,12 @@
 </head>
 <body>
 	<div>
-		<div class="col-12" style="padding:10px 10px 5px 10px; text-align: right;">
-			<input type="button" class="btn btn-sm popup-btn callOn callBtn customerBtn" style="width:46px" value="걸기" onclick="callRequest();" id="callStartBtn">
-			<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px" value="닫기" onclick="window.close()">
+		<div class="row">
+			<div class="col-12" style="text-align:right;">
+				<input type="button" class="btn btn-sm popup-btn callOn callBtn customerBtn" style="width:46px" value="걸기" onclick="callRequest();" id="callStartBtn">
+				<input type="button" class="btn btn-sm popup-btn callOn callBtn customerBtn" style="width:76px" value="티켓걸기" onclick="callRequest('ticketCall');" id="callStartBtn_ticket">
+				<input type="button" class="btn btn-sm popup-btn customerBtn" style="width:46px; margin-right:10px;" value="닫기" onclick="window.close()">
+			</div>
 		</div>
 		<div class="col-12" style="padding:10px;">
 			<table class="col-12" style="border-top: 2px solid #cacaca;border-bottom: 2px solid #cacaca;">
