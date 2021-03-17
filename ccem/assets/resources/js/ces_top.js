@@ -367,13 +367,13 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 				if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
 					teacherSearch();											// 선생님 검색
 				}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
-					if(currentTicketInfo.ticket.requester.externalId != null){
+					//if(currentTicketInfo.ticket.requester.externalId != null){
 						userSearch();												// 고객 검색	
-					}else {																										// IVR 콜백건인데 고객이 조회가 되지 않으면 상담메인의 OB전화번호에 번호만 입력된다.
-						$("#customerInfo").click();
+					//}else {																										// IVR 콜백건인데 고객이 조회가 되지 않으면 상담메인의 OB전화번호에 번호만 입력된다.
+						/*$("#customerInfo").click();
 						$("#customerTab").click();
-						$("#custInfo_REP_TELNO").val(FormatUtil.tel(currentTicketInfo.ticket.requester?.identities[0]?.value));
-					}
+						$("#custInfo_REP_TELNO").val(FormatUtil.tel(currentTicketInfo.ticket.requester?.identities[0]?.value));*/
+					//}
 				}else {
 					userSearch();												// 고객 검색
 				}
@@ -452,7 +452,7 @@ client.on('api_notification.setCTIStatus', function(status){
 client.on('api_notification.getResponse', function(obj){
 	// console.log('origin window',obj);
 	if(obj.body.popup_name != "" && obj.body.popup_name != null){
-		wiseNTalkUtil.openedCallPop[obj.body.popup_name].alert(obj.msg);
+		wiseNTalkUtil.openedCallPop[obj.body.popup_name].alert(obj.body.msg);
 	}
 });
 
@@ -566,18 +566,48 @@ function userSearch() {
 						customerSearch("teacherSearchDiv","1");
 					}, 50);
 				}else {
-					// console.log(reqUser);
-					$("#customerSearchTab").click();												// 고객조회 탭 이동
-					$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
-					$("#custSearchDiv").find("input[type=text]").val("");
-					$("#custSearchDiv").find("select").val("");
-					setTimeout(function(){
-						$("#customerMNum").val(reqUser.user.external_id);
-						$("#customerMNumCheck").prop('checked',true);
-						customerSearch("custSearchDiv","1");
-						$("#customerMNum").val("");
-						$("#customerMNumCheck").prop('checked',false);
-					}, 50);
+					if(currentOBMK == '60'){		// ivr 콜백일 경우 이름 ,번호조회
+						// 총 세번의 인입전화번호 캐치
+						sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
+							phone = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`];
+							// console.log(phone);
+							
+							if(phone == "" || phone == null){
+								for(d of data['ticket'].requester.identities){
+									if(d.type == 'phone_number'){
+										phone = d.value;
+										// console.log(phone);
+									}
+								}
+							}
+							if(phone == "" || phone == null){
+								phone = reqUser.user.phone;
+								// console.log(phone);
+							}
+							setTimeout(function(){
+								if(phone != '' && phone != null){
+									$("#customerPhone").val(phone);
+									$("#customerPhoneCheck").prop('checked',true);
+								}
+								customerSearch("custSearchDiv","1");
+								$("#customerPhone").val("");
+								$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+							}, 50);
+						});
+					}else {
+						// console.log(reqUser);
+						$("#customerSearchTab").click();												// 고객조회 탭 이동
+						$("#custSearchDiv").find(".form-check-input").prop("checked",false);			// 검색 조건 초기화
+						$("#custSearchDiv").find("input[type=text]").val("");
+						$("#custSearchDiv").find("select").val("");
+						setTimeout(function(){
+							$("#customerMNum").val(reqUser.user.external_id);
+							$("#customerMNumCheck").prop('checked',true);
+							customerSearch("custSearchDiv","1");
+							$("#customerMNum").val("");
+							$("#customerMNumCheck").prop('checked',false);
+						}, 50);
+					}														
 				}
 			}
 		});
@@ -1873,7 +1903,8 @@ function onAutoSearch(sCustId, type){
 				recvdataids: ["recv1"],
 				send1: [{
 					"CUST_ID"		:sCustId,				// 회원번호
-					"OBLIST_CDE"	:currentOBMK			// OB구분
+					"OBLIST_CDE"	:currentOBMK,			// OB구분
+					"ZEN_TICKET_ID" :(currentTicketInfo?.ticket?.id)!=undefined?currentTicketInfo?.ticket?.id:""
 				}]
 		};
 		$.ajax({
@@ -2227,12 +2258,14 @@ function loadCustInfoMain() {
 	loadList('currentStudy', counselMain_studyProgressList_grid);	// 학습진행정보 목록 불러오기			//OLD >> currentStudyLoad();	// 학습진행정보 목록 불러오기
 
 	setStatus(2);													// 조회 상태로 변경
-	sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
-		if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){
-			// Ivr 콜백 일 경우
-			$("#custInfo_REP_TELNO").val(FormatUtil.tel(currentTicketInfo.ticket.requester?.identities[0]?.value));
-		}
-	});
+	/*if(sidebarClient != null && sidebarClient != undefined){
+		sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+			if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){
+				// Ivr 콜백 일 경우
+				$("#custInfo_REP_TELNO").val(FormatUtil.tel(currentTicketInfo.ticket.requester?.identities[0]?.value));
+			}
+		});
+	}*/
 }
 
 // === === === ZENDESK

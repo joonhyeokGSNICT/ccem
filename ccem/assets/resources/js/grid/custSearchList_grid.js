@@ -151,84 +151,120 @@ $(function(){
 	customerSearchList_grid.on('dblclick', (ev) => {
 		initAll(); 													// 기존 정보 초기화
 		custInfo = customerSearchList_grid.getRow(ev.rowKey);
-		var param = {
-			    senddataids: ["send1"],
-			    recvdataids: ["recv1"],
-			    send1: [{
-			    	"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
-			    }]
-			};
-		
-		$.ajax({
-		    url: API_SERVER + '/cns.getCustInfo.do',
-		    type: 'POST',
-		    dataType: 'json',
-		    contentType: "application/json",
-		    data: JSON.stringify(param),
-		    success: function (response) {
-		        if(response.errcode == "0"){
-			        currentCustInfo = response.recv1[0];				// 고객정보 상주
-			        loadCustInfoMain();									// 고객정보 로드 함수
-			        // 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-					client.request(`/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
-						console.log(d);
-						if(d.count >= 1){					
-							// console.log(d.results[0].id);
-							sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-								currentTicketInfo = data;
-								if(currentTicketInfo != undefined && currentTicketInfo != null){
-									if(currentTicketInfo.ticket.externalId != d.results[0].external_id){
-										ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
-											if(currentTicketInfo.ticket.externalId == null && d.results[0].role == 'end-user'){
-												client.request({
-													url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-													type: 'PUT', 
-													dataType: 'json',
-													contentType: "application/json",
-													data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
-														// console.log(response);
-														// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-														var option = {
-																url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-																type: 'PUT',
-																dataType: 'json',
-																contentType: "application/json",
-																data: JSON.stringify({
-																	"user": {
-																		"id": d.results[0].id,
-																	}
-																})
-														}
-														client.request(option).then(function(d) {
-															client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-														});
-													});
-											}else {
-												client.request({
-													url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-													type: 'PUT', 
-													dataType: 'json',
-													contentType: "application/json",
-													data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
-														// console.log(response);
-													});
+		if(sidebarClient != null && sidebarClient != undefined){
+			sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+				currentTicketInfo = data;
+				sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){// OB구분
+					currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
+					var param = {
+							senddataids: ["send1"],
+							recvdataids: ["recv1"],
+							send1: [{
+								"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
+								"OBLIST_CDE"	:currentOBMK,					// OB구분
+								"ZEN_TICKET_ID" :(currentTicketInfo?.ticket?.id)!=undefined?currentTicketInfo?.ticket?.id:""
+							}]
+					};
+					
+					$.ajax({
+						url: API_SERVER + '/cns.getCustInfo.do',
+						type: 'POST',
+						dataType: 'json',
+						contentType: "application/json",
+						data: JSON.stringify(param),
+						success: function (response) {
+							if(response.errcode == "0"){
+								currentCustInfo = response.recv1[0];				// 고객정보 상주
+								loadCustInfoMain();									// 고객정보 로드 함수
+								// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
+								client.request(`/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
+									console.log(d);
+									if(d.count >= 1){					
+										// console.log(d.results[0].id);
+										if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
+											if(currentTicketInfo.ticket.requester.externalId != d.results[0].external_id){
+												ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
+													if(currentTicketInfo.ticket.externalId == null && d.results[0].role == 'end-user'){
+														client.request({
+															url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+															type: 'PUT', 
+															dataType: 'json',
+															contentType: "application/json",
+															data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
+																// console.log(response);
+																// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
+																var option = {
+																		url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+																		type: 'PUT',
+																		dataType: 'json',
+																		contentType: "application/json",
+																		data: JSON.stringify({
+																			"user": {
+																				"id": d.results[0].id,
+																			}
+																		})
+																}
+																client.request(option).then(function(d) {
+																	client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+																});
+															});
+													}else {
+														client.request({
+															url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+															type: 'PUT', 
+															dataType: 'json',
+															contentType: "application/json",
+															data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
+																// console.log(response);
+															});
+													}
+												});
 											}
-										});
+										}
 									}
-								}
-							});
+								});
+								updateUserforZen();
+								$("#customerInfo").click();	// 탭 이동
+								$("#customerTab").click();	// 탭 이동
+							}else {
+								loading.out();
+								client.invoke("notify", response.errmsg, "error", 60000);
+							}
+						}, error: function (response) {
 						}
 					});
-					updateUserforZen();
-					$("#customerInfo").click();	// 탭 이동
-					$("#customerTab").click();	// 탭 이동
-		        }else {
-		        	loading.out();
-		        	client.invoke("notify", response.errmsg, "error", 60000);
-		        }
-		    }, error: function (response) {
-		    }
-		});
+				});
+			})
+		}else {
+			var param = {
+					senddataids: ["send1"],
+					recvdataids: ["recv1"],
+					send1: [{
+						"CUST_ID"		:custInfo.CUST_ID,				// 회원번호
+					}]
+			};
+			
+			$.ajax({
+				url: API_SERVER + '/cns.getCustInfo.do',
+				type: 'POST',
+				dataType: 'json',
+				contentType: "application/json",
+				data: JSON.stringify(param),
+				success: function (response) {
+					if(response.errcode == "0"){
+						currentCustInfo = response.recv1[0];				// 고객정보 상주
+						loadCustInfoMain();									// 고객정보 로드 함수
+						updateUserforZen();
+						$("#customerInfo").click();	// 탭 이동
+						$("#customerTab").click();	// 탭 이동
+					}else {
+						loading.out();
+						client.invoke("notify", response.errmsg, "error", 60000);
+					}
+				}, error: function (response) {
+				}
+			});
+		}
 	});
 	
 	// 고객찾기 고객찾기 GRID 끝
