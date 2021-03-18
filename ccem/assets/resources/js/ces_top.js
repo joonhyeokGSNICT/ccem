@@ -388,7 +388,7 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 				//topBarClient.invoke('popover','hide');				// 탑바 닫기
 			};
 		}else {
-			if(data.ticket.status != 'solved' || data.ticket.status != 'closed'){							// 티켓 상태가 해결, 종료가 아닌 경우,
+			if(data.ticket.status != 'solved' && data.ticket.status != 'closed'){							// 티켓 상태가 해결, 종료가 아닌 경우,
 				topBarClient.invoke("popover");					// 탑바 열기
 			}
 			/*sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
@@ -3762,11 +3762,15 @@ function smsOnClick_tchr(){
    * @param {string} external_id 고객번호
    */
   const zendeskUserSearch = (external_id) => client.request(`/api/v2/users/search.json?external_id=${external_id}`);
-  /**
-   * Zendesk 티켓 조회
-   * @param 
-   */
-  const zendeskTicketSearch = () => sidebarClient?.get('ticket');
+  
+/**
+ * Zendesk 티켓 조회
+ * @param 
+ */
+async function zendeskTicketSearch(){
+	var ticketTemp = await sidebarClient.get('ticket');
+	return ticketTemp;
+}
   
 // 고객 탭의 모든 그리드 새로고침
 function refreshLayoutForCustTab(){
