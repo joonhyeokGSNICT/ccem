@@ -184,7 +184,7 @@ $(function(){
 										if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
 											if(currentTicketInfo.ticket.requester.externalId != d.results[0].external_id){
 												ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
-													if(currentTicketInfo.ticket.externalId == null && d.results[0].role == 'end-user'){
+													if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
 														client.request({
 															url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
 															type: 'PUT', 

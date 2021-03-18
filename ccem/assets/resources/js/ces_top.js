@@ -214,7 +214,7 @@ var wiseNTalkUtil = {
 		   */
 		callStart: function(status, targetPhone, originName, ticketID, type){
 			
-			if(type != '1'){			// 티켓 여부 확인 타입
+			if(type == '1'){			// 티켓 여부 확인 타입
 				if(status == 'callOn'){
 					if(ticketID == '' || ticketID == null || ticketID == undefined){
 						if(originName == null || originName == undefined || originName == ''){
