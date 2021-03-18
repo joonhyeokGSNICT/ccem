@@ -190,9 +190,7 @@ async function save_call_rst(){
 					ajax( param2, urlCheck ).then( function(data) {
 						console.log(data);
 						if ( data.dsRecv1[0].OBJ_RESP_RATE < data.dsRecv1[0].CUR_RESP_RATE) {
-							
-							
-							
+							transAutoTicketUpdator(data.dsRecv2)
 						}
 					});
 				}
@@ -258,6 +256,7 @@ const updateOBresult = async (cselData) => {
 		}),
 	}
 	
+	console.log(option);
 	await client.request(option);
 }
 
@@ -345,9 +344,9 @@ function tempPopUp () {
 function transAutoTicketUpdator(transData) {
 	client.request('/api/v2/apps/installations').then(function (datas) {
 	   _ticketUpdator_ID = datas.installations.filter(data => data.settings.name == 'ticketUpdator')[0]?.app_id;
-   });
+    });
    
-   client.request({
+    client.request({
 	   url:'/api/v2/apps/notify.json',
 	   method: 'POST',
 	   headers: { "Content-Type": "application/json" },
@@ -361,15 +360,3 @@ function transAutoTicketUpdator(transData) {
    
    client.invoke('notify',"[전화설문조사] 해당 전화설문조사가 완료되었습니다.", 'alert', 5000);
 }
-
-/******************************************************
- * 임시 티켓 데이터 삭제예정
- ******************************************************/
-const tempArr = [
-	{ZEN_TICKET_ID : 3001},
-	{ZEN_TICKET_ID : 3002},
-	{ZEN_TICKET_ID : 3003},
-	{ZEN_TICKET_ID : 3004},
-	{ZEN_TICKET_ID : 3005},
-	{ZEN_TICKET_ID : 3006}
-]
