@@ -501,11 +501,6 @@ function callRequest(type){
 		alert('전화 걸 수 없는 상태입니다.');
 		return;
 	}*/
-	if(opener.sidebarClient == null){
-		alert('열린 티켓이 없습니다.');
-		return;
-	}
-	
 	opener.zendeskTicketSearch().then(function(data){
 
 		if(type == 'ticketCall'){
