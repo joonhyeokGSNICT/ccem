@@ -440,6 +440,9 @@ function init(){
 	// console.log( opener.document.getElementById('custInfo_ADDR').value );
 	if ( opener.name.indexOf('app_CCEM_top_bar') > -1 && !isEmpty(opener.document.getElementById('custInfo_ADDR').value) ) {
 		$('#addrZipAddr2_input').val(opener.document.getElementById('custInfo_ADDR').value);
+	} else if ( opener.name == 'CCEMPRO022' && !isEmpty(opener.document.getElementById('textbox4').value) ) {
+		$('#searchAddr_input').val(opener.document.getElementById('textbox4').value);
+		_searchTable.addrList();
 	}
 	_styleChanger.resizeWidth();
 	_styleChanger.resizeHeight();

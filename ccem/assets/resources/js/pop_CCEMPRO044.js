@@ -37,7 +37,7 @@ let hash = window.location.hash; // 구분처리
  * @param opener.name 진입 부모창의 이름에 따라 모드가 변경됨
  * ======== 진입구분 ========
  * CCEMPRO022 : [팝업] 상담등록 
- * 	1. #disPlayUp : 사업국/센터 찾기
+ * 	1. #disPlayUp & #disPlayUpDown : 사업국/센터 찾기
  * 	2. #disPlayDn : 연계부서 찾기
  * CCEMPRO028 : [팝업] 상담연계 
  * CCEMPRO031 : [팝업] 입회등록
@@ -53,7 +53,7 @@ let hash = window.location.hash; // 구분처리
 
 var _mode = "plainTree";
 if ( opener.name == 'CCEMPRO022' ) {
-	if (hash =="#disPlayUp") _mode ="plainTreeSelOrg";
+	if (hash =="#disPlayUp" || hash =="#disPlayUpDown" ) _mode ="plainTreeSelOrg";
 	else if (hash =="#disPlayDn") _mode ="plainTree";
 	_topWindow = opener.topbarObject;
 	_currentUserInfo = opener.currentUser;
@@ -411,10 +411,10 @@ const _sortList = {
 
 				/* 2. 상담등록 사업국/센터 선택 검색 */
 				if ( opener.name.indexOf('CCEMPRO022') > -1 && hash =="#disPlayUp" ) {
-					var textVal = opener.document.getElementById('textbox9').value;
-					if(! isEmpty(textVal) ) $('#searchOrg_txt').val(textVal);
-					else if (! isEmpty(opener.document.getElementById('textbox6').value) ) $('#searchOrg_txt').val(opener.document.getElementById('textbox6').value);
-					else $('#searchOrg_txt').val(opener.document.getElementById('textbox2').value);
+					$('#searchOrg_txt').val(opener.document.getElementById('textbox6').value);
+					_btn.searchOrg();
+				} else if ( opener.name.indexOf('CCEMPRO022') > -1 && hash =="#disPlayUpDown" ) {
+					$('#searchOrg_txt').val(opener.document.getElementById('textbox9').value);
 					_btn.searchOrg();
 				}
 
