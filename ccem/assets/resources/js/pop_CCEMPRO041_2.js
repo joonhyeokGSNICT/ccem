@@ -497,18 +497,18 @@ function isEmpty(data) {
 
 // 전화 걸기 func
 function callRequest(type){
-	/*if(tempStat != 'callOn'){
-		alert('전화 걸 수 없는 상태입니다.');
-		return;
-	}*/
 	opener.zendeskTicketSearch().then(function(data){
 
 		if(type == 'ticketCall'){
+			if(opener.sidebarClient == null){
+				alert('열린 티켓이 없습니다.');
+				return;
+			}
 			if(data.ticket != undefined){
 					if(data.ticket.id != null && data.ticket.id != undefined && data.ticket.id != ''){
 						opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', data.ticket.id, '1');
 					}else {
-						alert('열린 티켓이 없습니다.');
+						alert('티켓 아이디가 정상적이지 않습니다. 관리자에게 요청하세요.');
 						return;
 					}
 			}else {
