@@ -566,7 +566,7 @@ function userSearch() {
 						customerSearch("teacherSearchDiv","1");
 					}, 50);
 				}else {
-					if(currentOBMK == '60'){		// ivr 콜백일 경우 이름 ,번호조회
+					if(currentOBMK == '60' && (currentTicketInfo?.ticket?.requester?.externalId == null || currentTicketInfo?.ticket?.requester?.externalId == undefined)){		// ivr 콜백일 경우와 external id 가 없으면 이름 ,번호조회 
 						// 총 세번의 인입전화번호 캐치
 						sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
 							phone = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`];
@@ -1701,7 +1701,7 @@ function customerSearch(currentDiv, type){
 		}
 		if($("#customerPhoneCheck").is(":checked")){			// 전화번호
 			param.send1[0].CHK_TELNO = "Y";
-			param.send1[0].TELPNO = $.trim($("#customerPhone").val());
+			param.send1[0].TELPNO = $.trim($("#customerPhone").val()).replace(/-/gi,"");
 			validationBool = true;
 			checkLength++;
 		}
@@ -3762,6 +3762,11 @@ function smsOnClick_tchr(){
    * @param {string} external_id 고객번호
    */
   const zendeskUserSearch = (external_id) => client.request(`/api/v2/users/search.json?external_id=${external_id}`);
+  /**
+   * Zendesk 티켓 조회
+   * @param 
+   */
+  const zendeskTicketSearch = () => sidebarClient.get('ticket');
   
 // 고객 탭의 모든 그리드 새로고침
 function refreshLayoutForCustTab(){

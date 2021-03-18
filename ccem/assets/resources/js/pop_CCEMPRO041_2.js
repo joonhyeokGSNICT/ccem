@@ -504,7 +504,7 @@ function callRequest(type){
 	if(opener.currentTicketInfo?.ticket?.id != null && opener.currentTicketInfo?.ticket?.id != undefined && opener.currentTicketInfo?.ticket?.id != '' && type == 'ticketCall'){
 		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', opener.currentTicketInfo?.ticket?.id, '1');
 	}else {
-		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '', '1');
+		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
 	}
 }
 
