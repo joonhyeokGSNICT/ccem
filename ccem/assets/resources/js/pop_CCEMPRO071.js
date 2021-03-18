@@ -1,6 +1,7 @@
 var _CUST_RESP_MK_OB ;  // custRespMkOb
 var _CSEL_RST_MK_OB ;   // cselRstMkOb
 var _OB_CDE;
+var _ticketUpdator_ID
 
 client.on("api_notification.openOBResult", function (data) {
 	console.log('[CCEM TOPBAR] api_notification.openOBResult 진입 >>> ', data.body);
@@ -189,23 +190,9 @@ async function save_call_rst(){
 					ajax( param2, urlCheck ).then( function(data) {
 						console.log(data);
 						if ( data.dsRecv1[0].OBJ_RESP_RATE < data.dsRecv1[0].CUR_RESP_RATE) {
-							var tempSolveTicket = [];
-							for ( index in data.dsRecv2 ) {
-								if ( data.dsRecv2[index] != null ) {
-									tempSolveTicket.push({
-										"id": Number(data.dsRecv2[index].ZEN_TICKET_ID),
-										"assignee_id": ZDK_INFO[_SPACE]["defaultUser"],
-										"status":"solved",
-										"comment": { 
-											"public":false,
-											"body":"[알림] : 해당 전화설문의 목표치를 달성하여 자동 종료되었습니다."
-										}
-									});
-								}
-							}
-
-							console.log(tempSolveTicket);
-							updateManyOBresult(tempSolveTicket);
+							
+							
+							
 						}
 					});
 				}
@@ -272,23 +259,6 @@ const updateOBresult = async (cselData) => {
 	}
 	
 	await client.request(option);
-}
-
-
-/******************************************************
- * Zendesk 티켓 업데이트 for OB결과 저장
- * @param {object} solveTickets    티켓정보
- ******************************************************/
-const updateManyOBresult = async (solveTickets) => {
-	const option = {
-		url: `/api/v2/tickets/update_many`,
-		method: 'PUT',
-		contentType: "application/json",
-		data: JSON.stringify({ 
-			tickets: solveTickets
-		}),
-	}
-	await client.request(option).then( function(d){ console.log(d) });
 }
 
 
@@ -367,3 +337,39 @@ function tempPopUp () {
 		}
 	}	
 }
+
+/******************************************************
+ * ticketUpdator App 정보 확인 및 값 전송
+ * @param transData 전송할 티켓 데이터
+ ******************************************************/
+function transAutoTicketUpdator(transData) {
+	client.request('/api/v2/apps/installations').then(function (datas) {
+	   _ticketUpdator_ID = datas.installations.filter(data => data.settings.name == 'ticketUpdator')[0]?.app_id;
+   });
+   
+   client.request({
+	   url:'/api/v2/apps/notify.json',
+	   method: 'POST',
+	   headers: { "Content-Type": "application/json" },
+	   data: JSON.stringify({
+		   "event": "autoTicketUpdator", 
+		   "app_id": _ticketUpdator_ID, 
+		   "agent_id": currentUserInfo.user.id, 
+		   "body": transData
+	   })
+	});
+   
+   client.invoke('notify',"[전화설문조사] 해당 전화설문조사가 완료되었습니다.", 'alert', 5000);
+}
+
+/******************************************************
+ * 임시 티켓 데이터 삭제예정
+ ******************************************************/
+const tempArr = [
+	{ZEN_TICKET_ID : 3001},
+	{ZEN_TICKET_ID : 3002},
+	{ZEN_TICKET_ID : 3003},
+	{ZEN_TICKET_ID : 3004},
+	{ZEN_TICKET_ID : 3005},
+	{ZEN_TICKET_ID : 3006}
+]
