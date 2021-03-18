@@ -505,24 +505,26 @@ function callRequest(type){
 		alert('열린 티켓이 없습니다.');
 		return;
 	}
-	if(opener.zendeskTicketSearch() != undefined){
-		opener.zendeskTicketSearch().then(function(data){
+	
+	opener.zendeskTicketSearch().then(function(data){
+
+		if(type == 'ticketCall'){
 			if(data.ticket != undefined){
-				if(type == 'ticketCall'){
 					if(data.ticket.id != null && data.ticket.id != undefined && data.ticket.id != ''){
 						opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', data.ticket.id, '1');
 					}else {
 						alert('열린 티켓이 없습니다.');
 						return;
 					}
-				}
 			}else {
-				opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
+				alert('열린 티켓이 없습니다.');
+				return;
 			}
-		});
-	}else {
-		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
-	}
+		}else {
+			opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
+		}
+		
+	});
 }
 
 // cti 상태 설정
