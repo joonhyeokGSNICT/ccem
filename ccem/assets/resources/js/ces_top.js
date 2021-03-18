@@ -2225,7 +2225,7 @@ function loadCustInfoMain() {
 		$("#blackAndVip").removeClass('badge-warning');
 		$("#blackAndVip").removeClass('badge-primary');
 		$("#blackAndVip").addClass('badge-danger');
-		$("#blackAndVip").css('width','50%');
+		$("#blackAndVip").css('width','30%');
 		$("#blackAndVip").text("정성회원");
 		$("#blackAndVipDT").text(currentCustInfo.BLACK_CUST_MK_NAME);
 	}else if(currentCustInfo.BL_DEL_YN == "Y"){
@@ -2233,7 +2233,7 @@ function loadCustInfoMain() {
 		$("#blackAndVip").removeClass('badge-danger');
 		$("#blackAndVip").removeClass('badge-warning');
 		$("#blackAndVip").removeClass('badge-primary');
-		$("#blackAndVip").css('width','100%');
+		$("#blackAndVip").css('width','70%');
 		$("#blackAndVip").addClass('badge-warning');
 		$("#blackAndVip").text(currentCustInfo.DEL_CUST_MK_NAME);
 		$("#blackAndVipDT").text("");
@@ -2243,7 +2243,7 @@ function loadCustInfoMain() {
 		$("#blackAndVip").removeClass('badge-warning');
 		$("#blackAndVip").removeClass('badge-primary');
 		$("#blackAndVip").addClass('badge-primary');
-		$("#blackAndVip").css('width','50%');
+		$("#blackAndVip").css('width','30%');
 		$("#blackAndVip").text("눈높이VIP");
 		$("#blackAndVipDT").text(currentCustInfo.VIP_CDE_NAME);
 	}else {
@@ -3766,7 +3766,7 @@ function smsOnClick_tchr(){
    * Zendesk 티켓 조회
    * @param 
    */
-  const zendeskTicketSearch = () => sidebarClient.get('ticket');
+  const zendeskTicketSearch = () => sidebarClient?.get('ticket');
   
 // 고객 탭의 모든 그리드 새로고침
 function refreshLayoutForCustTab(){

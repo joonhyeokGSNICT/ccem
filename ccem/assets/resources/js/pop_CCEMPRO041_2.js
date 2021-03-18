@@ -501,8 +501,20 @@ function callRequest(type){
 		alert('전화 걸 수 없는 상태입니다.');
 		return;
 	}*/
-	if(opener.currentTicketInfo?.ticket?.id != null && opener.currentTicketInfo?.ticket?.id != undefined && opener.currentTicketInfo?.ticket?.id != '' && type == 'ticketCall'){
-		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', opener.currentTicketInfo?.ticket?.id, '1');
+	if(zendeskTicketSearch() != undefined){
+		zendeskTicketSearch().then(function(data){
+			if(data.ticket != undefined){
+				if(type == 'ticketCall'){
+					if(data.ticket.id != null && data.ticket.id != undefined && data.ticket.id != ''){
+						opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', data.ticket.id, '1');
+					}else {
+						alert('열린 티켓이 없습니다.');
+					}
+				}
+			}else {
+				opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
+			}
+		});
 	}else {
 		opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
 	}
