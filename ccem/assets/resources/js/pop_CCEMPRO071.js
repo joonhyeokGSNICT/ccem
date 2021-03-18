@@ -344,19 +344,19 @@ function tempPopUp () {
 function transAutoTicketUpdator(transData) {
 	client.request('/api/v2/apps/installations').then(function (datas) {
 	   _ticketUpdator_ID = datas.installations.filter(data => data.settings.name == 'ticketUpdator')[0]?.app_id;
+
+	   client.request({
+			url:'/api/v2/apps/notify.json',
+			method: 'POST',
+			headers: { "Content-Type": "application/json" },
+			data: JSON.stringify({
+				"event": "autoTicketUpdator", 
+				"app_id": _ticketUpdator_ID, 
+				"agent_id": currentUserInfo.user.id, 
+				"body": transData
+			})
+		}).then(function (data){ console.log(data) });
     });
-   
-    client.request({
-	   url:'/api/v2/apps/notify.json',
-	   method: 'POST',
-	   headers: { "Content-Type": "application/json" },
-	   data: JSON.stringify({
-		   "event": "autoTicketUpdator", 
-		   "app_id": _ticketUpdator_ID, 
-		   "agent_id": currentUserInfo.user.id, 
-		   "body": transData
-	   })
-	});
    
    client.invoke('notify',"[전화설문조사] 해당 전화설문조사가 완료되었습니다.", 'alert', 5000);
 }
