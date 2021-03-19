@@ -115,6 +115,7 @@ $(function(){
 				counselMain_infoAgree_infoAgreeList_grid.addSelection(ev);
 				counselMain_infoAgree_infoAgreeList_grid.clickSort(ev);
 				loadList('getTBCALLRST',counselMain_infoAgree_iaRecordList_grid, counselMain_infoAgree_infoAgreeList_grid.getRow(ev.rowKey).LIST_ID);
+				counselMain_infoAgree_iaRecordList_grid.refreshLayout();
 			}
 			
 	    });
@@ -295,6 +296,7 @@ $(function(){
 				counselMain_infoAgree_termsVersion_grid.addSelection(ev);
 				counselMain_infoAgree_termsVersion_grid.clickSort(ev);
 				loadList('getTBCALLRST',counselMain_infoAgree_termsRecordList_grid, counselMain_infoAgree_termsVersion_grid.getRow(ev.rowKey).LIST_ID);
+				counselMain_infoAgree_termsRecordList_grid.refreshLayout();
 			}
 	    });
 		

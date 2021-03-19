@@ -450,6 +450,12 @@ function loadList(id, grid, listID, sort) {
 	case 'getSendSMS':
 		param.menuname = "SMS 수/발신이력";
 		if($("#customerSMSSendDateCheck").is(":checked")){		
+			var between = (new Date($("#customerSMSSend_ed").val()).getTime() - new Date($("#customerSMSSend_st").val()).getTime()) / 1000 / 60 / 60 / 24;
+			console.log(between);
+			if(between > 365){ // 두 날짜 사이 구하기
+				alert("최대 1년까지 조회 가능합니다.");
+				return;
+			}
 			param.send1[0].CHK_SEARCH_DATE = "Y";
 			param.send1[0].SEARCH_STDATE = $("#customerSMSSend_st").val().replace(/-/gi,"");				// 날짜시작
 			param.send1[0].SEARCH_EDDATE = $("#customerSMSSend_ed").val().replace(/-/gi,"");				// 날짜종료
@@ -467,9 +473,9 @@ function loadList(id, grid, listID, sort) {
 	// 개인별 발송
 	case 'getTB_SMSDATA':
 		param.menuname = "SMS 수/발신이력";
-		if($("#customerSMSPerDateCheck").is(":checked") || $("#customerSMSPerPhoneCheck").is(":checked")){
+		if($("#customerSMSPerDateCheck").is(":checked")){
 		}else {
-			alert("검색조건이 하나 이상 필요합니다.");
+			alert("기간은 필수입니다.");
 			return;
 		}
 		

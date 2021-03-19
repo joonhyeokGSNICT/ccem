@@ -60,6 +60,7 @@ $(function(){
 			counselMain_researchCust_rsrchCust_grid.addSelection(ev);
 			counselMain_researchCust_rsrchCust_grid.clickSort(ev);
 			loadList('getTBCALLRST',counselMain_researchCust_rschCallHist_grid, counselMain_researchCust_rsrchCust_grid.getRow(ev.rowKey).LIST_ID);
+			counselMain_researchCust_rschCallHist_grid.refreshLayout();
 	    });
 		
 		// 고객조사 끝

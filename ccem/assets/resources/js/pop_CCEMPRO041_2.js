@@ -500,23 +500,26 @@ function callRequest(type){
 	opener.zendeskTicketSearch().then(function(data){
 
 		if(type == 'ticketCall'){
-			if(opener.sidebarClient == null){
-				alert('열린 티켓이 없습니다.');
-				return;
-			}
-			if(data.ticket != undefined){
+			if(opener.sidebarClient != null){
+				if(data.ticket != undefined){
 					if(data.ticket.id != null && data.ticket.id != undefined && data.ticket.id != ''){
 						opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', data.ticket.id, '1');
+						ticketCallFlag = true;
 					}else {
 						alert('티켓 아이디가 정상적이지 않습니다. 관리자에게 요청하세요.');
 						return;
 					}
+				}else{
+					alert('열린 티켓이 없습니다.');
+					return;
+				}
 			}else {
 				alert('열린 티켓이 없습니다.');
 				return;
 			}
 		}else {
 			opener.wiseNTalkUtil.callStart(tempStat, $.trim($('#top_input_tel').val()), 'CCEMPRO041_2', '');
+			ticketCallFlag = false;
 		}
 		
 	});

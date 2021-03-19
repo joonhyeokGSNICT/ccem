@@ -190,6 +190,12 @@ var teacherPopMKList = [							// 자동으로 선생님탭 탑바 오픈되는 
 	'oblist_cde_80'
 ]
 
+var autoOpenCSEL = ['10','30','40','60']; 		// 통화연결시 자동으로 상담등록 팝업되는 OB구분
+												// 10 : 정보이용동의
+												// 30 : 고객직접퇴회
+												// 40 : 전화상담신청
+												// 60 : IVR콜백
+
 
 var currentOBMK = "";
 
@@ -215,6 +221,7 @@ var wiseNTalkUtil = {
 		callStart: function(status, targetPhone, originName, ticketID, type){
 			
 			if(type == '1'){			// 티켓 여부 확인 타입
+				ticketCallFlag = true;
 				if(status == 'callOn'){
 					if(ticketID == '' || ticketID == null || ticketID == undefined){
 						if(originName == null || originName == undefined || originName == ''){
@@ -226,6 +233,8 @@ var wiseNTalkUtil = {
 						}
 					}
 				}
+			}else {
+				ticketCallFlag = false;
 			}
 			
 			
@@ -439,6 +448,10 @@ client.on('api_notification.setCTIStatus', function(status){
 	
 	if(CTI_STATUS.callType == 'CONFERENCE'){
 		wiseNTalkUtil.whileTransfer = true;			// 3자 통화 boolean
+	}
+	
+	if(wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && autoOpenCSEL.includes(currentOBMK) && ticketCallFlag == true){	// 통화연결, 상담등록오픈OB구분, 티켓콜일 경우
+		onclickCselBtn('cust');
 	}
 	
 	if((wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'OUT') || (wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'PREROUTE_ACD_IN' || CTI_STATUS.callType == 'ACD_IN')){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
@@ -1071,6 +1084,19 @@ $(function(){
 	
 	// 전화걸기 이벤트버튼
 	$(".callBtn").click(function(){
+		
+		if ((PopupUtil.contains("CSELTOP")    || 
+		    PopupUtil.contains("CCEMPRO022") || 
+		    PopupUtil.contains("CCEMPRO031") || 
+		    PopupUtil.contains("CCEMPRO032") || 
+		    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CSELTOP")    || 
+		    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO022") || 
+		    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO031") || 
+		    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO032")) && autoOpenCSEL.includes(currentOBMK)) {
+			ModalUtil.modalPop("알림","상담등록 또는 입회등록 창을 닫고 진행해주세요.");
+			return;
+		}
+		
 		var tempStat = "";
 		var phoneNum = "";
 		switch($(this).attr('id')){
@@ -1108,8 +1134,12 @@ $(function(){
 		};
 		if(sidebarClient != null){
 			sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-				currentTicketInfo = data;
-				wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id);
+				if(data.ticket != undefined){
+					currentTicketInfo = data;
+					wiseNTalkUtil.callStart(tempStat, phoneNum, '', currentTicketInfo?.ticket?.id, '1');
+				}else {
+					client.invoke("notify", "열린 티켓이 없습니다.", "error", 60000);
+				}
 			});
 		}else if(tempStat == 'callOn'){
 			client.invoke("notify", "열린 티켓이 없습니다.", "error", 60000);
@@ -1365,12 +1395,9 @@ $(function(){
 					loadList('getSurveyData', counselMain_researchCust_surveyList_grid);			// 설문조사
 				}
 			}
-			counselMain_researchCust_rsrchCust_grid.refreshLayout();
-			//counselMain_directCharge_reciverInfo_grid.refreshLayout();
-			/*var counselMain_researchCust_rsrchCust_grid = null;		// 상담메인	> 고객조사 > 고객조사 grid
-			var counselMain_researchCust_rschCallHist_grid = null;		// 상담메인	> 고객조사 > 통화이력 grid
-			var counselMain_researchCust_smsLmsHist_grid = null;		// 상담메인	> 고객조사 > 설문조사 grid
-			*/
+			counselMain_researchCust_rsrchCust_grid.refreshLayout();	// 상담메인	> 고객조사 > 고객조사 grid
+			counselMain_researchCust_rschCallHist_grid.refreshLayout(); // 상담메인	> 고객조사 > 통화이력 grid
+			counselMain_researchCust_surveyList_grid.refreshLayout();	// 상담메인	> 고객조사 > 설문조사 grid
 			break;
 		// SMS/LMS 이력
 		case 'smsList':
@@ -3384,7 +3411,7 @@ function onSave(){
 		param.DS_CUST[0].CUST_ID = 			"";
 		param.DS_CUST[0].CUST_MK = 			$("#custInfo_CUST_MK").val();
 		param.DS_CUST[0].CUST_CGNT_NO = 	"";
-		param.DS_CUST[0].MBR_ID = 			"";
+		param.DS_CUST[0].MBR_ID = 			$("#custInfo_MBR_ID").val();
 		param.DS_CUST[0].NAME = 			$("#custInfo_NAME").val();
 		param.DS_CUST[0].NAME_ENG = 		"";
 		param.DS_CUST[0].GND = 				$("#custInfo_GND").val();
@@ -3424,7 +3451,7 @@ function onSave(){
 		param.DS_CUST[0].CUST_ID = 		$("#custInfo_CUST_ID").val();
 		param.DS_CUST[0].CUST_MK = 		$("#custInfo_CUST_MK").val();
 		param.DS_CUST[0].CUST_CGNT_NO = 	"";
-		param.DS_CUST[0].MBR_ID = 			"";
+		param.DS_CUST[0].MBR_ID = 			$("#custInfo_MBR_ID").val();
 		param.DS_CUST[0].NAME = 			$("#custInfo_NAME").val();
 		param.DS_CUST[0].NAME_ENG = 		"";
 		param.DS_CUST[0].GND = 			$("#custInfo_GND").val();
@@ -3768,7 +3795,10 @@ function smsOnClick_tchr(){
  * @param 
  */
 async function zendeskTicketSearch(){
-	var ticketTemp = await sidebarClient.get('ticket');
+	var ticketTemp = {};
+	if(sidebarClient != null){
+		ticketTemp = await sidebarClient.get('ticket');
+	}
 	return ticketTemp;
 }
   
