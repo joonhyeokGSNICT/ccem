@@ -11,6 +11,7 @@ client.on("api_notification.openOBResult", function (data) {
 			var str = currentTicketInfo.ticket.tags[index];
 			_OB_CDE = str.substr( str.length-2, 2 );
 			_api.getOB();
+			$('#obResultModalClose').addClass('d-none');
 			client.invoke('popover', 'show').then(function () {
 				$('#obResultModal').modal('show');
 			})
@@ -321,20 +322,34 @@ function onClickRadio(){
 };
 
 /******************************************************
- * 임시 팝업 확인
+ * OB결과등록 창 팝업 확인
  ******************************************************/
-function tempPopUp () {
+function OBResultPopUp() {
+	var cnt = 0;
 	for ( index in currentTicketInfo.ticket.tags ) {
 		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
-		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'    ) {
+		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60') {
 			var str = currentTicketInfo.ticket.tags[index];
 			_OB_CDE = str.substr( str.length-2, 2 );
 			_api.getOB();
+			$('#obResultModalClose').removeClass('d-none');
 			client.invoke('popover', 'show').then(function () {
 				$('#obResultModal').modal('show');
 			})
+			cnt++;
+		} 
+		if ( Number(index)+1 == currentTicketInfo.ticket.tags.length && cnt == 0 ) {
+			client.invoke('notify',"해당 티켓은 OB상담건이 아닙니다.", 'alert', 5000);
 		}
 	}	
+
+}
+
+/******************************************************
+ * OB결과등록 창 팝업 닫기
+ ******************************************************/
+function closeOBResultModal() {
+	$('#obResultModal').modal('hide');
 }
 
 /******************************************************
