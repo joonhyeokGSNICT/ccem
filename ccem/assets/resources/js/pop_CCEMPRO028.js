@@ -630,18 +630,30 @@ const getAppUserCondition = async () => {
 		return false;
 	}
 
+	const noUserData = new Array();
 	const userData = new Array();
 	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
-	for (const EMP_ID of EMP_ID_LIST) {
+	const EMP_NM_LIST = $("#textbox17").val().split(",");
+
+	for (let i = 0; i < EMP_ID_LIST.length; i++) {
+
+		const EMP_ID = EMP_ID_LIST[i];
+		const EMP_NM = EMP_NM_LIST[i];
 
 		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
-		if (!users || users.length == 0) {
-			alert("연계대상자에 해당하는 젠데스트 사용자정보가 존재하지 않습니다.\n\n다시 선택해 주세요.");
-			return false;
-		} else {
+
+		if (users?.length > 0) {
 			userData.push({ user_id: users[0].id, action: "put" });
+		} else {
+			noUserData.push(EMP_NM.trim());
 		}
 
+	}
+
+	if (noUserData.length > 0) {
+		alert(`[${noUserData.join(", ")}]는 젠데스크 사용자로 등록되지 않은 대상자입니다. 다시 선택해 주세요.`);
+		$("#textbox17").focus();
+		return false;
 	}
 	
 	if (userData.length == 0) {
