@@ -615,7 +615,7 @@ const checkUser = async (target, CUST_ID, CUST_NAME) => {
 
 	// 젠데스크 사용자생성은 topbar에서 처리함.
 	if (users.length === 0) {
-		alert("젠데스크 사용자를 생성중입니다.\n\n잠시후 다시 시도해 주세요.");
+		alert("해당 회원을 젠데스크 사용자로 등록 중 입니다. 잠시후 다시 시도해 주세요.(최대 1~2분 소요)\n\n이 오류가 반복되면 관리자에게 문의하세요.");
 		return false;
 	}
 
