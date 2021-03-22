@@ -237,7 +237,6 @@ const onStart = async () => {
 
 	// 전화아이콘 상태를 컨트롤 하기위해
 	topbarObject?.wiseNTalkUtil.saveWindowObj(window);
-	topbarObject?.wiseNTalkUtil.changePhoneIcon(window);
 	
 }
 
@@ -1179,7 +1178,7 @@ const getNewMbrId = (CUST_ID) => new Promise((resolve, reject) => {
 		return;
 	}
 	
-	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO031", ticket_id);
+	topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO031", ticket_id, "1");
 
 }
 

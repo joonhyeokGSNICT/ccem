@@ -80,7 +80,6 @@ const onStart = async () => {
     
 	// 전화아이콘 상태를 컨트롤 하기위해
 	topbarObject?.wiseNTalkUtil.saveWindowObj(window);
-	topbarObject?.wiseNTalkUtil.changePhoneIcon(window);
 
 }
 
@@ -774,7 +773,7 @@ const onMakeCall = (elm, iIdx) => {
         return;
     }
 
-    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO095", DS_CSEL_PROC.ZEN_TICKET_ID);
+    topbarObject.wiseNTalkUtil.callStart(status, targetPhone, "CCEMPRO095", DS_CSEL_PROC.ZEN_TICKET_ID, "1");
 
 }
 
