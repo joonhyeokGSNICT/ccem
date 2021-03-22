@@ -452,14 +452,17 @@ client.on('api_notification.setCTIStatus', function(status){
 		wiseNTalkUtil.whileTransfer = true;			// 3자 통화 boolean
 	}
 	
-	if(wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && autoOpenCSEL.includes(currentOBMK) && ticketCallFlag == true){	// 통화연결, 상담등록오픈OB구분, 티켓콜일 경우
-		onclickCselBtn('cust');
-	}
-	
 	if((wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'OUT') || (wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'PREROUTE_ACD_IN' || CTI_STATUS.callType == 'ACD_IN')){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
 		wiseNTalkUtil.openedCallPop['CCEMPRO023']?.loadAgreement();			// 동의결과 조회
 		wiseNTalkUtil.openedCallPop['CCEMPRO023']?.loading.out();
 		wiseNTalkUtil.whileTransfer = false;
+	}
+});
+
+//WiseNTalk 상담등록 팝업 트리거
+client.on('api_notification.openCSEL', function(){
+	if(autoOpenCSEL.includes(currentOBMK) && ticketCallFlag == true){	// 상담등록오픈OB구분, 티켓콜일 경우
+		onclickCselBtn('cust');
 	}
 });
 
@@ -1837,7 +1840,7 @@ function customerSearch(currentDiv, type){
 		    recvdataids: ["recv1"],
 		    send1: 	[
 		    			{
-		    				"TCHR_NAME": 	"김소라",
+		    				"TCHR_NAME": 	"",
 		    				"EMP_ID":		"",
 		    				"EMP_MK":		"",
 		    				"DEPT_NAME":	"",
