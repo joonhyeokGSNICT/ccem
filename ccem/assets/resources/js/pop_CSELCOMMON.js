@@ -577,7 +577,7 @@ const checkTicket = async () => {
 
 	const CSEL_DATE_NO_SEQ = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["CSEL_DATE_NO_SEQ"]);
 	if (CSEL_DATE_NO_SEQ) {
-		alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
+		alert(`#${currentTicket.id} 이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.`);
 		return false;
 	}
 
