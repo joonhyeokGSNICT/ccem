@@ -704,7 +704,6 @@ const onSave = async () => {
 	onSearch()								// 입회등록화면 재조회	
 	refreshDisplay();						// 오픈된 화면 재조회
 	topbarClient.invoke("popover", "hide"); // topbar 숨김
-	alert("저장 되었습니다.");
 
 	return true;
 }
