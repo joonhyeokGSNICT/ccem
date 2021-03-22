@@ -432,7 +432,8 @@ const getCselInfo = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, r
 			$("#hiddenbox3").val(cselData.DIV_KIND_CDE);									// 브랜드ID
 			$("#textbox16").val(findCodeName("FAX_TYPE_CDE", "DS27"));						// FAX양식 - 교사소개의뢰서
 			
-			setBtnCtrlAtLoadComp();				// 버튼제어
+			onChangeACTIVITY_MK();	 // 사업구분 change event
+			setBtnCtrlAtLoadComp();	 // 버튼제어
 
 			return resolve(cselData);
 		})
@@ -903,6 +904,27 @@ const getProcStsMk = () => {
 			RECORD_ID		: data.RECORD_ID, 							// 녹취키(리스트) 없는 경우 []
 		});
 
+	}
+
+}
+
+/**
+ * 사업구분 change evnet
+ * - as-is : clm3110.CMB_ACTIVITY_MK.OnSelChange2();
+ */
+const onChangeACTIVITY_MK = () => {
+
+	const value = $("#selectbox6").val();
+	
+	// 신규일경우 = 해지사유, 재사업구분 비활성화
+	if (value == "7A") {
+		$("#selectbox4 option:eq(0)").prop("selected", true);
+		$("#selectbox5 option:eq(0)").prop("selected", true);
+		$("#selectbox4").prop("disabled", true);
+		$("#selectbox5").prop("disabled", true);
+	} else {
+		$("#selectbox4").prop("disabled", false);
+		$("#selectbox5").prop("disabled", false);
 	}
 
 }
