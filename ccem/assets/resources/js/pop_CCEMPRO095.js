@@ -22,27 +22,29 @@ $(function () {
     });
 
     // create calendar
-    $(".calendar").each((i, el) => {
-        if(el.id === "calendar4") calendarUtil.init(el.id, { drops: "up", opens: "left"});
-        else calendarUtil.init(el.id);
-    });
+    calendarUtil.init("calendar5");
+    calendarUtil.init("calendar1");
+    calendarUtil.init("calendar2");
+    calendarUtil.init("calendar3");
+    calendarUtil.init("calendar4", { drops: "up", opens: "left"})
 
     // input mask
     $(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
     calendarUtil.currency("textbox28");
 
-    onStart(opener ? opener.name : "");
+    onStart();
 
 });
 
 /**
  * 오픈하는곳에 따라 분기처리
- * @param {string} openerNm 
  */
-const onStart = async (openerNm) => {
+const onStart = async () => {
+
+    const opener_name = opener ? opener.name : "";
 
     // 상담조회에서 팝업 되었을때,
-    if (openerNm.includes("CCEMPRO035")) {
+    if (opener_name.includes("CCEMPRO035")) {
         topbarObject  = opener.topbarObject;
         topbarClient  = topbarObject.client;
         sidebarClient = topbarObject.sidebarClient;
@@ -57,10 +59,10 @@ const onStart = async (openerNm) => {
         sCustMk           = counselGrid.getValue(rowKey, "CUST_MK")     // 고객구분
 
         await setCodeData(topbarObject.codeData);
-        getCselProc();
+        onSearch();
 
     // 상담등록화면에서 팝업되었을때,
-    } else if (openerNm.includes("CCEMPRO022")) {
+    } else if (opener_name.includes("CCEMPRO022")) {
         topbarObject  = opener.topbarObject;
         topbarClient  = topbarObject.client;
         sidebarClient = topbarObject.sidebarClient;
@@ -73,14 +75,7 @@ const onStart = async (openerNm) => {
         sCustMk     = $("#hiddenbox2", opener.document).val();          // 고객구분
 
         await setCodeData(topbarObject.codeData);
-        getCselProc();
-
-    // TODO I/B해피콜 리스트에서 팝업되었을때,
-    } else if (openerNm.includes("CCEMPRO000")) {
-        sCselDate   = "";  // 상담일자
-        sCselNo     = "";  // 상담번호
-        sCselSeq    = "";  // 상담순번
-        sCustId     = "";  // 고객번호
+        onSearch();
     }
     
 	// 전화아이콘 상태를 컨트롤 하기위해
@@ -195,10 +190,41 @@ const onChangeGiftChnl = (value) => {
 }
 
 /**
+ * 조회
+ */
+ const onSearch = async (DS_TICKET) => {
+
+    await getCselProc();
+
+    // 저장후 재조회시 티켓업데이트
+    if (DS_TICKET) {
+
+        const HPCALL_DATE = calendarUtil.getImaskValue("calendar3");
+        const HPCALL_TIME = $("#timebox1").val();
+
+        // 해피콜 일시(yyyy-mm-dd hh:mm:dd)
+        if (HPCALL_DATE.length == 8 && HPCALL_TIME.length == 6) {
+            DS_TICKET.HPCALL_DATE_TIME = `${FormatUtil.date(HPCALL_DATE)} ${FormatUtil.time(HPCALL_TIME)}`;
+        }
+
+        DS_TICKET.HPCALL_CNTS           = $("#textbox27").val().trim();              // 해피콜 내용
+        DS_TICKET.HPCALL_CHNL_MK_NM     = $("#selectbox2 option:selected").text();   // 해피콜 경로    
+        DS_TICKET.HPCALL_USER_NM        = $("#textbox25").val();                     // 해피콜 상담원명    
+        DS_TICKET.HPCALL_SATIS_CDE_NM   = $("#selectbox1 option:selected").text();   // 해피콜 고객만족도     
+        DS_TICKET.IS_HAPY               = $("#checkbox1").is(":checked");            // 해피콜여부   
+
+        updateTicket(DS_TICKET);                                 
+
+    }
+
+}
+
+/**
  * 상담내역 조회
  * - as-is : cns6000.onSearch()
  */
-const getCselProc = (DS_TICKET) => {
+const getCselProc = () => new Promise((resolve, reject) => {
+
     const settings = {
 		url: `${API_SERVER}/cns.getCselProc.do`,
 		method: 'POST',
@@ -219,11 +245,14 @@ const getCselProc = (DS_TICKET) => {
 		}),
 		errMsg: "상담내역 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(res => {
-        if (!checkApi(res, settings)) return;
 
-        if (res.dsRecv.length >= 1) {
-            DS_CSEL_PROC = res.dsRecv[0];
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+
+            // 상담내역 세팅
+            DS_CSEL_PROC = (res.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
+
             calendarUtil.setImaskValue("calendar5", DS_CSEL_PROC.CSEL_DATE);        // MSK_CSEL_DATE          // 상담일자        
             $("#textbox1").val(DS_CSEL_PROC.CSEL_NO);                               // txtCSEL_NO            // 상담번호        
             $("#textbox2").val(DS_CSEL_PROC.CSEL_SEQ);                              // txtCSEL_SEQ           // 상담순번        
@@ -285,25 +314,19 @@ const getCselProc = (DS_TICKET) => {
             $("#textbox12").val(DS_CSEL_PROC.LC_ID_NM);                             // txtLC_ID_NM           // 센터명   
             // DS_CSEL_PROC.ZEN_TICKET_ID        // 티켓ID
 
-            onChangeGiftChnl(DS_CSEL_PROC.GIFT_CHNL_MK); // 전달경로구분 세팅         
+            onChangeGiftChnl(DS_CSEL_PROC.GIFT_CHNL_MK);    // 발송경로 세팅         
+            setActiveControl();                             // 활성 및 비활성 항목 처리
             
             // 저장구분 체크 - 해당정보가 있으면 수정(U), 없으면 신규(I)
             DS_CSEL_PROC.PROC_STAT   = DS_CSEL_PROC.PROC_DATE   ? "U" : "I";    // 처리내역
             DS_CSEL_PROC.HPCALL_STAT = DS_CSEL_PROC.HPCALL_DATE ? "U" : "I";    // 해피콜정보
             DS_CSEL_PROC.GIFT_STAT   = DS_CSEL_PROC.GIFT_DATE   ? "U" : "I";    // 사은품정보
-                
-            setActiveControl();
 
-            // 저장후 제조회시 티켓업데이트
-            if (DS_TICKET) {
-                DS_TICKET.IS_HAPY = $("#checkbox1").is(":checked");       // 해피콜여부
-                updateTicket(DS_TICKET);                                  // 티켓업데이트
-            }
+            return resolve(DS_CSEL_PROC);
 
-        }
-
-    });
-}
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+});
 
 /**
  * 항목 비활성 제어 함수
@@ -320,6 +343,7 @@ const setActiveControl = async () => {
         case "01": // 접수
         case "03": // 지점처리중
             $("#button1").prop("disabled", false);  // 완료버튼 활성화
+            $("#button7").prop("disabled", true);   // 1차해피콜삭제 비활성화
             if (!$("#textbox23").val()) {
                 $("#textbox23").val(S_USER_NAME);
                 DS_CSEL_PROC.PROC_USER_ID = S_USER_ID;
@@ -332,7 +356,8 @@ const setActiveControl = async () => {
         case "15": // 해피콜완료                
             $("#checkbox1").prop("checked", true);
         case "99": //완료
-            $("#button1").prop("disabled", false);  // 완료버튼 활성화
+            $("#button1").prop("disabled", false);              // 완료버튼 활성화
+            if (isAdmin) $("#button7").prop("disabled", false); // 관리자인 경우 1차해피콜삭제 활성화
             if (DS_CSEL_PROC.CSEL_RST_MK1 != "12") setDisableGift(); // 상담결과(dm접수-사은품:12)일때만 활성화한다.
 
             //지점처리자 설정-자신과 관리자만 수정 가능함.
@@ -420,14 +445,19 @@ const setDisableHpCall = () => {
 }
 
 /**
- * 완료/저장버튼 클릭시
+ * 1차해피콜삭제/완료/저장버튼 클릭시
  * - as-is : cns6000.onComplete(), onSave()
  * @param {string} sBtnMk 
  */
 const onSave = (sBtnMk) => {
 
-    // 완료 버튼을 클릭한 경우 처리구분: 완료(99)설정
-    if (sBtnMk == "CO") {
+    // 1차해피콜삭제 버튼을 클릭한 경우 처리상태를 지점처리중(03)으로 설정
+    if (sBtnMk == "1D") {
+        DS_CSEL_PROC.PROC_STS_MK = "03";
+        $("#checkbox1").prop("checked", false);
+    
+    // 완료 버튼을 클릭한 경우 처리상태를 완료(99)로 설정
+    } else if (sBtnMk == "CO") {
         DS_CSEL_PROC.PROC_STS_MK = "99";
         $("#checkbox1").prop("checked", false);
     }
@@ -600,26 +630,23 @@ const getSaveCondition = (sBtnMk) => {
             SEND_DATE           : calendarUtil.getImaskValue("calendar4"),      // 발송일자       
             PASS_USER           : $("#textbox29").val(),                        // 전달자명       
             INVOICENUM          : $("#textbox30").val(),                        // 택배송장번호       
-            IS_HAPY             : $("#checkbox1").is(":checked"),               // 해피콜여부
+            IS_HAPY             : "",                                           // 해피콜여부
             PROC_STS_MK         : DS_CSEL_PROC.PROC_STS_MK,                     // 처리상태구분
             HPCALL_ROW_TYPE     : DS_CSEL_PROC.HPCALL_STAT,                     // 해피콜 저장구분(I/U/D)
             BTN_MK              : sBtnMk,                                       // 버튼구분(CO: 완료, SA: 저장)
             PROC_DATE           : "",                                           // 처리일자(YYYY-MM-DD)
             PROC_USER_NM        : $("#textbox23").val(),                        // 처리자명
             PROC_CNTS           : $("#textbox24").val().trim(),                 // 처리내용
-            HPCALL_CNTS         : $("#textbox27").val().trim(),                 // 해피콜 내용
+            HPCALL_CNTS         : "",                                           // 해피콜 내용
             HPCALL_DATE_TIME    : "",                                           // 해피콜일시(YYYY-MM-DD hh:mm:ss)
-            HPCALL_CHNL_MK_NM   : $("#selectbox2 option:selected").text(),      // 해피콜 경로
-            HPCALL_SATIS_CDE_NM : $("#selectbox1 option:selected").text(),      // 해피콜 고객만족도
-            HPCALL_USER_NM      : $("#textbox25").val(),                        // 해피콜 상담원명
+            HPCALL_CHNL_MK_NM   : "",                                           // 해피콜 경로
+            HPCALL_SATIS_CDE_NM : "",                                           // 해피콜 고객만족도
+            HPCALL_USER_NM      : "",                                           // 해피콜 상담원명
         },
     }
 
     // 티켓정보 세팅
     data.DS_TICKET.PROC_DATE = FormatUtil.date(data.DS_PROC.PROC_DATE);
-    if (data.DS_HPCALL.HPCALL_DATE?.length == 8 && data.DS_HPCALL.HPCALL_TIME?.length == 6) {
-        data.DS_TICKET.HPCALL_DATE_TIME = `${FormatUtil.date(data.DS_HPCALL.HPCALL_DATE)} ${FormatUtil.time(data.DS_HPCALL.HPCALL_TIME)}`;
-    }
 
     return data;
 
@@ -650,7 +677,7 @@ const saveCselProc = (condition) => {
         if (!checkApi(res, settings)) return;
 
         // 저장성공후
-        getCselProc(condition.DS_TICKET);  // 재조회 및 티켓업데이트
+        onSearch(condition.DS_TICKET);     // 재조회 및 티켓업데이트
         refreshDisplay();                  // 오픈된 화면 재조회
         alert("저장 되었습니다.");
         
@@ -687,14 +714,12 @@ const updateTicket = (DS_TICKET) => {
         custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], value: OB_MK_VAL });
     }
 
-    // 해피콜 저장시 - 해피콜관련 티켓필드 세팅
-    if (DS_TICKET.HPCALL_ROW_TYPE == "I" || DS_TICKET.HPCALL_ROW_TYPE == "U") {
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE1_TIME1"],     value: DS_TICKET.HPCALL_DATE_TIME });       // 해피콜 일시
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS1"],           value: DS_TICKET.HPCALL_CNTS });            // 해피콜 내용
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM1"],      value: DS_TICKET.HPCALL_CHNL_MK_NM });      // 해피콜 경로
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM1"],      value: DS_TICKET.HPCALL_USER_NM });         // 해피콜 상담원명
-        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM1"],           value: DS_TICKET.HPCALL_SATIS_CDE_NM });    // 해피콜 고객만족도
-    }
+    // 해피콜관련 티켓필드 세팅
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE1_TIME1"],     value: DS_TICKET.HPCALL_DATE_TIME });       // 해피콜 일시
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS1"],           value: DS_TICKET.HPCALL_CNTS });            // 해피콜 내용
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM1"],      value: DS_TICKET.HPCALL_CHNL_MK_NM });      // 해피콜 경로
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM1"],      value: DS_TICKET.HPCALL_USER_NM });         // 해피콜 상담원명
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM1"],           value: DS_TICKET.HPCALL_SATIS_CDE_NM });    // 해피콜 고객만족도
 
     // 기타 티켓필드 세팅
     const PROC_STS_MK_VAL = `proc_sts_mk_${Number(DS_TICKET.PROC_STS_MK)}`;

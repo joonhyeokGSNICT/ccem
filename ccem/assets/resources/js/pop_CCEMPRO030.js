@@ -40,18 +40,19 @@ $(function () {
     $(".imask-time").each((i, el) => calendarUtil.timeMask(el.id));
     $(".imask-date").each((i, el) => calendarUtil.dateMask(el.id));
 
-    onStart(opener ? opener.name : "");
+    onStart();
 
 });
 
 /**
  * 오픈하는곳에 따라 분기처리
- * @param {string} openerNm 
  */
-const onStart = async (openerNm) => {
+const onStart = async () => {
     
+    const opener_name = opener ? opener.name : "";
+
     // 상담조회에서 팝업 되었을때,
-    if (openerNm.includes("CCEMPRO035")) { 
+    if (opener_name.includes("CCEMPRO035")) { 
         topbarObject  = opener.topbarObject;
         topbarClient  = topbarObject.client;
         sidebarClient = topbarObject.sidebarClient;
@@ -67,30 +68,8 @@ const onStart = async (openerNm) => {
         await setCodeData(topbarObject.codeData);
         onSearch();
 
-    }
-    // TODO 시정처리관리에서 팝업되었을때,
-    else if (openerNm.includes("CCEMPRO000")) { 
-        sCSEL_DATE = "";
-        sCSEL_NO   = "";
-        sCSEL_SEQ  = "";
-        sPROC_MK   = "";
-    }
-    // TODO I/B해피콜 리스트에서 팝업되었을때,
-    else if (openerNm.includes("CCEMPRO000")) { 
-        sCSEL_DATE = "";
-        sCSEL_NO   = "";
-        sCSEL_SEQ  = "";
-        sPROC_MK   = "";
-    }
-    // TODO 연계확인에서 팝업되었을때,
-    else if (openerNm.includes("CCEMPRO000")) { 
-        sCSEL_DATE = "";
-        sCSEL_NO   = "";
-        sCSEL_SEQ  = "";
-        sPROC_MK   = "";
-    }
     // 상담등록에서 팝업되었을때,
-    else if (openerNm.includes("CCEMPRO022")) {
+    } else if (opener_name.includes("CCEMPRO022")) {
         topbarObject  = opener.topbarObject;
         topbarClient  = topbarObject.client;
         sidebarClient = topbarObject.sidebarClient;
@@ -103,7 +82,6 @@ const onStart = async (openerNm) => {
 
         await setCodeData(topbarObject.codeData);
         onSearch();
-        
     }
 
 	// 전화아이콘 상태를 컨트롤 하기위해
@@ -243,20 +221,33 @@ const onChangeRdoTel = () => {
 /**
  * 조회
  */
-const onSearch = (DS_TICKET) => {
-    getCounselRst(DS_TICKET);
-    getCharge();
-    getDeptProcVoc();
-    getGift();
-    getHappy1();
-    // getTransList();
+const onSearch = async (DS_TICKET) => {
+
+    await getCounselRst();
+    await getCharge();
+    await getDeptProcVoc();
+    await getDeptProc();
+    await getGift();
+    await getHappy1();
+    await getHappy2();
+            
+    setText(DS_COUNSEL.CUST_MK);                                  // 고객 또는 선생님 셋팅
+    setButton(DS_COUNSEL.PROC_STS_MK);                            // 버튼 셋팅
+    setDisplay(DS_COUNSEL.PROC_STS_MK, DS_COUNSEL.CSEL_RST_MK);   // 화면 셋팅
+
+    // 저장후 재조회시 티켓업데이트
+    if (DS_TICKET) {
+        DS_TICKET.IS_HAPY = $("#checkbox4").is(":checked");       // 해피콜여부
+        updateTicket(DS_TICKET);                                  // 티켓업데이트
+    }
+
 }
 
 /**
  * 상담내역 조회
  * - as-is : cns2700.onSearch()
  */
-const getCounselRst = (DS_TICKET) => {
+const getCounselRst = () => new Promise((resolve, reject) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getCounselRst.do`,
@@ -276,82 +267,72 @@ const getCounselRst = (DS_TICKET) => {
 		}),
 		errMsg: "상담내역 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
 
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-            DS_COUNSEL = data.dsRecv[0];
-         
-        // 검색결과가 없는경우.
-        } else {
-            DS_COUNSEL = {};
-        }
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 
-        // 상담내역 세팅
-        calendarUtil.setImaskValue("datebox1", DS_COUNSEL.CSEL_DATE)            // 상담일자
-        // DS_COUNSEL.CSEL_NO             // 상담번호
-        // DS_COUNSEL.CSEL_SEQ            // 상담순번
-        // DS_COUNSEL.CUST_ID             // 고객번호
-        // DS_COUNSEL.CUST_MK             // 고객구분
-        // DS_COUNSEL.CSEL_USER_ID        // 상담원ID
-        // DS_COUNSEL.CSEL_STTIME         // 상담시작시간
-        $("#textbox16").val(DS_COUNSEL.CSEL_TITLE);          // 상담제목
-        $("#textbox17").val(DS_COUNSEL.CSEL_CNTS);           // 상담상세내용
-        // DS_COUNSEL.MBR_ID              // 회원번호
-        calendarUtil.setImaskValue("datebox2", DS_COUNSEL.PROC_HOPE_DATE);       // 처리희망일자
-        // DS_COUNSEL.DEPT_ID             // 관할지점코드
-        calendarUtil.setImaskValue("datebox3", DS_COUNSEL.TRANS_DATE);           // 연계일자
-        // DS_COUNSEL.TRANS_NO            // 연계번호
-        // DS_COUNSEL.PROC_MK             // 처리구분
-        // DS_COUNSEL.PROC_STS_MK         // 처리상태구분
-        // DS_COUNSEL.TO_TEAM_DEPT        // 지점장부서
-        $("#textbox14").val(DS_COUNSEL.CSEL_MK_NAME);        // 상담구분
-        $("#textbox15").val(DS_COUNSEL.PROC_MK_NAME);        // 처리구분
-        $("#textbox6").val(DS_COUNSEL.LIMIT_MK_NAME);        // 처리시한구분
-        $("#textbox3").val(DS_COUNSEL.CSEL_USER);            // 상담원명
-        $("#textbox22").val(DS_COUNSEL.DEPT_NAME);           // 관할지점명
-        $("#textbox4").val(DS_COUNSEL.EMP_MBR_ID);           // 회원번호
-        $("#textbox1").val(DS_COUNSEL.NAME);                 // 교사명or고객명
-        $("#textbox2").val(DS_COUNSEL.TEL_NO);               // 전화번호
-        $("#textbox5").val(DS_COUNSEL.MOBIL_NO);             // 휴대폰번호
-        $("#textbox8").val(DS_COUNSEL.DONG);                 // 동
-        $("#textbox9").val(DS_COUNSEL.ADDR);                 // 동이하
-        // DS_COUNSEL.FAT_RSDNO           // 세대주주민번호
-        $("#timebox5").val(DS_COUNSEL.TRANS_TIME);           // 연계시간
-        $("#textbox23").val(DS_COUNSEL.DEPT_REP_EMP);        // 교육국장(사업국장)
-        $("#textbox10").val(DS_COUNSEL.DEPT_REP_EMP);
-        // DS_COUNSEL.CSEL_RST_MK         // 상담결과
-        $("#textbox7").val(DS_COUNSEL.ETC_TEL_NO);           // 모연락처
-        // DS_COUNSEL.FAT_TEL_NO          // 부연락처
-        // DS_COUNSEL.CSEL_MAN_MK         // 내담자구분
-        // DS_COUNSEL.DEPT_REP_EMP_PDA    // 교육국장 PDA
-        $("#textbox11").val(DS_COUNSEL.DEPT_REP_EMP_HP);     // 교육국장 HP
-        // DS_COUNSEL.DEPT_REP_EMPID      // 교육국장 사번
-        $("#textbox13").val(DS_COUNSEL.LC_REP_EMP_HP);       // 센터장 HP
-        // DS_COUNSEL.LC_REP_EMPID        // 센터장 사번
-        $("#textbox12").val(DS_COUNSEL.LC_REP_EMP);          // 센터장
-        // DS_COUNSEL.ZEN_TICKET_ID        // 티켓ID
-        
-        setText(DS_COUNSEL.CUST_MK);                                  // 고객 또는 선생님 셋팅
-        setButton(DS_COUNSEL.PROC_STS_MK);                            // 버튼 셋팅
-        setDisplay(DS_COUNSEL.PROC_STS_MK, DS_COUNSEL.CSEL_RST_MK);   // 화면 셋팅
-        onChangeRdoTel();                                             // 회원 전화번호 세팅
+            // 상담내역 세팅
+            DS_COUNSEL = (res.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
+            
+            calendarUtil.setImaskValue("datebox1", DS_COUNSEL.CSEL_DATE)            // 상담일자
+            // DS_COUNSEL.CSEL_NO             // 상담번호
+            // DS_COUNSEL.CSEL_SEQ            // 상담순번
+            // DS_COUNSEL.CUST_ID             // 고객번호
+            // DS_COUNSEL.CUST_MK             // 고객구분
+            // DS_COUNSEL.CSEL_USER_ID        // 상담원ID
+            // DS_COUNSEL.CSEL_STTIME         // 상담시작시간
+            $("#textbox16").val(DS_COUNSEL.CSEL_TITLE);          // 상담제목
+            $("#textbox17").val(DS_COUNSEL.CSEL_CNTS);           // 상담상세내용
+            // DS_COUNSEL.MBR_ID              // 회원번호
+            calendarUtil.setImaskValue("datebox2", DS_COUNSEL.PROC_HOPE_DATE);       // 처리희망일자
+            // DS_COUNSEL.DEPT_ID             // 관할지점코드
+            calendarUtil.setImaskValue("datebox3", DS_COUNSEL.TRANS_DATE);           // 연계일자
+            // DS_COUNSEL.TRANS_NO            // 연계번호
+            // DS_COUNSEL.PROC_MK             // 처리구분
+            // DS_COUNSEL.PROC_STS_MK         // 처리상태구분
+            // DS_COUNSEL.TO_TEAM_DEPT        // 지점장부서
+            $("#textbox14").val(DS_COUNSEL.CSEL_MK_NAME);        // 상담구분
+            $("#textbox15").val(DS_COUNSEL.PROC_MK_NAME);        // 처리구분
+            $("#textbox6").val(DS_COUNSEL.LIMIT_MK_NAME);        // 처리시한구분
+            $("#textbox3").val(DS_COUNSEL.CSEL_USER);            // 상담원명
+            $("#textbox22").val(DS_COUNSEL.DEPT_NAME);           // 관할지점명
+            $("#textbox4").val(DS_COUNSEL.EMP_MBR_ID);           // 회원번호
+            $("#textbox1").val(DS_COUNSEL.NAME);                 // 교사명or고객명
+            $("#textbox2").val(DS_COUNSEL.TEL_NO);               // 전화번호
+            $("#textbox5").val(DS_COUNSEL.MOBIL_NO);             // 휴대폰번호
+            $("#textbox8").val(DS_COUNSEL.DONG);                 // 동
+            $("#textbox9").val(DS_COUNSEL.ADDR);                 // 동이하
+            // DS_COUNSEL.FAT_RSDNO           // 세대주주민번호
+            $("#timebox5").val(DS_COUNSEL.TRANS_TIME);           // 연계시간
+            $("#textbox23").val(DS_COUNSEL.DEPT_REP_EMP);        // 교육국장(사업국장)
+            $("#textbox10").val(DS_COUNSEL.DEPT_REP_EMP);
+            // DS_COUNSEL.CSEL_RST_MK         // 상담결과
+            $("#textbox7").val(DS_COUNSEL.ETC_TEL_NO);           // 모연락처
+            // DS_COUNSEL.FAT_TEL_NO          // 부연락처
+            // DS_COUNSEL.CSEL_MAN_MK         // 내담자구분
+            // DS_COUNSEL.DEPT_REP_EMP_PDA    // 교육국장 PDA
+            $("#textbox11").val(DS_COUNSEL.DEPT_REP_EMP_HP);     // 교육국장 HP
+            // DS_COUNSEL.DEPT_REP_EMPID      // 교육국장 사번
+            $("#textbox13").val(DS_COUNSEL.LC_REP_EMP_HP);       // 센터장 HP
+            // DS_COUNSEL.LC_REP_EMPID        // 센터장 사번
+            $("#textbox12").val(DS_COUNSEL.LC_REP_EMP);          // 센터장
+            // DS_COUNSEL.ZEN_TICKET_ID        // 티켓ID
+            
+            onChangeRdoTel();                                    // 회원 전화번호 세팅
 
-        // 저장후 제조회시 티켓업데이트
-        if (DS_TICKET) {
-            DS_TICKET.IS_HAPY = $("#checkbox4").is(":checked");       // 해피콜여부
-            updateTicket(DS_TICKET);                                  // 티켓업데이트
-        }
-        
-	});
-}
+            return resolve(DS_COUNSEL);
+            
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
 
 /**
  * 담당선생님, 지점장 정보 조회
  * - as-is : cns2700.onSearch()
  */
-const getCharge = () => {
+const getCharge = () => new Promise((resolve, reject) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getCharge.do`,
@@ -371,32 +352,32 @@ const getCharge = () => {
 		}),
 		errMsg: "담당선생님 및 지점장 정보 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-        
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-		    DS_CHARGE = data.dsRecv[0];
-        
-        // 검색결과가 없는경우.
-        } else {
-            DS_CHARGE = {};
-        }
 
-        // 정보세팅
-        // DS_CHARGE.EMP_ID            // 교사사번  
-        $("#textbox20").val(DS_CHARGE.TCHR_NAME);         // 교사명      
-        // DS_CHARGE.PART_EMP_ID       // 지점장사번      
-        $("#textbox21").val(DS_CHARGE.PART_NO1_NAME);     // 지점장명   
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+            
+            
+            // 담당선생님 및 지점장 정보세팅
+            DS_CHARGE = (res.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
 
-	});
-}
+            // DS_CHARGE.EMP_ID            // 교사사번  
+            $("#textbox20").val(DS_CHARGE.TCHR_NAME);         // 교사명      
+            // DS_CHARGE.PART_EMP_ID       // 지점장사번      
+            $("#textbox21").val(DS_CHARGE.PART_NO1_NAME);     // 지점장명   
+
+            return resolve(DS_CHARGE);
+
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
 
 /**
  * 사업국처리 내역 조회
  * - as-is : cns2700.onSearch()
  */
-const getDeptProcVoc = () => {
+const getDeptProcVoc = () => new Promise((resolve, reject) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getDeptProcVoc.do`,
@@ -416,35 +397,128 @@ const getDeptProcVoc = () => {
 		}),
 		errMsg: "사업국처리 내역 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
 
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-            DS_VOC_PROC = data.dsRecv[0];
-        
-        // 검색결과가 없는경우.
-        } else {
-            DS_VOC_PROC = {};
-        }
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 
-        calendarUtil.setImaskValue("datebox7", DS_VOC_PROC.VOC_PROC_DATE);     // 처리일자      
-        $("#timebox4").val(DS_VOC_PROC.VOC_PROC_TIME);                         // 처리시간          
-        // DS_VOC_PROC.VOC_PROC_EMP_ID   // 처리자ID          
-        $("#textbox29").val(DS_VOC_PROC.VOC_PROC_EMP_NM);                      // 처리자          
-        $("#textbox33").val(DS_VOC_PROC.VOC_PROC_CNTS);                        // 처리내용          
-        // DS_VOC_PROC.CTI_CHGDATE       // CTI변경일자     
+            // 사업국처리 내역 세팅
+            DS_VOC_PROC = (res.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
 
-        getDeptProc(sCSEL_DATE, sCSEL_NO, sCSEL_SEQ);
+            calendarUtil.setImaskValue("datebox7", DS_VOC_PROC.VOC_PROC_DATE);     // 처리일자      
+            $("#timebox4").val(DS_VOC_PROC.VOC_PROC_TIME);                         // 처리시간          
+            // DS_VOC_PROC.VOC_PROC_EMP_ID   // 처리자ID          
+            $("#textbox29").val(DS_VOC_PROC.VOC_PROC_EMP_NM);                      // 처리자          
+            $("#textbox33").val(DS_VOC_PROC.VOC_PROC_CNTS);                        // 처리내용          
+            // DS_VOC_PROC.CTI_CHGDATE       // CTI변경일자 
 
-	});
-}
+            return resolve(DS_VOC_PROC);
+
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
+
+/**
+ * 지점처리 내역 조회
+ * - as-is : cns2700.onSearch()
+ */
+ const getDeptProc = () => new Promise((resolve, reject) => {
+
+	const settings = {
+		url: `${API_SERVER}/cns.getDeptProc.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+            dsSend: [{ 
+                CSEL_DATE   : sCSEL_DATE,   // 상담일자
+                CSEL_NO     : sCSEL_NO,     // 상담번호
+                CSEL_SEQ    : sCSEL_SEQ,    // 상담순번
+            }],
+		}),
+		errMsg: "지점처리 내역 조회중 오류가 발생하였습니다.",
+	}
+    
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+
+            // 검색결과가 있는경우.
+            if (res.dsRecv?.length > 0) {
+                DS_DEPT_PROC = res.dsRecv[0];
+                DS_DEPT_PROC.ROW_TYPE = "U";
+            
+            // 검색결과가 없는경우.
+            } else {
+                DS_DEPT_PROC = new Object();
+                DS_DEPT_PROC.ROW_TYPE       = "I";                        // 지점처리정보 저장구분
+                DS_DEPT_PROC.TRANS_DATE     = getDateFormat().replace(/[^0-9]/gi, "");  // 연계일자
+                DS_DEPT_PROC.TRANS_MK       = DS_COUNSEL.PROC_MK-2;       // 연계구분
+                DS_DEPT_PROC.TRANS_DEPT_ID  = DS_COUNSEL.DEPT_ID;         // 연계지점
+                DS_DEPT_PROC.TRANS_TITLE    = DS_COUNSEL.CSEL_TITLE;      // 연계 제목
+                DS_DEPT_PROC.TRANS_CNTS     = DS_COUNSEL.CSEL_CNTS;       // 연계 내용
+                DS_DEPT_PROC.TRANS_CHNL_MK  = "1";                        // 연계방법(1: 전화)
+                DS_DEPT_PROC.PROC_HOPE_DATE = DS_COUNSEL.PROC_HOPE_DATE;  // 처리희망일
+                DS_DEPT_PROC.PROC_TIME      = "";                         // 처리시간                        
+            }
+
+            // 처리내역 세팅
+            // DS_DEPT_PROC.TRANS_DATE        // 연계일자
+            // DS_DEPT_PROC.TRANS_NO          // 연계번호
+            // DS_DEPT_PROC.TRANS_MK          // 연계구분
+            // DS_DEPT_PROC.TRANS_TIME        // 연계시간
+            // DS_DEPT_PROC.TRANS_DEPT_ID     // 연계지점코드    
+            // DS_DEPT_PROC.TRANS_CHNL_MK     // 연계방법구분    
+            // DS_DEPT_PROC.TRANS_TITLE       // 연계제목
+            // DS_DEPT_PROC.TRANS_CNTS        // 연계상세내용
+            // DS_DEPT_PROC.PROC_HOPE_DATE    // 처리희망일자    
+            // DS_DEPT_PROC.DEPT_ACP_ID       // 지점접수자사번
+            $("#textbox18").val(DS_DEPT_PROC.DEPT_ACP_NAME);                         // 지점접수자성명   
+            if ($("#textbox18").val()) $("#textbox18").prop("readonly", true);       // 접수자가 있으면 입력안되게
+            calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE);     // 지점접수일자(접수일자)
+            $("#timebox1").val(DS_DEPT_PROC.DEPT_ACP_TIME);                          // 지점접수시간(접수시간)
+            // DS_DEPT_PROC.PROC_STS_MK       // 처리상태구분
+            // DS_DEPT_PROC.RTN_FLAG          // 회신여부구분
+            // DS_DEPT_PROC.PROC_DATE         // 처리일자
+            // DS_DEPT_PROC.PROC_TIME         // 처리시간
+            $("#textbox19").val(DS_DEPT_PROC.PROC_EMP);                              // 지점처리자  
+            $("#textbox34").val(DS_DEPT_PROC.PROC_CNTS);                             // 처리내용 
+            // DS_DEPT_PROC.RTN_USER_ID       // 피드백접수자ID
+            // DS_DEPT_PROC.RTN_DATE          // 피드백일자
+            // DS_DEPT_PROC.RTN_TIME          // 피드백시간
+            // DS_DEPT_PROC.CTI_CHGDATE       // CTI변경일자   
+            // DS_DEPT_PROC.TRANS_LC_ID,      // 연계센터코드 
+
+            // 접수일자 체크
+            // if (calendarUtil.getImaskValue("calendar2").length < 8) {
+            //     calendarUtil.setImaskValue("calendar2", getDateFormat());
+            // }
+            // 접수시간 체크
+            // if ($("#timebox1").val().length < 6) {
+            //     $("#timebox1").val(getTimeFormat());   
+            // }
+
+            // 사업국처리시간 세팅
+            const intervalTime = gf_getIntervalTime(DS_DEPT_PROC.DEPT_ACP_DATE||"", DS_DEPT_PROC.DEPT_ACP_TIME||"", DS_VOC_PROC.VOC_PROC_DATE||"", DS_VOC_PROC.VOC_PROC_TIME||"");
+            $("#textbox24").val(intervalTime); 
+            
+            return resolve(DS_DEPT_PROC);
+
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
 
 /**
  * 사은품 정보 조회
  * - as-is : cns2700.onSearch()
  */
-const getGift = () => {
+const getGift = () => new Promise((resolve, reject) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getGift.do`,
@@ -464,47 +538,53 @@ const getGift = () => {
 		}),
 		errMsg: "사은품 정보 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-        if (!checkApi(data, settings)) return;
 
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-            DS_GIFT = data.dsRecv[0];
-            DS_GIFT.ROW_TYPE = "U";
-        
-        // 검색결과가 없는경우.
-        } else {
-            DS_GIFT = {};
-            DS_GIFT.ROW_TYPE = "I";
-            DS_GIFT.SEND_DATE = getDateFormat().replace(/[^0-9]/gi, ""); // 발송일자 초기화
-        }
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 
-        // 사은품정보 세팅
-        // DS_GIFT.GIFT_DATE       // 사은품접수일자    
-        // DS_GIFT.GIFT_NO         // 사은품접수번호
-        // DS_GIFT.GIFT_SEQ        // 사은품접수순번    
-        // DS_GIFT.DTL_MK          // 내역구분
-        // DS_GIFT.CUST_ID         // 고객번호
-        $("#selectbox5").val(DS_GIFT.GIFT_TYPE_CDE);                     // 사은품분류코드  (내역1) 
-        // DS_GIFT.GIFT_CDE        // 사은품코드     (내역2)
-        // DS_GIFT.GIFT_PRICE      // 사은품가격    
-        calendarUtil.setImaskValue("calendar1", DS_GIFT.SEND_DATE);      // 발송일자    
-        // DS_GIFT.GIFT_CHNL_MK    // 전달경로구분        
-        $("#textbox31").val(DS_GIFT.PASS_USER);                          // 전달자    
-        // DS_GIFT.CTI_CHGDATE     // CTI변경일자                        
-        $("#textbox32").val(DS_GIFT.INVOICENUM);                         // 배송송장번호    
+            // 검색결과가 있는경우.
+            if (res.dsRecv?.length > 0) {
+                DS_GIFT = res.dsRecv[0];
+                DS_GIFT.ROW_TYPE = "U";
+            
+            // 검색결과가 없는경우.
+            } else {
+                DS_GIFT = new Object();
+                DS_GIFT.ROW_TYPE    = "I";  // 사은품 저장구분
+                DS_GIFT.SEND_DATE   = getDateFormat().replace(/[^0-9]/gi, ""); // 발송일자 초기화
+            }
 
-        onChangeGiftType(DS_GIFT.GIFT_CDE, DS_GIFT.GIFT_PRICE);          // 사은품코드와 가격 세팅
-        onChangeGiftChnl(DS_GIFT.GIFT_CHNL_MK);                          // 전달경로구분 세팅
-        
-	});
-}
+            // 사은품정보 세팅
+            // DS_GIFT.GIFT_DATE       // 사은품접수일자    
+            // DS_GIFT.GIFT_NO         // 사은품접수번호
+            // DS_GIFT.GIFT_SEQ        // 사은품접수순번    
+            // DS_GIFT.DTL_MK          // 내역구분
+            // DS_GIFT.CUST_ID         // 고객번호
+            $("#selectbox5").val(DS_GIFT.GIFT_TYPE_CDE);                     // 사은품분류코드  (내역1) 
+            // DS_GIFT.GIFT_CDE        // 사은품코드     (내역2)
+            // DS_GIFT.GIFT_PRICE      // 사은품가격    
+            calendarUtil.setImaskValue("calendar1", DS_GIFT.SEND_DATE);      // 발송일자    
+            // DS_GIFT.GIFT_CHNL_MK    // 전달경로구분        
+            $("#textbox31").val(DS_GIFT.PASS_USER);                          // 전달자    
+            // DS_GIFT.CTI_CHGDATE     // CTI변경일자                        
+            $("#textbox32").val(DS_GIFT.INVOICENUM);                         // 배송송장번호    
+
+            onChangeGiftType(DS_GIFT.GIFT_CDE, DS_GIFT.GIFT_PRICE);          // 사은품코드와 가격 세팅
+            onChangeGiftChnl(DS_GIFT.GIFT_CHNL_MK);                          // 전달경로구분 세팅
+
+            return resolve(DS_GIFT);
+            
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
 
 /**
  * 1차 해피콜 내역 조회
  * - as-is : cns2700.onSearch()
  */
-const getHappy1 = () => {
+const getHappy1 = () => new Promise((resolve, reject) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getHappy1.do`,
@@ -523,53 +603,54 @@ const getHappy1 = () => {
 		}),
 		errMsg: "1차 해피콜 내역 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
 
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-            DS_HPCALL1 = data.dsRecv[0];
-            DS_HPCALL1.ROW_TYPE = "U";
-            isHappy1 = true;
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 
-        // 검색결과가 없는경우.
-        } else {
-            DS_HPCALL1 = {};
-            DS_HPCALL1.ROW_TYPE = "I";
-            isHappy1 = false;
-            DS_HPCALL1.HPCALL_DATE = getDateFormat().replace(/[^0-9]/gi, "");   // 해피콜일자 초기화
-            DS_HPCALL1.HPCALL_TIME = getTimeFormat().replace(/[^0-9]/gi, "");   // 해피콜시간 초기화
-            DS_HPCALL1.HPCALL_NAME = currentUser.name;  // 해피콜담당자명 초기화
-        }
+            // 검색결과가 있는경우.
+            if (res.dsRecv?.length > 0) {
+                DS_HPCALL1 = res.dsRecv[0];
+                DS_HPCALL1.ROW_TYPE = "U";
 
-        // 1차해피콜 세팅
-        // DS_HPCALL1.CSEL_DATE        // 상담일자       
-        // DS_HPCALL1.CSEL_NO          // 상담번호   
-        calendarUtil.setImaskValue("calendar3", DS_HPCALL1.HPCALL_DATE); // 해피콜일자       
-        $("#timebox2").val(DS_HPCALL1.HPCALL_TIME);        // 해피콜시간       
-        $("#textbox26").val(DS_HPCALL1.HPCALL_TITLE);      // 해피콜제목           
-        $("#textbox35").val(DS_HPCALL1.HPCALL_CNTS);       // 해피콜내용       
-        $("#selectbox2").val(DS_HPCALL1.HPCALL_CHNL_MK);   // 해피콜경로구분           
-        // DS_HPCALL1.HPCALL_USER_ID   // 해피콜담당자ID           
-        $("#selectbox1").val(DS_HPCALL1.SATIS_CDE);        // 고객만족도코드       
-        // DS_HPCALL1.SATIS_CDE1       // 고객만족도코드1       
-        // DS_HPCALL1.SATIS_CDE2       // 고객만족도코드2       
-        // DS_HPCALL1.GIFT_DATE        // 사은품접수일자       
-        // DS_HPCALL1.GIFT_NO          // 사은품접수번호   
-        // DS_HPCALL1.CTI_CHGDATE      // CTI변경일자    
-        $("#textbox25").val(DS_HPCALL1.HPCALL_NAME);        // 해피콜담당자명
+            // 검색결과가 없는경우.
+            } else {
+                DS_HPCALL1 = new Object();
+                DS_HPCALL1.ROW_TYPE     = "I";  // 1차해피콜 저장구분
+                DS_HPCALL1.HPCALL_DATE  = getDateFormat().replace(/[^0-9]/gi, "");   // 해피콜일자 초기화
+                DS_HPCALL1.HPCALL_TIME  = getTimeFormat().replace(/[^0-9]/gi, "");   // 해피콜시간 초기화
+                DS_HPCALL1.HPCALL_NAME  = currentUser.name;  // 해피콜담당자명 초기화
+            }
 
-        getHappy2(isHappy1);
+            // 1차해피콜 세팅
+            // DS_HPCALL1.CSEL_DATE        // 상담일자       
+            // DS_HPCALL1.CSEL_NO          // 상담번호   
+            calendarUtil.setImaskValue("calendar3", DS_HPCALL1.HPCALL_DATE); // 해피콜일자       
+            $("#timebox2").val(DS_HPCALL1.HPCALL_TIME);        // 해피콜시간       
+            $("#textbox26").val(DS_HPCALL1.HPCALL_TITLE);      // 해피콜제목           
+            $("#textbox35").val(DS_HPCALL1.HPCALL_CNTS);       // 해피콜내용       
+            $("#selectbox2").val(DS_HPCALL1.HPCALL_CHNL_MK);   // 해피콜경로구분           
+            // DS_HPCALL1.HPCALL_USER_ID   // 해피콜담당자ID           
+            $("#selectbox1").val(DS_HPCALL1.SATIS_CDE);        // 고객만족도코드       
+            // DS_HPCALL1.SATIS_CDE1       // 고객만족도코드1       
+            // DS_HPCALL1.SATIS_CDE2       // 고객만족도코드2       
+            // DS_HPCALL1.GIFT_DATE        // 사은품접수일자       
+            // DS_HPCALL1.GIFT_NO          // 사은품접수번호   
+            // DS_HPCALL1.CTI_CHGDATE      // CTI변경일자    
+            $("#textbox25").val(DS_HPCALL1.HPCALL_NAME);        // 해피콜담당자명
 
-	});
-}
+            return resolve(DS_HPCALL1);
+
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
 
 /**
  * 2차 해피콜 내역 조회
  * - as-is : cns2700.onSearch()
- * @param {boolean} isHappy1 1차해피콜 데이터유무
  */
-const getHappy2 = (isHappy1) => {
+const getHappy2 = () => new Promise((resolve, reject) => {
 
 	const settings = {
 		url: `${API_SERVER}/cns.getHappy2.do`,
@@ -588,173 +669,47 @@ const getHappy2 = (isHappy1) => {
 		}),
 		errMsg: "2차 해피콜 내역 조회중 오류가 발생하였습니다.",
 	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
 
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-            DS_HPCALL2 = data.dsRecv[0];
-            DS_HPCALL2.ROW_TYPE = "U";
-        
-        // 검색결과가 없는경우.
-        } else {
-            DS_HPCALL2 = {};
-            DS_HPCALL2.ROW_TYPE = "I";
-            // 검색결과가 없고, 1차해피콜 결과도 없을때.
-            if (!isHappy1) {
-                DS_HPCALL2.HPCALL_DATE = getDateFormat().replace(/[^0-9]/gi, "");       // 해피콜일자 초기화
-                DS_HPCALL2.HPCALL_TIME = getTimeFormat().replace(/[^0-9]/gi, "");       // 해피콜시간 초기화
-                DS_HPCALL2.HPCALL_NAME = currentUser.name;      // 해피콜담당자명 초기화
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+
+            // 검색결과가 있는경우.
+            if (res.dsRecv?.length > 0) {
+                DS_HPCALL2 = res.dsRecv[0];
+                DS_HPCALL2.ROW_TYPE = "U";
+            
+            // 검색결과가 없는경우.
+            } else {
+                DS_HPCALL2 = new Object();
+                DS_HPCALL2.ROW_TYPE = "I";  // 2차해피콜 저장구분
+                // 검색결과가 없고, 1차해피콜이 있을때
+                if (DS_HPCALL1.ROW_TYPE == "U") {
+                    DS_HPCALL2.HPCALL_DATE = getDateFormat().replace(/[^0-9]/gi, "");       // 해피콜일자 초기화
+                    DS_HPCALL2.HPCALL_TIME = getTimeFormat().replace(/[^0-9]/gi, "");       // 해피콜시간 초기화
+                    DS_HPCALL2.HPCALL_NAME = currentUser.name;      // 해피콜담당자명 초기화
+                }
             }
-        }
 
-        // 2차해피콜 세팅
-        // DS_HPCALL2.CSEL_DATE          // 상담일자
-        // DS_HPCALL2.CSEL_NO            // 상담번호
-        calendarUtil.setImaskValue("calendar4", DS_HPCALL2.HPCALL_DATE);    // 해피콜일자    
-        $("#timebox3").val(DS_HPCALL2.HPCALL_TIME);                         // 해피콜시간    
-        $("#textbox28").val(DS_HPCALL2.HPCALL_TITLE);                       // 해피콜제목    
-        $("#textbox36").val(DS_HPCALL2.HPCALL_CNTS);                        // 해피콜내용    
-        $("#selectbox4").val(DS_HPCALL2.HPCALL_CHNL_MK);                    // 해피콜경로구분    
-        // DS_HPCALL2.HPCALL_USER_ID     // 해피콜담당자ID                  
-        $("#selectbox3").val(DS_HPCALL2.SATIS_CDE);                         // 고객만족도코드
-        // DS_HPCALL2.CTI_CHGDATE        // CTI변경일자                   
-        $("#textbox27").val(DS_HPCALL2.HPCALL_NAME);                        // 해피콜담당자명        
+            // 2차해피콜 세팅
+            // DS_HPCALL2.CSEL_DATE          // 상담일자
+            // DS_HPCALL2.CSEL_NO            // 상담번호
+            calendarUtil.setImaskValue("calendar4", DS_HPCALL2.HPCALL_DATE);    // 해피콜일자    
+            $("#timebox3").val(DS_HPCALL2.HPCALL_TIME);                         // 해피콜시간    
+            $("#textbox28").val(DS_HPCALL2.HPCALL_TITLE);                       // 해피콜제목    
+            $("#textbox36").val(DS_HPCALL2.HPCALL_CNTS);                        // 해피콜내용    
+            $("#selectbox4").val(DS_HPCALL2.HPCALL_CHNL_MK);                    // 해피콜경로구분    
+            // DS_HPCALL2.HPCALL_USER_ID     // 해피콜담당자ID                  
+            $("#selectbox3").val(DS_HPCALL2.SATIS_CDE);                         // 고객만족도코드
+            // DS_HPCALL2.CTI_CHGDATE        // CTI변경일자                   
+            $("#textbox27").val(DS_HPCALL2.HPCALL_NAME);                        // 해피콜담당자명        
 
-	});
-}
+            return resolve(DS_HPCALL2);
 
-/**
- * 상담연계대상선택 조회
- * - 형제회원 지점확인을 위한 조회
- * - as-is : cns2700.onSearch()
- */
-// const getTransList = () => {
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 
-// 	const settings = {
-// 		url: `${API_SERVER}/cns.getTransList.do`,
-// 		method: 'POST',
-// 		contentType: "application/json; charset=UTF-8",
-// 		dataType: "json",
-// 		data: JSON.stringify({
-// 			userid: currentUser?.external_id,
-// 			menuname: "상담결과등록",
-// 			senddataids: ["dsSend"],
-// 			recvdataids: ["dsRecv"],
-//             dsSend: [{ 
-//                 CSEL_DATE : sCSEL_DATE, // 상담일자    
-//                 CSEL_NO   : sCSEL_NO,   // 상담번호
-//                 PROC_MK   : sPROC_MK,   // 처리구분
-//             }],
-// 		}),
-// 		errMsg: "상담연계대상선택 조회중 오류가 발생하였습니다.",
-// 	}
-// 	$.ajax(settings).done(data => {
-// 		if (!checkApi(data, settings)) return;
-
-// 		if (data.dsRecv.length >= 1) {
-//             DS_TRANS_DEPT = data.dsRecv[0];
-//             // DS_TRANS_DEPT.CSEL_DATE       // 상담일자    
-//             // DS_TRANS_DEPT.CSEL_SEQ        // 상담순번    
-//             // DS_TRANS_DEPT.CUST_TCHR_NAME  // 고객명or교사명        
-//             // DS_TRANS_DEPT.DEPT_NAME       // 지점명    
-//             // DS_TRANS_DEPT.CSEL_LTYPE_CDE  // 대분류        
-//             // DS_TRANS_DEPT.CSEL_MTYPE_CDE  // 중분류        
-//             // DS_TRANS_DEPT.CSEL_STYPE_CDE  // 소분류        
-//             // DS_TRANS_DEPT.CHO_FLAG        // 체크박스플레그    
-//             // DS_TRANS_DEPT.LC_NAME         // 센터명      
-//         }
-
-// 	});
-// }
-
-/**
- * 지점처리 내역 조회
- * - as-is : cns2700.onSearch()
- * @param {string} CSEL_DATE 상담일자
- * @param {string} CSEL_NO   상담번호
- * @param {string} CSEL_SEQ  상담순번
- */
-const getDeptProc = (CSEL_DATE, CSEL_NO, CSEL_SEQ) => {
-
-	const settings = {
-		url: `${API_SERVER}/cns.getDeptProc.do`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			userid: currentUser?.external_id,
-			menuname: "상담결과등록",
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-            dsSend: [{ CSEL_DATE, CSEL_NO, CSEL_SEQ }],
-		}),
-		errMsg: "지점처리 내역 조회중 오류가 발생하였습니다.",
-	}
-	$.ajax(settings).done(data => {
-		if (!checkApi(data, settings)) return;
-
-        // 검색결과가 있는경우.
-		if (data.dsRecv.length >= 1) {
-            DS_DEPT_PROC = data.dsRecv[0];
-            DS_DEPT_PROC.ROW_TYPE = "U";
-        
-        // 검색결과가 없는경우.
-        } else {
-            DS_DEPT_PROC = {};
-            DS_DEPT_PROC.ROW_TYPE = "I";
-            DS_DEPT_PROC.TRANS_DATE     =   getDateFormat().replace(/[^0-9]/gi, "");            // 연계일자
-            DS_DEPT_PROC.TRANS_MK       =   DS_COUNSEL.PROC_MK-2;       // 연계구분
-            DS_DEPT_PROC.TRANS_DEPT_ID  =   DS_COUNSEL.DEPT_ID;         // 연계지점
-            DS_DEPT_PROC.TRANS_TITLE    =   DS_COUNSEL.CSEL_TITLE;      // 연계 제목
-            DS_DEPT_PROC.TRANS_CNTS     =   DS_COUNSEL.CSEL_CNTS;       // 연계 내용
-            DS_DEPT_PROC.TRANS_CHNL_MK  =   "1";                        // 연계방법(1: 전화)
-            DS_DEPT_PROC.PROC_HOPE_DATE =   DS_COUNSEL.PROC_HOPE_DATE;  // 처리희망일
-            DS_DEPT_PROC.PROC_TIME      =   "";                         // 처리시간                        
-        }
-
-        // 처리내역 세팅
-        // DS_DEPT_PROC.TRANS_DATE        // 연계일자
-        // DS_DEPT_PROC.TRANS_NO          // 연계번호
-        // DS_DEPT_PROC.TRANS_MK          // 연계구분
-        // DS_DEPT_PROC.TRANS_TIME        // 연계시간
-        // DS_DEPT_PROC.TRANS_DEPT_ID     // 연계지점코드    
-        // DS_DEPT_PROC.TRANS_CHNL_MK     // 연계방법구분    
-        // DS_DEPT_PROC.TRANS_TITLE       // 연계제목
-        // DS_DEPT_PROC.TRANS_CNTS        // 연계상세내용
-        // DS_DEPT_PROC.PROC_HOPE_DATE    // 처리희망일자    
-        // DS_DEPT_PROC.DEPT_ACP_ID       // 지점접수자사번
-        $("#textbox18").val(DS_DEPT_PROC.DEPT_ACP_NAME);                         // 지점접수자성명   
-        if ($("#textbox18").val()) $("#textbox18").prop("readonly", true);       // 접수자가 있으면 입력안되게
-        calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE);     // 지점접수일자(접수일자)
-        $("#timebox1").val(DS_DEPT_PROC.DEPT_ACP_TIME);                          // 지점접수시간(접수시간)
-        // DS_DEPT_PROC.PROC_STS_MK       // 처리상태구분
-        // DS_DEPT_PROC.RTN_FLAG          // 회신여부구분
-        // DS_DEPT_PROC.PROC_DATE         // 처리일자
-        // DS_DEPT_PROC.PROC_TIME         // 처리시간
-        $("#textbox19").val(DS_DEPT_PROC.PROC_EMP);                              // 지점처리자  
-        $("#textbox34").val(DS_DEPT_PROC.PROC_CNTS);                             // 처리내용 
-        // DS_DEPT_PROC.RTN_USER_ID       // 피드백접수자ID
-        // DS_DEPT_PROC.RTN_DATE          // 피드백일자
-        // DS_DEPT_PROC.RTN_TIME          // 피드백시간
-        // DS_DEPT_PROC.CTI_CHGDATE       // CTI변경일자   
-        // DS_DEPT_PROC.TRANS_LC_ID,      // 연계센터코드 
-
-
-        // 접수일자 체크
-        // if (calendarUtil.getImaskValue("calendar2").length < 8) {
-        //     calendarUtil.setImaskValue("calendar2", getDateFormat());
-        // }
-        // 접수시간 체크
-        // if ($("#timebox1").val().length < 6) {
-        //     $("#timebox1").val(getTimeFormat());   
-        // }
-        // 사업국처리시간 세팅
-        const intervalTime = gf_getIntervalTime(DS_DEPT_PROC.DEPT_ACP_DATE||"", DS_DEPT_PROC.DEPT_ACP_TIME||"", DS_VOC_PROC.VOC_PROC_DATE||"", DS_VOC_PROC.VOC_PROC_TIME||"");
-        $("#textbox24").val(intervalTime);  
-
-	});
-}
+});
 
 /**
  * 화면 TEXT 셋팅
@@ -1073,16 +1028,29 @@ const setHpCall1EorD = (bWrite) => {
         $("#calendar3").prop("disabled", false);
         $("#timebox2").prop("readonly", false);
         $("#textbox25").prop("readonly", false);
+        $("#textbox26").prop("readonly", false);
         $("#textbox35").prop("readonly", false);
         $("#selectbox1").prop("disabled", false);
         $("#selectbox2").prop("disabled", false);
+
+        // 권한이 관리자이고, 2차해피콜이 저장되지 않은 경우 1차해피콜삭제 버튼 활성화
+		const currentUserLvl = currentUser?.user_fields?.user_lvl_mk;
+        const isAdmin = (currentUserLvl == "user_lvl_mk_1" || currentUserLvl == "user_lvl_mk_2" || currentUserLvl == "user_lvl_mk_3") ? true : false;
+        if (isAdmin && DS_HPCALL2.ROW_TYPE == "I") {
+            $("#button9").prop("disabled", false);
+        } else {
+            $("#button9").prop("disabled", true);
+        }
+
     } else {
         $("#calendar3").prop("disabled", true);
         $("#timebox2").prop("readonly", true);
         $("#textbox25").prop("readonly", true);
+        $("#textbox26").prop("readonly", true);
         $("#textbox35").prop("readonly", true);
         $("#selectbox1").prop("disabled", true);
         $("#selectbox2").prop("disabled", true);
+        $("#button9").prop("disabled", true);
     }
 }
 
@@ -1514,12 +1482,18 @@ const addSMSData = (sendData) => {
 }
 
 /**
- * 완료/저장 버튼 클릭시
+ * 1차해피콜삭제/완료/저장 버튼 클릭시
  * - as-is : cns2700.onSaveT()
  * @param {string} sBtnMk 
  */
 const onSave = (sBtnMk) => {
-    
+
+    // 1차해피콜삭제 버튼을 클릭한 경우
+    if (sBtnMk == "1D") {
+        DS_HPCALL1.ROW_TYPE = "D";
+        DS_HPCALL2.ROW_TYPE = "D";
+    }
+
     // 1. 지점처리내역 
     if (DS_DEPT_PROC.ROW_TYPE == "I" || DS_DEPT_PROC.ROW_TYPE == "U") {
         if (!getDeptValidityCheck()) return;
@@ -1530,43 +1504,50 @@ const onSave = (sBtnMk) => {
     // 2. 1차 해피콜
     const orgHp1Stat = DS_HPCALL1.ROW_TYPE;
     if (DS_HPCALL1.ROW_TYPE == "I") {
+        
         // 데이터의 조작이 있는 경우 
         if ($("#textbox26").val().length >= 1 ||        // 제목
             $("#textbox35").val().length >= 1 ||        // 내용
             $("#selectbox1").val().length >= 1 ||       // 상담원만족도
             $("#selectbox2").val().length >= 1) {       // 피드백경로
             if (!getHpCall1ValidityCheck()) return;
-        }
+        
         // 데이터의 조작이 없는 경우
-        else {
+        } else {
             DS_HPCALL1.ROW_TYPE = "N";
         }
+
     } else if (DS_HPCALL1.ROW_TYPE == "U") {
         if (!getHpCall1ValidityCheck()) return;
+    } else if (DS_HPCALL1.ROW_TYPE == "D") {
+
     } else {
         DS_HPCALL1.ROW_TYPE = "N";
     }
 
     // 3. 2차 해피콜
     if (DS_HPCALL2.ROW_TYPE == "I") {
+        
         // 1차해피콜이 저장(신규)이 아닌 경우
         if (orgHp1Stat != "I") {
+           
             // 데이터의 조작이 있는 경우
             if ($("#textbox28").val().length >= 1 ||
                 $("#textbox36").val().length >= 1 ||
                 $("#selectbox3").val().length >= 1 ||
                 $("#selectbox4").val().length >= 1) {
                 if (!getHpCall2ValidityCheck()) return;
-            }
+            
             // 데이터의 조작이 없는 경우
-            else {
+            } else {
                 DS_HPCALL2.ROW_TYPE = "N";
             }
-        }
+        
         // 1차 해피콜이 저장(신규)인 경우
-        else {
+        } else {
             DS_HPCALL2.ROW_TYPE = "N";
         }
+
     } else if (DS_HPCALL2.ROW_TYPE == "U") {
         if (!getHpCall2ValidityCheck()) return;
     } else {
@@ -1575,8 +1556,10 @@ const onSave = (sBtnMk) => {
 
     // 4. 사은품      
     if (DS_GIFT.ROW_TYPE == "I") {
+
         // 1차해피콜이 신규가 아니거나, 1차해피콜을  저장하는 경우
         if (orgHp1Stat != "I" || DS_HPCALL1.ROW_TYPE == "I") {
+            
             // 데이터의 조작이 있는 경우
             if ($("#selectbox5").val().length >= 1 ||
                 $("#selectbox6").val().length >= 1 ||
@@ -1585,23 +1568,25 @@ const onSave = (sBtnMk) => {
                 $("#textbox31").val().length >= 1 ||
                 $("#textbox32").val().length >= 1) {
                 if (!getGiftValidityCheck()) return;
-            }
+            
             // 데이터의 조작이 없는 경우
-            else {
+            } else {
                 DS_GIFT.ROW_TYPE = "N";
             }
-        }
+
         // 1차해피콜이 신규인 경우이고, 1차해피콜을 저장 하지 않을 경우
-        else {
+        } else {
             DS_GIFT.ROW_TYPE = "N";
         }
+
     } else if (DS_GIFT.ROW_TYPE == "U") {
         if (!getGiftValidityCheck()) return;
     } else {
         DS_GIFT.ROW_TYPE = "N";
     }
     
-    if (DS_DEPT_PROC.ROW_TYPE != "N" || DS_HPCALL1.ROW_TYPE != "N" || DS_HPCALL2.ROW_TYPE != "N" || DS_GIFT.ROW_TYPE != "N" || sBtnMk == "CO") {
+    if (DS_DEPT_PROC.ROW_TYPE != "N" || DS_HPCALL1.ROW_TYPE != "N" || DS_HPCALL2.ROW_TYPE != "N" || DS_GIFT.ROW_TYPE != "N" ||
+        sBtnMk == "CO" || sBtnMk == "1D") {
         const condition = getSaveCondition(sBtnMk);
         if (!condition) return;
         saveCselResult(condition);
@@ -1869,7 +1854,7 @@ const getSaveCondition = (sBtnMk) => {
             SEND_DATE               : calendarUtil.getImaskValue("calendar1"),      // 발송일
             PASS_USER               : $("#textbox31").val().trim(),                 // 전달자
             INVOICENUM              : $("#textbox32").val().trim(),                 // 택배송장번호
-            IS_HAPY                 : $("#checkbox4").is(":checked"),               // 해피콜여부
+            IS_HAPY                 : "",                                           // 해피콜여부
             PROC_STS_MK             : "",                                           // 처리상태구분
             HPCALL1_ROW_TYPE        : "",                                           // 1차해피콜 저장구분(I/U/D)
             HPCALL2_ROW_TYPE        : "",                                           // 2차해피콜 저장구분(I/U/D)
@@ -1897,8 +1882,12 @@ const getSaveCondition = (sBtnMk) => {
     }
 
     // 처리상태 세팅
+    // 1차해피콜 삭제 버튼을 클릭한 경우
+    if (sBtnMk == "1D") {
+        data.DS_TRANS.PROC_STS_MK = "04"; // 지점처리완료 상태
+
     // 완료 버튼을 클릭한 경우
-    if (sBtnMk == "CO") {
+    } else if (sBtnMk == "CO") {
         if (DS_COUNSEL.PROC_STS_MK == "99") { // 이미 완료인 경우
             data.DS_TRANS.PROC_STS_MK = "99"; // 완료
         } else if (DS_COUNSEL.PROC_STS_MK == "16") {  // 2차해피콜완료인 경우
@@ -1958,6 +1947,11 @@ const getSaveCondition = (sBtnMk) => {
         }
     }
 
+    // 해피콜여부에 체크가 되어 있지 않은 경우
+    if ($("#checkbox4").is(":checked") == false) {
+        data.DS_TRANS.PROC_STS_MK = "03"; // 지점처리중
+    }
+
     // 접수자가 있고 접수일시가 없을때 현재시간으로 세팅
 	if (data.DS_TRANS.DEPT_ACP_NAME && !data.DS_TRANS.DEPT_ACP_DATE) {
 		data.DS_TRANS.DEPT_ACP_DATE = getDateFormat().replace(/[^0-9]/gi, '');
@@ -1998,6 +1992,7 @@ const getSaveCondition = (sBtnMk) => {
  * 저장
  */
 const saveCselResult = (condition) => {
+
     const settings = {
 		url: `${API_SERVER}/cns.saveCselResult.do`,
 		method: 'POST',
@@ -2015,6 +2010,7 @@ const saveCselResult = (condition) => {
 		}),
         errMsg: "상담결과 저장 중 오류가 발생하였습니다.",
 	}
+
 	$.ajax(settings).done(res => {
         if (!checkApi(res, settings)) return;
         
@@ -2024,6 +2020,7 @@ const saveCselResult = (condition) => {
         alert("저장 되었습니다.");
 
     });
+
 }
 
 /**
@@ -2064,6 +2061,14 @@ const updateTicket = (DS_TICKET) => {
         custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM1"],      value: DS_TICKET.HPCALL1_CHNL_MK_NM });              // 1차 해피콜 경로
         custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM1"],      value: currentUser.name });                          // 1차 해피콜 상담원명
         custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM1"],           value: DS_TICKET.HPCALL1_SATIS_CDE_NM });            // 1차 해피콜 고객만족도
+    
+    // 1차해피콜 삭제시 - 1차해피콜관련 티켓필드 세팅
+    } else if (DS_TICKET.HPCALL1_ROW_TYPE == "D") {
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_DATE1_TIME1"],     value: "" }); // 1차 해피콜 일시
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CNTS1"],           value: "" }); // 1차 해피콜 내용
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_CHNL_MKNM1"],      value: "" }); // 1차 해피콜 경로
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["HPCALL_USER_IDNM1"],      value: "" }); // 1차 해피콜 상담원명
+        custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["SATIS_CDENM1"],           value: "" }); // 1차 해피콜 고객만족도
     }
 
     // 2차해피콜 저장시 - 2차해피콜관련 티켓필드 세팅
