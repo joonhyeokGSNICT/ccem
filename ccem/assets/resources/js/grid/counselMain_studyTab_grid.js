@@ -130,11 +130,6 @@ $(function(){
 			}
 	    });
 		
-		/*counselMain_studyTab_weeklyStat.on('dblclick', (ev) => {
-			if(ev.targetType == 'cell'){
-			}
-	    });*/
-		
 		// 주간 학습현황 끝
 	
 		// 상담메인 > 학습이력 > 변동이력 grid

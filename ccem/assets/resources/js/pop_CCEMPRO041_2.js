@@ -16,7 +16,7 @@ var _daekyoInterPhone_list;		// 대교내선 list
 var _branchInterPhone_list;		// 지점 list
 
 
-var tempStat = "";				// 전화 걸수 있는 상태
+var tempStat = "callOn";				// 전화 걸수 있는 상태
 
 var cenFlag = false;			// 최초 조회 flag
 var empFlag = false;
@@ -52,7 +52,7 @@ $(function(){
 // #01 init_화면 초기화
 function init(){
 	
-	setStatus();
+	//setStatus();
 	//탑바에 윈도우 객체 전달
 	opener.wiseNTalkUtil.saveWindowObj(window);
 
@@ -529,7 +529,7 @@ function callRequest(type){
 function setStatus(){
 		switch(opener.CTI_STATUS.state){
 		case 'INITIATING':
-			tempType = 'callOff';
+			tempStat = 'callOff';
 			break;
 		case 'INITIATED':
 			tempStat = 'callOff';

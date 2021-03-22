@@ -336,7 +336,7 @@ $(function(){
 					formatter: columnInfo => columnInfo.value.format()
 				},
 				{
-					header: '상담시간',
+					header: '입금자',
 					name: 'A6',
 					width: 90,
 					align: "center",

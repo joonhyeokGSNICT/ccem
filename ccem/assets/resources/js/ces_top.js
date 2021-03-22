@@ -252,7 +252,9 @@ var wiseNTalkUtil = {
 				      headers: { "Content-Type": "application/json" },
 				      data: JSON.stringify({"event": "outboundCall", "app_id": WiseNTalk_ID, "agent_id": currentUserInfo.user.id, "body": [targetPhone, ""+ticketID, originName]})
 				   }).then(function(d){
-					   client.invoke('routeTo', 'ticket', ticketID);
+					   if(ticketID != null & ticketID != ''){
+						   client.invoke('routeTo', 'ticket', ticketID);
+					   }
 				   }).catch(function(d){
 				      // console.log(d);
 				   });
@@ -272,7 +274,7 @@ var wiseNTalkUtil = {
 		 
 		 // 전화상태변경 적용
 		 applyPhoneIcon: function() {
-			 for(obj in wiseNTalkUtil.openedCallPop){
+			 /*for(obj in wiseNTalkUtil.openedCallPop){
 				 // console.log(obj);
 				 if(obj == 'CCEMPRO041_2') {
 					 wiseNTalkUtil.openedCallPop[obj].setStatus();
@@ -280,7 +282,7 @@ var wiseNTalkUtil = {
 				 wiseNTalkUtil.changePhoneIcon(wiseNTalkUtil.openedCallPop[obj]);
 				 
 			 }
-			 wiseNTalkUtil.changePhoneIcon();
+			 wiseNTalkUtil.changePhoneIcon();*/
 		 },
 		
 		// 전화아이콘 상태변경
@@ -466,6 +468,8 @@ client.on('api_notification.getResponse', function(obj){
 	// console.log('origin window',obj);
 	if(obj.body.popup_name != "" && obj.body.popup_name != null){
 		wiseNTalkUtil.openedCallPop[obj.body.popup_name].alert(obj.body.msg);
+	}else {
+		client.invoke("notify", obj.body.msg, "error", 6000);
 	}
 });
 
@@ -2509,6 +2513,9 @@ function studyInfoLoad() {
     							$("#custInfo_multipleStudy").css("display","");
     							$("#custInfo_UPDEPTNAME").parent().attr('colspan', '1');
         		        	}
+	        				
+	        				$("#custInfo_DEPT_NAME_study").val($("#custInfo_DEPT_ID").val());
+	        				
 	        			}else {
 	        				loading.out();
 	        				client.invoke("notify", response.errmsg, "error", 60000);
@@ -2574,10 +2581,14 @@ function loadList(id, grid, listID) {
 				sendUrl = '/cns.getShipSTS.do';
 				$("#counselMain_studyTab_asignStuff").css("display","");
 				$("#counselMain_studyTab_asignStuff2").css("display","none");
+				counselMain_studyTab_asignStuff.refreshLayout();
+				counselMain_studyTab_asignStuff2.refreshLayout();
 			}else {
 				sendUrl = '/cns.ifsShipHist.do';
 				$("#counselMain_studyTab_asignStuff2").css("display","");
 				$("#counselMain_studyTab_asignStuff").css("display","none");
+				counselMain_studyTab_asignStuff.refreshLayout();
+				counselMain_studyTab_asignStuff2.refreshLayout();
 			}
 			break;
 		case 'getCounselSubj':		// 상담과목
@@ -2730,155 +2741,163 @@ function loadList(id, grid, listID) {
 			success: function (response) {
 				// console.log(response);
 				if(response.errcode == "0"){
-					// console.log("DATA ===> :" , response);
-					grid.resetData(response.recv1);
-					//grid.refreshLayout();
-					
-					// 후처리
-					switch(id){
-					case 'ifsStudyClass':
-						counselMain_studyTab_weeklyStat.addSelection({rowKey:0});
-						counselMain_studyTab_weeklyStat.clickSort({rowKey:0});
-						currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(0);		// 변동이력, 불출교재 자동조회
-						
-						var totalCntParam = {
-								userid: currentUserInfo.user.external_id,
-							    menuname: '학습이력',
-								senddataids: ["send1"],
-								recvdataids: ["recv1"],
-								send1: [{'MBR_ID' : currentCustInfo.MBR_ID}]
-						};
-						$.ajax({
-							url: API_SERVER + '/cns.ifsStudyTotalMonth.do',
-							type: 'POST',
-							dataType: 'json',
-							contentType: "application/json",
-							data: JSON.stringify(totalCntParam),
-							success: function (response) {
-								// console.log(response);
-								if(response.errcode == "0"){
-									$("#totalStudyCnt").val(response.recv1[0].STD_MONTH);
+					//console.log("DATA ===> :" , response);
+					if(response.recv1.length != 0){
+						if(Object.keys(response.recv1[0]).length > 0){
+							grid.resetData(response.recv1);
+							//grid.refreshLayout();
+							
+							// 후처리
+							switch(id){
+							case 'ifsStudyClass':
+								counselMain_studyTab_weeklyStat.addSelection({rowKey:0});
+								counselMain_studyTab_weeklyStat.clickSort({rowKey:0});
+								currentStudyInfo = counselMain_studyTab_weeklyStat.getRow(0);		// 변동이력, 불출교재 자동조회
+								
+								var totalCntParam = {
+										userid: currentUserInfo.user.external_id,
+										menuname: '학습이력',
+										senddataids: ["send1"],
+										recvdataids: ["recv1"],
+										send1: [{'MBR_ID' : currentCustInfo.MBR_ID}]
+								};
+								$.ajax({
+									url: API_SERVER + '/cns.ifsStudyTotalMonth.do',
+									type: 'POST',
+									dataType: 'json',
+									contentType: "application/json",
+									data: JSON.stringify(totalCntParam),
+									success: function (response) {
+										// console.log(response);
+										if(response.errcode == "0"){
+											$("#totalStudyCnt").val(response.recv1[0].STD_MONTH);
+										}else {
+											loading.out();
+											client.invoke("notify", response.errmsg, "error", 60000);
+										}
+									}, error: function (response) {
+									}
+								});
+								
+								loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				
+								if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){
+									loadList('ifsShipHist', counselMain_studyTab_asignStuff);	
 								}else {
-									loading.out();
-									client.invoke("notify", response.errmsg, "error", 60000);
+									loadList('ifsShipHist', counselMain_studyTab_asignStuff2);
 								}
-							}, error: function (response) {
+								break;
+							case 'getCustPayMst':
+								counselMain_directCharge_duesInfo_grid.addSelection({rowKey:0});
+								counselMain_directCharge_duesInfo_grid.clickSort({rowKey:0});
+								currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(0);		// 직접결제 자동조회
+								if(currentDirectChargeInfo != null){
+									loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
+									loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
+									loadList('getCustPayReq', counselMain_directCharge_bill_grid);					// 청구서 이력
+								}
+								break;
+							case 'getFeeInfo':
+								counselMain_membershipDueTab_dueList.addSelection({rowKey:0});
+								counselMain_membershipDueTab_dueList.clickSort({rowKey:0});
+								currentDueInfo = counselMain_membershipDueTab_dueList.getRow(0);				// 과목별 입금내역 자동조회
+								if(currentDueInfo != null){
+									loadList('getCreditPrdt', counselMain_membershipDueTab_subChargeList);		// 과목별 입금내역 이력
+								}
+								break;
+							case 'getCreditPrdt':
+								counselMain_membershipDueTab_subChargeList.addSelection({rowKey:0});
+								counselMain_membershipDueTab_subChargeList.clickSort({rowKey:0});
+								currentSubDueInfo = counselMain_membershipDueTab_subChargeList.getRow(0);			// 입금내역 자동조회
+								if(currentSubDueInfo != null){
+									loadList('getTransHist',counselMain_membershipDueTab_chargeList);				//  입금내역 이력
+								}
+								
+								// 계좌번호 조회
+								$.ajax({
+									url: API_SERVER + '/cns.getAccountInfo.do',
+									type: 'POST',
+									dataType: 'json',
+									contentType: "application/json",
+									data: JSON.stringify({
+										userid: currentUserInfo.user.external_id,
+										menuname: '회비',
+										senddataids: ["send1"],
+										recvdataids: ["recv1"],
+										send1: 	[
+											{
+												"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
+												"RCPT_MK":		currentDueInfo.RCPT_MK,				// 입금제품구분
+											}
+											]
+									}),
+									success: function (response) {
+										if(response.errcode == "0"){
+											if(response.recv1.length != 0){
+												$("#memDue_accountNum").text(response.recv1[0].ACCT_ID.substring(0,4) + "**********");	// 계좌번호
+												$("#memDue_ACCT_DAY").text(response.recv1[0].TRS_ACCT_DAY + "일");						// 이체일자
+												$("#memDue_BANK_NAME").text(response.recv1[0].BANK_NAME);								// 은행명
+												$("#memDue_ACCT_STDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));		// 이체신청일자
+												$("#memDue_ACCT_EDDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));		// 이체해지일자
+												$("#memDue_ACCT_NAME").text(response.recv1[0].TRS_ACCT_NAME);							// 예금주
+											}
+										}else {
+											client.invoke("notify", "계좌번호를 불러오지 못했습니다.", "error", 60000);
+										}
+									}
+								});
+								
+								// 과목별 회비현황 조회
+								$.ajax({
+									url: API_SERVER + '/cns.getFeeInfoPrdt.do',
+									type: 'POST',
+									dataType: 'json',
+									contentType: "application/json",
+									data: JSON.stringify({
+										userid: currentUserInfo.user.external_id,
+										menuname: '회비',
+										senddataids: ["send1"],
+										recvdataids: ["recv1"],
+										send1: 	[
+											{
+												"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
+												"PRDT_ID":		currentDueInfo.PRDT_ID,				// 제품(과목)코드
+											}
+											]
+									}),
+									success: function (response) {
+										if(response.errcode == "0"){
+											if(response.recv1.length != 0){
+												$("#finalDue_LASTFEE_YM").text(response.recv1[0].LASTFEE_YM.substring(0,4)+"-"+response.recv1[0].LASTFEE_YM.substring(4,6));
+												$("#finalDue_LASTFEE_DATE").text(FormatUtil.date(response.recv1[0].LASTFEE_DATE));
+												$("#finalDue_LASTFEE_OVERAMT").text(response.recv1[0].LASTFEE_OVERAMT.format());
+												$("#finalDue_NEW_TXTQTY").text(response.recv1[0].NEW_TXTQTY);
+												$("#finalDue_END_TXTQTY").text(response.recv1[0].END_TXTQTY);
+												if(response.recv1[0].NEWFEE_PAY_FLAG == "Y"){
+													$("#finalDue_NEWFEE_PAY_FLAG").text(response.recv1[0].NEWFEE_PAY_FLAG);
+												}else {
+													$("#finalDue_NEWFEE_PAY_FLAG").text("N");
+												}
+												if(response.recv1[0].NEWFEE_FLAG == "Y"){
+													$("#finalDue_NEWFEE_FLAG").text(response.recv1[0].NEWFEE_FLAG);
+												}else {
+													$("#finalDue_NEWFEE_FLAG").text("N");
+												}
+												
+											}
+										}else {
+										}
+									}
+								});
+								break;
 							}
-						});
-						
-						loadList('ifsStudyChgInfo', counselMain_studyTab_changeHist);				
-						if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){
-							loadList('ifsShipHist', counselMain_studyTab_asignStuff);	
 						}else {
-							loadList('ifsShipHist', counselMain_studyTab_asignStuff2);
+							grid.clear();
 						}
-						break;
-					case 'getCustPayMst':
-						counselMain_directCharge_duesInfo_grid.addSelection({rowKey:0});
-						counselMain_directCharge_duesInfo_grid.clickSort({rowKey:0});
-						currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(0);		// 직접결제 자동조회
-						if(currentDirectChargeInfo != null){
-							loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
-							loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
-							loadList('getCustPayReq', counselMain_directCharge_bill_grid);					// 청구서 이력
-						}
-						break;
-					case 'getFeeInfo':
-						counselMain_membershipDueTab_dueList.addSelection({rowKey:0});
-						counselMain_membershipDueTab_dueList.clickSort({rowKey:0});
-						currentDueInfo = counselMain_membershipDueTab_dueList.getRow(0);				// 과목별 입금내역 자동조회
-						if(currentDueInfo != null){
-							loadList('getCreditPrdt', counselMain_membershipDueTab_subChargeList);		// 과목별 입금내역 이력
-						}
-						break;
-					case 'getCreditPrdt':
-						counselMain_membershipDueTab_subChargeList.addSelection({rowKey:0});
-						counselMain_membershipDueTab_subChargeList.clickSort({rowKey:0});
-						currentSubDueInfo = counselMain_membershipDueTab_subChargeList.getRow(0);			// 입금내역 자동조회
-						if(currentSubDueInfo != null){
-							loadList('getTransHist',counselMain_membershipDueTab_chargeList);				//  입금내역 이력
-						}
-
-						// 계좌번호 조회
-						$.ajax({
-							url: API_SERVER + '/cns.getAccountInfo.do',
-							type: 'POST',
-							dataType: 'json',
-							contentType: "application/json",
-							data: JSON.stringify({
-								userid: currentUserInfo.user.external_id,
-								menuname: '회비',
-								senddataids: ["send1"],
-								recvdataids: ["recv1"],
-								send1: 	[
-									{
-										"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
-										"RCPT_MK":		currentDueInfo.RCPT_MK,				// 입금제품구분
-									}
-									]
-							}),
-							success: function (response) {
-								if(response.errcode == "0"){
-									if(response.recv1.length != 0){
-										$("#memDue_accountNum").text(response.recv1[0].ACCT_ID.substring(0,4) + "**********");	// 계좌번호
-										$("#memDue_ACCT_DAY").text(response.recv1[0].TRS_ACCT_DAY + "일");						// 이체일자
-										$("#memDue_BANK_NAME").text(response.recv1[0].BANK_NAME);								// 은행명
-										$("#memDue_ACCT_STDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_STDATE));		// 이체신청일자
-										$("#memDue_ACCT_EDDATE").text(FormatUtil.date(response.recv1[0].TRS_ACCT_EDDATE));		// 이체해지일자
-										$("#memDue_ACCT_NAME").text(response.recv1[0].TRS_ACCT_NAME);							// 예금주
-									}
-								}else {
-									client.invoke("notify", "계좌번호를 불러오지 못했습니다.", "error", 60000);
-								}
-							}
-						});
-						
-						// 과목별 회비현황 조회
-						$.ajax({
-							url: API_SERVER + '/cns.getFeeInfoPrdt.do',
-							type: 'POST',
-							dataType: 'json',
-							contentType: "application/json",
-							data: JSON.stringify({
-								userid: currentUserInfo.user.external_id,
-								menuname: '회비',
-								senddataids: ["send1"],
-								recvdataids: ["recv1"],
-								send1: 	[
-									{
-										"MBR_ID": 		currentCustInfo.MBR_ID,				// 회원번호
-										"PRDT_ID":		currentDueInfo.PRDT_ID,				// 제품(과목)코드
-									}
-									]
-							}),
-							success: function (response) {
-								if(response.errcode == "0"){
-									if(response.recv1.length != 0){
-										$("#finalDue_LASTFEE_YM").text(response.recv1[0].LASTFEE_YM.substring(0,4)+"-"+response.recv1[0].LASTFEE_YM.substring(4,6));
-										$("#finalDue_LASTFEE_DATE").text(FormatUtil.date(response.recv1[0].LASTFEE_DATE));
-										$("#finalDue_LASTFEE_OVERAMT").text(response.recv1[0].LASTFEE_OVERAMT.format());
-										$("#finalDue_NEW_TXTQTY").text(response.recv1[0].NEW_TXTQTY);
-										$("#finalDue_END_TXTQTY").text(response.recv1[0].END_TXTQTY);
-										if(response.recv1[0].NEWFEE_PAY_FLAG == "Y"){
-											$("#finalDue_NEWFEE_PAY_FLAG").text(response.recv1[0].NEWFEE_PAY_FLAG);
-										}else {
-											$("#finalDue_NEWFEE_PAY_FLAG").text("N");
-										}
-										if(response.recv1[0].NEWFEE_FLAG == "Y"){
-											$("#finalDue_NEWFEE_FLAG").text(response.recv1[0].NEWFEE_FLAG);
-										}else {
-											$("#finalDue_NEWFEE_FLAG").text("N");
-										}
-										
-									}
-								}else {
-								}
-							}
-						});
-						break;
+					}else {
+						grid.clear();
 					}
-					
 				}else {
+					grid.clear();
 					loading.out();
 					client.invoke("notify", response.errmsg, "error", 60000);
 				}
