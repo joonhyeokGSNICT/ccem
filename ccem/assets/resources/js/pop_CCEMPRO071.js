@@ -5,9 +5,9 @@ var _ticketUpdator_ID
 
 client.on("api_notification.openOBResult", function (data) {
 	console.log('[CCEM TOPBAR] api_notification.openOBResult 진입 >>> ', data.body);
-	for ( index in currentTicketInfo.ticket.tags ) {
+	for ( index in currentTicketInfo?.ticket?.tags ) {
 		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
-		if ( ticketCallFlag==true && currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'    ) {
+		if ( ticketCallFlag == true && currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'    ) {
 			var str = currentTicketInfo.ticket.tags[index];
 			_OB_CDE = str.substr( str.length-2, 2 );
 			_api.getOB();
