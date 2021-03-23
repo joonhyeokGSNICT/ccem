@@ -493,7 +493,6 @@ var getBaseData = (target, targetId, sJobType) => {
 			$("#hiddenbox1").val(baseData.LC_ID);						// 센터ID
 			$("#textbox10").val(baseData.TELPNO_LC);					// 센터전화번호	
 			$("#hiddenbox4").val(baseData.LC_EMP_ID);					// 센터장사번	
-			$("#hiddenbox13").val(baseData.AGE_CDE);					// 연령코드		
 		}
 		
 		setInitCselRstMkDS();	// 상담결과 저장정보 초기화
@@ -692,7 +691,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		$("#hiddenbox7").val(cselData.DM_MATCHCD);											// DM매치코드	
 		$("#hiddenbox8").val(cselData.DM_LIST_ID);											// DM목록ID	
 		$("#selectbox16").val(cselData.DM_TYPE_CDE);										// DM종류		(지급사유)
-		$("#hiddenbox13").val(cselData.AGE_CDE);											// 연령코드		
+		// cselData.AGE_CDE																	// 연령코드		
 		$("#hiddenbox14").val(cselData.DIV_KIND_CDE);										// 브랜드ID		
 
 		setBtnCtrlAtLoadComp();	// 버튼제어
@@ -752,7 +751,6 @@ const onNewCustInit = () => {
 	$("#textbox26").val("");		// 연계부서명  
 	$("#hiddenbox11").val("");		// 연계담당자ID
 	$("#hiddenbox12").val("");		// 연계담당자이름
-	$("#hiddenbox13").val("");		// 연령코드
 	$("#hiddenbox14").val("");		// 브랜드ID
 	setInitCselRstMkDS();			// 상담결과 저장정보
 	grid3.clear();			  		// 학습중인 과목
@@ -1659,7 +1657,6 @@ const getCustomData = async () => {
 	    procDeptIdNm    : $("#textbox26").val(),	// 연계부서명
         lcName 		    : $("#textbox9").val(),		// 러닝센터명(센터명)
 		reclCntct 	    : $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : "", // 상담결과 구분이 재통화예약일경우
-		ageCde 			: $("#hiddenbox13").val().trim(),		// 연령코드
 		brandId			: $("#hiddenbox14").val(),				// 브랜드ID
 		empList    		: $("#hiddenbox11").val().split(","),	// 연계대상자
 		requesterId		: undefined, // requester_id

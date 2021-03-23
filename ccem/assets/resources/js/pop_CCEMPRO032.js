@@ -776,7 +776,6 @@ const getCustomData = async () => {
 	    procDeptIdNm    : "", // 연계부서명
         lcName 		    : "", // 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
-		ageCde 			: "", // 연령코드
 		brandId			: $("#hiddenbox3").val(), // 브랜드ID
 		empList    		: [], // 연계대상자
 		requesterId		: undefined, // requester_id

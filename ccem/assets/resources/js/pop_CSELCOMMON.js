@@ -230,6 +230,16 @@ const findCodeName = (mk, id) => {
 }
 
 /**
+ * 학년코드에 해당하는 연령코드 반환.
+ * @param {string} id 학년구분
+ * @returns [연령코드::학년코드]
+ */
+const findGradeAgeCde = (id) => {
+	const code = codeData.find(el => el.CODE_MK == "GRADE_CDE" && el.CODE_ID == id);
+	return code ? `${Number(code.ETC)}::${code.CODE_ID}`.toLowerCase() : "";
+}
+
+/**
  * key 값에 따라 해당 팝업을 오픈합니다.
  * @param {string} key
  */
@@ -356,7 +366,7 @@ const updateTicket = async (cselData, customData) => {
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"],				value: `cust_mk_${cselData.CUST_MK}`.toLowerCase() },		// 고객구분   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],			value: `proc_sts_mk_${Number(cselData.PROC_STS_MK)}` },		// 처리상태   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"],			value: `std_motive_cde_${Number(cselData.MOTIVE_CDE)}` },	// 입회사유   
-		{ id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: `${Number(customData.ageCde)}::${cselData.GRADE_CDE}`.toLowerCase() },// 학년(연령::학년)
+		{ id: ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"],			value: findGradeAgeCde(cselData.GRADE_CDE) },				// 학년(연령::학년)
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["PRDT"],					value: customData.prdtList },								// 과목   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"],				value: customData.deptIdNm },								// 지점부서명(사업국명)   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"],				value: `div_cde_${cselData.DIV_CDE}`.toLowerCase() },		// 지점본부명(본부코드)   
@@ -485,7 +495,7 @@ const setTicket = async (cselData, customData) => {
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CUST_MK"]}`]                 = `cust_mk_${cselData.CUST_MK}`.toLowerCase();           // 고객구분   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"]}`]             = `proc_sts_mk_${Number(cselData.PROC_STS_MK)}`;		  // 처리상태   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["MOTIVE_CDE"]}`]              = `std_motive_cde_${Number(cselData.MOTIVE_CDE)}`;		  // 입회사유
-	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"]}`]           = `${Number(customData.ageCde)}::${cselData.GRADE_CDE}`.toLowerCase(); // 학년
+	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["AGE_GRADE_CDE"]}`]           = findGradeAgeCde(cselData.GRADE_CDE); 				  // 학년
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["PRDT"]}`]                    = customData.customPrdtList;                              // 과목   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DEPT_IDNM"]}`]               = customData.customDeptIdNm;                              // 지점부서명(사업국명)   
 	req[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["DIV_CDE"]}`]                 = `div_cde_${cselData.DIV_CDE}`.toLowerCase();            // 지점본부명(본부코드)   
