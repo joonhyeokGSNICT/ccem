@@ -25,7 +25,7 @@ $(function(){
 				{
 					header: '학습상태',
 					name: 'CODE_NAME',
-					width: 50,
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -33,7 +33,7 @@ $(function(){
 				{
 					header: '학습개월수',
 					name: 'STD_MONTH',
-					width: 50,
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -207,7 +207,7 @@ $(function(){
 				{
 					header: '선생님사번',
 					name: 'EMP_ID',
-					width: 85,
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -223,7 +223,7 @@ $(function(){
 				{
 					header: '최종회비',
 					name: 'LASTFEE_YM',
-					width: 70,
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -231,7 +231,7 @@ $(function(){
 				{
 					header: '학습개월',
 					name: 'STD_MONTH',
-					width: 70,
+					width: 80,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -239,7 +239,7 @@ $(function(){
 				{
 					header: '복회가능성',
 					name: 'RENEW_POTNNM',
-					width: 80,
+					width: 90,
 					align: "center",
 					sortable: true,
 					ellipsis: true,

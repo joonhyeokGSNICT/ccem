@@ -519,6 +519,7 @@ function userSearch() {
 								customerSearch("custSearchDiv","1");
 								$("#customerMNum").val("");
 								$("#customerMNumCheck").prop('checked',false);						// 자동조회된 정보는 사라짐
+								client.invoke("popover");					// 탑바 열기
 							}, 50);
 						}else {
 							
@@ -586,7 +587,16 @@ function userSearch() {
 						customerSearch("teacherSearchDiv","1");
 					}, 50);
 				}else {
-					if(currentOBMK == '60' && (currentTicketInfo?.ticket?.requester?.externalId == null || currentTicketInfo?.ticket?.requester?.externalId == undefined)){		// ivr 콜백일 경우와 external id 가 없으면 이름 ,번호조회 
+					if(currentTicketInfo.ticket.tags.includes("호전환")){
+						setTimeout(function(){
+							$("#customerMNum").val(reqUser.user.external_id);
+							$("#customerMNumCheck").prop('checked',true);
+							customerSearch("custSearchDiv","1");
+							$("#customerMNum").val("");
+							$("#customerMNumCheck").prop('checked',false);						// 자동조회된 정보는 사라짐
+							topBarClient.invoke("popover");					// 탑바 열기
+						}, 50);
+					}else if(currentOBMK == '60' && (currentTicketInfo?.ticket?.requester?.externalId == null || currentTicketInfo?.ticket?.requester?.externalId == undefined)){		// ivr 콜백일 경우와 external id 가 없으면 이름 ,번호조회 
 						// 총 세번의 인입전화번호 캐치
 						sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`).then(function (d){
 							phone = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["CSEL_TELNO"]}`];
@@ -1396,11 +1406,9 @@ $(function(){
 			break;
 		// 고객조사
 		case 'custInv':
-			if(currentCustInfo.CUST_ID != ""){
+			if(currentCustInfo.CUST_ID != "" || currentCustInfo.MBR_ID != ""){
 				loadList('getTBLISTbyCUSTID', counselMain_researchCust_rsrchCust_grid);				// 고객조사
-				if(currentCustInfo.MBR_ID){
-					loadList('getSurveyData', counselMain_researchCust_surveyList_grid);			// 설문조사
-				}
+				loadList('getSurveyData', counselMain_researchCust_surveyList_grid);			// 설문조사
 			}
 			counselMain_researchCust_rsrchCust_grid.refreshLayout();	// 상담메인	> 고객조사 > 고객조사 grid
 			counselMain_researchCust_rschCallHist_grid.refreshLayout(); // 상담메인	> 고객조사 > 통화이력 grid
@@ -2342,7 +2350,10 @@ async function updateUserforZen(){
 		}
 		client.request(option).then(function() {
 			client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
-		});		// 사용자 생성
+		}).catch(function(data){
+			client.invoke("notify", "젠데스크 사용자 업데이트에 실패 했습니다.", "error", 5000);
+			console.log('zendesk API error : ',data);
+		});		// 사용자 생성;		// 사용자 생성
 	}
 }
 async function updateTchrforZen(){
@@ -2379,6 +2390,9 @@ async function updateTchrforZen(){
 		}
 		client.request(option).then(function() {
 			client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
+		}).catch(function(data){
+			client.invoke("notify", "젠데스크 사용자 업데이트에 실패 했습니다.", "error", 5000);
+			console.log('zendesk API error : ',data);
 		});		// 사용자 생성
 	}
 }
@@ -2692,8 +2706,8 @@ function loadList(id, grid, listID) {
 			
 		case 'getSurveyData' : 	// 고객조사 - 고객조사
 			param.menuname = "고객조사";
-			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID!=null?currentCustInfo.CUST_ID:""	// 고객번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""		// 회원번호
 			sendUrl = '/cns.getSurveyData.do';
 			break;
 			
@@ -3771,7 +3785,7 @@ function smsOnClick_tchr(){
 	getBasicList("10").then(function(d){	// 드림스 url 가져오기
 		surl = d;
 		var param = surl + "?zsite="+zsite+"&zlogin_id="+slogin_id+"&zpasswd="+zpasswd;
-		window.open(param,'cashBill','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');
+		window.open(param,'cashBill','width=1000, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no');
 	});				
  }
  
@@ -3788,7 +3802,7 @@ function smsOnClick_tchr(){
 	getBasicList("10").then(function(d){	// 드림스 url 가져오기
 		surl = d;
 		var param = surl + "?zsite="+zsite+"&zlogin_id="+slogin_id+"&zpasswd="+zpasswd;
-		window.open(param,'cashBill','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');
+		window.open(param,'cashBill','width=1000, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no');
 	});
   }
  
@@ -3803,7 +3817,7 @@ function smsOnClick_tchr(){
  	}
 	var surl = "http://web.iocs.co.kr:8080/daekyo/popup/member/"+sMbrId;           //태블릿 url				
 	var param = surl;
-	window.open(param,'tabletDelPop','width=1000', 'height=600', 'toolbar=no, menubar=no, scrollbars=no, resizable=no');        
+	window.open(param,'tabletDelPop','width=1000, height=600, toolbar=no, menubar=no, scrollbars=no, resizable=no');        
   }
 
   /**

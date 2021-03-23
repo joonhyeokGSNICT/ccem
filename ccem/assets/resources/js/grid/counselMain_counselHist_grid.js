@@ -26,7 +26,7 @@ $(function(){
             {
                 header: '방문요일',
                 name: 'CLS_DAY',
-                width: 50,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -139,7 +139,7 @@ $(function(){
             {
                 header: '통화시각',
                 name: 'CALL_STTIME',
-                width: 70,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -148,7 +148,7 @@ $(function(){
             {
                 header: '상담시각',
                 name: 'CSEL_STTIME',
-                width: 70,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -174,7 +174,7 @@ $(function(){
             {
                 header: '처리구분',
                 name: 'PROC_MK_NAME',
-                width: 70,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,
@@ -182,7 +182,7 @@ $(function(){
             {
                 header: '상담교사',
                 name: 'CSEL_USER',
-                width: 70,
+                width: 80,
                 align: "center",
                 sortable: true,
                 ellipsis: true,

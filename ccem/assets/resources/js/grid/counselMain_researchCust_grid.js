@@ -57,10 +57,12 @@ $(function(){
 				],
 		});
 		counselMain_researchCust_rsrchCust_grid.on('click', (ev) => {
-			counselMain_researchCust_rsrchCust_grid.addSelection(ev);
-			counselMain_researchCust_rsrchCust_grid.clickSort(ev);
-			loadList('getTBCALLRST',counselMain_researchCust_rschCallHist_grid, counselMain_researchCust_rsrchCust_grid.getRow(ev.rowKey).LIST_ID);
-			counselMain_researchCust_rschCallHist_grid.refreshLayout();
+			if(ev.targetType == "cell"){
+				counselMain_researchCust_rsrchCust_grid.addSelection(ev);
+				counselMain_researchCust_rsrchCust_grid.clickSort(ev);
+				loadList('getTBCALLRST',counselMain_researchCust_rschCallHist_grid, counselMain_researchCust_rsrchCust_grid.getRow(ev.rowKey).LIST_ID);
+				counselMain_researchCust_rschCallHist_grid.refreshLayout();
+			}
 	    });
 		
 		// 고객조사 끝
@@ -125,8 +127,10 @@ $(function(){
 				],
 		});
 		counselMain_researchCust_rschCallHist_grid.on('click', (ev) => {
-			counselMain_researchCust_rschCallHist_grid.addSelection(ev);
-			counselMain_researchCust_rschCallHist_grid.clickSort(ev);
+			if(ev.targetType == "cell"){
+				counselMain_researchCust_rschCallHist_grid.addSelection(ev);
+				counselMain_researchCust_rschCallHist_grid.clickSort(ev);
+			}
 	    });
 		
 		// 통화이력 끝
@@ -191,8 +195,10 @@ $(function(){
 				],
 		});
 		counselMain_researchCust_surveyList_grid.on('click', (ev) => {
-			counselMain_researchCust_surveyList_grid.addSelection(ev);
-			counselMain_researchCust_surveyList_grid.clickSort(ev);
+			if(ev.targetType == "cell"){
+				counselMain_researchCust_surveyList_grid.addSelection(ev);
+				counselMain_researchCust_surveyList_grid.clickSort(ev);
+			}
 	    });
 		
 		// 설문조사 끝
