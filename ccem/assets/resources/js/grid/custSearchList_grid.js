@@ -190,8 +190,8 @@ $(function(){
 															type: 'PUT', 
 															dataType: 'json',
 															contentType: "application/json",
-															data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
-																// console.log(response);
+															data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+																client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
 																// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
 																var option = {
 																		url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
@@ -214,8 +214,9 @@ $(function(){
 															type: 'PUT', 
 															dataType: 'json',
 															contentType: "application/json",
-															data:JSON.stringify({ticket:{requester_id: d.results[0].id}})}).then(function(response){
+															data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
 																// console.log(response);
+																client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
 															});
 													}
 												});
