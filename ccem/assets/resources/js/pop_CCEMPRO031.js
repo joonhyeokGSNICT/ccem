@@ -417,7 +417,6 @@ var getCust = (CUST_ID, sJobType) => {
 				$("#textbox15").val(custData.LC_NAME);			// 센터명	(연계센터명)
 				$("#hiddenbox4").val(custData.LC_EMP_ID);		// 센터장사번
 				$("#selectbox2").val(custData.GRADE_CDE);		// 학년코드
-				$("#hiddenbox9").val(custData.AGE_CDE);			// 연령코드
 			}
 
 		});
@@ -575,7 +574,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 			$("#textbox10").val(cselData.TELPNO_LC || cselData.TELPNO_DEPT);	// 센터전화번호(사업국/센터 전화번호)			
 			$("#hiddenbox5").val(cselData.ZEN_TICKET_ID);						// ZEN_티켓 ID	
 			// cselData.EVT_NM					// 이벤트명			
-			$("#hiddenbox9").val(cselData.AGE_CDE);								// 연령코드			
+			// cselData.AGE_CDE					// 연령코드			
 			// cselData.DEPT_EMP_NAME			// 지점장명					
 			// cselData.DEPT_EMP_MOBILE			// 지점장핸드폰번호						
 			// cselData.LC_EMP_NAME				// 센터장명					
@@ -1074,7 +1073,6 @@ const getCustomData = async () => {
 	    procDeptIdNm    : "",	// 연계부서명
         lcName 		    : $("#textbox15").val(),			// 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
-		ageCde 			: $("#hiddenbox9").val().trim(),	// 연령코드
 		brandId			: $("#hiddenbox10").val(),			// 브랜드ID
 		empList    		: [], // 연계대상자
 		requesterId		: undefined, // requester_id
