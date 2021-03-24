@@ -413,11 +413,13 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 		}
 	});
 	if(window.outerHeight < 1030){
+		console.log("사이즈조정");
 		client.invoke('resize', {
 			width : '1215px',
 			height : window.outerHeight - 200 + 'px'
 		});
 	}
+	$('#obResultModal').modal('hide');
 });
 // 다른 앱에서 탑바열기
 client.on("api_notification.openCCEM", function(){
