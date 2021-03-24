@@ -18,12 +18,12 @@ const _SPACE = "sandbox";
  */
 const API_INFO = {
     ops: {
-        url: "",
-        recPlayer: "https://ccm-rec.daekyo.co.kr/player/player.jsp",
+        ccem: "https://ccm.daekyo.co.kr",
+        rec: "https://ccm-rec.daekyo.co.kr/player/player.jsp",
     },
     dev: {
-        url: "https://devccem.daekyo.co.kr",
-        recPlayer: "https://ccm-rec.daekyo.co.kr/player/player.jsp",
+        ccem: "https://devccem.daekyo.co.kr",
+        rec: "https://ccm-rec.daekyo.co.kr/player/player.jsp",
     },
 }
 
@@ -239,5 +239,5 @@ const ZDK_INFO = {
     },
 }
 
-const API_SERVER = API_INFO[_ACTIVE]["url"];
-const REC_SERVER = API_INFO[_ACTIVE]["recPlayer"];
+const API_SERVER = API_INFO[_ACTIVE]["ccem"];
+const REC_SERVER = API_INFO[_ACTIVE]["rec"];
