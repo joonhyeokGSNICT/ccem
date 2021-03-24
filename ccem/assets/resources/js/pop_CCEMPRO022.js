@@ -334,36 +334,34 @@ const setCodeData = async () => {
 
 	// get code
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+	DS_PROC_STS_MK = codeData.filter(el => el.CODE_MK == "PROC_STS_MK");		// 처리상태
+	DS_CSEL_MK 	   = codeData.filter(el => el.CODE_MK == "CSEL_MK");			// 상담구분
+
+	// set prod
 	prods = await getProd();
 	grid1.resetData(prods);
 
 	// sorting
 	// const sortKey = "CODE_ID";
-	// codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+	// fCodeData.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
 	// create select options
 	for (const code of codeList) {
 
-		const codeType = code.CODE_MK;
-		const codeNm = code.CODE_NAME;
-		const codeVal = code.CODE_ID;
+		const codeMk 	= code.CODE_MK;
+		const codeName  = code.CODE_NAME;
+		const codeId 	= code.CODE_ID;
 
 		// filtering
-		if (codeType == "DM_TYPE_CDE") { // 지급사유
-			if (codeVal == "01" || codeVal == "02" || codeVal == "04" || codeVal == "05") continue;
+		if (codeMk == "DM_TYPE_CDE") { // 지급사유
+			if (codeId == "01" || codeId == "02" || codeId == "04" || codeId == "05") continue;
 		}
-		if (codeType == "PROC_MK") { // 처리구분
-			if (codeVal == "5" || codeVal == "6") continue;
-		}
-		if (codeType == "PROC_STS_MK") { // 처리상태
-			DS_PROC_STS_MK.push(code);
-		}
-		if (codeType == "CSEL_MK") {	// 상담구분
-			DS_CSEL_MK.push(code);
+		if (codeMk == "PROC_MK") { // 처리구분
+			if (codeId == "5" || codeId == "6") continue;
 		}
 
-		// set
-		$(`select[name='${codeType}']`).append(new Option(codeNm, codeVal));
+		$(`select[name='${codeMk}']`).append(new Option(codeName, codeId));
+
 	}
 
 	// init setting

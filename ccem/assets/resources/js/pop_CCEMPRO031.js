@@ -260,6 +260,8 @@ const setCodeData = async () => {
 
 	// get code
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+
+	// set prod
 	prods = await getProd();
 	grid4.resetData(prods);
 

@@ -180,11 +180,14 @@ const setCodeData = async () => {
 	const sortKey = "CODE_ID";
 	codeList.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
-	// create select or radio
+	// create select options or radio
 	for (const code of codeList) {
+		
 		const CODE_MK = code.CODE_MK;
 		const CODE_ID = code.CODE_ID;
 		const CODE_NAME = code.CODE_NAME;
+
+		// radio
 		if (CODE_MK == "INTEREST_MK" || CODE_MK == "RE_ACTIVITY_MK") {
 			$(`div.${CODE_MK}`).append(
 				`<div class="form-check mb-2">
@@ -192,9 +195,12 @@ const setCodeData = async () => {
 					<label class="form-check-label" for="${CODE_MK}_${CODE_ID}">${CODE_NAME}</label>
 				</div>`
 			);
+
+		// select options
 		} else {
 			$(`select[name='${CODE_MK}']`).append(new Option(CODE_NAME, CODE_ID));
 		}
+
 	}
 
 	// init setting
