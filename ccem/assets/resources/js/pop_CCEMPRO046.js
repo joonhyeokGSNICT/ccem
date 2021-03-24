@@ -281,7 +281,7 @@ function sendSMS(){
 		  $("#custFATPhoneNum").val(POP_DATA[4]); 	// 회원/부 휴대폰
 		  $("#inputTable").find('input:radio').eq(2).val(POP_DATA[4]);
 		  var rdoSelect      		= POP_DATA[5]; 	// 휴대폰 디폴트 선택값
-		  param.send1[0].MBR_ID 	= POP_DATA[6]; 	// 회원번호
+		  param.send1[0].MBR_ID 	= POP_DATA[6]!=null?POP_DATA[6]:""; 	// 회원번호
 		  param.send1[0].CSEL_DATE 	= POP_DATA[7]; 	// 상담일자
 		  param.send1[0].CSEL_NO 	= POP_DATA[8]; 	// 상담번호
 		  param.send1[0].CSEL_SEQ 	= POP_DATA[9]; 	// 상담순번

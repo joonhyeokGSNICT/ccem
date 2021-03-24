@@ -169,7 +169,7 @@ $(function(){
 				},
 				{
 					header: '참여여부',
-					name: 'CMPLY_YN',
+					name: 'CMPLT_YN',
 					width: 150,
 					align: "center",
 					sortable: true,
@@ -177,7 +177,7 @@ $(function(){
 				},
 				{
 					header: '참여일시',
-					name: 'CMPLY_DTM',
+					name: 'CMPLT_DTM',
 					width: 150,
 					align: "center",
 					sortable: true,

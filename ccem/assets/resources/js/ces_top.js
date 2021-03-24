@@ -1542,6 +1542,14 @@ $(function(){
 			}
 		}
 	});
+	
+	$("#custInfo_FAMILY_CMB").on("click", function(){
+		$(this).children().attr('label','');
+	});
+	$("#custInfo_FAMILY_CMB").on("blur", function(){
+		$(this).children().each(function(){$(this).attr('label', $(this).data("fml_name"))});	// 마우스 클릭 안했을경우 이름으로만 표시
+	});
+	
 // ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === EVENT  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === 
 });
 
@@ -3726,7 +3734,7 @@ function smsOnClick(){
 	arrInData[3] = currentCustInfo.MOBILNO_MBR != null?currentCustInfo.MOBILNO_MBR.replace(/-/gi,""):""; 			// 회원/모 휴대폰
 	arrInData[4] = currentCustInfo.MOBILNO_FAT != null?currentCustInfo.MOBILNO_FAT.replace(/-/gi,""):""; 			// 회원/부 휴대폰
 	arrInData[5] = "2";            																					// 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
-	arrInData[6] = currentCustInfo.MBR_ID; 																			// 회원번호
+	arrInData[6] = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""; 											// 회원번호
 	arrInData[7] = "";              // 상담일자
 	arrInData[8] = "";              // 상담번호
 	arrInData[9] = "";              // 상담순번
