@@ -1543,7 +1543,7 @@ $(function(){
 		}
 	});
 	
-	$("#custInfo_FAMILY_CMB").on("click", function(){
+	$("#custInfo_FAMILY_CMB").on("mousedown", function(){
 		$(this).children().attr('label','');
 	});
 	$("#custInfo_FAMILY_CMB").on("blur", function(){
@@ -2443,7 +2443,7 @@ function familyInfoLoad() {
 	        			custRel = d.FAT_REL_NAME ? d.FAT_REL_NAME:'&nbsp;';
 	        			custGrade = d.GRADE_NAME;
 	        			custMbr = d.MBR_ID != null ? d.MBR_ID:"&nbsp;";
-        				$("#custInfo_FAMILY_CMB").prepend(`<option value='${custId}' data-FML_NAME='${custName}'>${custName} ${custGrade} ${custMbr} ${custId}</option>`);
+        				$("#custInfo_FAMILY_CMB").prepend(`<option value='${custId}' label='${custName}' data-FML_NAME='${custName}'>${custName} ${custGrade} ${custMbr} ${custId}</option>`);
 	        		}
 	        		$("#custInfo_FAMILY_CMB option:eq(0)").prop("selected", true);
 	        		$("#custInfo_FAMILY_CMB option:eq(0)").addClass('openSelect');
