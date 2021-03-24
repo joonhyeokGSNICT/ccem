@@ -22,6 +22,7 @@ _styleChanger.resizeHeight();
 
 function linkto(prop) {
     src = API_SERVER + '/ccem/resources/doc/'+prop+'.htm';
-    // src = 'http://localhost:8080/ccem/resources/doc/'+prop+'.htm';
     $('#iframeContent').attr('src',src);
 }
+
+linkto('mathProduct');
