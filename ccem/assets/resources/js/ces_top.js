@@ -412,6 +412,12 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 			
 		}
 	});
+	if(window.outerHeight < 1030){
+		client.invoke('resize', {
+			width : '1215px',
+			height : window.outerHeight - 200 + 'px'
+		});
+	}
 });
 // 다른 앱에서 탑바열기
 client.on("api_notification.openCCEM", function(){
@@ -3418,9 +3424,9 @@ function onSave(){
     // 고객정보 변경전,변경후 여부 객체
     var chgYn = setCustChangeData();
 	
-	// 세대주 주민번호 없이 주소만 변경하는 경우에 return		
+	// 세대주 관계번호 없이 주소만 변경하는 경우에 return		
 	if(chgYn.ADDR_CHG_FLAG2 == "Y" && $.trim(currentCustInfo.FAT_RSDNO).length == 0){
-		ModalUtil.modalPop("알림","세대주 주민번호를 입력후 저장하세요.");
+		ModalUtil.modalPop("알림","관계번호를 입력후 저장하세요.");
 		return;
 	}
 	
@@ -3641,26 +3647,30 @@ function setCustChangeData(){
     var isMbrMobilChanged = "N"; //회원모핸드폰번호변경여부
 
     //학습장소주소변경여부 판단한다.
+    if(currentCustInfo.ZIPCDE == null) currentCustInfo.ZIPCDE = '';
     if($("#custInfo_ZIPCDE").val() != currentCustInfo.ZIPCDE) isCustChanged = "Y";   	/* [34] 우편번호                  */
+    if(currentCustInfo.ADDR == null) currentCustInfo.ADDR = '';
     if($("#custInfo_ADDR").val() != currentCustInfo.ADDR) isCustChanged = "Y";   		/* [35] 주소                      */
-    if($("#custInfo_DDD").val() != currentCustInfo.DDD) isCustChanged = "Y";   		/* [36] 지역번호                  */
+    if($("#custInfo_DDD").val() != currentCustInfo.DDD) isCustChanged = "Y";   			/* [36] 지역번호                  */
     if($("#custInfo_TELPNO1").val() != currentCustInfo.TELPNO1) isCustChanged = "Y";   	/* [37] 전화국번                  */
     if($("#custInfo_TELPNO2").val() != currentCustInfo.TELPNO2) isCustChanged = "Y";   	/* [38] 전화번호                  */
-    if($("#custInfo_MOBILNO").val() != currentCustInfo.MOBILNO) isCustChanged = "Y";   	/* [39] 핸드폰번호_회원         */
-    if($("#custInfo_MOBILNO3").val() != currentCustInfo.MOBILNO3) isCustChanged = "Y";   	/* [56] 핸드폰번호3_회원        */
+    if(currentCustInfo.MOBILNO == null) currentCustInfo.MOBILNO = '';
+    if($.trim($("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val()) != currentCustInfo.MOBILNO) isCustChanged = "Y";   	/* [39] 핸드폰번호_회원         */
+    if(currentCustInfo.MOBILNO3 == null) currentCustInfo.MOBILNO3 = '';
+    if($("#custInfo_MOBILNO3").val() != currentCustInfo.MOBILNO3) isCustChanged = "Y";  /* [56] 핸드폰번호3_회원        */
 
     //학부모직장주소변경여부 판단한다.
-    if($("#custInfo_MOBILNO_FAT").val() != currentCustInfo.MOBILNO_FAT) isFatAddrChanged = "Y";   /* [58] 핸드폰번호_회원부         */
-    if($("#custInfo_MOBILNO3_FAT").val() != currentCustInfo.MOBILNO3_FAT) isFatAddrChanged = "Y";   /* [60] 핸드폰번호3_회원부        */
-    if($("#custInfo_FAT_CO_DDD").val() != currentCustInfo.FAT_CO_DDD) isFatAddrChanged = "Y";   /* [73] 직장지역번호              */
-    if($("#custInfo_FAT_CO_TELPNO1").val() != currentCustInfo.FAT_CO_TELPNO1) isFatAddrChanged = "Y";   /* [74] 직장국번                  */
-    if($("#custInfo_FAT_CO_TELPNO2").val() != currentCustInfo.FAT_CO_TELPNO2) isFatAddrChanged = "Y";   /* [75] 직장뒷자리                */
-    if($("#custInfo_FAT_RSDNO").val() != currentCustInfo.FAT_RSDNO) isFatAddrChanged = "Y";   /* 학부모 주민번호 변경시         */
+    //if($("#custInfo_MOBILNO_FAT").val() != currentCustInfo.MOBILNO_FAT) isFatAddrChanged = "Y";   		/* [58] 핸드폰번호_회원부         */
+    //if($("#custInfo_MOBILNO3_FAT").val() != currentCustInfo.MOBILNO3_FAT) isFatAddrChanged = "Y";   	/* [60] 핸드폰번호3_회원부        */
+    //if($("#custInfo_FAT_CO_DDD").val() != currentCustInfo.MOBILNO3) isFatAddrChanged = "Y";   		/* [73] 직장지역번호              */
+    //if($("#custInfo_FAT_CO_TELPNO1").val() != currentCustInfo.FAT_CO_TELPNO1) isFatAddrChanged = "Y";   /* [74] 직장국번                  */
+    //if($("#custInfo_FAT_CO_TELPNO2").val() != currentCustInfo.FAT_CO_TELPNO2) isFatAddrChanged = "Y";   /* [75] 직장뒷자리                */
+    if(currentCustInfo.FAT_RSDNO == null) currentCustInfo.FAT_RSDNO = '';
+    if($("#custInfo_FAT_RSDNO").val().replace(/-/gi,"") != currentCustInfo.FAT_RSDNO) isFatAddrChanged = "Y";   			/* 관계번호 변경시         */
 	
 	//회원모핸드폰변경여부 판단한다.
-    if(currentCustInfo.MOBILNO_MBR != null){
-    	if($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val() != currentCustInfo.MOBILNO_MBR.replace(/-/gi,"")) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
-    }
+	if(currentCustInfo.MOBILNO_MBR == null) currentCustInfo.MOBILNO_MBR = '';
+	if($("#custInfo_MOBILNO_MBR1").val() + $("#custInfo_MOBILNO_MBR2").val() + $("#custInfo_MOBILNO_MBR3").val() != currentCustInfo.MOBILNO_MBR.replace(/-/gi,"")) isMbrMobilChanged = "Y";   /* [57] 핸드폰번호_회원모           */
 
     //고객변경정보를 셋팅한다.
 	var returnObject = {
