@@ -91,10 +91,12 @@ function loadBlackInfo(){
 					$("#black_CHG_USER_NAME").val(response.recv1[0].CHG_USER_NAME);			// 수정자
 					$("#black_BLACK_CUST_MK").val(response.recv1[0].BLACK_CUST_MK);			// 정성구분
 					$("#black_REMARK").val(response.recv1[0].REMARK);						// 내용
+				}else {
+					$("#black_BLACK_YN").val('N');
 				}
 			}else {
 				loading.out();
-				client.invoke("notify", response.errmsg, "error", 60000);
+				alert(response.errmsg);
 			}
 		}, error: function (response) {
 		}
