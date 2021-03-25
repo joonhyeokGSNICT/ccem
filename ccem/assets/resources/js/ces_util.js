@@ -174,6 +174,23 @@ class CustomRecRenderer {
 
     constructor(props) {
         const el = document.createElement("button");
+        const recordId = props.value;
+        
+        if (recordId == "MOREDATA") {
+            el.style = "padding: 0px;";
+            el.className = "btn btn-sm navBtn";
+            el.innerHTML = "선택청취";
+            const rowData = props.grid.getRow(props.rowKey);
+            el.onclick = () => PopupUtil.open("CCEMPRO047", 852, 240, "", rowData, true);
+        } else if (recordId?.length == 18) {
+            el.style = "padding: 0px;";
+            el.className = "btn btn-sm navBtn";
+            el.innerHTML = "청취";
+            el.onclick = () => recordPlay(recordId);
+        } else {
+            el.style = "display:none;";
+        }
+
         this.el = el;
         this.render(props);
     }
@@ -183,22 +200,7 @@ class CustomRecRenderer {
     }
 
     render(props) {
-        const recordId = props.value;
-        const rowData = props.grid.getRow(props.rowKey);
-
-        if (recordId == "MOREDATA") {
-            this.el.style = "padding: 0px;";
-            this.el.className = "btn btn-sm navBtn";
-            this.el.innerHTML = "선택청취";
-            this.el.onclick = () => PopupUtil.open("CCEMPRO047", 852, 240, "", rowData);
-        } else if (recordId?.length == 18) {
-            this.el.style = "padding: 0px;";
-            this.el.className = "btn btn-sm navBtn";
-            this.el.innerHTML = "청취";
-            this.el.onclick = () => recordPlay(recordId);
-        } else {
-            this.el.style = "display:none;";
-        }
+        
     }
 
 }
@@ -678,13 +680,22 @@ var PopupUtil = {
      * @param {string} hash 
      * @param {object} param 
      */
-    open(name, width, height, hash, param) {
-        if(this.contains(name)) {
-            this.pops[name].focus();
-        }else {
-            this.pops[name] = window.open(`pop_${name}.html${hash||""}`, name, `width=${width}, height=${height}`);
+    open(name, width, height, hash, param, refresh) {
+
+        if (this.contains(name)) {
+            if (refresh) {
+                this.close(name);
+                this.pops[name] = window.open(`pop_${name}.html${hash || ""}`, name, `width=${width}, height=${height}`);    
+            } else {
+                this.pops[name].focus();
+            }
+        } else {
+            this.pops[name] = window.open(`pop_${name}.html${hash || ""}`, name, `width=${width}, height=${height}`);
         }
+
         this.pops[name].POP_DATA = param;
+        return this.pops[name];
+
     },
     /**
      * 자식창 close
