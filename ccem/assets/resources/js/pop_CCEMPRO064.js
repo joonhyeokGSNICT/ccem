@@ -60,15 +60,14 @@ var _insert = {
         //         $('#txtAppend').append("<tr><td>"+tempArray3[index].MESSAGE+"</td><td class='cntRows' style='padding-right:6px;'>"+str+"</td>")
         //     }
 
-
         // console.log(response.recv3);
-        if ( response.recv3.length != 0 ){ 
-            for( index in response.recv3 ) {
-                var str = response.recv3[index].RECV_DATE.replace(/(.{2})/g,"$1:")
-                    str = '('+str.slice(0,-1)+')';
-                $('#txtAppend').append("<tr><td>"+response.recv3[index].MESSAGE+"</td><td class='cntRows' style='padding-right:6px;'>"+str+"</td>")
-            }
-        }
+        // if ( response.recv3.length != 0 ){ 
+        //     for( index in response.recv3 ) {
+        //         var str = response.recv3[index].RECV_DATE.replace(/(.{2})/g,"$1:")
+        //             str = '('+str.slice(0,-1)+')';
+        //         $('#txtAppend').append("<tr><td>"+response.recv3[index].MESSAGE+"</td><td class='cntRows' style='padding-right:6px;'>"+str+"</td>")
+        //     }
+        // }
     },
     top5(response) {
         var initList = response;
@@ -120,7 +119,7 @@ var ccemApi = {
               userid: currentUser.external_id,
               menuname: '미니전광판',
               senddataids: ["send"],
-              recvdataids: ["recv1","recv2","recv3"],
+              recvdataids: ["recv1","recv2"],
         send: [{USER_ID:currentUser.external_id}]
       };
       // console.log("param >>",param);
