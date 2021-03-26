@@ -416,7 +416,6 @@ $(function(){
 			teacherSearchList_grid.addSelection(ev);
 			teacherSearchList_grid.clickSort(ev);
 			initAll();	// 기존 정보 초기화
-			
 			var param = {
 					userid: currentUserInfo.user.external_id,
 				    menuname: '고객정보(선생님)',
@@ -436,57 +435,63 @@ $(function(){
 					if(response.errcode == "0"){
 						currentTchrInfo = response.recv1[0];				// 선생님정보 상주
 						loadTeacherInfoMain();									// 선생님정보 로드 함수
-						// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
-						client.request(`/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
-							console.log(d);
-							if(d.count >= 1){					
-								// console.log(d.results[0].id);
-								if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
-									if(currentTicketInfo.ticket.requester.externalId != d.results[0].external_id){
-										ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
-											if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
-												client.request({
-													url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-													type: 'PUT', 
-													dataType: 'json',
-													contentType: "application/json",
-													data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
-														client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-														// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-														var option = {
-																url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-																type: 'PUT',
-																dataType: 'json',
-																contentType: "application/json",
-																data: JSON.stringify({
-																	"user": {
-																		"id": d.results[0].id,
-																	}
-																})
-														}
-														client.request(option).then(function(d) {
-															client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-														});
-													});
-											}else {
-												client.request({
-													url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-													type: 'PUT', 
-													dataType: 'json',
-													contentType: "application/json",
-													data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
-														// console.log(response);
-														client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-													});
+						
+						if(sidebarClient != null && sidebarClient != undefined){
+							sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+								currentTicketInfo = data;
+								// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
+								client.request(`/api/v2/search.json?query=type:user ${currentTchrInfo.EMP_ID}`).then(function(d){
+									console.log(d);
+									if(d.count >= 1){					
+										// console.log(d.results[0].id);
+										if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
+											if(currentTicketInfo.ticket.requester.externalId != d.results[0].external_id){
+												ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
+													if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
+														client.request({
+															url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+															type: 'PUT', 
+															dataType: 'json',
+															contentType: "application/json",
+															data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+																client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
+																// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
+																var option = {
+																		url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+																		type: 'PUT',
+																		dataType: 'json',
+																		contentType: "application/json",
+																		data: JSON.stringify({
+																			"user": {
+																				"id": d.results[0].id,
+																			}
+																		})
+																}
+																client.request(option).then(function(d) {
+																	client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+																});
+															});
+													}else {
+														client.request({
+															url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+															type: 'PUT', 
+															dataType: 'json',
+															contentType: "application/json",
+															data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+																// console.log(response);
+																client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
+															});
+													}
+												});
 											}
-										});
+										}
 									}
-								}
-							}
-						});
-						updateTchrforZen();
-						$("#customerInfo").click();	// 탭 이동
-						$("#teacherTab").click();	// 탭 이동
+								});
+								updateTchrforZen();
+								$("#customerInfo").click();	// 탭 이동
+								$("#teacherTab").click();	// 탭 이동
+							});
+						}
 					}else {
 						loading.out();
 						client.invoke("notify", response.errmsg, "error", 60000);

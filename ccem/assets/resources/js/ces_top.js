@@ -2341,52 +2341,55 @@ async function updateUserforZen(){
 					}
 				}),
 		}
-		client.request(option).then(function(data) {
+		client.request(option).then(function(userData) {
 			client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
-			console.log('zendesk API : ',data);
-			
-			if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
-				if(currentTicketInfo.ticket.requester.externalId != data.user.external_id){
-					ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
-						if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
-							client.request({
-								url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-								type: 'PUT', 
-								dataType: 'json',
-								contentType: "application/json",
-								data:JSON.stringify({ticket:{requester_id: data.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + data.user.name + '(' + data.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
-									client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-									// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-									var option = {
-											url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-											type: 'PUT',
-											dataType: 'json',
-											contentType: "application/json",
-											data: JSON.stringify({
-												"user": {
-													"id": data.user.id,
-												}
-											})
-									}
-									client.request(option).then(function(d) {
-										client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-									});
-								});
-						}else {
-							client.request({
-								url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-								type: 'PUT', 
-								dataType: 'json',
-								contentType: "application/json",
-								data:JSON.stringify({ticket:{requester_id: data.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + data.user.name + '(' + data.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
-									// console.log(response);
-									client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-								});
+			console.log('zendesk API : ',userData);
+			if(sidebarClient != null && sidebarClient != undefined){
+				sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+					currentTicketInfo = data;
+					if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
+						if(currentTicketInfo.ticket.requester.externalId != userData.user.external_id){
+							ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
+								if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
+									client.request({
+										url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+										type: 'PUT', 
+										dataType: 'json',
+										contentType: "application/json",
+										data:JSON.stringify({ticket:{requester_id: userData.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + userData.user.name + '(' + userData.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+											client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
+											// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
+											var option = {
+													url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+													type: 'PUT',
+													dataType: 'json',
+													contentType: "application/json",
+													data: JSON.stringify({
+														"user": {
+															"id": userData.user.id,
+														}
+													})
+											}
+											client.request(option).then(function(d) {
+												client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+											});
+										});
+								}else {
+									client.request({
+										url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+										type: 'PUT', 
+										dataType: 'json',
+										contentType: "application/json",
+										data:JSON.stringify({ticket:{requester_id: userData.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + userData.user.name + '(' + userData.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+											// console.log(response);
+											client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
+										});
+								}
+							});
 						}
-					});
-				}
-			}
-			
+					}
+				});
+			};
 		}).catch(function(data){
 			client.invoke("notify", "젠데스크 사용자 업데이트에 실패 했습니다.", "error", 5000);
 			console.log('zendesk API error : ',data);
@@ -2425,49 +2428,54 @@ async function updateTchrforZen(){
 					}
 				}),
 		}
-		client.request(option).then(function(data) {
+		client.request(option).then(function(userData) {
 			client.invoke("notify", "젠데스크 사용자 업데이트 완료.", "notice", 5000);
-			if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
-				if(currentTicketInfo.ticket.requester.externalId != data.user.external_id){
-					ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
-						if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
-							client.request({
-								url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-								type: 'PUT', 
-								dataType: 'json',
-								contentType: "application/json",
-								data:JSON.stringify({ticket:{requester_id: data.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + data.user.name + '(' + data.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
-									client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-									// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
-									var option = {
-											url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
-											type: 'PUT',
-											dataType: 'json',
-											contentType: "application/json",
-											data: JSON.stringify({
-												"user": {
-													"id": data.user.id,
-												}
-											})
-									}
-									client.request(option).then(function(d) {
-										client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-									});
-								});
-						}else {
-							client.request({
-								url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
-								type: 'PUT', 
-								dataType: 'json',
-								contentType: "application/json",
-								data:JSON.stringify({ticket:{requester_id: data.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + data.user.name + '(' + data.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
-									// console.log(response);
-									client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-								});
+			if(sidebarClient != null && sidebarClient != undefined){
+				sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
+					currentTicketInfo = data;
+					if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
+						if(currentTicketInfo.ticket.requester.externalId != userData.user.external_id){
+							ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
+								if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
+									client.request({
+										url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+										type: 'PUT', 
+										dataType: 'json',
+										contentType: "application/json",
+										data:JSON.stringify({ticket:{requester_id: userData.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + userData.user.name + '(' + userData.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+											client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
+											// 젠데스크에 고객이 있는 경우 기존고객과 임시 end-user merge
+											var option = {
+													url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}/merge.json`,
+													type: 'PUT',
+													dataType: 'json',
+													contentType: "application/json",
+													data: JSON.stringify({
+														"user": {
+															"id": userData.user.id,
+														}
+													})
+											}
+											client.request(option).then(function(d) {
+												client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+											});
+										});
+								}else {
+									client.request({
+										url:`/api/v2/tickets/${currentTicketInfo.ticket.id}`, 
+										type: 'PUT', 
+										dataType: 'json',
+										contentType: "application/json",
+										data:JSON.stringify({ticket:{requester_id: userData.user.id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + userData.user.name + '(' + userData.user.external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
+											// console.log(response);
+											client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
+										});
+								}
+							});
 						}
-					});
-				}
-			}
+					}
+				});
+			};
 		}).catch(function(data){
 			client.invoke("notify", "젠데스크 사용자 업데이트에 실패 했습니다.", "error", 5000);
 			console.log('zendesk API error : ',data);
