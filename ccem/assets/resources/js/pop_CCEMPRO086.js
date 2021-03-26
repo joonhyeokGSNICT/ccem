@@ -102,7 +102,7 @@ $(function(){
 				}
 			},
 			{
-				header: '에러코드',
+				header: '전송결과',
 				name: 'ERRCODE',
 				align: "center",
 				width: 90,
