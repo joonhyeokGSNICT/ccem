@@ -862,29 +862,6 @@ const zendeskUserDelete = (user_id) => {
 }
 
 /**
- * 사용자 전화번호 업데이트
- * @param {string|number} user_id 
- * @param {string} phone 
- */
-const zendeskUserPhoneUpdate = (user_id, phone) => {
-
-	if (!phone) return; // 전화번호 없으면 무시
-	
-	const option = {
-		url: `/api/v2/users/${user_id}`,
-		type: "PUT",
-		dataType: 'json',
-		contentType: "application/json",
-		data: JSON.stringify({
-			user: { phone }
-		})
-	}
-
-	return topbarClient.request(option);
-
-}
-
-/**
  * 티켓 요청자 변경
  * @param {string|number} ticket_id 
  * @param {string|number} requester_id 
@@ -920,8 +897,7 @@ const checkTicketRequester = async (ticket_id, requester_id) => {
 	if (!user.external_id && user.role == "end-user") {
 		// await zendeskUserMerge(ticket.requester_id, requester_id);
 
-		// 전화번호 업데이트 -> 요청자변경 -> 임시사용자삭제
-		await zendeskUserPhoneUpdate(requester_id, user.phone);
+		// 요청자변경 -> 임시사용자삭제
 		await ticketRequesterUpdate(ticket.id, requester_id);
 		await zendeskUserDelete(user.id);
 		
