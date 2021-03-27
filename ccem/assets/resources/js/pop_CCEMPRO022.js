@@ -799,9 +799,6 @@ const onSave = async () => {
 	cselData.LIST_CUST_ID	= obData.LIST_CUST_ID;
 	cselData.CALLBACK_ID	= obData.CALLBACK_ID;
 
-	// 티켓 요청자 체크
-	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
-
 	// CCEM DB 저장
 	const resSave = await saveCounsel(cselData, addData, obData);
 	$("#textbox28").val(resSave.CSEL_NO);
@@ -1350,16 +1347,21 @@ const openCselRst = code => {
 			}
 			PopupUtil.open("CCEMPRO024", 670, 800);
 			break;
-		case "MOS문의답변":		// TODO MOS문의답변
 		case "22":	// MOS커뮤니티
-			const param = {
+			PopupUtil.open("CCEMPRO094", 570, 720, "", {
 				CUST_MK: sCUST_MK, 
 				CUST_ID: sCUST_ID,
 				CSEL_DATE: sCSEL_DATE,
 				CSEL_NO: sCSEL_NO,
 				CSEL_SEQ: sCSEL_SEQ,
-			};
-			PopupUtil.open("CCEMPRO094", 570, 720, "", param);
+			});
+			break;
+		case "고객의소리": // TODO 고객의소리
+			PopupUtil.open("CCEMPRO108", 1150, 700, "", {
+				CSEL_DATE: sCSEL_DATE,
+				CSEL_NO: sCSEL_NO,
+				CSEL_SEQ: sCSEL_SEQ,
+			});
 			break;
 		default:
 			break;

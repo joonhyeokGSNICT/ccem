@@ -578,9 +578,6 @@ const onSave = async () => {
 	const customData = await getCustomData();
 	if (!customData) return false;
 	if (!confirm("저장 하시겠습니까?")) return false;
-
-	// 티켓 요청자 체크
-	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 	
 	// CCEM DB 저장
 	const resSave = await saveTchrCounsel(cselData);

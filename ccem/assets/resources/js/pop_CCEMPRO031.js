@@ -685,9 +685,6 @@ const onSave = async () => {
 	cselData.OBLIST_CDE		= obData.OBLIST_CDE;
 	cselData.LIST_CUST_ID	= obData.LIST_CUST_ID;
 	cselData.CALLBACK_ID	= obData.CALLBACK_ID;
-
-	// 티켓 요청자 체크
-	await checkTicketRequester(cselData.ZEN_TICKET_ID, customData.requesterId);
 	
 	// CCEM DB 저장
 	const resSave = await saveEnterInfo(cselData, transData, obData);
