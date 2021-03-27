@@ -591,6 +591,11 @@ const checkTicket = async () => {
 		return false;
 	}
 
+	if (currentTicket.status == "closed") {
+		alert(`#${currentTicket.id} 티켓 상태가 종료일 경우 티켓이 업데이트되지 않습니다.`);
+		return false;
+	}
+
     return currentTicket.id;
 }
 
