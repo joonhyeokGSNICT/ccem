@@ -192,7 +192,7 @@ $(function(){
 															contentType: "application/json",
 															data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
 																client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-																var option = {
+																/*var option = {
 																		url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}.json`,
 																		type: 'GET',
 																		dataType: 'json',
@@ -219,7 +219,7 @@ $(function(){
 																		client.invoke("notify", "임시고객을 삭제하는 도중 문제가 생겼습니다. 관리자에게 문의 해 주세요."+error, "notice", 5000);
 																		console.log(error);
 																	});
-																});
+																});*/
 															});
 													}else {
 														client.request({
@@ -458,7 +458,7 @@ $(function(){
 									if(d.count >= 1){					
 										// console.log(d.results[0].id);
 										if(currentTicketInfo != undefined && currentTicketInfo != null && currentTicketInfo?.ticket != undefined){
-											if(currentTicketInfo.ticket.requester.externalId != d.results[0].external_id){
+											if(currentTicketInfo.ticket.requester.externalId != d.results[0].external_id && currentTicketInfo.ticket.status != "closed"){
 												ModalUtil.confirmPop("확인 메세지", "티켓의 고객과 현재 CCEM에 조회된 고객이 다릅니다. <br> 티켓에 업데이트 하시겠습니까?", function(e){
 													if(currentTicketInfo.ticket.requester.externalId == null && currentTicketInfo.ticket.requester.role == 'end-user'){
 														client.request({
@@ -468,7 +468,7 @@ $(function(){
 															contentType: "application/json",
 															data:JSON.stringify({ticket:{requester_id: d.results[0].id, comment:'현재 티켓의 요청자를 ' + currentTicketInfo.ticket.requester.name + '(' + currentTicketInfo.ticket.requester.externalId + ') 에서 ' + d.results[0].name + '(' + d.results[0].external_id + ') (으)로 변경하였습니다.'}})}).then(function(response){
 																client.invoke("notify", "티켓 요청자를 업데이트 했습니다.", "notice", 5000);
-																var option = {
+																/*var option = {
 																		url: `/api/v2/users/${currentTicketInfo.ticket.requester.id}.json`,
 																		type: 'GET',
 																		dataType: 'json',
@@ -495,7 +495,7 @@ $(function(){
 																		client.invoke("notify", "임시고객을 삭제하는 도중 문제가 생겼습니다. 관리자에게 문의 해 주세요."+error, "notice", 5000);
 																		console.log(error);
 																	});
-																});
+																});*/
 															});
 													}else {
 														client.request({
