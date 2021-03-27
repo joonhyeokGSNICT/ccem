@@ -844,6 +844,67 @@ const zendeskUserMerge = (temp_requester_id, requester_id) => {
 }
 
 /**
+ * 사용자 삭제
+ * @param {string|number} user_id 
+ */
+const zendeskUserDelete = (user_id) => {
+
+	const option = {
+		url: `/api/v2/users/${user_id}`,
+		type: 'DELETE',
+		dataType: 'json',
+		contentType: "application/json",
+		data: JSON.stringify({})
+	}
+	
+	return topbarClient.request(option);
+
+}
+
+/**
+ * 사용자 전화번호 업데이트
+ * @param {string|number} user_id 
+ * @param {string} phone 
+ */
+const zendeskUserPhoneUpdate = (user_id, phone) => {
+
+	if (!phone) return; // 전화번호 없으면 무시
+	
+	const option = {
+		url: `/api/v2/users/${user_id}`,
+		type: "PUT",
+		dataType: 'json',
+		contentType: "application/json",
+		data: JSON.stringify({
+			user: { phone }
+		})
+	}
+
+	return topbarClient.request(option);
+
+}
+
+/**
+ * 티켓 요청자 변경
+ * @param {string|number} ticket_id 
+ * @param {string|number} requester_id 
+ */
+const ticketRequesterUpdate = (ticket_id, requester_id) => {
+
+	const option = {
+		url: `/api/v2/tickets/${ticket_id}`,
+		method: 'PUT',
+		contentType: "application/json",
+		data: JSON.stringify({ 
+			ticket: { requester_id }
+		}),
+	}
+	
+	return topbarClient.request(option);
+
+}
+
+/**
  * 티켓 요청자가 임시사용자일경우 현재 요청자로 병합한다.
  * @param {string|number} ticket_id 
  * @param {string|number} requester_id 
@@ -855,9 +916,15 @@ const checkTicketRequester = async (ticket_id, requester_id) => {
 	const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
 	const { user } = await topbarClient.request(`/api/v2/users/${ticket.requester_id}`);
 	
-	// 사용자의 external_id가 없을경우 임시사용자이므로 현재 요청자로 병합한다.
+	// 사용자의 external_id가 없고 end-user일 경우 임시사용자
 	if (!user.external_id && user.role == "end-user") {
-		await zendeskUserMerge(ticket.requester_id, requester_id);
+		// await zendeskUserMerge(ticket.requester_id, requester_id);
+
+		// 전화번호 업데이트 -> 요청자변경 -> 임시사용자삭제
+		await zendeskUserPhoneUpdate(requester_id, user.phone);
+		await ticketRequesterUpdate(ticket.id, requester_id);
+		await zendeskUserDelete(user.id);
+		
 	}
 
 }
