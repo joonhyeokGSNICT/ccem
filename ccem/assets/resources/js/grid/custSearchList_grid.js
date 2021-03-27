@@ -213,24 +213,11 @@ $(function(){
 																			})
 																	}
 																	client.request(option).then(function() {
-																		console.log('tempinfo', tempInfo);
-																		var option = {
-																				url: `/api/v2/users/${d.results[0].id}.json`,
-																				type: 'PUT',
-																				dataType: 'json',
-																				contentType: "application/json",
-																				data: JSON.stringify({
-																					"user": {
-																						'phone': tempInfo.user.phone
-																					}
-																				})
-																		}
-																		client.request(option).then(function(d) {
-																			client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-																			sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-																				currentTicketInfo = data;
-																			});
-																		});
+																		//console.log('tempinfo', tempInfo);
+																		client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+																	}).catch(function(error){
+																		client.invoke("notify", "임시고객을 삭제하는 도중 문제가 생겼습니다. 관리자에게 문의 해 주세요."+error, "notice", 5000);
+																		console.log(error);
 																	});
 																});
 															});
@@ -502,24 +489,11 @@ $(function(){
 																			})
 																	}
 																	client.request(option).then(function() {
-																		console.log('tempinfo', tempInfo);
-																		var option = {
-																				url: `/api/v2/users/${d.results[0].id}.json`,
-																				type: 'PUT',
-																				dataType: 'json',
-																				contentType: "application/json",
-																				data: JSON.stringify({
-																					"user": {
-																						'phone': tempInfo.user.phone
-																					}
-																				})
-																		}
-																		client.request(option).then(function(d) {
-																			client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-																			sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-																				currentTicketInfo = data;
-																			});
-																		});
+																		//console.log('tempinfo', tempInfo);
+																		client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+																	}).catch(function(error){
+																		client.invoke("notify", "임시고객을 삭제하는 도중 문제가 생겼습니다. 관리자에게 문의 해 주세요."+error, "notice", 5000);
+																		console.log(error);
 																	});
 																});
 															});

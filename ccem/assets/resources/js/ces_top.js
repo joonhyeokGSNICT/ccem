@@ -2381,24 +2381,11 @@ async function updateUserforZen(){
 													})
 											}
 											client.request(option).then(function(d) {
-												console.log('tempinfo', tempInfo);
-												var option = {
-														url: `/api/v2/users/${userData.user.id}.json`,
-														type: 'PUT',
-														dataType: 'json',
-														contentType: "application/json",
-														data: JSON.stringify({
-															"user": {
-																'phone': tempInfo.user.phone
-															}
-														})
-												}
-												client.request(option).then(function(d) {
-													client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-													sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-														currentTicketInfo = data;
-													});
-												});
+												//console.log('tempinfo', tempInfo);
+												client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+											}).catch(function(error){
+												client.invoke("notify", "임시고객을 삭제하는 도중 문제가 생겼습니다. 관리자에게 문의 해 주세요."+error, "notice", 5000);
+												console.log(error);
 											});
 										});
 									});
@@ -2493,24 +2480,11 @@ async function updateTchrforZen(){
 														})
 												}
 												client.request(option).then(function(d) {
-													console.log('tempinfo', tempInfo);
-													var option = {
-															url: `/api/v2/users/${userData.user.id}.json`,
-															type: 'PUT',
-															dataType: 'json',
-															contentType: "application/json",
-															data: JSON.stringify({
-																"user": {
-																	'phone': tempInfo.user.phone
-																}
-															})
-													}
-													client.request(option).then(function(d) {
-														client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
-														sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
-															currentTicketInfo = data;
-														});
-													});
+													//console.log('tempinfo', tempInfo);
+													client.invoke("notify", "임시 고객이 기존 고객과 통합 되었습니다.", "notice", 5000);
+												}).catch(function(error){
+													client.invoke("notify", "임시고객을 삭제하는 도중 문제가 생겼습니다. 관리자에게 문의 해 주세요."+error, "notice", 5000);
+													console.log(error);
 												});
 											});
 										});
@@ -3722,7 +3696,7 @@ function onSave(){
 								      "mobilno_mother" : $("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val(),
 								      "mobilno_father" : "",
 								      "mobile_legal" : $("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val(),
-								      "home_tel" : $("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val(),
+								      "home_tel" : $("#custInfo_DDD").val()+$("#custInfo_TELPNO1").val()+$("#custInfo_TELPNO2").val(),
 								      "custom_no" : $("#custInfo_CUST_ID").val(),
 								      "fml_connt_cde" : $("#custInfo_FAT_REL").val(),
 								      "fml_seq" : $("#custInfo_FAT_RSDNO").val().replace(/-/gi,""),
