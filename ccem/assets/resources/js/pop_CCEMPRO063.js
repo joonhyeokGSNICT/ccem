@@ -10,8 +10,9 @@ var subDomain = document.domain.split('.')[0];
 
 var ZD_TYPE;   
 if ( subDomain == 'daekyohelp1605573305' ) ZD_TYPE = 'SANDBOX';   // 샌드박스 반영 시 
-else if ( subDomain == '' ) ZD_TYPE = 'OPS';          // 운영 반영시 'OPS'
-else ZD_TYPE = 'SANDBOX';
+else if ( subDomain == 'daekyo-ccm' ) ZD_TYPE = 'OPS';            // 운영 반영시 'OPS'
+else if ( subDomain == 'localhost' ) ZD_TYPE = 'OPS';             // 로컬 반영시 'SANDBOX/OPS' 설정
+else ZD_TYPE = 'OPS';
 
 const ZD = {
     SANDBOX : {
