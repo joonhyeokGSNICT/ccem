@@ -49,7 +49,6 @@ const createGrids = () => {
 	// 상담조회 grid
 	grid1 = new Grid({
 		el: document.getElementById('grid1'),
-		virtualScrolling: true,
 		bodyHeight: 213,
 		pageOptions: {
 			useClient: true,
