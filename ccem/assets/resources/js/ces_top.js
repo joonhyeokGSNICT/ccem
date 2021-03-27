@@ -1630,13 +1630,13 @@ function onclickCselBtn(id) {
 		PopupUtil.open('CSELTOP', 1227, 655, '#csel_by_tchr');
 		break;
 	case 'tchr_modi': 
-		if(currentUserInfo.user.userMK <= 2 || currentCounselInfo.CSEL_USER_ID == currentUserInfo.user.external_id){
+		if(currentUserInfo.user.userMK <= 2 || currentTchrCounselInfo.CSEL_USER_ID == currentUserInfo.user.external_id){
 			
 		}else {
 			client.invoke("notify", "수정권한이 없습니다.", "error", 3000);
 			return;
 		}
-		var proc = $.trim(currentCounselInfo.PROC_MK);
+		var proc = $.trim(currentTchrCounselInfo.PROC_MK);
 
 		switch (proc) {
 			case "6":
