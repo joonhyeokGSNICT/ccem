@@ -497,6 +497,10 @@ client.on('custAutoSearch', function(obj){
 	customerSearch("custSearchDiv","1");
 });
 
+// 상담원 상태 표시 trigger
+client.on('api_notification.sendAgentStateToApp', function(state){
+	
+});
 
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
 
@@ -1388,6 +1392,9 @@ $(function(){
 			}
 			counselMain_directCharge_duesInfo_grid.refreshLayout();
 			counselMain_directCharge_reciverInfo_grid.refreshLayout();
+			counselMain_directCharge_alimSendList_grid.refreshLayout();
+			counselMain_directCharge_bill_grid.refreshLayout();
+			counselMain_directCharge_cancelCharge_grid.refreshLayout();
 			break;
 		// 변경이력
 		case 'changeHist':
@@ -1400,10 +1407,8 @@ $(function(){
 			break;
 		// 개인정보동의
 		case 'infoAgree':
-			if(currentCustInfo.MBR_ID != "" && currentCustInfo.MBR_ID != null){
-				loadList('getErrNewMBR', counselMain_infoAgree_infoAgreeList_grid);
-				loadList('getErrEntInfo', counselMain_infoAgree_termsVersion_grid);
-			}
+			loadList('getErrNewMBR', counselMain_infoAgree_infoAgreeList_grid);
+			loadList('getErrEntInfo', counselMain_infoAgree_termsVersion_grid);
 			counselMain_infoAgree_infoAgreeList_grid.refreshLayout();
 			counselMain_infoAgree_iaRecordList_grid.refreshLayout();
 			counselMain_infoAgree_termsVersion_grid.refreshLayout();
@@ -2792,8 +2797,8 @@ function loadList(id, grid, listID) {
 			
 		case 'getErrNewMBR' : // 정보동의 - 개인정보동의
 			param.menuname = "정보동의";
-			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].CUST_ID = currentCustInfo.CUST_ID									// 고객번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""		// 회원번호
 			sendUrl = '/cns.getErrNewMBR.do';
 			break;
 		case 'getErrEntInfo' : // 정보동의 - 개인정보동의

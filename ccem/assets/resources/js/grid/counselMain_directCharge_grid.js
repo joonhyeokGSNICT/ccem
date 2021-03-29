@@ -116,7 +116,11 @@ $(function(){
 			if(ev.targetType == 'cell'){
 				counselMain_directCharge_duesInfo_grid.addSelection(ev);
 				counselMain_directCharge_duesInfo_grid.clickSort(ev);
-				currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(ev.rowKey);		// 직접결제 자동조회
+				currentDirectChargeInfo = counselMain_directCharge_duesInfo_grid.getRow(ev.rowKey);		// 직접결제
+				counselMain_directCharge_reciverInfo_grid.clear();
+				counselMain_directCharge_alimSendList_grid.clear();
+				counselMain_directCharge_bill_grid.clear();
+				counselMain_directCharge_cancelCharge_grid.clear();
 				loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);				// 알림톡 이력
 				loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);					// 결제/취소 이력
 				loadList('getCustPayReq', counselMain_directCharge_bill_grid);							// 청구서 이력
