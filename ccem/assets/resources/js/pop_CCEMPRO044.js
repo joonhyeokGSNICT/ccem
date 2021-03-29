@@ -523,42 +523,72 @@ const _sortList = {
 				var chk_name = treeData.filter(data => data.LV == '2' );
 				chk_name = chk_name.filter(data => data.DEPT_ID == temp[index].DEPT_ID);
 				if(chk_name.length > 0) {
-					temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
-					temp[index].PARE_DEPT_NAME = chk_name[0].DEPT_NAME;
-					temp[index].PARE_DEPT_ID = temp[index].DEPT_ID;
-						
-					var UP_DEPT_ID = chk_name[0].UP_DEPT;
-					chk_name = treeData.filter(data => data.LV == '1' );
-					chk_name = chk_name.filter(data => data.DEPT_ID == UP_DEPT_ID);
-					if(chk_name.length > 0) temp[index].UP_DEPT_NAME = chk_name[0].DEPT_NAME;
-					temp[index].UP_DEPT_ID = UP_DEPT_ID;
-					temp[index].DEPT_NAME = "-";
-				}
-				
-			} else if (temp[index].LV == '3') {//센터
-				var chk_name = treeData.filter(data => data.LV == '3' );
-				chk_name = chk_name.filter(data => data.DEPT_ID == temp[index].DEPT_ID);
-				
-				if(chk_name.length > 0) {
-					temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
-					temp[index].DEPT_NAME = chk_name[0].DEPT_NAME;
-
-					var PARE_DEPT_ID = chk_name[0].UP_DEPT;
-					var UP_DEPT_ID
-					temp[index].PARE_DEPT_ID = PARE_DEPT_ID;
-					
-					chk_name = treeData.filter(data => data.LV == '2' );
-					chk_name = chk_name.filter(data => data.DEPT_ID == PARE_DEPT_ID);
-					
-					if(chk_name.length > 0) {
+					// 1레벨이 CEO인 경우
+					if ( chk_name[0].UP_DEPT == "T000") {
+						temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
+						temp[index].UP_DEPT_NAME = chk_name[0].DEPT_NAME;
+						temp[index].UP_DEPT_ID = temp[index].DEPT_ID;
+						temp[index].PARE_DEPT_NAME = "-";
+						temp[index].DEPT_NAME = "-";
+					} 
+					// 아닌경우 (사업국/센터)
+					else {
+						temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
 						temp[index].PARE_DEPT_NAME = chk_name[0].DEPT_NAME;
-						UP_DEPT_ID = chk_name[0].UP_DEPT;
-						
+						temp[index].PARE_DEPT_ID = temp[index].DEPT_ID;
+							
+						var UP_DEPT_ID = chk_name[0].UP_DEPT;
 						chk_name = treeData.filter(data => data.LV == '1' );
 						chk_name = chk_name.filter(data => data.DEPT_ID == UP_DEPT_ID);
 						if(chk_name.length > 0) temp[index].UP_DEPT_NAME = chk_name[0].DEPT_NAME;
 						temp[index].UP_DEPT_ID = UP_DEPT_ID;
+						temp[index].DEPT_NAME = "-";
 					}
+
+				}
+				
+			} else if (temp[index].LV == '3') {//센터
+				var chk_name = treeData.filter(data => data.LV == '3' );
+					chk_name = chk_name.filter(data => data.DEPT_ID == temp[index].DEPT_ID);
+				
+				if(chk_name.length > 0) {
+					var temp_chk_name = treeData.filter(data => data.LV == '2' );
+						temp_chk_name = temp_chk_name.filter(data => data.DEPT_ID == chk_name[0].UP_DEPT);
+					// 1레벨이 CEO인 경우
+					if ( temp_chk_name.length > 0 && temp_chk_name[0].UP_DEPT == "T000") {
+						temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
+						temp[index].PARE_DEPT_NAME = chk_name[0].DEPT_NAME;
+						temp[index].PARE_DEPT_ID = temp[index].DEPT_ID;
+							
+						var UP_DEPT_ID = chk_name[0].UP_DEPT;
+						chk_name = treeData.filter(data => data.LV == '2' );
+						chk_name = chk_name.filter(data => data.DEPT_ID == UP_DEPT_ID);
+						if(chk_name.length > 0) temp[index].UP_DEPT_NAME = chk_name[0].DEPT_NAME;
+						temp[index].UP_DEPT_ID = UP_DEPT_ID;
+						temp[index].DEPT_NAME = "-";
+					// 아닌경우 (사업국/센터)
+					} else {
+						temp[index].ORG_NAME = chk_name[0].DEPT_NAME;
+						temp[index].DEPT_NAME = chk_name[0].DEPT_NAME;
+	
+						var PARE_DEPT_ID = chk_name[0].UP_DEPT;
+						var UP_DEPT_ID
+						temp[index].PARE_DEPT_ID = PARE_DEPT_ID;
+						
+						chk_name = treeData.filter(data => data.LV == '2' );
+						chk_name = chk_name.filter(data => data.DEPT_ID == PARE_DEPT_ID);
+						
+						if(chk_name.length > 0) {
+							temp[index].PARE_DEPT_NAME = chk_name[0].DEPT_NAME;
+							UP_DEPT_ID = chk_name[0].UP_DEPT;
+							
+							chk_name = treeData.filter(data => data.LV == '1' );
+							chk_name = chk_name.filter(data => data.DEPT_ID == UP_DEPT_ID);
+							if(chk_name.length > 0) temp[index].UP_DEPT_NAME = chk_name[0].DEPT_NAME;
+							temp[index].UP_DEPT_ID = UP_DEPT_ID;
+						}
+					}
+
 				}
 			} else if (temp[index].LV == '4') {//센터
 				var chk_name = treeData.filter(data => data.LV == '4' );
@@ -1308,7 +1338,7 @@ const _btn = {
 function getSelOrg() {
 	var orgList = {}
 	if ( opener.name == 'CCEMPRO022' || opener.name == 'CCEMPRO031' || opener.name.indexOf('app_CCEM_top_bar') > -1) {
-		if ( _selectedNode.data.LV =="3" ) {
+		if ( _selectedNode.data.LV =="4" ) {
 			orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
 			orgList.LC_ID = _selectedNode.data.DEPT_ID;
 			orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
@@ -1322,20 +1352,71 @@ function getSelOrg() {
 			orgList.TELPNO_DEPT = _selectedNode.parent.data.TELPNO;
 			orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
 			orgList.TELPNO_LC = _selectedNode.data.TELPNO;
+		} else if ( _selectedNode.data.LV =="3" ) {
+			// 본사
+			if( _selectedNode.parent.parent.data.DEPT_ID == "T000" ) {
+				orgList.DIV_KIND_CDE = _selectedNode.parent.data.BRAND_ID;
+				orgList.LC_ID = "";
+				orgList.LC_EMP_ID = "";
+				orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
+				orgList.UPDEPTNAME = _selectedNode.parent.data.DEPT_NAME;
+				orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+				orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+				orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
+				orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+				orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+				orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
+				orgList.LC_NAME = "";
+				orgList.TELPNO_LC = "";
+			}
+			// 기타 사업국
+			else {
+				orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
+				orgList.LC_ID = _selectedNode.data.DEPT_ID;
+				orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
+				orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
+				orgList.UPDEPTNAME = _selectedNode.parent.parent.data.DEPT_NAME;
+				orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+				orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+				orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
+				orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
+				orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
+				orgList.TELPNO_DEPT = _selectedNode.parent.data.TELPNO;
+				orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
+				orgList.TELPNO_LC = _selectedNode.data.TELPNO;
+			}
 		} else if ( _selectedNode.data.LV =="2" ) {
-			orgList.DIV_KIND_CDE = _selectedNode.parent.data.BRAND_ID;
-			orgList.LC_ID = "";
-			orgList.LC_EMP_ID = "";
-			orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
-			orgList.UPDEPTNAME = _selectedNode.parent.data.DEPT_NAME;
-			orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
-			orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
-			orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
-			orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
-			orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
-			orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
-			orgList.LC_NAME = "";
-			orgList.TELPNO_LC = "";
+			// 본사
+			if( _selectedNode.parent.data.DEPT_ID == "T000" ) {
+				orgList.DIV_KIND_CDE = _selectedNode.data.BRAND_ID;
+				orgList.LC_ID = "";
+				orgList.LC_EMP_ID = "";
+				orgList.DIV_CDE = _selectedNode.data.DEPT_ID;
+				orgList.UPDEPTNAME = _selectedNode.data.DEPT_NAME;
+				orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+				orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+				orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
+				orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+				orgList.DEPT_EMP_ID = "";
+				orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
+				orgList.LC_NAME = "";
+				orgList.TELPNO_LC = "";
+			// 사업국	
+			} else {
+				orgList.DIV_KIND_CDE = _selectedNode.parent.data.BRAND_ID;
+				orgList.LC_ID = "";
+				orgList.LC_EMP_ID = "";
+				orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
+				orgList.UPDEPTNAME = _selectedNode.parent.data.DEPT_NAME;
+				orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+				orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+				orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
+				orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+				orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+				orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
+				orgList.LC_NAME = "";
+				orgList.TELPNO_LC = "";
+			}
 		} else if ( _selectedNode.data.LV =="1" )  {
 			orgList.DIV_KIND_CDE = _selectedNode.data.BRAND_ID;
 			orgList.LC_ID = "";

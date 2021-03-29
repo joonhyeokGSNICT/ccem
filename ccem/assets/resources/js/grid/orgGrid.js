@@ -244,12 +244,22 @@ function setGridTree() {
                     
                     
                 } else if(data.node.data.LV == "2"){
-                    $("#HQ_NAME").text(data.node.parent.title);
-                    $("#DEPT_NAME").text(data.node.title);
-                    $("#LC_NAME").text("");
-                    $("#HQ_NAME2").text(data.node.parent.title);
-                    $("#DEPT_NAME2").text(data.node.title);
-                    $("#LC_NAME2").text("");
+                    // 1레벨이 CEO인 경우
+                    if ( data.node.parent.data.DEPT_ID == "T000" ) {
+                        $("#HQ_NAME").text(data.node.title);
+                        $("#DEPT_NAME").text("");
+                        $("#LC_NAME").text("");
+                        $("#HQ_NAME2").text(data.node.title);
+                        $("#DEPT_NAME2").text("");
+                        $("#LC_NAME2").text("");
+                    }  else {
+                        $("#HQ_NAME").text(data.node.parent.title);
+                        $("#DEPT_NAME").text(data.node.title);
+                        $("#LC_NAME").text("");
+                        $("#HQ_NAME2").text(data.node.parent.title);
+                        $("#DEPT_NAME2").text(data.node.title);
+                        $("#LC_NAME2").text("");
+                    }
         
                     // 사업국 인원 검색
                     switch (_mode){
@@ -281,13 +291,21 @@ function setGridTree() {
                             break;
                     }
                 } else if(data.node.data.LV == "3"){
-                    $("#HQ_NAME").text(data.node.parent.parent.title);
-                    $("#DEPT_NAME").text(data.node.parent.title);
-                    $("#LC_NAME").text(data.node.title);
-                    $("#HQ_NAME2").text(data.node.parent.parent.title);
-                    $("#DEPT_NAME2").text(data.node.parent.title);
-                    $("#LC_NAME2").text(data.node.title);
-        
+                    if ( data.node.parent.parent.data.DEPT_ID == "T000" ) {
+                        $("#HQ_NAME").text(data.node.parent.title);
+                        $("#DEPT_NAME").text(data.node.title);
+                        $("#LC_NAME").text("");
+                        $("#HQ_NAME2").text(data.node.parent.title);
+                        $("#DEPT_NAME2").text(data.node.title);
+                        $("#LC_NAME2").text("");
+                    }  else {
+                        $("#HQ_NAME").text(data.node.parent.parent.title);
+                        $("#DEPT_NAME").text(data.node.parent.title);
+                        $("#LC_NAME").text(data.node.title);
+                        $("#HQ_NAME2").text(data.node.parent.parent.title);
+                        $("#DEPT_NAME2").text(data.node.parent.title);
+                        $("#LC_NAME2").text(data.node.title);
+                    }
                     // 센터 인원 검색
                     switch (_mode){
                         case "search" :
