@@ -96,9 +96,9 @@ function onSearch(){
 		if(data.errcode == 0){
 			currentProcData = data.dsRecv[0];
 			if(currentProcData == undefined){
-				$("#tempSave").prop('disabled',true);
+				/*$("#tempSave").prop('disabled',true);
 				$("#procSave").prop('disabled',true);
-				$("#finalSave").prop('disabled',true);
+				$("#finalSave").prop('disabled',true);*/
 				return;
 			}
 			setActiveControl();
