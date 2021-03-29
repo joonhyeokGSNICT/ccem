@@ -207,6 +207,14 @@ $(function(){
 	            frozenCount: 0,
 	            frozenBorderWidth: 1,
 	        },
+	        summary: {
+	            height: 28,
+	            position: 'bottom',
+	            columnContent: {
+	            	RCPT_DATE: { template: valueMap => "합   계"},
+	            	FEE_YM_RCPT_AMT: { template: valueMap => valueMap.sum.format() },
+	            },
+	        },
 	        columns: [
 				{
 					header: '입금일자',

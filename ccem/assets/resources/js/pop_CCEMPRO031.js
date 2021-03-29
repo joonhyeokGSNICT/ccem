@@ -727,7 +727,7 @@ const getCselCondition = async () => {
 		CSEL_MTYPE_CDE		: $("#textbox21").val(), 						// 상담중분류코드			
 		CSEL_STYPE_CDE		: $("#textbox23").val(), 						// 상담소분류코드	
 		CSEL_TITLE			: $("#textbox18").val(),   					    // 상담제목
-		CSEL_CNTS			: $("#textbox25").val().trim(), 				// 상담상세내용		
+		CSEL_CNTS			: encodeURIComponent($("#textbox25").val().trim()),	// 상담상세내용		
 		// LIMIT_MK			: "", // 처리시한구분		
 		// PROC_HOPE_DATE	: "", // 처리희망일자			
 		CSEL_MAN_MK			: $("#selectbox9").val(), 						// 내담자구분		
