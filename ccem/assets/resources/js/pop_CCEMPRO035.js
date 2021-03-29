@@ -93,7 +93,7 @@ const createGrids = () => {
 			{ header: '전화번호',                       name: "MOBILNO",       		   width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	 },
 			{ header: '핸드폰번호',                     name: "MOBILNO",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
 			{ header: 'ERMS구분',                       name: "ERMS_MK",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	 },
-			{ header: '팩스발송일시',                   name: "FAX_DATETIME",          width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
+			{ header: '팩스발송일시',                   name: "FAX_DATETIME",          width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	  formatter: columnInfo => FormatUtil.dateTime(columnInfo.value)  },
 			{ header: '녹취ID',                         name: "RECORD_ID",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	 renderer: CustomRecRenderer, 									 },
 			{ header: '상담입력시각',                   name: "CSEL_STTIME",           width: 150,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 	  formatter: columnInfo => FormatUtil.time(columnInfo.value)	  },
 			{ header: 'TICKET ID',                      name: "ZEN_TICKET_ID",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false, 																	  },
