@@ -901,7 +901,7 @@ const getTransCondition = () => {
 		TRANS_NO		: $("#hiddenbox7").val(), 				   // 연계번호	
 		TRANS_DEPT_ID	: $("#textbox12").val(), 				   // 연계지점코드(연계사업국코드)		
 		TRANS_LC_ID		: $("#hiddenbox1").val(), 				   // 연계센터코드	
-		TRANS_CNTS		: $("#textbox25").val().trim(), 		   // 연계내용	
+		TRANS_CNTS		: encodeURIComponent($("#textbox25").val().trim()),	// 연계내용	
 		TRANS_CHNL_MK	: $("#selectbox5").val(), 				   // 연계방법구분		
 		DEPT_ACP_NAME	: $("#textbox14").val().trim(),			   // 접수자
 		DEPT_ACP_DATE	: calendarUtil.getImaskValue("calendar5"), // 접수일자
