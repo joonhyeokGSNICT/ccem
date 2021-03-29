@@ -516,7 +516,7 @@ function onSearch(){
 		}
 		if($("#asignList_inChnlCheck").is(":checked")){				// 상담채널 ( 리스트)
 			param.send1[0].CHK_CSEL_CHNL_MK = "Y";
-			param.send1[0].VAL_CSEL_CHNL_MK.push($("#asignList_inChnl").val());
+			param.send1[0].VAL_CSEL_CHNL_MK = $("#asignList_inChnl").val();
 			validationBool = true;
 		}
 		if($("#asignList_prdtGrpCheck").is(":checked")){			// 과목군
