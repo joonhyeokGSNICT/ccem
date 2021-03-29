@@ -1089,14 +1089,14 @@ $(function(){
 	$(".deptPop").keyup(function(e){
 		var keyCode = e.which;
 		if(keyCode === 13){
-			PopupUtil.open('CCEMPRO044', 1145, 475);
+			PopupUtil.open('CCEMPRO044', 1145, 475, '#info');
 		}
 	});
 	// 센터 팝업 EVENT INPUT ENTER KEY BIND
 	$(".LCPop").keyup(function(e){
 		var keyCode = e.which;
 		if(keyCode === 13){
-			PopupUtil.open('CCEMPRO044', 1145, 475);
+			PopupUtil.open('CCEMPRO044', 1145, 475, '#info');
 		}
 	});
 	

@@ -33,11 +33,11 @@ const API_INFO = {
 const ZDK_INFO = {
     ops: {
         ticketForm: {
-            CNSLT_INQRY                 :   "360003019934",    // 상담문의
-            GNGWN_CRFL_NEW              :   "360006660233",    // 강원심층수(신규)
-            GNGWN_CRFL_LNG              :   "",// 강원심층수(장기)
-            GNGWN_CRFL_RVC              :   "",// 강원심층수(해지)
-            SRVY                        :   "1500000043241",   // 설문조사
+            CNSLT_INQRY                 :   "360003019934",     // 상담문의
+            GNGWN_CRFL_NEW              :   "360006660233",     // 강원심층수(신규)
+            GNGWN_CRFL_LNG              :   "1500000129041",    // 강원심층수(장기)
+            GNGWN_CRFL_RVC              :   "1500000134662",    // 강원심층수(해지)
+            SRVY                        :   "1500000043241",    // 설문조사
         },
         ticketField: {
             CSEL_DATE_NO_SEQ           :    "360054933374",     // 상담번호                                                
