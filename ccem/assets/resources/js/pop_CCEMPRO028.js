@@ -681,7 +681,7 @@ const getTransCondition = (row) => {
 		TRANS_TIME		: row.TRANS_TIME || "", 						// 연계시간		
 		TRANS_CHNL_MK	: "", 											// 연계방법			
 		TRANS_TITLE		: row.CSEL_TITLE, 								// 상담제목		
-		TRANS_CNTS		: row.CSEL_CNTS, 								// 상담내용		
+		TRANS_CNTS		: encodeURIComponent(row.CSEL_CNTS),			// 상담내용		
 		PROC_HOPE_DATE	: calendarUtil.getImaskValue("calendar3"),  	// 처리예정일자			
 		PROC_STS_MK		: $("#selectbox3").val(), 						// 처리상태구분		
 		RTN_FLAG		: $("#selectbox1").val(), 						// 회신여부
