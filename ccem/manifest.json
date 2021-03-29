@@ -14,9 +14,9 @@
         "size": {"width": "1200px", "height": "800px"}
       },
       "nav_bar": {
-    	// "url" : "https://devccem.daekyo.co.kr/ccem/ccem_admin/ccem_pro_072/index.jsp"
+    	"url" : "https://devccem.daekyo.co.kr/ccem/ccem_admin/ccem_pro_072/index.jsp"
       // "url" : "http://localhost:8080/ccem/ccem_admin/ccem_pro_072/index.jsp"
-      "url" : "https://ccm.daekyo.co.kr/ccem/ccem_admin/ccem_pro_072/index.jsp"
+      // "url" : "https://ccm.daekyo.co.kr/ccem/ccem_admin/ccem_pro_072/index.jsp"
 		},
 		"ticket_sidebar":{
 			"autoHide": true,
