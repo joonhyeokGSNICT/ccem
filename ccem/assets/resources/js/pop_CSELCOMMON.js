@@ -480,6 +480,7 @@ const setTicket = async (cselData, customData) => {
 
 	// 티켓필드 세팅
 	const req = new Object()
+	req["ticket.assignee"]   = { groupId: currentUser.default_group_id, userId: currentUser.id }; // 담당자(상담원)
 	req["ticket.requester"]  = { id: customData.requesterId };	// 요청자ID
 	req["ticket.subject"] 	 = cselData.CSEL_TITLE;				// 제목
 	req["ticket.externalId"] = CSEL_DATE_NO_SEQ;				// 티켓 external_id (0000-00-00_0_0)
