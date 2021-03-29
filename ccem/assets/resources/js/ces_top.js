@@ -499,23 +499,22 @@ client.on('custAutoSearch', function(obj){
 
 // 상담원 상태 표시 trigger
 client.on('api_notification.sendAgentStateToApp', function(state){
-	console.log(state);
-	$("#ctiState").text(state.body);
+	$("#ctiState").text("상태 : "+state.body);
 	switch(state.body.split('-')[0]){
 	case '대기중':
 		$("#ctiState").removeClass();
 		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-Success');
+		$("#ctiState").addClass('badge-success');
 		break;
 	case '이석중':
 		$("#ctiState").removeClass();
 		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-Warning');
+		$("#ctiState").addClass('badge-warning');
 		break;
 	case '통화중':
 		$("#ctiState").removeClass();
 		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-Info');
+		$("#ctiState").addClass('badge-info');
 		break;
 	case '보류중':
 		$("#ctiState").removeClass();
@@ -525,12 +524,12 @@ client.on('api_notification.sendAgentStateToApp', function(state){
 	case '수신대기':
 		$("#ctiState").removeClass();
 		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-Danger');
+		$("#ctiState").addClass('badge-danger');
 		break;
 	case '후처리':
 		$("#ctiState").removeClass();
 		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-Light');
+		$("#ctiState").addClass('badge-light');
 		break;
 	}
 });
@@ -939,7 +938,9 @@ function refreshGrid() {
 		
 		switch($("#subMenuTabs").find('.active').attr('id')){
 		case 'customerCounselHist':
-			loadList('counselHist', counselMain_counselHist_grid);
+			if(currentCustInfo?.CUST_ID != undefined){
+				loadList('counselHist', counselMain_counselHist_grid);
+			}
 			// input 내용 삭제
 			$("#customerCounselHistTab").find("input:text").each( function () {
 		        $(this).val('');
@@ -970,7 +971,9 @@ function refreshGrid() {
 		$("#tchrTabCounselDetail").find("textarea").each( function () {
 			$(this).val('');
 		});
-		loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 선생님 상담이력 조회
+		if(currentTchrInfo?.EMP_ID != undefined){
+			loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 선생님 상담이력 조회
+		}
 		break;
 	}
 	
