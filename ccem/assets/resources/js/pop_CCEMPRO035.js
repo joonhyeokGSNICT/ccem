@@ -572,6 +572,7 @@ const getCselCondition = (page, perPage) => {
 		CHK_PRDT_GRP		:	$("#checkbox3").is(":checked") 	 ? checkVal : uncheckVal,	// 과목군 - 체크여부	
 		CHK_LC_NM			:	$("#checkbox9").is(":checked") 	 ? checkVal : uncheckVal,	// 센터명 - 체크여부(센터)
 		CHK_RE_CALL			:	$("#checkbox33").is(":checked")	 ? checkVal : uncheckVal,	// 재통화 - 체크여부(센터)
+		CHK_CSEL_MAN_MK		: 	$("#checkbox20").is(":checked")	 ? checkVal : uncheckVal,	// 내담자 - 체크여부
 		VAL_STDATE			:	calendarUtil.getImaskValue("calendar1"),		// 상담일자FROM - 조회조건				
 		VAL_EDDATE			:	calendarUtil.getImaskValue("calendar2"),		// 상담일자TO - 조회조건				
 		VAL_TRANS_MK		:	$("#selectbox6").val(),		// 연계여부 - 조회조건					
