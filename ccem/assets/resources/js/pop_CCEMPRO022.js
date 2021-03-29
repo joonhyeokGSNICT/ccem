@@ -148,6 +148,24 @@ const createGrids = () => {
 		grid3.addSelection(ev);
 		grid3.clickSort(ev);
 	});
+	grid3.on('dblclick', (ev) => {
+		if (ev.targetType == "cell") {
+			const rowData = ev.instance.getRow(ev.rowKey);
+			$("#textbox3").val(rowData.AREA_CDE);			// 지역코드
+			$("#textbox4").val(rowData.AREA_NAME);			// 지역명
+			$("#textbox5").val(rowData.DEPT_ID);			// 지점코드
+			$("#textbox6").val(rowData.DEPT_NAME);			// 지점명
+			$("#textbox1").val(rowData.DIV_CDE);			// 본부코드
+			$("#textbox2").val(rowData.DIV_NAME);			// 본부명
+			$("#textbox7").val(rowData.TELNO);				// 지점전화
+			$("#hiddenbox1").val(rowData.LC_ID);			// 센터코드
+			$("#textbox9").val(rowData.LC_NAME);			// 센터명
+			$("#textbox10").val(rowData.TELPNO_LC);			// 센터전화
+			$("#hiddenbox4").val(rowData.LC_EMP_ID);		// 센터장	
+			$("#hiddenbox3").val(rowData.DEPT_EMP_ID);		// 지점장
+			$("#hiddenbox14").val(rowData.DIV_KIND_CDE);	// 브랜드ID
+		}
+	});
 }
 
 const setEvent = () => {
