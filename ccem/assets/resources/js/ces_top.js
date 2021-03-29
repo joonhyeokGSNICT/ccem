@@ -499,7 +499,40 @@ client.on('custAutoSearch', function(obj){
 
 // 상담원 상태 표시 trigger
 client.on('api_notification.sendAgentStateToApp', function(state){
-	
+	console.log(state);
+	$("#ctiState").text(state.body);
+	switch(state.body.split('-')[0]){
+	case '대기중':
+		$("#ctiState").removeClass();
+		$("#ctiState").addClass('badge');
+		$("#ctiState").addClass('badge-Success');
+		break;
+	case '이석중':
+		$("#ctiState").removeClass();
+		$("#ctiState").addClass('badge');
+		$("#ctiState").addClass('badge-Warning');
+		break;
+	case '통화중':
+		$("#ctiState").removeClass();
+		$("#ctiState").addClass('badge');
+		$("#ctiState").addClass('badge-Info');
+		break;
+	case '보류중':
+		$("#ctiState").removeClass();
+		$("#ctiState").addClass('badge');
+		$("#ctiState").addClass('badge-primary');
+		break;
+	case '수신대기':
+		$("#ctiState").removeClass();
+		$("#ctiState").addClass('badge');
+		$("#ctiState").addClass('badge-Danger');
+		break;
+	case '후처리':
+		$("#ctiState").removeClass();
+		$("#ctiState").addClass('badge');
+		$("#ctiState").addClass('badge-Light');
+		break;
+	}
 });
 
 //=== === === === === === === === === === === === === === TRIGGER === === === === === === === === === === === === === === ===
