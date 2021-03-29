@@ -52,11 +52,11 @@ const onStart = async () => {
 
         const counselGrid = opener.grid1;	// 상담조회 grid
 		const rowKey 	  = counselGrid.getSelectedRowKey();
-		sCselDate 	      = counselGrid.getValue(rowKey, "CSEL_DATE");	// 상담일자
-		sCselNo  		  = counselGrid.getValue(rowKey, "CSEL_NO");	// 상담번호
-        sCselSeq 		  = counselGrid.getValue(rowKey, "CSEL_SEQ");	// 상담순번
-        sCustId           = counselGrid.getValue(rowKey, "CUST_ID");    // 고객번호
-        sCustMk           = counselGrid.getValue(rowKey, "CUST_MK")     // 고객구분
+		sCselDate 	      = counselGrid.getValue(rowKey, "CSEL_DATE")   || "";  // 상담일자
+		sCselNo  		  = counselGrid.getValue(rowKey, "CSEL_NO")     || "";  // 상담번호
+        sCselSeq 		  = counselGrid.getValue(rowKey, "CSEL_SEQ")    || "";  // 상담순번
+        sCustId           = counselGrid.getValue(rowKey, "CUST_ID")     || "";  // 고객번호
+        sCustMk           = counselGrid.getValue(rowKey, "CUST_MK")     || "";  // 고객구분
 
         await setCodeData(topbarObject.codeData);
         onSearch();
