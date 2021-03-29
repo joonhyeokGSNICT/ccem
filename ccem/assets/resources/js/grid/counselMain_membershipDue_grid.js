@@ -292,6 +292,15 @@ $(function(){
 	            frozenCount: 0,
 	            frozenBorderWidth: 1,
 	        },
+	        summary: {
+	            height: 28,
+	            position: 'bottom',
+	            columnContent: {
+	            	A1: { template: valueMap => "합   계"},
+	            	A4: { template: valueMap => valueMap.sum.format() },
+	            	A5: { template: valueMap => valueMap.sum.format() },
+	            },
+	        },
 	        columns: [
 				{
 					header: '이체일자',
@@ -328,7 +337,7 @@ $(function(){
 				{
 					header: '입금액',
 					name: 'A4',
-					width: 60,
+					width: 90,
 					align: "right",
 					sortable: true,
 					ellipsis: true,
@@ -337,7 +346,7 @@ $(function(){
 				{
 					header: '할인액',
 					name: 'A5',
-					width: 60,
+					width: 90,
 					align: "right",
 					sortable: true,
 					ellipsis: true,
