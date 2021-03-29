@@ -744,7 +744,7 @@ const updateTicket = (DS_TICKET) => {
 /**
  * 오픈된 화면 재조회
  */
-const refreshDisplay = () => {
+const refreshDisplay = async () => {
     if (opener?.name == "CCEMPRO022") opener.onSearch();                    // 상담등록화면 재조회
     if (opener?.name == "CCEMPRO035") opener.onSearch(true);                // 상담조회화면 재조회
 	if (opener?.opener?.name == "CCEMPRO035") opener.opener.onSearch(true);	// 상담조회화면 재조회

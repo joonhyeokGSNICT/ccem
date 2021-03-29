@@ -893,7 +893,7 @@ const setCurrentTicket = async () => {
 /**
  * 오픈된 화면 재조회
  */
-const refreshDisplay = () => {
+const refreshDisplay = async () => {
 
 	// 탑바화면 재조회
 	topbarObject?.refreshGrid(); 			

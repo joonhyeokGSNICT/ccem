@@ -1275,7 +1275,7 @@ const openCCEMPRO044 = (keyCode) => {
 /**
  * 오픈된 화면 재조회
  */
-const refreshDisplay = () => {
+const refreshDisplay = async () => {
 	opener?.onSearch();														// 상담/입회/선생님소개 등록화면 재조회
 	if (opener?.opener?.name == "CCEMPRO035") opener.opener.onSearch(true);	// 상담조회화면 재조회
 	if (opener?.opener?.name == "CCEMPRO037") opener.opener.onSearch();		// 입회조회화면 재조회
