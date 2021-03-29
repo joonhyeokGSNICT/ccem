@@ -757,10 +757,10 @@ const onNewCustInit = () => {
 /**
  * 추가등록
  */
-var addCsel = () => {
+var addCsel = (key) => {
 	  
-	// 상담내용 초기화.
-	$("#textbox13").val("");
+	// 추가등록일 경우 상담내용 초기화.
+	if (key == "add") $("#textbox13").val("");
 
 	// 상담순번 추가
 	const newIdx = $("#selectbox14 option").length + 1;
