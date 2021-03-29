@@ -223,7 +223,7 @@ function onSave(sVal){
     param.dsSend[0].ANSWER_USER_ID = opener.currentUser.external_id;
     param.dsSend[0].ANSWER_USER_NM = opener.currentUser.name;  
     param.dsSend[0].QNA_SEQ = currentMosData.QNA_SEQ;
-    param.dsSend[0].ANSWER = currentMosData.ANSWER;
+    param.dsSend[0].ANSWER = $("#mos_ANSWER").val();
     
     $.ajax({
 			url: `${API_SERVER}/cns.upMosInfo.do`,

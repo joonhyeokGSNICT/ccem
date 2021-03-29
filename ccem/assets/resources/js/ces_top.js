@@ -499,38 +499,42 @@ client.on('custAutoSearch', function(obj){
 
 // 상담원 상태 표시 trigger
 client.on('api_notification.sendAgentStateToApp', function(state){
-	$("#ctiState").text("상태 : "+state.body);
-	switch(state.body.split('-')[0]){
-	case '대기중':
-		$("#ctiState").removeClass();
-		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-success');
-		break;
-	case '이석중':
-		$("#ctiState").removeClass();
-		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-warning');
-		break;
-	case '통화중':
-		$("#ctiState").removeClass();
-		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-info');
-		break;
-	case '보류중':
-		$("#ctiState").removeClass();
-		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-primary');
-		break;
-	case '수신대기':
-		$("#ctiState").removeClass();
-		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-danger');
-		break;
-	case '후처리':
-		$("#ctiState").removeClass();
-		$("#ctiState").addClass('badge');
-		$("#ctiState").addClass('badge-light');
-		break;
+	if(state.body == ""){
+		$("#ctiState").text("");
+	}else {
+		$("#ctiState").text("상태 : "+state.body);
+		switch(state.body.split('-')[0]){
+		case '대기중':
+			$("#ctiState").removeClass();
+			$("#ctiState").addClass('badge');
+			$("#ctiState").addClass('badge-success');
+			break;
+		case '이석중':
+			$("#ctiState").removeClass();
+			$("#ctiState").addClass('badge');
+			$("#ctiState").addClass('badge-warning');
+			break;
+		case '통화중':
+			$("#ctiState").removeClass();
+			$("#ctiState").addClass('badge');
+			$("#ctiState").addClass('badge-info');
+			break;
+		case '보류중':
+			$("#ctiState").removeClass();
+			$("#ctiState").addClass('badge');
+			$("#ctiState").addClass('badge-primary');
+			break;
+		case '수신대기':
+			$("#ctiState").removeClass();
+			$("#ctiState").addClass('badge');
+			$("#ctiState").addClass('badge-danger');
+			break;
+		case '후처리':
+			$("#ctiState").removeClass();
+			$("#ctiState").addClass('badge');
+			$("#ctiState").addClass('badge-light');
+			break;
+		}
 	}
 });
 
