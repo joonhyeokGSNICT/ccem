@@ -768,6 +768,8 @@ const onNewCustInit = () => {
 	$("#hiddenbox11").val("");		// 연계담당자ID
 	$("#hiddenbox12").val("");		// 연계담당자이름
 	$("#hiddenbox14").val("");		// 브랜드ID
+	$("#hiddenbox15").val(""),      // 연계일자
+	$("#hiddenbox16").val(""),      // 연계번호
 	setInitCselRstMkDS();			// 상담결과 저장정보
 	grid3.clear();			  		// 학습중인 과목
 }
@@ -779,6 +781,10 @@ var addCsel = (key) => {
 	  
 	// 추가등록일 경우 상담내용 초기화.
 	if (key == "add") $("#textbox13").val("");
+
+	// 연계정보 초기화
+	$("#hiddenbox15").val("");      // 연계일자
+	$("#hiddenbox16").val("");      // 연계번호
 
 	// 상담순번 추가
 	const newIdx = $("#selectbox14 option").length + 1;
@@ -864,7 +870,7 @@ const getCselCondition = async () => {
 		CSEL_RST_MK1     : $("#selectbox8").val(),             					// 상담결과구분       
 		// CSEL_RST_MK2     : "",             // 상담결과구분2      
 		PROC_MK          : $("#selectbox4").val(),              				// 처리구분           
-		DEPT_ID          : $("#textbox5").val(),                				// 관할지점코드   (사업국코드)    
+		DEPT_ID          : $("#textbox5").val().trim(),							// 관할지점코드   (사업국코드)    
 		DIV_CDE          : $("#textbox1").val(),                				// 관할본부코드   (본부코드)
 		AREA_CDE         : $("#textbox3").val(),                				// 관할지역코드   (지역코드)
 		GRADE_CDE        : $("#selectbox13").val(),             				// 학년코드           
