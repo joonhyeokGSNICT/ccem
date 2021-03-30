@@ -234,7 +234,7 @@ function onSave(sVal){
     param.dsSend[0].ANSWER_USER_ID = opener.currentUser.external_id;
     param.dsSend[0].ANSWER_USER_NM = opener.currentUser.name;  
     param.dsSend[0].QNA_SEQ = currentMosData.QNA_SEQ;
-    param.dsSend[0].ANSWER = $("#mos_ANSWER").val();
+    param.dsSend[0].ANSWER = $("#mos_ANSWER").val().replaceAll('+','＋').replaceAll('%','％');
     
     $.ajax({
 			url: `${API_SERVER}/cns.upMosInfo.do`,
@@ -338,7 +338,7 @@ function onProcSave(){
         param.DS_PROC[0].CSEL_SEQ = POP_DATA.CSEL_SEQ;
         param.DS_PROC[0].PROC_DATE = $("#mos_PROC_DATE").val().replace(/(-|_)/g,"");
         param.DS_PROC[0].PROC_USER_ID = opener.currentUser.external_id;
-        param.DS_PROC[0].PROC_CNTS = $("#mos_PROC_CNTS").val();
+        param.DS_PROC[0].PROC_CNTS = $("#mos_PROC_CNTS").val().replaceAll('+','＋').replaceAll('%','％');;
         
         $.ajax({
 			url: `${API_SERVER}/cns.saveCselProc.do`,
