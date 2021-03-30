@@ -481,7 +481,6 @@ const getDeptProcVoc = () => new Promise((resolve, reject) => {
             // DS_DEPT_PROC.PROC_HOPE_DATE    // 처리희망일자    
             // DS_DEPT_PROC.DEPT_ACP_ID       // 지점접수자사번
             $("#textbox18").val(DS_DEPT_PROC.DEPT_ACP_NAME);                         // 지점접수자성명   
-            if ($("#textbox18").val()) $("#textbox18").prop("readonly", true);       // 접수자가 있으면 입력안되게
             calendarUtil.setImaskValue("calendar2", DS_DEPT_PROC.DEPT_ACP_DATE);     // 지점접수일자(접수일자)
             $("#timebox1").val(DS_DEPT_PROC.DEPT_ACP_TIME);                          // 지점접수시간(접수시간)
             // DS_DEPT_PROC.PROC_STS_MK       // 처리상태구분
