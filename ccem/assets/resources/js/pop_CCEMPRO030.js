@@ -11,7 +11,7 @@ let DS_VOC_PROC     = {};   // VOC 지점 처리 내역
 let DS_GIFT         = {};   // 사은품
 let DS_HPCALL1      = {};   // 1차 해피콜 내역
 let DS_HPCALL2      = {};   // 2차 해피콜 내역
-// let DS_TRANS_DEPT   = {};   // 형제회원 지점확인을 위한 조회
+let DS_TRANS_DEPT   = [];   // 형제회원 지점확인을 위한 조회
 let DS_DEPT_PROC    = {};   // 센터처리 내역
 
 var sCSEL_DATE  = "";   // 상담일자
@@ -229,6 +229,7 @@ const onSearch = async (DS_TICKET) => {
     await getGift();
     await getHappy1();
     await getHappy2();
+    await getChkDeptInfo();
             
     setText(DS_COUNSEL.CUST_MK);                                  // 고객 또는 선생님 셋팅
     setButton(DS_COUNSEL.PROC_STS_MK);                            // 버튼 셋팅
@@ -237,7 +238,9 @@ const onSearch = async (DS_TICKET) => {
     // 저장후 재조회시 티켓업데이트
     if (DS_TICKET) {
         DS_TICKET.IS_HAPY = $("#checkbox4").is(":checked");       // 해피콜여부
-        updateTicket(DS_TICKET);                                  // 티켓업데이트
+        updateTicket(DS_TICKET).catch(error => {
+            alert(`티켓업데이트 중 오류가 발생하였습니다.\n\n${error}`);
+        });
     }
 
 }
@@ -705,6 +708,41 @@ const getHappy2 = () => new Promise((resolve, reject) => {
 
             return resolve(DS_HPCALL2);
 
+        })
+        .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
+
+});
+
+/**
+ * 형제회원 지점 확인 조회 
+ * - as-is : cns2700.onSearch()
+ */
+const getChkDeptInfo = () => new Promise((resolve, reject) => {
+
+	const settings = {
+		url: `${API_SERVER}/cns.getChkDeptInfo.do`,
+		method: 'POST',
+		contentType: "application/json; charset=UTF-8",
+		dataType: "json",
+		data: JSON.stringify({
+			userid: currentUser?.external_id,
+			menuname: "상담결과등록",
+			senddataids: ["dsSend"],
+			recvdataids: ["dsRecv"],
+            dsSend: [{ 
+                CSEL_DATE : sCSEL_DATE, // 상담일자      
+                CSEL_NO   : sCSEL_NO,   // 상담번호  
+                PROC_MK   : sPROC_MK,   // 처리구분  
+            }],
+		}),
+		errMsg: "형제회원 지점 확인 조회중 오류가 발생하였습니다.",
+	}
+
+	$.ajax(settings)
+        .done(res => {
+            if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
+            DS_TRANS_DEPT = res.dsRecv;
+            return resolve(DS_TRANS_DEPT);
         })
         .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 
@@ -1770,7 +1808,7 @@ const getSaveCondition = (sBtnMk) => {
             ROW_TYPE         : DS_DEPT_PROC.ROW_TYPE,                   // 저장구분(I/U/D)
             CSEL_DATE        : DS_COUNSEL.CSEL_DATE,                    // 상담일자
             CSEL_NO          : DS_COUNSEL.CSEL_NO,                      // 상담번호
-            CSEL_SEQ         : DS_COUNSEL.CSEL_SEQ,                     // 상담순번
+            CSEL_SEQ         : [String(DS_COUNSEL.CSEL_SEQ)],           // 상담순번
             TRANS_DATE       : DS_DEPT_PROC.TRANS_DATE,                 // 연계일자
             TRANS_NO         : DS_DEPT_PROC.TRANS_NO,                   // 연계번호
             TRANS_MK         : DS_DEPT_PROC.TRANS_MK,                   // 연계구분
@@ -1877,10 +1915,49 @@ const getSaveCondition = (sBtnMk) => {
             HPCALL2_CHNL_MK_NM      : $("#selectbox4 option:selected").text(),      // 2차해피콜 경로
             HPCALL2_USER_ID         : "",                                           // 2차해피콜 상담원명
             HPCALL2_SATIS_CDE_NM    : $("#selectbox3 option:selected").text(),      // 2차해피콜 상담원만족도
+            CHILD_TICKET_ID         : [],                                           // 티켓ID(같은 사업국은 동시 저장하기 위해)
         },
     }
 
-    // 처리상태 세팅
+
+
+    /**
+     * 신규저장시 같은 사업국은 동시 저장하기위해 순번 세팅.
+     */
+    if (data.DS_TRANS.ROW_TYPE == "I") {
+        
+        let bSameDept = true; // 선택된 항목들 중에 다른 지점이 있는지 확인 하기 위한 변수 'true':모든지점이 같은 경우 'false':다른지점이 존재하는 경우
+    
+        DS_TRANS_DEPT?.forEach(el => {
+
+            // 같은 사업국이면 순번 추가
+            if (DS_COUNSEL.DEPT_NAME == el.DEPT_NAME) {
+                
+                // 중복체크
+                el.CSEL_SEQ = String(el.CSEL_SEQ);
+                if (!data.DS_TRANS.CSEL_SEQ.includes(el.CSEL_SEQ)) {
+                    data.DS_TRANS.CSEL_SEQ.push(el.CSEL_SEQ);
+                    data.DS_TICKET.CHILD_TICKET_ID.push(el.ZEN_TICKET_ID);
+                }
+
+            }
+
+            // 다른 사업국이 존재했을때.
+            if (DS_TRANS_DEPT[0].DEPT_NAME != el.DEPT_NAME) bSameDept = false;
+
+        });
+        
+        if (bSameDept == false) {
+            if (!confirm("다른 사업국이 존재합니다. 계속하시겠습니까?")) return false;
+        }
+
+    }
+
+
+
+    /**
+     * 처리상태 세팅
+     */
     // 1차해피콜 삭제 버튼을 클릭한 경우
     if (sBtnMk == "1D") {
         data.DS_TRANS.PROC_STS_MK = "04"; // 지점처리완료 상태
@@ -1951,13 +2028,21 @@ const getSaveCondition = (sBtnMk) => {
         data.DS_TRANS.PROC_STS_MK = "03"; // 지점처리중
     }
 
-    // 접수자가 있고 접수일시가 없을때 현재시간으로 세팅
+
+
+    /**
+     * 접수자가 있고 접수일시가 없을때 현재시간으로 세팅
+     */
 	if (data.DS_TRANS.DEPT_ACP_NAME && !data.DS_TRANS.DEPT_ACP_DATE) {
 		data.DS_TRANS.DEPT_ACP_DATE = getDateFormat().replace(/[^0-9]/gi, '');
 		data.DS_TRANS.DEPT_ACP_TIME = getTimeFormat().replace(/[^0-9]/gi, '');
 	}
 
-    // 티켓정보 세팅
+
+
+    /**
+     * 티켓정보 세팅
+     */
     data.DS_TICKET.PROC_STS_MK = data.DS_TRANS.PROC_STS_MK;                 // 처리상태
     data.DS_TICKET.GIFT_ROW_TYPE = data.DS_GIFT.ROW_TYPE;                   // 사은품 저장구분
     data.DS_TICKET.HPCALL1_ROW_TYPE = data.DS_HPCALL1.ROW_TYPE;             // 1차해피콜 저장구분
@@ -2026,7 +2111,7 @@ const saveCselResult = (condition) => {
  * Zendesk 티켓 업데이트
  * @param {object} DS_TICKET 티켓정보
  */
-const updateTicket = (DS_TICKET) => {
+const updateTicket = async (DS_TICKET) => {
     
     if (!DS_TICKET.ZEN_TICKET_ID) return;
 
@@ -2092,16 +2177,40 @@ const updateTicket = (DS_TICKET) => {
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_NAME"],          value: DS_TICKET.DEPT_ACP_NAME });                   // 접수자명
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["IS_HPCALL"],              value: DS_TICKET.IS_HAPY });                         // 해피콜 여부
     
-    const option = {
+    // 현재 순번의 티켓 업데이트
+    await topbarClient.request({
         url: `/api/v2/tickets/${DS_TICKET.ZEN_TICKET_ID}`,
         method: 'PUT',
         contentType: "application/json",
-        data: JSON.stringify({ 
-            ticket: { custom_fields }
-        }),
-    }
+        data: JSON.stringify({ ticket: { custom_fields } }),
+    });
 
-    return topbarClient.request(option);
+    // 같은 사업국 순번의 티켓 업데이트
+    if (DS_TICKET.CHILD_TICKET_ID.length > 0) {
+        
+        // 티켓필드 세팅
+        const child_custom_fields = new Array();
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],            value: PROC_STS_MK_VAL });                           // 처리상태
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_TIME"],  value: PROC_CTI_CHGDATE_TIME_VAL });                 // 사업국처리시간
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_DATE_TIME"],     value: DS_TICKET.DEPT_ACP_DATE_TIME });              // 접수일시
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_NAME"],          value: DS_TICKET.DEPT_ACP_NAME });                   // 접수자명
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["IS_HPCALL"],              value: DS_TICKET.IS_HAPY });                         // 해피콜 여부
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_CHNL_MK"],          value: TRANS_CHNL_MK_VAL });                         // 연계방법
+        if (typeof OB_MK_VAL == "string") {
+            child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], value: OB_MK_VAL }); // OB구분
+        }
+
+        // 티켓 업데이트
+        for (const ticket_id of DS_TICKET.CHILD_TICKET_ID) {
+            await topbarClient.request({
+                url: `/api/v2/tickets/${ticket_id}`,
+                method: 'PUT',
+                contentType: "application/json",
+                data: JSON.stringify({ ticket: { custom_fields: child_custom_fields } }),
+            });
+        }
+
+    }
 
 }
 
