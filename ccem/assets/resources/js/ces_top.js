@@ -2926,6 +2926,40 @@ function loadList(id, grid, listID) {
 							
 							// 후처리
 							switch(id){
+							case 'counselHist':
+								counselMain_counselHist_grid.addSelection({rowKey:0});
+								counselMain_counselHist_grid.clickSort({rowKey:0});
+								currentCounselInfo = counselMain_counselHist_grid.getRow(0);
+								if(currentCounselInfo != null){
+									$("#csel_cust_modi").prop('disabled',false);								// 상담수정 버튼 활성화
+									
+									for(key in currentCounselInfo){												// input 자동 기입
+										if($("#counselInfo_" + key).length != 0){
+											if($("#counselInfo_" + key).hasClass('dateForm')){
+												currentCounselInfo[key] = FormatUtil.date(currentCounselInfo[key]);
+											}
+											switch($("#counselInfo_" + key)[0].localName){
+											case "select" :
+												$("#counselInfo_" + key).val(currentCounselInfo[key]);
+												break;
+											case "input" :
+												$("#counselInfo_" + key).val(currentCounselInfo[key]);
+												break;
+											case "span" :
+												$("#counselInfo_" + key).text(currentCounselInfo[key]);
+												break;
+											case "textarea" :
+												$("#counselInfo_" + key).val(currentCounselInfo[key]);
+												break;
+											}
+										}
+									}
+									loadList('getCounselSubj', counselMain_studyList_grid);				// 과목정보리스트 조회
+								}
+								setTimeout(function() {
+									counselMain_studyList_grid.refreshLayout();
+								},50);
+								break;
 							case 'ifsStudyClass':
 								counselMain_studyTab_weeklyStat.addSelection({rowKey:0});
 								counselMain_studyTab_weeklyStat.clickSort({rowKey:0});
@@ -2971,6 +3005,23 @@ function loadList(id, grid, listID) {
 									loadList('getCustPayChgKKO', counselMain_directCharge_alimSendList_grid);		// 알림톡 이력
 									loadList('getPayLedger', counselMain_directCharge_cancelCharge_grid);			// 결제/취소 이력
 									loadList('getCustPayReq', counselMain_directCharge_bill_grid);					// 청구서 이력
+								}
+								break;
+							case 'getCustPayChgKKO' :
+								counselMain_directCharge_alimSendList_grid.addSelection({rowKey:0});
+								counselMain_directCharge_alimSendList_grid.clickSort({rowKey:0});
+								currentAlimInfo = counselMain_directCharge_alimSendList_grid.getRow(0);		// 알림톡발송이력 자동조회
+								if(currentAlimInfo != null){
+									var recieveInfo = [{}];
+									recieveInfo[0].KKO_RLY = counselMain_directCharge_alimSendList_grid.getRow(0).KKO_RLY;
+									recieveInfo[0].KKO_NM = counselMain_directCharge_alimSendList_grid.getRow(0).KKO_NM;
+									recieveInfo[0].MOBILNO = counselMain_directCharge_alimSendList_grid.getRow(0).MOBILNO;
+									if(recieveInfo[0].KKO_RLY != null && recieveInfo[0].KKO_NM != null && recieveInfo[0].MOBILNO != null){
+										counselMain_directCharge_reciverInfo_grid.resetData(recieveInfo);
+									}else {
+										counselMain_directCharge_reciverInfo_grid.clear();
+									}
+									counselMain_directCharge_reciverInfo_grid.refreshLayout();
 								}
 								break;
 							case 'getFeeInfo':
@@ -3856,12 +3907,12 @@ function loadTeacherInfoMain() {
 		}
 	}
 	
-	$("#tchrInfo_BIRTH_DATE").val(FormatUtil.date(currentTchrInfo.BIRTH_DATE));		// 생일 포멧 
-	$("#tchrInfo_WORK_STDATE").val(FormatUtil.date(currentTchrInfo.WORK_STDATE));	// 입사일 포멧 
-	$("#tchrInfo_WORK_EDDATE").val(FormatUtil.date(currentTchrInfo.WORK_EDDATE));	// 퇴직일 포멧 
-	$("#tchrInfo_WED_DATE").val(FormatUtil.date(currentTchrInfo.WED_DATE));			// 결혼일자 포멧 
-	$("#tchrInfo_WORK_REDATE").val(FormatUtil.date(currentTchrInfo.WORK_REDATE));	// 복직일 포멧 
-	$("#tchrInfo_RSDNO").val(FormatUtil.birth(currentTchrInfo.RSDNO));				// 주민번호 포맷
+	$("#tchrInfo_BIRTH_DATE").val(FormatUtil.date(currentTchrInfo?.BIRTH_DATE));		// 생일 포멧 
+	$("#tchrInfo_WORK_STDATE").val(FormatUtil.date(currentTchrInfo?.WORK_STDATE));	// 입사일 포멧 
+	$("#tchrInfo_WORK_EDDATE").val(FormatUtil.date(currentTchrInfo?.WORK_EDDATE));	// 퇴직일 포멧 
+	$("#tchrInfo_WED_DATE").val(FormatUtil.date(currentTchrInfo?.WED_DATE));			// 결혼일자 포멧 
+	$("#tchrInfo_WORK_REDATE").val(FormatUtil.date(currentTchrInfo?.WORK_REDATE));	// 복직일 포멧 
+	$("#tchrInfo_RSDNO").val(FormatUtil.birth(currentTchrInfo?.RSDNO));				// 주민번호 포맷
 	
 	
 	loadList('getTchrCselHistInfo', counselMainTeacher_counselHist_grid);			// 상담이력 조회

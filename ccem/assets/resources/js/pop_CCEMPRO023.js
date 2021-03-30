@@ -342,7 +342,7 @@ var btn = {
     //============================================================================    
     smsOnClick(prop){
         var arrInData = new Array();
-        arrInData[0] = "";  // 회원번호
+        arrInData[0] = opener.$('#hiddenbox6').val();  // 고객번호
         if ( prop == 'dept' ) {
             // if ( isEmpty( $('#textbox2').val() ) ) return;
             arrInData[1] = $('#textbox2').val();  // 사업국장
@@ -358,9 +358,9 @@ var btn = {
         arrInData[3] = "";  // 회원/모 휴대폰
         arrInData[4] = ""; // 회원/부 휴대폰
         arrInData[5] = "1";   // 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
-        arrInData[6] = opener.$('#hiddenbox6').val(); //	고객번호
+        arrInData[6] = ""; //	회원번호
         arrInData[7] = opener.calendarUtil.getImaskValue("textbox27"); // 상담일자
-        arrInData[8] = opener.$('#textbox28').val();   // 상담번호
+        arrInData[8] = opener.$('#textbox28').val();   // 	상담번호
         arrInData[9] = opener.$('#selectbox14').val(); //	상담순번
 
         console.log(arrInData);

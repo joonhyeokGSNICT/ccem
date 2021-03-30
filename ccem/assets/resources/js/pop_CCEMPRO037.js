@@ -178,7 +178,7 @@ $(function(){
 				sortable: true,
 				ellipsis: true,
 				formatter: function(e){
-					return e.value.substring(0,2) + ":" + e.value.substring(2,4)
+					return e.value?.substring(0,2) + ":" + e.value?.substring(2,4)
 				}
 			},
 			{
@@ -546,10 +546,10 @@ function onSearch(){
 		        	console.log(response);
 		        	var tot = 0;
 		        	for(d of response.recv1){
-		        		if(d.PRDT_NAME.slice(-1) == ','){
-		        			tot += d.PRDT_NAME.split(',').length-1;
+		        		if(d.PRDT_NAME?.slice(-1) == ','){
+		        			tot += d.PRDT_NAME?.split(',').length-1;
 		        		}else {
-		        			tot += d.PRDT_NAME.split(',').length;
+		        			tot += d.PRDT_NAME?.split(',').length;
 		        		}
 		        	}
 		        	$("#totalCnt").val(tot);

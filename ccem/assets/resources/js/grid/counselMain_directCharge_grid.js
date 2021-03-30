@@ -242,7 +242,6 @@ $(function(){
 			if(ev.targetType == 'cell'){
 				counselMain_directCharge_alimSendList_grid.addSelection(ev);
 				counselMain_directCharge_alimSendList_grid.clickSort(ev);
-				// console.log(counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey));
 				var recieveInfo = [{}];
 				recieveInfo[0].KKO_RLY = counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey).KKO_RLY;
 				recieveInfo[0].KKO_NM = counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey).KKO_NM;

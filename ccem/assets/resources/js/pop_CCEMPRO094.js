@@ -4,7 +4,7 @@ var userMK;
 var overseerCode;
 
 $(function(){
-	
+	$("#mos_PROC_DATE").val(getToday(0));
 	getBasicList("28").then(function(d){	// 특정 아이디 베이직 코드 호출
 		overseerCode = d;
 		onSearch();
@@ -72,6 +72,13 @@ function onSearch(){
 		.fail(error => {
 		});
 	
+	searchProc();
+}
+
+//==============================================================
+// 처리내용 조회
+//==============================================================
+function searchProc(){
 	var settingsProc = {
 			url: `${API_SERVER}/cns.getCselProc.do`,
 			method: 'POST',
@@ -101,10 +108,14 @@ function onSearch(){
 				$("#finalSave").prop('disabled',true);*/
 				return;
 			}
-			setActiveControl();
-			$("#mos_PROC_DATE").val(FormatUtil.date(currentProcData.PROC_DATE));
-			$("#mos_PROC_CNTS").val(currentProcData.PROC_CNTS);
-			$("#mos_PROC_USER_NM").val(currentProcData.PROC_USER_NM);
+			setActiveControl(currentProcData?.PROC_STS_MK!=undefined?currentProcData?.PROC_STS_MK:"");
+			if(currentProcData?.PROC_DATE == "" || currentProcData?.PROC_DATE == null  || currentProcData?.PROC_DATE == undefined){
+                $("#mos_PROC_DATE").val(getToday(0));
+            }else {
+            	$("#mos_PROC_DATE").val(FormatUtil.date(currentProcData.PROC_DATE));
+            }
+			$("#mos_PROC_CNTS").val(currentProcData?.PROC_CNTS);
+			$("#mos_PROC_USER_NM").val(currentProcData?.PROC_USER_NM);
 			
 		}
 	})
@@ -259,7 +270,7 @@ function onProcSave(){
 			DS_GIFT: [{}],
 		};
     
-    switch(currentProcData.PROC_STS_MK){
+    switch(currentProcData?.PROC_STS_MK){
         case "01" :
         case "03" :
             if(onChkProc()) {
@@ -314,17 +325,17 @@ function onProcSave(){
         }
         
         // DS_CHKDATA -  상담결과 저장 체크데이터
-        param.DS_CHKDATA[0].CSEL_DATE = currentProcData.CSEL_DATE;
-        param.DS_CHKDATA[0].CSEL_NO = currentProcData.CSEL_NO;
-        param.DS_CHKDATA[0].CSEL_SEQ = currentProcData.CSEL_SEQ;
-        param.DS_CHKDATA[0].CUST_ID = currentProcData.CUST_ID;
+        param.DS_CHKDATA[0].CSEL_DATE = POP_DATA.CSEL_DATE;
+        param.DS_CHKDATA[0].CSEL_NO = POP_DATA.CSEL_NO;
+        param.DS_CHKDATA[0].CSEL_SEQ = POP_DATA.CSEL_SEQ;
+        param.DS_CHKDATA[0].CUST_ID = POP_DATA.CUST_ID;
         
         // DS_PROC - 처리내역 데이터
-        if(currentProcData.PROC_USER_ID == null) {param.DS_PROC[0].ROW_TYPE = 'I'}else{param.DS_PROC[0].ROW_TYPE = 'U'};
-        param.DS_PROC[0].CSEL_DATE = currentProcData.CSEL_DATE;
-        param.DS_PROC[0].CSEL_DATE = currentProcData.CSEL_DATE;
-        param.DS_PROC[0].CSEL_NO = currentProcData.CSEL_NO;
-        param.DS_PROC[0].CSEL_SEQ = currentProcData.CSEL_SEQ;
+        if(currentProcData?.PROC_USER_ID == undefined) {param.DS_PROC[0].ROW_TYPE = 'I'}else{param.DS_PROC[0].ROW_TYPE = 'U'};
+        param.DS_PROC[0].CSEL_DATE = POP_DATA.CSEL_DATE;
+        param.DS_PROC[0].CSEL_DATE = POP_DATA.CSEL_DATE;
+        param.DS_PROC[0].CSEL_NO = POP_DATA.CSEL_NO;
+        param.DS_PROC[0].CSEL_SEQ = POP_DATA.CSEL_SEQ;
         param.DS_PROC[0].PROC_DATE = $("#mos_PROC_DATE").val().replace(/(-|_)/g,"");
         param.DS_PROC[0].PROC_USER_ID = opener.currentUser.external_id;
         param.DS_PROC[0].PROC_CNTS = $("#mos_PROC_CNTS").val();
@@ -339,6 +350,7 @@ function onProcSave(){
 		.done(data => {
 			// console.log("처리저장->:",data);
 			alert("저장 되었습니다.");
+			searchProc();
 		})
 		.fail(error => {
 		});
@@ -352,9 +364,7 @@ function onProcSave(){
 //답변 조건 체크
 //============================================================================
 function onChkAns(){
-    if( $.trim($("#mos_ANSWER").val()) != "" &&
-    	currentMosData.ANSWER != null && 
-    	currentMosData.ANSWER != ""){
+    if($.trim($("#mos_ANSWER").val()) != ""){
         return true;
     }else{
         alert("답변내역을 입력하세요.");
@@ -366,8 +376,8 @@ function onChkAns(){
 //지점처리 조건 체크
 //============================================================================
 function onChkProc(){
-    if( opener.currentUser.external_id != "" &&
-        $.trim($("#mos_PROC_CNTS").val()).length > 0    ){
+    if(opener.currentUser.external_id != "" &&
+        $.trim($("#mos_PROC_CNTS").val()).length > 0){
         return true;
     }else{
         alert("지점 처리 내용을 입력하세요.");
@@ -382,10 +392,10 @@ function onChkHpCall(){
     
     //처리사용자가 존재하고,
     //처리내용,해피콜제목,해피콜내용이 존재하면,
-    if( currentProcData.PROC_USER_ID != ""   && currentProcData.PROC_USER_ID != null &&
+    if( opener.currentUser.external_id != ""   && opener.currentUser.external_id != null &&
         $.trim($("#mos_PROC_CNTS").val()).length > 0      &&
-        currentProcData.HPCALL_TITLE != null && currentProcData.HPCALL_TITLE != "" &&
-        currentProcData.HPCALL_CNTS != null && currentProcData.HPCALL_CNTS != ""){            	            	
+        currentProcData?.HPCALL_TITLE != null && currentProcData?.HPCALL_TITLE != "" && currentProcData?.HPCALL_TITLE != undefined &&
+        currentProcData?.HPCALL_CNTS != null && currentProcData?.HPCALL_CNTS != "" && currentProcData?.HPCALL_CNTS != undefined){            	            	
         return true;
     }else{
         //alert("제목 또는 내용을 입력하세요");
