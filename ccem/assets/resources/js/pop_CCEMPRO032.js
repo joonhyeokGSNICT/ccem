@@ -584,19 +584,15 @@ const onSave = async () => {
 	$("#textbox6").val(resSave.CSEL_NO);
 	cselData.CSEL_NO = resSave.CSEL_NO;
 
-	// 티켓 업데이트
-	await updateTicket(cselData, customData);
-	
-	// 녹취정보 저장
-	await saveRecData(cselData);
-
 	// 저장성공후
-	onSearch();								// 상담 재조회	
-	refreshDisplay();						// 오픈된 화면 재조회
-	topbarClient.invoke("popover", "hide"); // topbar 숨김
+	onSearch();									// 상담 재조회	
+	refreshDisplay();							// 오픈된 화면 재조회
+	await updateTicket(cselData, customData);	// 티켓 업데이트
+	await saveRecData(cselData);				// 녹취정보 저장
+	topbarClient.invoke("popover", "hide"); 	// topbar 숨김
 	alert("저장 되었습니다.");
-
 	return true;
+	
 }
 
 /**
