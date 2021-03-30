@@ -892,6 +892,10 @@ const getCselCondition = async () => {
 		else data.ASSIGNEE_ID = currentUser.id;
 	}
 
+	// 특수문자를 전각문자로 replace
+	data.CSEL_CNTS = data.CSEL_CNTS.replaceAll("%", "％");
+	data.CSEL_CNTS = data.CSEL_CNTS.replaceAll("+", "＋");
+
 	return data;
 
 }
@@ -919,6 +923,11 @@ const getTransCondition = () => {
 		data.DEPT_ACP_DATE = getDateFormat().replace(/[^0-9]/gi, '');
 		data.DEPT_ACP_TIME = getTimeFormat().replace(/[^0-9]/gi, '');
 	}
+
+	
+	// 특수문자를 전각문자로 replace
+	data.TRANS_CNTS = data.TRANS_CNTS.replaceAll("%", "％");
+	data.TRANS_CNTS = data.TRANS_CNTS.replaceAll("+", "＋");
 
 	return data;
 

@@ -1201,6 +1201,10 @@ const getCselCondition = async () => {
 		else data.ASSIGNEE_ID = currentUser.id;
 	}
 
+	// 특수문자를 전각문자로 replace
+	data.CSEL_CNTS = data.CSEL_CNTS.replaceAll("%", "％");
+	data.CSEL_CNTS = data.CSEL_CNTS.replaceAll("+", "＋");
+
 	return data;
 }
 
