@@ -621,7 +621,7 @@ const getCselCondition = async () => {
 		CSEL_MTYPE_CDE		: $("#textbox22").val(), 								// 상담중분류코드				
 		CSEL_STYPE_CDE		: $("#textbox24").val(), 								// 상담소분류코드				
 		CSEL_TITLE			: $("#textbox18").val().trim(), 						// 상담제목			
-		CSEL_CNTS			: encodeURIComponent($("#textbox19").val().trim()),		// 상담내용			
+		CSEL_CNTS			: $("#textbox19").val().trim(),		// 상담내용			
 		PROC_MK				: $("#selectbox9").val(), 								// 처리구분	
 		// DEPT_ID			: "", // 지점(부서코드)		
 		// DIV_CDE			: "", // 지점(본부코드)		

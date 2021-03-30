@@ -727,7 +727,7 @@ const getCselCondition = async () => {
 		CSEL_MTYPE_CDE		: $("#textbox21").val(), 						// 상담중분류코드			
 		CSEL_STYPE_CDE		: $("#textbox23").val(), 						// 상담소분류코드	
 		CSEL_TITLE			: $("#textbox18").val(),   					    // 상담제목
-		CSEL_CNTS			: encodeURIComponent($("#textbox25").val().trim()),	// 상담상세내용		
+		CSEL_CNTS			: $("#textbox25").val().trim(),					// 상담상세내용		
 		// LIMIT_MK			: "", // 처리시한구분		
 		// PROC_HOPE_DATE	: "", // 처리희망일자			
 		CSEL_MAN_MK			: $("#selectbox9").val(), 						// 내담자구분		
@@ -901,7 +901,7 @@ const getTransCondition = () => {
 		TRANS_NO		: $("#hiddenbox7").val(), 				   // 연계번호	
 		TRANS_DEPT_ID	: $("#textbox12").val(), 				   // 연계지점코드(연계사업국코드)		
 		TRANS_LC_ID		: $("#hiddenbox1").val(), 				   // 연계센터코드	
-		TRANS_CNTS		: encodeURIComponent($("#textbox25").val().trim()),	// 연계내용	
+		TRANS_CNTS		: $("#textbox25").val().trim(),				// 연계내용	
 		TRANS_CHNL_MK	: $("#selectbox5").val(), 				   // 연계방법구분		
 		DEPT_ACP_NAME	: $("#textbox14").val().trim(),			   // 접수자
 		DEPT_ACP_DATE	: calendarUtil.getImaskValue("calendar5"), // 접수일자

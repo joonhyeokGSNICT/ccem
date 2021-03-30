@@ -444,7 +444,7 @@ const updateTicket = async (cselData, customData) => {
 				subject			: cselData.CSEL_TITLE,	 // 제목
 				comment: {
 					public		: false,				 // 내부메모
-					body		: decodeURIComponent(cselData.CSEL_CNTS),	 // 상담내용
+					body		: cselData.CSEL_CNTS,	 // 상담내용
 				},
 				requester_id	: customData.requesterId,// 요청자ID
 				followers		: followerData,			 // 팔로워

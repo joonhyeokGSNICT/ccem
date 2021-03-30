@@ -859,7 +859,7 @@ const getCselCondition = async () => {
 		CSEL_MTYPE_CDE   : $("#textbox16").val(),        						// 상담중분류코드     
 		CSEL_STYPE_CDE   : $("#textbox18").val(),        						// 상담소분류코드     
 		CSEL_TITLE       : $("#textbox12").val().trim(),        				// 상담제목           
-		CSEL_CNTS        : encodeURIComponent($("#textbox13").val().trim()),	// 상담상세내용       
+		CSEL_CNTS        : $("#textbox13").val().trim(),						// 상담상세내용       
 		// OCCUR_DATE       : "",             // 문제발생일자       
 		LIMIT_MK         : $("#selectbox5").val(),              				// 처리시한구분       
 		PROC_HOPE_DATE   : calendarUtil.getImaskValue("calendar2"),             // 처리희망일자       
