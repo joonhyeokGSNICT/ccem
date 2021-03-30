@@ -243,7 +243,15 @@ $(function(){
 				counselMain_directCharge_alimSendList_grid.addSelection(ev);
 				counselMain_directCharge_alimSendList_grid.clickSort(ev);
 				// console.log(counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey));
-				counselMain_directCharge_reciverInfo_grid.resetData([counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey)]);
+				var recieveInfo = [{}];
+				recieveInfo[0].KKO_RLY = counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey).KKO_RLY;
+				recieveInfo[0].KKO_NM = counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey).KKO_NM;
+				recieveInfo[0].MOBILNO = counselMain_directCharge_alimSendList_grid.getRow(ev.rowKey).MOBILNO;
+				if(recieveInfo[0].KKO_RLY != null && recieveInfo[0].KKO_NM != null && recieveInfo[0].MOBILNO != null){
+					counselMain_directCharge_reciverInfo_grid.resetData(recieveInfo);
+				}else {
+					counselMain_directCharge_reciverInfo_grid.clear();
+				}
 				counselMain_directCharge_reciverInfo_grid.refreshLayout();
 			}
 	    });
@@ -319,7 +327,7 @@ $(function(){
 				{
 					header: '관계',
 					name: 'KKO_RLY',
-					width: 75,
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -342,7 +350,7 @@ $(function(){
 				{
 					header: '이름',
 					name: 'KKO_NM',
-					width: 100,
+					width: 60,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
