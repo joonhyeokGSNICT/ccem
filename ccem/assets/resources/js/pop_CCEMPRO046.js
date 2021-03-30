@@ -220,7 +220,7 @@ function sendSMS(){
 	param.send1[0].DEST_NAME = $("#sendCustName").val();
 	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
 	param.send1[0].SEND_NAME =	originObj.currentUserInfo.user.name;
-	param.send1[0].MSG_BODY =	encodeURIComponent($("#smsContentArea").val());
+	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
 	param.send1[0].STATUS = 0;
 	param.send1[0].EXTERNAL_ID = originObj.currentUserInfo.user.external_id,         											//상담자ID
 	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
