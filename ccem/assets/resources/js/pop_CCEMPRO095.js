@@ -190,12 +190,91 @@ const onChangeGiftChnl = (value) => {
 
 /**
  * 조회
+ * - as-is : cns6000.onSearch()
  */
  const onSearch = async (DS_TICKET) => {
 
-    await getCselProc();
+    /**
+     * 상담내역 세팅
+     */
+    DS_CSEL_PROC = await getCselProc();
+    calendarUtil.setImaskValue("calendar5", DS_CSEL_PROC.CSEL_DATE);        // MSK_CSEL_DATE          // 상담일자        
+    $("#textbox1").val(DS_CSEL_PROC.CSEL_NO);                               // txtCSEL_NO            // 상담번호        
+    $("#textbox2").val(DS_CSEL_PROC.CSEL_SEQ);                              // txtCSEL_SEQ           // 상담순번        
+    calendarUtil.setImaskValue("calendar1", DS_CSEL_PROC.PROC_HOPE_DATE);   // MSK_PROC_HOPE_DATE     // 처리희망일자            
+    // DS_CSEL_PROC.DEPT_ID            // 지점번호        
+    // DS_CSEL_PROC.CUST_ID            // 고객번호        
+    // DS_CSEL_PROC.DIV_CDE            // 지점(본부)코드        
+    $("#textbox22").val(DS_CSEL_PROC.CSEL_CNTS);                            // txaCSEL_CNTS          // 상담내용        
+    // DS_CSEL_PROC.CSEL_LTYPE_CDE     // 상담대분류코드             
+    // DS_CSEL_PROC.CSEL_MTYPE_CDE     // 상담중분류코드            
+    // DS_CSEL_PROC.CSEL_STYPE_CDE     // 상담소분류코드            
+    // DS_CSEL_PROC.PROC_STS_MK        // 처리상태구분            
+    calendarUtil.setImaskValue("calendar2", DS_CSEL_PROC.PROC_DATE);       // MSK_PROC_DATE          // 처리일자 
+    // DS_CSEL_PROC.PROC_USER_ID       // 처리자ID            
+    $("#textbox24").val(DS_CSEL_PROC.PROC_CNTS);                            // txaPROC_CNTS          // 처리내용        
+    calendarUtil.setImaskValue("calendar3", DS_CSEL_PROC.HPCALL_DATE);     // MSK_HPCALL_DATE        // 해피콜일자       
+    $("#timebox1").val(DS_CSEL_PROC.HPCALL_TIME);                           // MSK_HPCALL_TIME        // 해피콜시간            
+    $("#textbox26").val(DS_CSEL_PROC.HPCALL_TITLE);                         // txtHPCALL_TITLE       // 해피콜제목            
+    $("#textbox27").val(DS_CSEL_PROC.HPCALL_CNTS);                          // txaHPCALL_CNTS        // 해피콜내용            
+    $("#selectbox2").val(DS_CSEL_PROC.HPCALL_CHNL_MK);                      // CMB_HPCALL_CHNL_MK     // 해피콜경로구분            
+    // DS_CSEL_PROC.HPCALL_USER_ID     // 해피콜상담원ID                       
+    $("#selectbox1").val(DS_CSEL_PROC.SATIS_CDE);                           // CMB_SATIS_CDE          // 고객만족도코드        
+    // DS_CSEL_PROC.SATIS_CDE1         // 고객만족도코드1        
+    // DS_CSEL_PROC.SATIS_CDE2         // 고객만족도코드2        
+    // DS_CSEL_PROC.GIFT_DATE          // 사은품접수일자        
+    // DS_CSEL_PROC.GIFT_NO            // 사은품접수번호        
+    // DS_CSEL_PROC.GIFT_SEQ           // 사은품접수순번        
+    // DS_CSEL_PROC.DTL_MK             // 내역구분    
+    $("#selectbox3").val(DS_CSEL_PROC.GIFT_TYPE_CDE);                       // CMB_GIFT_TYPE_CDE      // 사은품분류코드            
+    $("#selectbox4").val(DS_CSEL_PROC.GIFT_CDE);                            // CMB_TB_GIFTCODE           // 사은품코드        
+    calendarUtil.setImaskValue("textbox28", DS_CSEL_PROC.GIFT_PRICE);       // txtGIFT_PRICE         // 사은품가격        
+    calendarUtil.setImaskValue("calendar4", DS_CSEL_PROC.SEND_DATE);        // MSK_SEND_DATE          // 발송일자  
+    // DS_CSEL_PROC.GIFT_CHNL_MK                                            // CMB_GIFT_CHNL_MK       // 전달경로구분
+    $("#textbox29").val(DS_CSEL_PROC.PASS_USER);                            // txtPASS_USER          // 전달자명        
+    $("#textbox10").val(DS_CSEL_PROC.DEPT_ID_NM);                           // txtDEPT_ID_NM         // 지점명        
+    $("#textbox8").val(DS_CSEL_PROC.DIV_CDE_NM);                            // txtDIV_CDE_NM         // 본부명        
+    $("#textbox16").val(DS_CSEL_PROC.CSEL_LTYPE_CDE_NM);                    // txtCSEL_LTYPE_CDE_NM  // 상담대분류코드명                
+    $("#textbox18").val(DS_CSEL_PROC.CSEL_MTYPE_CDE_NM);                    // txtCSEL_MTYPE_CDE_NM  // 상담중분류코드명                
+    $("#textbox20").val(DS_CSEL_PROC.CSEL_STYPE_CDE_NM);                    // txtCSEL_STYPE_CDE_NM  // 상담소분류코드명                
+    $("#textbox9").val(DS_CSEL_PROC.CSEL_CHNL_MK_NM);                       // txtCSEL_CHNL_MK_NM    // 채널구분명                
+    $("#textbox11").val(DS_CSEL_PROC.USER_NM);                              // txtUSER_NM            // 사용자명        
+    $("#textbox15").val(DS_CSEL_PROC.CSEL_LTYPE_CDE_D);                     // txtCSEL_LTYPE_CDE_D   // 상담대분류코드_D                
+    $("#textbox17").val(DS_CSEL_PROC.CSEL_MTYPE_CDE_D);                     // txtCSEL_MTYPE_CDE_D   // 상담대분류코드_D                
+    $("#textbox19").val(DS_CSEL_PROC.CSEL_STYPE_CDE_D);                     // txtCSEL_STYPE_CDE_D   // 상담대분류코드_D                
+    $("#textbox23").val(DS_CSEL_PROC.PROC_USER_NM);                         // txtPROC_USER_NM       // 처리사용자명            
+    $("#textbox25").val(DS_CSEL_PROC.HPCALL_USER_NM);                       // txtHPCALL_USER_NM     // 해피콜처리자명            
+    $("#textbox13").val(DS_CSEL_PROC.TCHR_NM);                              // txtTCHR_NM            // 담당교사명        
+    $("#textbox21").val(DS_CSEL_PROC.CSEL_TITLE);                           // txtCSEL_TITLE         // 상담제목        
+    $("#textbox3").val(DS_CSEL_PROC.NAME);                                  // txtNAME               // 고객명    
+    $("#textbox5").val(DS_CSEL_PROC.MBR_ID);                                // txtMBR_ID             // 회원번호    
+    $("#textbox4").val(DS_CSEL_PROC.TELPNO);                                // txtTELPNO             // 학습장소전화    
+    $("#textbox6").val(DS_CSEL_PROC.MOBILNO);                               // txtMOBILNO            // 회원핸드폰        
+    // DS_CSEL_PROC.MOBILNO_FAT        // 회원부핸드폰                       
+    $("#textbox14").val(DS_CSEL_PROC.ADDR);                                 // txtADDR               // 학습장소주소    
+    $("#textbox7").val(DS_CSEL_PROC.MOBILNO_MBR);                           // txtMOBILNO_MBR        // 회원모핸드폰            
+    // DS_CSEL_PROC.CSEL_RST_MK1       // 상담결과                      
+    // DS_CSEL_PROC.CSEL_USER_ID       // 상담등록자                        
+    $("#textbox30").val(DS_CSEL_PROC.INVOICENUM);                           // txtInVoiceNum         // 택배송장번호        
+    $("#textbox12").val(DS_CSEL_PROC.LC_ID_NM);                             // txtLC_ID_NM           // 센터명   
+    // DS_CSEL_PROC.ZEN_TICKET_ID        // 티켓ID
 
-    // 저장후 재조회시 티켓업데이트
+    onChangeGiftChnl(DS_CSEL_PROC.GIFT_CHNL_MK);    // 발송경로 세팅         
+    setActiveControl();                             // 활성 및 비활성 항목 처리
+    
+    // 저장구분 체크 - 해당정보가 있으면 수정(U), 없으면 신규(I)
+    DS_CSEL_PROC.PROC_STAT   = DS_CSEL_PROC.PROC_DATE   ? "U" : "I";    // 처리내역
+    DS_CSEL_PROC.HPCALL_STAT = DS_CSEL_PROC.HPCALL_DATE ? "U" : "I";    // 해피콜정보
+    DS_CSEL_PROC.GIFT_STAT   = DS_CSEL_PROC.GIFT_DATE   ? "U" : "I";    // 사은품정보
+    
+    // 상담순번이 1번이면 결과불러오기 비활성화        
+     if (sCselSeq == 1) $("#button8").prop("disabled", true);
+
+
+
+    /**
+     * 저장후 재조회시 티켓업데이트
+     */
     if (DS_TICKET) {
 
         const HPCALL_DATE = calendarUtil.getImaskValue("calendar3");
@@ -219,10 +298,18 @@ const onChangeGiftChnl = (value) => {
 }
 
 /**
- * 상담내역 조회
- * - as-is : cns6000.onSearch()
+ * 순번 1번의 결과 불러오기 조회 함수
+ * - as-is : cns6000.onReSearch()
  */
-const getCselProc = () => new Promise((resolve, reject) => {
+const onReSearch = async () => {
+    const data = await getCselProc("1");
+    $("#textbox24").val(data?.PROC_CNTS);
+}
+
+/**
+ * 상담내역 조회
+ */
+const getCselProc = (cselSeq) => new Promise((resolve, reject) => {
 
     const settings = {
 		url: `${API_SERVER}/cns.getCselProc.do`,
@@ -235,11 +322,11 @@ const getCselProc = () => new Promise((resolve, reject) => {
 			senddataids: ["dsSend"],
 			recvdataids: ["dsRecv"],
             dsSend: [{ 
-                CSEL_DATE:  sCselDate, // 상담일자 
-                CSEL_NO:    sCselNo  , // 상담번호 
-                CSEL_SEQ:   sCselSeq , // 상담순번 
-                CUST_ID:    sCustId  , // 고객번호 
-                CUST_MK:    sCustMk  , // 고객구분
+                CSEL_DATE:  sCselDate,              // 상담일자 
+                CSEL_NO:    sCselNo  ,              // 상담번호 
+                CSEL_SEQ:   cselSeq || sCselSeq,    // 상담순번 
+                CUST_ID:    sCustId,                // 고객번호 
+                CUST_MK:    sCustMk  ,              // 고객구분
             }],
 		}),
 		errMsg: "상담내역 조회중 오류가 발생하였습니다.",
@@ -249,79 +336,9 @@ const getCselProc = () => new Promise((resolve, reject) => {
         .done(res => {
             if (!checkApi(res, settings)) return reject(new Error(getApiMsg(res, settings)));
 
-            // 상담내역 세팅
-            DS_CSEL_PROC = (res.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
+            const result = (res.dsRecv?.length > 0) ? res.dsRecv[0] : new Object();
 
-            calendarUtil.setImaskValue("calendar5", DS_CSEL_PROC.CSEL_DATE);        // MSK_CSEL_DATE          // 상담일자        
-            $("#textbox1").val(DS_CSEL_PROC.CSEL_NO);                               // txtCSEL_NO            // 상담번호        
-            $("#textbox2").val(DS_CSEL_PROC.CSEL_SEQ);                              // txtCSEL_SEQ           // 상담순번        
-            calendarUtil.setImaskValue("calendar1", DS_CSEL_PROC.PROC_HOPE_DATE);   // MSK_PROC_HOPE_DATE     // 처리희망일자            
-            // DS_CSEL_PROC.DEPT_ID            // 지점번호        
-            // DS_CSEL_PROC.CUST_ID            // 고객번호        
-            // DS_CSEL_PROC.DIV_CDE            // 지점(본부)코드        
-            $("#textbox22").val(DS_CSEL_PROC.CSEL_CNTS);                            // txaCSEL_CNTS          // 상담내용        
-            // DS_CSEL_PROC.CSEL_LTYPE_CDE     // 상담대분류코드             
-            // DS_CSEL_PROC.CSEL_MTYPE_CDE     // 상담중분류코드            
-            // DS_CSEL_PROC.CSEL_STYPE_CDE     // 상담소분류코드            
-            // DS_CSEL_PROC.PROC_STS_MK        // 처리상태구분            
-            calendarUtil.setImaskValue("calendar2", DS_CSEL_PROC.PROC_DATE);       // MSK_PROC_DATE          // 처리일자 
-            // DS_CSEL_PROC.PROC_USER_ID       // 처리자ID            
-            $("#textbox24").val(DS_CSEL_PROC.PROC_CNTS);                            // txaPROC_CNTS          // 처리내용        
-            calendarUtil.setImaskValue("calendar3", DS_CSEL_PROC.HPCALL_DATE);     // MSK_HPCALL_DATE        // 해피콜일자       
-            $("#timebox1").val(DS_CSEL_PROC.HPCALL_TIME);                           // MSK_HPCALL_TIME        // 해피콜시간            
-            $("#textbox26").val(DS_CSEL_PROC.HPCALL_TITLE);                         // txtHPCALL_TITLE       // 해피콜제목            
-            $("#textbox27").val(DS_CSEL_PROC.HPCALL_CNTS);                          // txaHPCALL_CNTS        // 해피콜내용            
-            $("#selectbox2").val(DS_CSEL_PROC.HPCALL_CHNL_MK);                      // CMB_HPCALL_CHNL_MK     // 해피콜경로구분            
-            // DS_CSEL_PROC.HPCALL_USER_ID     // 해피콜상담원ID                       
-            $("#selectbox1").val(DS_CSEL_PROC.SATIS_CDE);                           // CMB_SATIS_CDE          // 고객만족도코드        
-            // DS_CSEL_PROC.SATIS_CDE1         // 고객만족도코드1        
-            // DS_CSEL_PROC.SATIS_CDE2         // 고객만족도코드2        
-            // DS_CSEL_PROC.GIFT_DATE          // 사은품접수일자        
-            // DS_CSEL_PROC.GIFT_NO            // 사은품접수번호        
-            // DS_CSEL_PROC.GIFT_SEQ           // 사은품접수순번        
-            // DS_CSEL_PROC.DTL_MK             // 내역구분    
-            $("#selectbox3").val(DS_CSEL_PROC.GIFT_TYPE_CDE);                       // CMB_GIFT_TYPE_CDE      // 사은품분류코드            
-            $("#selectbox4").val(DS_CSEL_PROC.GIFT_CDE);                            // CMB_TB_GIFTCODE           // 사은품코드        
-            calendarUtil.setImaskValue("textbox28", DS_CSEL_PROC.GIFT_PRICE);       // txtGIFT_PRICE         // 사은품가격        
-            calendarUtil.setImaskValue("calendar4", DS_CSEL_PROC.SEND_DATE);        // MSK_SEND_DATE          // 발송일자  
-            // DS_CSEL_PROC.GIFT_CHNL_MK                                            // CMB_GIFT_CHNL_MK       // 전달경로구분
-            $("#textbox29").val(DS_CSEL_PROC.PASS_USER);                            // txtPASS_USER          // 전달자명        
-            $("#textbox10").val(DS_CSEL_PROC.DEPT_ID_NM);                           // txtDEPT_ID_NM         // 지점명        
-            $("#textbox8").val(DS_CSEL_PROC.DIV_CDE_NM);                            // txtDIV_CDE_NM         // 본부명        
-            $("#textbox16").val(DS_CSEL_PROC.CSEL_LTYPE_CDE_NM);                    // txtCSEL_LTYPE_CDE_NM  // 상담대분류코드명                
-            $("#textbox18").val(DS_CSEL_PROC.CSEL_MTYPE_CDE_NM);                    // txtCSEL_MTYPE_CDE_NM  // 상담중분류코드명                
-            $("#textbox20").val(DS_CSEL_PROC.CSEL_STYPE_CDE_NM);                    // txtCSEL_STYPE_CDE_NM  // 상담소분류코드명                
-            $("#textbox9").val(DS_CSEL_PROC.CSEL_CHNL_MK_NM);                       // txtCSEL_CHNL_MK_NM    // 채널구분명                
-            $("#textbox11").val(DS_CSEL_PROC.USER_NM);                              // txtUSER_NM            // 사용자명        
-            $("#textbox15").val(DS_CSEL_PROC.CSEL_LTYPE_CDE_D);                     // txtCSEL_LTYPE_CDE_D   // 상담대분류코드_D                
-            $("#textbox17").val(DS_CSEL_PROC.CSEL_MTYPE_CDE_D);                     // txtCSEL_MTYPE_CDE_D   // 상담대분류코드_D                
-            $("#textbox19").val(DS_CSEL_PROC.CSEL_STYPE_CDE_D);                     // txtCSEL_STYPE_CDE_D   // 상담대분류코드_D                
-            $("#textbox23").val(DS_CSEL_PROC.PROC_USER_NM);                         // txtPROC_USER_NM       // 처리사용자명            
-            $("#textbox25").val(DS_CSEL_PROC.HPCALL_USER_NM);                       // txtHPCALL_USER_NM     // 해피콜처리자명            
-            $("#textbox13").val(DS_CSEL_PROC.TCHR_NM);                              // txtTCHR_NM            // 담당교사명        
-            $("#textbox21").val(DS_CSEL_PROC.CSEL_TITLE);                           // txtCSEL_TITLE         // 상담제목        
-            $("#textbox3").val(DS_CSEL_PROC.NAME);                                  // txtNAME               // 고객명    
-            $("#textbox5").val(DS_CSEL_PROC.MBR_ID);                                // txtMBR_ID             // 회원번호    
-            $("#textbox4").val(DS_CSEL_PROC.TELPNO);                                // txtTELPNO             // 학습장소전화    
-            $("#textbox6").val(DS_CSEL_PROC.MOBILNO);                               // txtMOBILNO            // 회원핸드폰        
-            // DS_CSEL_PROC.MOBILNO_FAT        // 회원부핸드폰                       
-            $("#textbox14").val(DS_CSEL_PROC.ADDR);                                 // txtADDR               // 학습장소주소    
-            $("#textbox7").val(DS_CSEL_PROC.MOBILNO_MBR);                           // txtMOBILNO_MBR        // 회원모핸드폰            
-            // DS_CSEL_PROC.CSEL_RST_MK1       // 상담결과                      
-            // DS_CSEL_PROC.CSEL_USER_ID       // 상담등록자                        
-            $("#textbox30").val(DS_CSEL_PROC.INVOICENUM);                           // txtInVoiceNum         // 택배송장번호        
-            $("#textbox12").val(DS_CSEL_PROC.LC_ID_NM);                             // txtLC_ID_NM           // 센터명   
-            // DS_CSEL_PROC.ZEN_TICKET_ID        // 티켓ID
-
-            onChangeGiftChnl(DS_CSEL_PROC.GIFT_CHNL_MK);    // 발송경로 세팅         
-            setActiveControl();                             // 활성 및 비활성 항목 처리
-            
-            // 저장구분 체크 - 해당정보가 있으면 수정(U), 없으면 신규(I)
-            DS_CSEL_PROC.PROC_STAT   = DS_CSEL_PROC.PROC_DATE   ? "U" : "I";    // 처리내역
-            DS_CSEL_PROC.HPCALL_STAT = DS_CSEL_PROC.HPCALL_DATE ? "U" : "I";    // 해피콜정보
-            DS_CSEL_PROC.GIFT_STAT   = DS_CSEL_PROC.GIFT_DATE   ? "U" : "I";    // 사은품정보
-
-            return resolve(DS_CSEL_PROC);
+            return resolve(result);
 
         })
         .fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
