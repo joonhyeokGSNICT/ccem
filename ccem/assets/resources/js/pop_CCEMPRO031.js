@@ -752,7 +752,10 @@ const getCselCondition = async () => {
 		// PLURAL_PRDT_ID	: "", // 병행과목코드			
 		// PLURAL_PRDT_LIST	: "", // 병행과목코드리스트				
 		// PLURAL_PRDT_NAME	: "", // 병행과목코드명		
-		PROC_MK				: "5" 											// 처리구분(5로 고정)	
+		PROC_MK				: "5", 											// 처리구분(5로 고정)	
+		RECORD_ID			: "",											// 녹취키
+		ASSIGNEE_ID			: "", 											// 티켓 담당자 : 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -882,6 +885,13 @@ const getCselCondition = async () => {
 		return false;
 	}
 
+	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+	if (data.ZEN_TICKET_ID) {
+		const { ticket } = await zendeskShowTicket(data.ZEN_TICKET_ID);
+		if (ticket.assignee_id) data.ASSIGNEE_ID = ticket.assignee_id;
+		else data.ASSIGNEE_ID = currentUser.id;
+	}
+
 	return data;
 
 }
@@ -930,7 +940,7 @@ const getObCondition = async (ticket_id) => {
 	
 	// 티켓필드에서 필요한정보를 가져온다.
 	if (!ticket_id) return new Object();
-	const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+	const { ticket } = await zendeskShowTicket(ticket_id);
 	if (!ticket || !ticket.custom_fields || ticket.custom_fields.length == 0) return new Object();
 
 	const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);

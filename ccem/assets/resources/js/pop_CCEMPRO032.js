@@ -632,7 +632,9 @@ const getCselCondition = async () => {
 		RE_ACTIVITY_CRS		: $("#selectbox5").val(), 								// 재사업경로				
 		ACTIVITY_MK			: $("#selectbox6").val(), 								// 사업구분			
 		ZEN_TICKET_ID		: $("#hiddenbox1").val(), 								// 티켓ID				
-		// WORK_STYL_MK		: "", // 근무형태구분(신규입력시 '')		
+		// WORK_STYL_MK		: "", // 근무형태구분(신규입력시 '')			
+		RECORD_ID			: "",													// 녹취키
+		ASSIGNEE_ID			: "", 													// 티켓 담당자 : 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -714,6 +716,9 @@ const getCselCondition = async () => {
 		if (!ticket_id) return false;
 		data.ZEN_TICKET_ID = ticket_id;
 
+		// 녹취키세팅
+		data.RECORD_ID = getCustomFieldValue(currentTicket, ZDK_INFO[_SPACE]["ticketField"]["RECORD_ID"]);
+
 	// 추가등록/관계회원 신규저장일때.
 	} else if (sJobType == "I" && selectedSeq > 1) {
 
@@ -728,6 +733,13 @@ const getCselCondition = async () => {
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
+	}
+
+	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+	if (data.ZEN_TICKET_ID) {
+		const { ticket } = await zendeskShowTicket(data.ZEN_TICKET_ID);
+		if (ticket.assignee_id) data.ASSIGNEE_ID = ticket.assignee_id;
+		else data.ASSIGNEE_ID = currentUser.id;
 	}
 
 	return data;

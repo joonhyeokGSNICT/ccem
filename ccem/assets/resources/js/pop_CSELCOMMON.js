@@ -313,6 +313,12 @@ const openCCEMPRO042_2 = (keyCode) => {
 const zendeskUserSearch = (external_id) => topbarClient.request(`/api/v2/users/search.json?external_id=${external_id}`);
 
 /**
+ * Zendesk show ticket
+ * @param {string|number} ticket_id 티켓번호
+ */
+const zendeskShowTicket = (ticket_id) => topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+
+/**
  * 팔로워 정보 반환
  * @param {array} EMP_ID_LIST 연계대상자리스트
  * @param {string} type SET, UP
@@ -439,7 +445,7 @@ const updateTicket = async (cselData, customData) => {
 		contentType: "application/json",
 		data: JSON.stringify({ 
 			ticket: {
-				assignee_id		: currentUser.id,		 // 젠데스크 상담원번호
+				assignee_id		: cselData.ASSIGNEE_ID,	 // 젠데스크 담당자
 				external_id		: CSEL_DATE_NO_SEQ,		 // 티켓 external_id (0000-00-00_0_0)
 				subject			: cselData.CSEL_TITLE,	 // 제목
 				comment: {
@@ -793,7 +799,7 @@ const createTicket = async (user_id, parent_id) => {
 	const new_fields = new Array();
 	if (parent_id) {
 
-		const { ticket } = await topbarClient.request(`/api/v2/tickets/${parent_id}`);
+		const { ticket } = await zendeskShowTicket(parent_id);
 
 		if (ticket?.custom_fields?.length > 0) {
 			const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
@@ -882,7 +888,7 @@ const setCurrentTicket = async () => {
 
 	// 티켓이 삭제된 경우 예외처리
 	try {
-		const { ticket } = await topbarClient.request(`/api/v2/tickets/${ticket_id}`);
+		const { ticket } = await zendeskShowTicket(ticket_id);
 		currentTicket = ticket;
 	} catch (error) {
 		console.error(error);
