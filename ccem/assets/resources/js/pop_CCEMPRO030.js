@@ -2067,6 +2067,9 @@ const getSaveCondition = (sBtnMk) => {
         data.DS_TICKET.HPCALL2_DATE_TIME = `${FormatUtil.date(data.DS_HPCALL2.HPCALL_DATE)} ${FormatUtil.time(data.DS_HPCALL2.HPCALL_TIME)}`;
     }
 
+    data.DS_TRANS.TRANS_CNTS = data.DS_TRANS.TRANS_CNTS.replaceAll("%", "％");
+    data.DS_TRANS.TRANS_CNTS = data.DS_TRANS.TRANS_CNTS.replaceAll("+", "＋");
+
     return data;
 
 }
