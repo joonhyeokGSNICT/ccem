@@ -2274,19 +2274,24 @@ const onMakeCall = (elm, iIdx) => {
  */
  const onSaveCallTime = async () => {
 
-    const ticket_id = DS_COUNSEL.ZEN_TICKET_ID;
-    if (!ticket_id) return;
+    // 현재 상담건의 순번이 1번일 경우 상담 통화시간 저장
+	if (DS_COUNSEL.CSEL_SEQ == "1") {
 
-    const data = await getCallTimeCondition(topbarClient, ticket_id);
+        const ticket_id = DS_COUNSEL.ZEN_TICKET_ID;
+        if (!ticket_id) return;
     
-    topbarObject.saveCallTime({
-        userid			: currentUser?.external_id,
-        menuname		: "상담결과등록",
-        CSEL_NO			: DS_COUNSEL.CSEL_NO, 	 // 상담번호	
-        CSEL_DATE		: DS_COUNSEL.CSEL_DATE,  // 상담일자		
-        CALL_STTIME		: data.CALL_STTIME, 	 // 통화시작시간(시분초:172951)
-        CALL_EDTIME		: data.CALL_EDTIME, 	 // 통화종료시간(시분초:173428)
-        RECORD_ID		: data.RECORD_ID, 		 // 녹취키(리스트) 없는 경우 []
-    });
+        const data = await getCallTimeCondition(topbarClient, ticket_id);
+        
+        topbarObject.saveCallTime({
+            userid			: currentUser?.external_id,
+            menuname		: "상담결과등록",
+            CSEL_NO			: DS_COUNSEL.CSEL_NO, 	 // 상담번호	
+            CSEL_DATE		: DS_COUNSEL.CSEL_DATE,  // 상담일자		
+            CALL_STTIME		: data.CALL_STTIME, 	 // 통화시작시간(시분초:172951)
+            CALL_EDTIME		: data.CALL_EDTIME, 	 // 통화종료시간(시분초:173428)
+            RECORD_ID		: data.RECORD_ID, 		 // 녹취키(리스트) 없는 경우 []
+        });
+
+    }
 
 }

@@ -1199,8 +1199,8 @@ const getNewMbrId = (CUST_ID) => new Promise((resolve, reject) => {
  */
  const onSaveCallTime = async () => {
 
-	// 현재 상담건의 저장구분이 수정(U) 일 경우 상담 통화시간 저장
-	if (getJobType("selectbox3") == "U") {
+	// 현재 상담건의 저장구분이 수정(U)이고 순번이 1번일 경우 상담 통화시간 저장
+	if (getJobType("selectbox3") == "U" && $("#selectbox3").val() == "1") {
 
 		const ticket_id = $("#hiddenbox5").val();
 		if (!ticket_id) return;
