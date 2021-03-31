@@ -924,7 +924,7 @@ const refreshDisplay = async () => {
 	if (opener?.name == "CCEMPRO035") opener.onSearch(true);   
 	
 	// 입회조회화면 재조회
-	if (opener?.name == "CCEMPRO037") opener.onSearch();   	   
+	if (opener?.name == "CCEMPRO037") opener.onSearch(true);   	   
 
 }
 
