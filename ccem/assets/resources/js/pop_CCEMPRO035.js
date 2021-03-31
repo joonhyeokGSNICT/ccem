@@ -716,33 +716,6 @@ const getCsel = (condition) => new Promise((resolve, reject) => {
 });
 
 /**
- * 상담조회 엑셀저장용
- * @param {object} condition 조회조건
- */
-const getCselExcel = (condition) => new Promise((resolve, reject) => {
-	const settings = {
-		url: `${API_SERVER}/cns.getCselExcel.do`,
-		method: 'POST',
-		contentType: "application/json; charset=UTF-8",
-		dataType: "json",
-		data: JSON.stringify({
-			userid: currentUser?.external_id,
-			menuname: "상담조회",
-			senddataids: ["dsSend"],
-			recvdataids: ["dsRecv"],
-			dsSend: [condition],
-		}),
-		errMsg: "상담조회중 오류가 발생하였습니다.",
-	}
-	$.ajax(settings)
-		.done(data => {
-			if (!checkApi(data, settings)) return reject(new Error(getApiMsg(data, settings)));
-			return resolve(data.dsRecv || []);
-		})
-		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
-});
-
-/**
  * 상담제품 조회
  * @param {string} 		  CSEL_DATE 상담일자
  * @param {string|number} CSEL_NO   상담번호
@@ -823,72 +796,115 @@ const setCselDetail = row => {
  * @return table element
  */
 const createCselTable = data => {
-	const tableEl = $("#cselExcelTable");
+
+	// create table
+	const tableEl = $("<table>");
 
 	// create thead
-	const theadStr = `
+	const theadEl = $("<thead>");
+	theadEl.append(`
 		<tr>
 			<th>NO</th>
 			<th>상담일자</th>
-			<th>상담번호</th>
-			<th>상담순번</th>
+			<th>접수</th>
+			<th>상담채널</th>
 			<th>상담구분</th>
-			<th>성명</th>
+			<th>회원명</th>
 			<th>회원번호</th>
+			<th>통화시각</th>
+			<th>상담시간</th>
+			<th>처리시간</th>
 			<th>학년</th>
-			<th>본부명</th>
-			<th>지점명</th>
-			<th>상담분류(대)</th>
-			<th>상담분류(중)</th>
-			<th>상담분류(소)</th>
-			<th>상담채널명</th>
+			<th>본부</th>
+			<th>사업국</th>
+			<th>센터</th>
+			<th>분류(대)</th>
+			<th>분류(중)</th>
+			<th>분류(소)</th>
 			<th>상담제목</th>
-			<th>상담내용</th>
-			<th>상담원명</th>
+			<th>상담실처리</th>
+			<th>사업국처리</th>
+			<th>해피콜</th>
+			<th>상담원</th>
 			<th>내담자</th>
+			<th>상담등급</th>
+			<th>고객반응</th>
+			<th>전화번호</th>
+			<th>핸드폰번호</th>
+			<th>ERMS구분</th>
+			<th>팩스발송일시</th>
+			<th>녹취ID</th>
+			<th>상담입력시각</th>
+			<th>TICKET ID</th>
 			<th>상담경로</th>
-			<th>러닝센터</th>
-			<th>VOC여부</th>
 			<th>상담제품</th>
-			<th>상담제품 교사명</th>
-			<th>센터명</th>
+			<th>업무정직도</th>
+			<th>학습개월</th>
+			<th>복회가능성</th>
+			<th>러닝센터</th>
 			<th>YC</th>
-		</tr>`;
-	tableEl.find("thead").empty().append(theadStr);
+			<th>연계부서</th>
+			<th>VOC</th>
+			<th>발송시간</th>
+			<th>발송결과</th>
+			<th>선생님명</th>
+		</tr>
+	`);
+	tableEl.append(theadEl);
 
 	// create tbody
-	tableEl.find("tbody").empty();
+	const tbody = $("<tbody>");
 	data.forEach((el, i) => {
 		const tbodyStr = `
 			<tr>
-				<td>${(i + 1)}</td>
-				<td>${FormatUtil.date(el.CSEL_DATE || "")}</td>
-				<td>${el.CSEL_NO || ""}</td>
-				<td>${el.CSEL_SEQ || ""}</td>
-				<td>${el.CSEL_MK_NM || ""}</td>
-				<td>${el.NAME || ""}</td>
-				<td>${el.MBR_ID || ""}</td>
-				<td>${el.GRADE_NM || ""}</td>
-				<td>${el.UP_DEPT_NAME_NM || ""}</td>
-				<td>${el.DEPT_NAME_NM || ""}</td>
-				<td>${el.CSEL_LTYPE_CDE_NM || ""}</td>
-				<td>${el.CSEL_MTYPE_CDE_NM || ""}</td>
-				<td>${el.CSEL_STYPE_CDE_NM || ""}</td>
-				<td>${el.CSEL_CHNL_MK_NM || ""}</td>
-				<td>${el.CSEL_TITLE || ""}</td>
-				<td>${el.CSEL_CNTS || ""}</td>
-				<td>${el.CSEL_USER_NM || ""}</td>
-				<td>${el.CSEL_MAN_MK_NM || ""}</td>
-				<td>${el.FST_CRS_CDE_NM || ""}</td>
-				<td>${el.LC_MK || ""}</td>
-				<td>${el.VOC_MK || ""}</td>
-				<td>${el.PRDT_NAME || ""}</td>
-				<td>${el.PRDT_EMP_NM || ""}</td>
-				<td>${el.LC_NAME_NM || ""}</td>
-				<td>${el.YC_MK || ""}</td>
+				<td style="mso-number-format:'\@'">${(i + 1)}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.date(el.CSEL_DATE || "")}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_NO || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_CHNL_MK_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_MK_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.NAME || ""}</td>
+				<td style="mso-number-format:'\@'">${el.MBR_ID || ""}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CALL_STTIME || "")}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CSEL_TIME_NM || "")}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.time(el.PROC_TIME_NM || "")}</td>
+				<td style="mso-number-format:'\@'">${el.GRADE_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.UP_DEPT_NAME_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.DEPT_NAME_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.LC_NAME_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_LTYPE_CDE_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_MTYPE_CDE_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_STYPE_CDE_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_TITLE || ""}</td>
+				<td style="mso-number-format:'\@'">${el.PROC_CNTS || ""}</td>
+				<td style="mso-number-format:'\@'">${el.VOC_CNTS || ""}</td>
+				<td style="mso-number-format:'\@'">${el.HPCALL_CNTS || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_USER_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_MAN_MK_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_GRD_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CUST_RESP_MK_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.MOBILNO || ""}</td>
+				<td style="mso-number-format:'\@'">${el.MOBILNO || ""}</td>
+				<td style="mso-number-format:'\@'">${el.ERMS_MK || ""}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.dateTime(el.FAX_DATETIME || "")}</td>
+				<td style="mso-number-format:'\@'">${el.RECORD_ID || ""}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CSEL_STTIME || "")}</td>
+				<td style="mso-number-format:'\@'">${el.ZEN_TICKET_ID || ""}</td>
+				<td style="mso-number-format:'\@'">${el.FST_CRS_CDE_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.PRDT_NAME || ""}</td>
+				<td style="mso-number-format:'\@'">${String(el.CNT_NGPROC) || ""}</td>
+				<td style="mso-number-format:'\@'">${el.STD_MON_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.RENEW_POTN_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.LC_MK || ""}</td>
+				<td style="mso-number-format:'\@'">${el.YC_MK || ""}</td>
+				<td style="mso-number-format:'\@'">${el.PROC_DEPT_NAME_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.VOC_MK || ""}</td>
+				<td style="mso-number-format:'\@'">${el.SMS_DATE_TIME || ""}</td>
+				<td style="mso-number-format:'\@'">${el.SMS_PROC_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.PRDT_EMP_NM || ""}</td>
 			</tr>`;
-		tableEl.find("tbody").append(tbodyStr);
+		tbody.append(tbodyStr);
 	});
+	tableEl.append(tbody);
 
 	// delete input 
 	tableEl.find('input').each((i, el) => $(el).remove());
@@ -904,7 +920,7 @@ const onExcel = async () => {
 	// 상담조회
 	const condition = getCselCondition();
 	if (!condition) return;
-	const cselData = await getCselExcel(condition);
+	const cselData = await getCsel(condition);
 	const tableEl = createCselTable(cselData);
 
 	// 엑셀다운로드
