@@ -29,7 +29,7 @@ $(function(){
 					align: "center",
 					sortable: true,
 					ellipsis: true,
-					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value.replace(" ",""))
+					formatter: columnInfo => FormatUtil.dateTime(columnInfo.value?.replace(" ",""))
 				},
 				{
 					header: '사업국명',

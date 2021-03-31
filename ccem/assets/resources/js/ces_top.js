@@ -2736,23 +2736,23 @@ function loadList(id, grid, listID) {
 			break;
 		case 'currentStudy':	// 학습진행정보
 			param.menuname = "상담이력";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			sendUrl = '/cns.getStudyData.do';
 			break;
 		case 'ifsStudyClass':	// 주간학습현황
 			param.menuname = "학습이력";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			sendUrl = '/cns.ifsStudyClass.do';
 			break;
 		case 'ifsStudyChgInfo':	// 변동이력
 			param.menuname = "학습이력";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
 			sendUrl = '/cns.ifsStudyChgInfo.do';
 			break;
 		case 'ifsShipHist':		// 불출교재
 			param.menuname = "학습이력";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			param.send1[0].PRDT_ID = currentStudyInfo.PRDT_ID				// 제품(과목)번호
 			if(currentStudyInfo.PRDT_ID == "PR" || currentStudyInfo.PRDT_ID == "QR" || currentStudyInfo.PRDT_ID == "QR2"){		//prdtId 가 PR, QR, QR2 로 시작하는 경우 getShipSTS
 				sendUrl = '/cns.getShipSTS.do';
@@ -2777,24 +2777,24 @@ function loadList(id, grid, listID) {
 			break;
 		case 'getFeeInfo':			// 회비정보
 			param.menuname = "회비";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			sendUrl = '/cns.getFeeInfo.do';
 			break;
 		case 'getCreditPrdt':		// 과목별 입금내역
 			param.menuname = "회비";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			param.send1[0].PRDT_ID = currentDueInfo.PRDT_ID					// 제품코드
 			sendUrl = '/cns.getCreditPrdt.do';
 			break;
 		case 'getTransHist': 		// 입금내역
 			param.menuname = "회비";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			param.send1[0].RCPT_DATE = currentSubDueInfo.RCPT_DATE			// 제품코드
 			sendUrl = '/cns.getTransHist.do';
 			break;
 		case 'getCustPayMst' : 		// 직접결제 - 회비관리 현황
 			param.menuname = "직접결제";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
 			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
 			sendUrl = '/cns.getCustPayMst.do';
@@ -2816,7 +2816,7 @@ function loadList(id, grid, listID) {
 			break;
 		case 'temp' : 				// 직접결제 - 알림톡 수신자정보
 			param.menuname = "직접결제";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			param.send1[0].FEE_YM_FROM = $(".defaultDate_bf").val().replace(/-/gi,"").substring(0,6);
 			param.send1[0].FEE_YM_TO = $(".defaultDate_ed").val().replace(/-/gi,"").substring(0,6);
 			sendUrl = '/cns.getCustPayMst.do';
@@ -2843,18 +2843,18 @@ function loadList(id, grid, listID) {
 			break;
 		case 'getErrEntInfo' : // 정보동의 - 개인정보동의
 			param.menuname = "정보동의";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""		// 회원번호
 			sendUrl = '/cns.getErrEntInfo.do';
 			break;
 			
 		case 'getDropDtl' : 	// 자동퇴회 - 자동퇴회 세부 이력조회
 			param.menuname = "자동퇴회";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			sendUrl = '/cns.getDropDtl.do';
 			break;
 		case 'getDropMsg' : 	// 자동퇴회 - 퇴회안내발송 이력조회
 			param.menuname = "자동퇴회";
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			sendUrl = '/cns.getDropMsg.do';
 			break;
 			
@@ -2874,7 +2874,7 @@ function loadList(id, grid, listID) {
 		case 'getTB_SMSDATA' : 	// SMS - SMS/LMS 이력
 			param.menuname = "SMS이력";
 			param.send1[0].CUST_ID = currentCustInfo.CUST_ID				// 고객번호
-			param.send1[0].MBR_ID = currentCustInfo.MBR_ID					// 회원번호
+			param.send1[0].MBR_ID = currentCustInfo.MBR_ID!=null?currentCustInfo.MBR_ID:""					// 회원번호
 			sendUrl = '/cns.getTB_SMSDATA.do';
 			break;
 			

@@ -6,6 +6,8 @@
 var grid
 var codeData = opener.codeData;
 var currentMemberData;
+var currentWholeData;
+
 
 // 엔터 이벤트
 $(document).keydown(function(e){
@@ -417,7 +419,7 @@ const getProd = () => {
 }
 
 // 입회 리스트 조회
-function onSearch(){
+function onSearch(isRefresh){
 	var param = {
 			userid: opener.currentUserInfo.user.external_id,
 		    menuname: '입회조회',
@@ -556,7 +558,27 @@ function onSearch(){
 		        	for(d of response.recv1){
 		        		d.TELNO = d.TELNO.replace(/ /gi,"");
 		        	}
-		        	grid.resetData(response.recv1);
+		        	
+		        	if(isRefresh == true){
+		        		
+		        		const perPage = grid.getPaginationPerPage();
+		    			const page = parseInt((currentMemberData.rowKey / perPage) + 1);
+		    			
+		        		grid.resetData(response.recv1, {
+		    				pageState: {
+		    					page,
+		    					perPage,
+		    				}
+		    			});
+		        		
+		        		grid.addSelection({rowKey:currentMemberData.rowKey});
+		        		grid.clickSort({rowKey:currentMemberData.rowKey});
+		        		currentMemberData = grid.getRow(currentMemberData.rowKey);
+		        		
+		        	}else {
+		        		grid.resetData(response.recv1);
+		        	}
+		        	currentWholeData = grid.getData();
 		        }else {
 		        	loading.out();
 		        	alert(response.errmsg);
@@ -1004,6 +1026,10 @@ function onDelProc(date, no, seq){
 function onEdit(){
 	if(grid.getData().length > 0){
 	
+		if(currentMemberData == null){
+			alert("수정할 내역을 선택 해 주시기 바랍니다.");
+			return;
+		}
 	// 전달값
 	/*var arr = new Array();
 	arr[0] = DS_CNS4801.NameValue(getRowPos("DS_CNS4801"),"ACPDATE");

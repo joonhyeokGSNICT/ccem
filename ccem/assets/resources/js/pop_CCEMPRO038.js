@@ -12,6 +12,20 @@ var resultList = [];
 var finalList = [];
 
 var SSInitFlag = false;
+var excelHandler = {
+        getExcelFileName : function(){
+            return 'table-test.xlsx';
+        },
+        getSheetName : function(){
+            return 'Table Test Sheet';
+        },
+        getExcelData : function(){
+            return document.getElementById('tableExcel'); 
+        },
+        getWorksheet : function(){
+            return XLSX.utils.table_to_sheet(this.getExcelData());
+        }
+}
 
 //현재 창이 꺼지면 자식 창 클로즈
 $(window).on('beforeunload', () => {
@@ -440,9 +454,59 @@ const filterUser = selects => {
 	data.forEach(el => selectbox.append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
 }
 
+// 엑셀 다운로드 excelExport(그리드객체, 파일이름, 테이블id)
+function exportExcel(gridId, excelfile, tableId){ 
+	var gridAllData = gridId.getData();
+	var gridData = gridId.getColumns();
+	$("#"+tableId).empty();
+	//헤더
+	$("#"+tableId).append("<thead><tr></tr></thead>");
+	for(dataObj of gridData){
+		if(dataObj["hidden"] == false){
+			$("#"+tableId+">thead>tr").append("<th>"+dataObj["header"]+"</th>");
+		}
+	}
+	//내용
+	$("#"+tableId).append("<tbody>");
+	for(gridRow of gridAllData){
+		var appendStr ="";
+		appendStr += "<tr>";
+		for(dataObj of gridData){
+			if(dataObj["hidden"] == false){
+				var tempD = gridRow[dataObj["name"]] != null? gridRow[dataObj["name"]]:"";
+				appendStr += `<td style="mso-number-format:'\@'">${tempD}</td>`;
+			}
+		}
+		appendStr += "</tr>";
+		$("#"+tableId+">tbody").append(appendStr);
+	}
+	$("#"+tableId).append("</tbody>");
+	console.log(gridData);
+	
+	// step 1. workbook 생성
+    var wb = XLSX.utils.book_new();
+
+    // step 2. 시트 만들기 
+    var newWorksheet = excelHandler.getWorksheet();
+    
+    // step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.  
+    XLSX.utils.book_append_sheet(wb, newWorksheet, excelfile);
+
+    // step 4. 엑셀 파일 만들기 
+    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+
+    // step 5. 엑셀 파일 내보내기 
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), excelfile + ' Excel_' + getToday(0) + '.xlsx');
+}
+function s2ab(s) { 
+    var buf = new ArrayBuffer(s.length); //convert s to arrayBuffer
+    var view = new Uint8Array(buf);  //create uint8array as viewer
+    for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF; //convert to octet
+    return buf;    
+}
 
 //엑셀 다운로드 excelExport(그리드객체, 파일이름, 테이블id) {
-function excelExport(gridId, excelfile, tableId){
+/*function excelExport(gridId, excelfile, tableId){
 	var gridAllData = gridId.getData();
 	var gridData = gridId.getColumns();
 	$("#"+tableId).empty();
@@ -483,7 +547,7 @@ function excelExport(gridId, excelfile, tableId){
 		var data_type = 'data:application/vnd.ms-excel';
 		var ua = window.navigator.userAgent;
 		var msie = ua.indexOf("MSIE ");
-	   var fileName = excelfile + '.xls';
+	   var fileName = excelfile + '.xlsx';
 	   //Explorer 환경에서 다운로드
 	   if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)) {
 	      if (window.navigator.msSaveBlob) {
@@ -505,7 +569,7 @@ function excelExport(gridId, excelfile, tableId){
 	      document.body.removeChild(elem);
 	   }
 }
-
+*/
 /*****************************************
 *	조회버튼 클릭
 *****************************************/
