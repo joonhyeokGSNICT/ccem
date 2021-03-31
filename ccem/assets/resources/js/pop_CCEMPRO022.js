@@ -1731,7 +1731,7 @@ const onNewTicket = async (parent_id) => {
 	const CUST_NAME = $("#textbox21").val();
 	const CUST_MK = $("#hiddenbox2").val();	// 고객구분
 	const target = (CUST_MK == "PE" || CUST_MK == "TC") ? "T" : "C";	// 대상구분(고객 : C, 선생님 : T)
-	const user_id = await checkUser(target, CUST_ID, CUST_NAME);
+	const user_id = await checkUser(target, CUST_ID, CUST_NAME, parent_id);
 	if (!user_id) return false;
 
 	// 티켓생성

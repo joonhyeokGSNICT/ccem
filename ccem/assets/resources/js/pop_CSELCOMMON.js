@@ -608,14 +608,30 @@ const checkTicket = async () => {
 }
 
 /**
- * 티켓생성 전 사용자가 있는지 체크하고 없으면 생성.
+ * 티켓생성 전 사용자 체크.
+ * @param {string} target 대상구분(고객 : C, 선생님 : T)
+ * @param {string} CUST_ID 고객번호
+ * @param {string} CUST_NAME 고객명
+ * @param {string|number} parent_id 상담순번1번 티켓ID
  * @return {number|boolean} Zendesk user id
  */
-const checkUser = async (target, CUST_ID, CUST_NAME) => {
+const checkUser = async (target, CUST_ID, CUST_NAME, parent_id) => {
 
 	if (!CUST_ID || !CUST_NAME) {
-		alert("조회된 고객이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
+
+		// 추가등록/관계회원 티켓생성이고, 비회원일 경우 상담순번1번 티켓의 요청자로 요청자 세팅
+		if (parent_id) {
+			const { ticket } = await zendeskShowTicket(parent_id);
+			const requester_id = ticket?.requester_id;
+			if (requester_id) {
+				if (confirm("비회원으로 티켓을 생성 하시겠습니까?") == true) return requester_id;	
+				else return false;
+			}
+		}
+		
+		alert("조회된 고객이 없습니다.\n\n[고객조회] 또는 [선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
 		return false;
+
 	}
 
 	let sMsg = "";
