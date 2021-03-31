@@ -626,7 +626,6 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 			// transData.TRANS_DEPT_ID		// 지점코드(연계사업국코드)	
 			// transData.DEPT_ACP_ID		// 접수자사번
 			$("#textbox14").val(transData.DEPT_ACP_NAME);						// 접수자	
-			if ($("#textbox14").val()) $("#textbox14").prop("readonly", true);  // 접수자가 있으면 입력안되게
 			// transData.TRANS_CNTS			// 상담내용
 			calendarUtil.setImaskValue("calendar5", transData.DEPT_ACP_DATE); 	// 접수일자	
 			$("#timebox4").val(transData.DEPT_ACP_TIME);					 	// 접수시간	
