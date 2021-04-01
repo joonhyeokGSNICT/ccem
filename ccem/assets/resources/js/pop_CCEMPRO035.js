@@ -809,11 +809,11 @@ const createCselTable = data => {
 			<th>접수</th>
 			<th>상담채널</th>
 			<th>상담구분</th>
-			<th>회원명</th>
-			<th>회원번호</th>
 			<th>통화시각</th>
 			<th>상담시간</th>
 			<th>처리시간</th>
+			<th>회원명</th>
+			<th>회원번호</th>
 			<th>학년</th>
 			<th>본부</th>
 			<th>사업국</th>
@@ -822,31 +822,33 @@ const createCselTable = data => {
 			<th>분류(중)</th>
 			<th>분류(소)</th>
 			<th>상담제목</th>
+			<th>상담내용</th>
 			<th>상담실처리</th>
+			<th>상담실처리일시</th>
 			<th>사업국처리</th>
 			<th>해피콜</th>
+			<th>사업국처리일시</th>
+			<th>사업국처리시간</th>
 			<th>상담원</th>
 			<th>내담자</th>
+			<th>정보</th>
 			<th>상담등급</th>
 			<th>고객반응</th>
 			<th>전화번호</th>
 			<th>핸드폰번호</th>
 			<th>ERMS구분</th>
-			<th>팩스발송일시</th>
-			<th>녹취ID</th>
 			<th>상담입력시각</th>
-			<th>TICKET ID</th>
+			<th>우편번호</th>
+			<th>우편번호주소</th>
+			<th>상세주소</th>
 			<th>상담경로</th>
 			<th>상담제품</th>
-			<th>업무정직도</th>
 			<th>학습개월</th>
 			<th>복회가능성</th>
 			<th>러닝센터</th>
 			<th>YC</th>
 			<th>연계부서</th>
 			<th>VOC</th>
-			<th>발송시간</th>
-			<th>발송결과</th>
 			<th>선생님명</th>
 		</tr>
 	`);
@@ -862,11 +864,11 @@ const createCselTable = data => {
 				<td style="mso-number-format:'\@'">${el.CSEL_NO || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_CHNL_MK_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_MK_NM || ""}</td>
-				<td style="mso-number-format:'\@'">${el.NAME || ""}</td>
-				<td style="mso-number-format:'\@'">${el.MBR_ID || ""}</td>
 				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CALL_STTIME || "")}</td>
 				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CSEL_TIME_NM || "")}</td>
 				<td style="mso-number-format:'\@'">${FormatUtil.time(el.PROC_TIME_NM || "")}</td>
+				<td style="mso-number-format:'\@'">${el.NAME || ""}</td>
+				<td style="mso-number-format:'\@'">${el.MBR_ID || ""}</td>
 				<td style="mso-number-format:'\@'">${el.GRADE_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.UP_DEPT_NAME_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.DEPT_NAME_NM || ""}</td>
@@ -875,31 +877,33 @@ const createCselTable = data => {
 				<td style="mso-number-format:'\@'">${el.CSEL_MTYPE_CDE_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_STYPE_CDE_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_TITLE || ""}</td>
+				<td style="mso-number-format:'\@'">${el.CSEL_CNTS || ""}</td>
 				<td style="mso-number-format:'\@'">${el.PROC_CNTS || ""}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.dateTime(el.PROC_DATE_TIME || "")}</td>
 				<td style="mso-number-format:'\@'">${el.VOC_CNTS || ""}</td>
 				<td style="mso-number-format:'\@'">${el.HPCALL_CNTS || ""}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.dateTime(el.VOC_DATE_TIME || "")}</td>
+				<td style="mso-number-format:'\@'">${FormatUtil.time(el.DEPT_PROC_TIME || "")}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_USER_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_MAN_MK_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.OPEN_GBN_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CSEL_GRD_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.CUST_RESP_MK_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.TELPNO || ""}</td>
 				<td style="mso-number-format:'\@'">${el.MOBILNO || ""}</td>
-				<td style="mso-number-format:'\@'">${el.MOBILNO || ""}</td>
-				<td style="mso-number-format:'\@'">${el.ERMS_MK || ""}</td>
-				<td style="mso-number-format:'\@'">${FormatUtil.dateTime(el.FAX_DATETIME || "")}</td>
-				<td style="mso-number-format:'\@'">${el.RECORD_ID || ""}</td>
+				<td style="mso-number-format:'\@'">${String(el.ERMS_MK || "")}</td>
 				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CSEL_STTIME || "")}</td>
-				<td style="mso-number-format:'\@'">${el.ZEN_TICKET_ID || ""}</td>
+				<td style="mso-number-format:'\@'">${el.ZIPCDE || ""}</td>
+				<td style="mso-number-format:'\@'">${el.ZIP_ADDR  || ""}</td>
+				<td style="mso-number-format:'\@'">${el.ADDR || ""}</td>
 				<td style="mso-number-format:'\@'">${el.FST_CRS_CDE_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.PRDT_NAME || ""}</td>
-				<td style="mso-number-format:'\@'">${String(el.CNT_NGPROC) || ""}</td>
 				<td style="mso-number-format:'\@'">${el.STD_MON_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.RENEW_POTN_NM || ""}</td>
-				<td style="mso-number-format:'\@'">${el.LC_MK || ""}</td>
+				<td style="mso-number-format:'\@'">${el.LC_MK  || ""}</td>
 				<td style="mso-number-format:'\@'">${el.YC_MK || ""}</td>
 				<td style="mso-number-format:'\@'">${el.PROC_DEPT_NAME_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.VOC_MK || ""}</td>
-				<td style="mso-number-format:'\@'">${el.SMS_DATE_TIME || ""}</td>
-				<td style="mso-number-format:'\@'">${el.SMS_PROC_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.PRDT_EMP_NM || ""}</td>
 			</tr>`;
 		tbody.append(tbodyStr);
