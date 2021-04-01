@@ -836,7 +836,6 @@ const createCselTable = data => {
 			<th>고객반응</th>
 			<th>전화번호</th>
 			<th>핸드폰번호</th>
-			<th>ERMS구분</th>
 			<th>상담입력시각</th>
 			<th>우편번호</th>
 			<th>우편번호주소</th>
@@ -891,7 +890,6 @@ const createCselTable = data => {
 				<td style="mso-number-format:'\@'">${el.CUST_RESP_MK_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.TELPNO || ""}</td>
 				<td style="mso-number-format:'\@'">${el.MOBILNO || ""}</td>
-				<td style="mso-number-format:'\@'">${String(el.ERMS_MK || "")}</td>
 				<td style="mso-number-format:'\@'">${FormatUtil.time(el.CSEL_STTIME || "")}</td>
 				<td style="mso-number-format:'\@'">${el.ZIPCDE || ""}</td>
 				<td style="mso-number-format:'\@'">${el.ZIP_ADDR  || ""}</td>
