@@ -1023,7 +1023,7 @@ const setBtnCtrlAtLoadComp = () => {
  * 추가등록
  * - as-is : cns4700.onAddReg()
  */
-var addCsel = () => {
+var addCsel = (key) => {
 	  
 	// 연계정보 초기화
 	$("#selectbox5").val("3");	// 연계방법 : FAX
@@ -1033,11 +1033,11 @@ var addCsel = () => {
 	$("#timebox4").val("");		// 접수시간
 	setDate();					// 상담시간 및 연계시간
 	$("#hiddenbox7").val("");	// 연계번호
-
-	// 상담내용 초기화.
-	$("#textbox25").val("");	// 기타요구사항
-	$("#selectbox6").val("");	// 안내문구
 	$("#selectbox9").val("01");	// 내담자 : 모
+	$("#selectbox6").val("");	// 안내문구
+
+	// 추가등록일 경우 상담내용 초기화.
+	if (key == "add") $("#textbox25").val("");
 
 	// 상담순번 추가
 	const newIdx = $("#selectbox3 option").length + 1;
