@@ -673,8 +673,10 @@ function onSearch(){
 	    dataType: 'json',
 	    contentType: "application/json",
 	    data: JSON.stringify(param),
-	    beforeSend: function() {
+	    beforeSend: function(jqXHR, settings) {
 	    	loading = new Loading(getLoadingSet());
+			settings.data = settings.data.replaceAll("%", "％");
+            settings.data = settings.data.replaceAll("+", "＋");
 	    },
 	    success: function (response) {
 	        console.log(response);
