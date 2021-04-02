@@ -888,6 +888,21 @@ $(this).ajaxError((event, jqxhr, settings, thrownError) => {
     }
 });
 
+// Ajax Low-Level Interface
+$.ajaxSetup({
+
+    beforeSend: (jqXHR, settings) => {
+
+        // CCEM API 호출시 특수문자(%, +)를 전각문자로 replace
+        if (settings.url.includes(API_SERVER)) {
+            settings.data = settings.data.replaceAll("%", "％");
+            settings.data = settings.data.replaceAll("+", "＋");
+        }
+
+    }
+
+});
+
 //숫자 타입에서 쓸 수 있도록 format() 함수 추가
 Number.prototype.format = function(){
     if(this==0) return 0;

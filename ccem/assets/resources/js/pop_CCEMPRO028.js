@@ -761,10 +761,6 @@ const getTransCondition = (row) => {
 		data.TRANS_MK = "4";
 	}
 
-	// 특수문자를 전각문자로 replace
-	data.TRANS_CNTS = data.TRANS_CNTS.replaceAll("%", "％");
-	data.TRANS_CNTS = data.TRANS_CNTS.replaceAll("+", "＋");
-
 	return data;
 }
 
