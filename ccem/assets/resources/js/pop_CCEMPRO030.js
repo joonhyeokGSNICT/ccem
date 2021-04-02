@@ -1664,8 +1664,8 @@ const getDeptValidityCheck = () => {
         $("#textbox34").focus();
         return false;
     }
-    if(!checkByte($("#textbox34").val().trim(), 4000)){
-        alert("처리내용은 4000Byte를 초과할 수 없습니다.");
+    if(!checkByte($("#textbox34").val().trim(), 2000)){
+        alert("처리내용은 2000Byte를 초과할 수 없습니다.");
         $("#textbox34").focus();
         return false;
     }

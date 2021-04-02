@@ -558,8 +558,8 @@ const onChkProc = () => {
 		$("#textbox24").focus();
         return false;
     }
-    if (!checkByte($("#textbox24").val().trim(), 4000)) {
-		alert("지점처리내용은 4000Byte를 초과할 수 없습니다.");
+    if (!checkByte($("#textbox24").val().trim(), 2000)) {
+		alert("지점처리내용은 2000Byte를 초과할 수 없습니다.");
 		$("#textbox24").focus();
 		return false;
 	}
