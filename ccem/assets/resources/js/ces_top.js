@@ -392,7 +392,7 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 		}
 		if(data.ticket.externalId == null){								// 티켓의 externalId 가 null - > 신규 전화 인입
 			if(data.ticket.status == 'open'){							// 티켓 상태가 open 인 경우,
-				if(currentTicketInfo.ticket.via.channel == 'chat'){					// currentTicketInfo.ticket.tags.includes("in") || 
+				if(currentTicketInfo.ticket.via.channel == 'chat'){		// currentTicketInfo.ticket.tags.includes("in") || 
 					topBarClient.invoke("popover");					// 탑바 열기
 				}
 			}else {
@@ -610,11 +610,11 @@ function userSearch() {
 						sidebarClient.get(`ticket.requester.name`).then(function (d){
 							if(d != null && d != ""){
 								setTimeout(function(){
-									$("#customerMNum").val(d['ticket.requester.name']);					// 임시 )) 온라인 ID 개발 전까지 회원번호로 검색
-									$("#customerMNumCheck").prop('checked',true);
+									$("#customerOnline").val(daekyo_cipher.decrypt(d['ticket.requester.name']));					// 임시 )) 온라인 ID 개발 전까지 회원번호로 검색
+									$("#customerOnlineCheck").prop('checked',true);
 									customerSearch("custSearchDiv","1");
-									$("#customerMNum").val("");
-									$("#customerMNumCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+									$("#customerOnline").val("");
+									$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 								}, 50);
 							}
 						});

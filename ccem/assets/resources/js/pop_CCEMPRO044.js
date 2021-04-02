@@ -1326,6 +1326,7 @@ const _btn = {
 		$("#ADDR2").val("");
 		$("#PHONE2").val("");
 		$("#FAXNUM2").val("");
+		$("#REP_EMP_NAME").val("");
 	}
 
 }

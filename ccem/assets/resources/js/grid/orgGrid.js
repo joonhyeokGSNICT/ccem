@@ -382,7 +382,21 @@ function setGridTree() {
                 $("#ADDR2").val(data.node.data.ADDR);
                 $("#PHONE2").val(data.node.data.TELPNO);
                 $("#FAXNUM2").val(data.node.data.FAXNO);
+                $("#REP_EMP_NAME").val(data.node.data.REP_EMP_NAME);
                 $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
+                if(data.node.data.LV == '2'){
+                	$("#empTitle").text('사업국장');
+                	$("#post_td").attr('colspan', '3');
+                	$(".empTitle_cl").css('display','');
+                }else if(data.node.data.LV == '3'){
+                	$("#empTitle").text('센터장');
+                	$("#post_td").attr('colspan', '3');
+                	$(".empTitle_cl").css('display','');
+                }else {
+                	$("#empTitle").text('');
+                	$("#post_td").attr('colspan', '5');
+                	$(".empTitle_cl").css('display','none');
+                }
         }
     });
     tree = $.ui.fancytree.getTree("#tree");

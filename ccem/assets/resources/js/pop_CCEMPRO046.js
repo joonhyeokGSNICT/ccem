@@ -162,6 +162,12 @@ function checkByteDisplay(){
 		$("#lmsBadge").css("display","none");
 		msgType = 0;
 	}
+	
+	if(Number($("#calByte").text()) > 2000){
+		$("#calByte").css('color','red');
+	}else{
+		$("#calByte").css('color','');
+	}
 };
 
 function getTextLength(str) {
@@ -220,7 +226,7 @@ function sendSMS(){
 	param.send1[0].DEST_NAME = $("#sendCustName").val();
 	param.send1[0].SEND_PHONE = $("#smsSendNum").val().replace(/-/gi,"");
 	param.send1[0].SEND_NAME =	originObj.currentUserInfo.user.name;
-	param.send1[0].MSG_BODY =	$("#smsContentArea").val().replaceAll('+','＋').replaceAll('%','％');
+	param.send1[0].MSG_BODY =	$("#smsContentArea").val();
 	param.send1[0].STATUS = 0;
 	param.send1[0].EXTERNAL_ID = originObj.currentUserInfo.user.external_id,         											//상담자ID
 	param.send1[0].SMS_TRGT_ID = "";         																				//대상구분(1:지점,2:학부모,3:교사)
@@ -295,14 +301,20 @@ function sendSMS(){
   }
   
   function validationCheck(){
+	  
 	  if($.trim($("#sendtoNum").val()) == ""){
 		  alert("수신 전화번호를 입력하세요.");
 		  return;
 	  }
+	  
 	  if($.trim($("#smsContentArea").val()) == ""){
 		  alert("메세지 내용을 입력하세요.");
 		  return;
 	  }
 	  
+	  if(parseInt($.trim($("#calByte").text())) > 2000){
+		  alert("메세지 내용은 2000byte 초과하여 보낼 수 없습니다.");
+		  return;
+	  }
 	  sendSMS();
   }

@@ -338,7 +338,7 @@ function onProcSave(){
         param.DS_PROC[0].CSEL_SEQ = POP_DATA.CSEL_SEQ;
         param.DS_PROC[0].PROC_DATE = $("#mos_PROC_DATE").val().replace(/(-|_)/g,"");
         param.DS_PROC[0].PROC_USER_ID = opener.currentUser.external_id;
-        param.DS_PROC[0].PROC_CNTS = $("#mos_PROC_CNTS").val().replaceAll('+','＋').replaceAll('%','％');;
+        param.DS_PROC[0].PROC_CNTS = $("#mos_PROC_CNTS").val().replaceAll('+','＋').replaceAll('%','％');
         
         $.ajax({
 			url: `${API_SERVER}/cns.saveCselProc.do`,
