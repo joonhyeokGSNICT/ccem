@@ -588,6 +588,10 @@ const checkTicket = async () => {
 		return false;
 	}
 
+	// 오픈된 티켓 재조회
+	const { ticket } = await zendeskShowTicket(currentTicket.id);
+	currentTicket = ticket;
+
 	// if (currentTicket.externalId) {
 	// 	alert("이미 상담이 등록된 티켓입니다.\n\n[티켓오픈] 또는 [티켓생성]을 먼저 하고, 처리 하시기 바랍니다.");
 	// 	return false;
