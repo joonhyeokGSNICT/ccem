@@ -241,21 +241,3 @@ const ZDK_INFO = {
 
 const API_SERVER = API_INFO[_ACTIVE]["ccem"];
 const REC_SERVER = API_INFO[_ACTIVE]["rec"];
-
-//aes256 암호화, 복호화를 위한 키값 설정
-const daekyo_cipher = {
-    KEY : '80Q2AMWWWV2JTX5QGOM6IGY1RCQVRQFX',
-    IV : 'Y47CW3BABPY0D3X0',
-    encrypt : function (message) {
-        const secKey = CryptoJS.enc.Utf8.parse(this.KEY);
-        const secIV = CryptoJS.enc.Utf8.parse(this.IV);
-        const cipher = CryptoJS.AES.encrypt(message, secKey, {iv:secIV})
-        return cipher.toString();
-    },
-    decrypt : function(encrypted){
-        const secKey = CryptoJS.enc.Utf8.parse(this.KEY);
-        const secIV = CryptoJS.enc.Utf8.parse(this.IV);
-        const decrypt = CryptoJS.AES.decrypt(encrypted, secKey, {iv:secIV})
-        return decrypt.toString(CryptoJS.enc.Utf8)
-    }
-}
