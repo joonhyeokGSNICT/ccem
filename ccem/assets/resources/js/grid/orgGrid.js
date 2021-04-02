@@ -388,7 +388,7 @@ function setGridTree() {
                 	$("#empTitle").text('사업국장');
                 	$("#post_td").attr('colspan', '3');
                 	$(".empTitle_cl").css('display','');
-                }else if(data.node.data.LV == '3'){
+                }else if(data.node.data.LV >= 3){
                 	$("#empTitle").text('센터장');
                 	$("#post_td").attr('colspan', '3');
                 	$(".empTitle_cl").css('display','');
