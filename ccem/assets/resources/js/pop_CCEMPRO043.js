@@ -502,6 +502,9 @@ const _searchTable = {
 		if( isEmpty($('#searchAddr_input').val()) ) {
 			alert("읍면동 또는 도로명을 입력하세요.");
 			return false;
+		} else if ( $('#searchAddr_input').val().length < 2 ) {
+			alert("읍면동 또는 도로명을 2자 이상 입력하세요.");
+			return false;
 		}
 		var searchText = $('#searchAddr_input').val();
 		_getAddrList.addrList(searchText);
@@ -530,18 +533,22 @@ const _getAddrList = {
 			data: JSON.stringify(param),
 			success: function (response) {
 				// console.log("addrList값",response.dsRecv);
-				var temp = response.dsRecv;
-				temp = temp.map(el => {
-					return {
-						ZIPCDE : 	el.ZIPCDE,
-						ZIP_ADDR : el.ZIP_ADDR,
-						DDD : el.DDD,
-						AREA_CDE : el.AREA_CDE,
-						AREA_NAME : el.AREA_NAME,
-					};
-				});
-				_addrGrid.resetData(temp);
-
+				if (response.errcode == '-2') {
+					alert("읍면동/도로명 주소 검색 에러 : "+response.errmsg);
+					return false;
+				} else {
+					var temp = response.dsRecv;
+					temp = temp.map(el => {
+						return {
+							ZIPCDE : 	el.ZIPCDE,
+							ZIP_ADDR : el.ZIP_ADDR,
+							DDD : el.DDD,
+							AREA_CDE : el.AREA_CDE,
+							AREA_NAME : el.AREA_NAME,
+						};
+					});
+					_addrGrid.resetData(temp);
+				}
 			}, error: function (response) {
 			}
 		});
@@ -610,22 +617,26 @@ const _getAddrList = {
 			data: JSON.stringify(param),
 			success: function (response) {
 				// console.log("branchAddrList값",response.dsRecv);
-				var temp = response.dsRecv;
-				temp = temp.map(el => {
-					return {
-						DIV_NAME : 	el.DIV_NAME,
-						DEPT_NAME : el.DEPT_NAME,
-						ZIP_CNTS : el.ZIP_CNTS,
-						AREA_CDE : 	el.AREA_CDE,
-						AREA_NAME : el.AREA_NAME,
-						DEPT_ID : el.DEPT_ID,
-						DIV_CDE : 	el.DIV_CDE,
-						DEPT_EMP_ID : 	el.DEPT_EMP_ID,
-						TELNO : el.TELNO
-					};
-				});
-				_orgBcdGrid.resetData(temp);
-
+				if (response.errcode == '-2') {
+					alert("사업국 검색 에러 : "+response.errmsg);
+					return false;
+				} else {
+					var temp = response.dsRecv;
+					temp = temp.map(el => {
+						return {
+							DIV_NAME : 	el.DIV_NAME,
+							DEPT_NAME : el.DEPT_NAME,
+							ZIP_CNTS : el.ZIP_CNTS,
+							AREA_CDE : 	el.AREA_CDE,
+							AREA_NAME : el.AREA_NAME,
+							DEPT_ID : el.DEPT_ID,
+							DIV_CDE : 	el.DIV_CDE,
+							DEPT_EMP_ID : 	el.DEPT_EMP_ID,
+							TELNO : el.TELNO
+						};
+					});
+					_orgBcdGrid.resetData(temp);
+				}
 			}, error: function (response) {
 			}
 		});
@@ -652,25 +663,30 @@ const _getAddrList = {
 			data: JSON.stringify(param),
 			success: function (response) {
 				// console.log("centerAddrList값",response.dsRecv);
-				var temp = response.dsRecv;
-				temp = temp.map(el => {
-					return {
-						DIV_NAME : 	el.DIV_NAME,
-						DEPT_NAME : el.DEPT_NAME,
-						LC_NAME : el.LC_NAME,
-						ZIP_CNTS : el.ZIP_CNTS,
-						AREA_CDE : 	el.AREA_CDE,
-						AREA_NAME : el.AREA_NAME,
-						DEPT_ID : el.DEPT_ID,
-						DIV_CDE : 	el.DIV_CDE,
-						LC_ID : 	el.LC_ID,
-						TELNO : el.TELNO,
-						TELNO_LC : el.TELNO_LC,
-						LC_EMP_ID : el.LC_EMP_ID,
-						DEPT_EMP_ID : el.DEPT_EMP_ID
-					};
-				});
-				_orgCenterGrid.resetData(temp);
+				if (response.errcode == '-2') {
+					alert("센터 검색 에러 : "+response.errmsg);
+					return false;
+				} else {
+					var temp = response.dsRecv;
+					temp = temp.map(el => {
+						return {
+							DIV_NAME : 	el.DIV_NAME,
+							DEPT_NAME : el.DEPT_NAME,
+							LC_NAME : el.LC_NAME,
+							ZIP_CNTS : el.ZIP_CNTS,
+							AREA_CDE : 	el.AREA_CDE,
+							AREA_NAME : el.AREA_NAME,
+							DEPT_ID : el.DEPT_ID,
+							DIV_CDE : 	el.DIV_CDE,
+							LC_ID : 	el.LC_ID,
+							TELNO : el.TELNO,
+							TELNO_LC : el.TELNO_LC,
+							LC_EMP_ID : el.LC_EMP_ID,
+							DEPT_EMP_ID : el.DEPT_EMP_ID
+						};
+					});
+					_orgCenterGrid.resetData(temp);
+				}
 
 			}, error: function (response) {
 			}
@@ -717,48 +733,53 @@ const _getAddrList = {
 			data: JSON.stringify(param),
 			success: function (response) {
 				// console.log("chooseAddrList값",response.dsRecv);
-				if( isEmpty(response.dsRecv[0].ZPRNJ) ) {
-					// 입력주소
-					$('#typedPostNo').val(postNo);
-					$('#flexRadioDefault1 > option:selected').val();
+				if (response.errcode == '-2') {
+					alert("주소 검증 에러 : "+response.errmsg);
+					return false;
 				} else {
-					var temp = response.dsRecv;
-					temp = temp.map(el => {
-						return {
-							ZPRNJ : el.ZPRNJ,
-							ADDRJ : el.ADDRJ,
-							ADDRR : el.ADDRR
-						};
-					});
-					_chooseAddrGrid.resetData(temp);
+					if( isEmpty(response.dsRecv[0].ZPRNJ) ) {
+						// 입력주소
+						$('#typedPostNo').val(postNo);
+						$('#flexRadioDefault1 > option:selected').val();
+					} else {
+						var temp = response.dsRecv;
+						temp = temp.map(el => {
+							return {
+								ZPRNJ : el.ZPRNJ,
+								ADDRJ : el.ADDRJ,
+								ADDRR : el.ADDRR
+							};
+						});
+						_chooseAddrGrid.resetData(temp);
+						
+						// 입력주소
+						$('#typedPostNo').val(response.dsRecv[0].ZPRNJ);
+						$('#flexRadioDefault2 > option:selected').val();
+					}
 					
+					// 검증결과
+					$('#checkAddr').val(response.dsRecv[0].RMG3);
+	
 					// 입력주소
-					$('#typedPostNo').val(response.dsRecv[0].ZPRNJ);
-					$('#flexRadioDefault2 > option:selected').val();
-				}
-				
-				// 검증결과
-				$('#checkAddr').val(response.dsRecv[0].RMG3);
-
-				// 입력주소
-				$('#typedAddr1').val(addr1);
-				$('#typedAddr2').val(addr2);
-
-				$('#flexRadioDefault1').prop("checked", true); 
-
-				if ( response.dsRecv[0].RMG3 != '새우편번호를 찾지 못한 주소입니다.') {
-					// 정제된 지번주소
-					$('#jibunPostNo').val(response.dsRecv[0].ZPRNJ);
-					$('#jibunAddr1').val(response.dsRecv[0].ADDR1Y);
-					$('#jibunAddr2').val(response.dsRecv[0].STDADDR);
-					
-					// 정제된 도로명주소
-					$('#doroPostNo').val(response.dsRecv[0].ZPRNR);
-					$('#doroAddr1').val(response.dsRecv[0].NADR1S);
-					$('#doroAddr2').val(response.dsRecv[0].NADR3S);
-
-					// 에러문구가 없다면, 2번째 선택
-					$('#flexRadioDefault2').prop("checked", true); 
+					$('#typedAddr1').val(addr1);
+					$('#typedAddr2').val(addr2);
+	
+					$('#flexRadioDefault1').prop("checked", true); 
+	
+					if ( response.dsRecv[0].RMG3 != '새우편번호를 찾지 못한 주소입니다.') {
+						// 정제된 지번주소
+						$('#jibunPostNo').val(response.dsRecv[0].ZPRNJ);
+						$('#jibunAddr1').val(response.dsRecv[0].ADDR1Y);
+						$('#jibunAddr2').val(response.dsRecv[0].STDADDR);
+						
+						// 정제된 도로명주소
+						$('#doroPostNo').val(response.dsRecv[0].ZPRNR);
+						$('#doroAddr1').val(response.dsRecv[0].NADR1S);
+						$('#doroAddr2').val(response.dsRecv[0].NADR3S);
+	
+						// 에러문구가 없다면, 2번째 선택
+						$('#flexRadioDefault2').prop("checked", true); 
+					}
 				}
 
 			}, error: function (response) {

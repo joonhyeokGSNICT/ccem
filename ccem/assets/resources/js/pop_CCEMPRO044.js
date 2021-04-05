@@ -655,6 +655,23 @@ const _sortList = {
 				});
 				if (tempRow.length > 0) employeeListGrid.check(tempRow[0].rowKey);
 			}
+
+			// 첫 대상자 사업국 자동선택
+			if(tempGrid.length == 1) {
+				// tempGrid.sort(function(a, b) {
+				// 	var nameA = a.UP_DEPT_ID.toUpperCase(); // ignore upper and lowercase
+				// 	var nameB = b.UP_DEPT_ID.toUpperCase(); // ignore upper and lowercase
+				// 	if (nameA < nameB) return 1;
+				// 	if (nameA > nameB) return -1;
+				// 	return 0;
+				// });
+				// console.log(tempGrid)
+				var checkId = '';
+				if (! isEmpty(tempGrid[0].DEPT_ID) ) checkId = tempGrid[0].DEPT_ID
+				else if (! isEmpty(tempGrid[0].PARE_DEPT_ID) ) checkId = tempGrid[0].PARE_DEPT_ID
+				else checkId = tempGrid[0].UP_DEPT_ID
+				tree.getNodeByKey(checkId).setActive();
+			}
 		} else {
 			employeeListGrid.resetData([]);
 		}
@@ -676,7 +693,7 @@ const _sortList = {
 				}
 			}
 			code = code.slice(0,-3);
-			var attr = {mode:"hide", autoExpand : true};
+			var attr = {mode:"hide", autoExpand : true, leavesOnly: false};
 			
 			// _openOrgList.filter(data => data.DEPT_NAME == '3' );
 

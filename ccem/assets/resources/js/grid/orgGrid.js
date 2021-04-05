@@ -384,6 +384,8 @@ function setGridTree() {
                 $("#FAXNUM2").val(data.node.data.FAXNO);
                 $("#REP_EMP_NAME").val(data.node.data.REP_EMP_NAME);
                 $("#ZIP_CNTS_input").val(data.node.data.ZIP_CNTS);
+
+                // 사업국장 및 센터장 보임 처리
                 if(data.node.data.LV == '2'){
                 	$("#empTitle").text('사업국장');
                 	$("#post_td").attr('colspan', '3');

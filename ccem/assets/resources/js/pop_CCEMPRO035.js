@@ -390,10 +390,18 @@ const setCodeData = () => {
 		"CSEL_STYPE_CDE",	// 소분류
 	];
 
-	// get code
+
+
+	/**
+	 * get code
+	 */
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
 
-	// create select options
+
+
+	/**
+	 * create select options
+	 */
 	for (const code of codeList) {
 		let codeMk = code.CODE_MK;
 		let codeNm = code.CODE_NAME;
@@ -417,33 +425,69 @@ const setCodeData = () => {
 		$(`select[name='${codeMk}']`).append(new Option(codeNm, codeId));
 	}
 
-	// create multipleSelect
+
+
+	/**
+	 * create multipleSelect
+	 */
+	const formatSelectAll = () => "[전체]";
+	const formatAllSelected = () => "전체";
+
 	// 상담원그룹
+	const selectbox8CheckEvent = () => {
+		const selects = $("#selectbox8").val();
+		const isCheck = (selects.length > 0) ? true : false;
+		filterUser(selects);
+		$("#checkbox4").prop("checked", isCheck);
+		$("#checkbox8").prop("checked", isCheck);
+	}
 	$('#selectbox8').multipleSelect({
-		selectAll: false,
-		onClick: (view) => {
-			const selects = $("#selectbox8").val();
-			const isCheck = (selects.length > 0);
-			filterUser(selects);
-			$("#checkbox4").prop("checked", isCheck);
-			$("#checkbox8").prop("checked", isCheck);
-		},
+		formatSelectAll,
+		formatAllSelected,
+		onCheckAll: () => setTimeout(selectbox8CheckEvent, 1),
+		onUncheckAll: () => setTimeout(selectbox8CheckEvent, 1),
+		onClick: selectbox8CheckEvent,
 	});
+
 	// 상담경로
+	const selectbox14CheckEvent = () => {
+		const isCheck = ($("#selectbox14").val().length > 0) ? true : false;
+		$("#checkbox17").prop("checked", isCheck);
+	}
 	$('#selectbox14').multipleSelect({
-		selectAll: false,
-		onClick: (view) => $("#checkbox17").prop("checked", ($("#selectbox14").val().length > 0)),
+		formatSelectAll,
+		formatAllSelected,
+		onCheckAll: () => setTimeout(selectbox14CheckEvent, 1),
+		onUncheckAll: () => setTimeout(selectbox14CheckEvent, 1),
+		onClick: selectbox14CheckEvent,
 	});
+
 	// 본부
+	const selectbox11CheckEvent = () => {
+		const isCheck = ($("#selectbox11").val().length > 0) ? true : false;
+		$("#checkbox11").prop("checked", isCheck);
+	}
 	$('#selectbox11').multipleSelect({
-		selectAll: false,
-		onClick: (view) => $("#checkbox11").prop("checked", ($("#selectbox11").val().length > 0)),
+		formatSelectAll,
+		formatAllSelected,
+		onCheckAll: () => setTimeout(selectbox11CheckEvent, 1),
+		onUncheckAll: () => setTimeout(selectbox11CheckEvent, 1),
+		onClick: selectbox11CheckEvent,
 	});
+
 	// 상담채널
+	const selectbox16CheckEvent = () => {
+		const isCheck = ($("#selectbox16").val().length > 0) ? true : false;
+		$("#checkbox19").prop("checked", isCheck);
+	}
 	$('#selectbox16').multipleSelect({
-		selectAll: false,
-		onClick: (view) => $("#checkbox19").prop("checked", ($("#selectbox16").val().length > 0)),
+		formatSelectAll,
+		formatAllSelected,
+		onCheckAll: () => setTimeout(selectbox16CheckEvent, 1),
+		onUncheckAll: () => setTimeout(selectbox16CheckEvent, 1),
+		onClick: selectbox16CheckEvent,
 	});
+
 }
 
 /**
