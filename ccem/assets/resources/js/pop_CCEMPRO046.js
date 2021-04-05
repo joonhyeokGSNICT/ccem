@@ -220,7 +220,6 @@ function sendSMS(){
 	param.menuname = 'SMS전송';
 	param.senddataids = ["send1"];
 	param.recvdataids = ["recv1"];
-	
 	param.send1[0].MSG_TYPE = msgType;																						//메시지 타입(0:SMS,5:LMS)
 	param.send1[0].DEST_PHONE = $("#sendtoNum").val().replace(/-/gi,""); 													//수신번호
 	param.send1[0].DEST_NAME = $("#sendCustName").val();
@@ -316,5 +315,18 @@ function sendSMS(){
 		  alert("메세지 내용은 2000byte 초과하여 보낼 수 없습니다.");
 		  return;
 	  }
+	  
+	  var str = $.trim($("#sendtoNum").val());
+	  var pattern_num = /[0-9]/;	// 숫자 
+	  var pattern_eng = /[a-zA-Z]/;	// 문자 
+	  var pattern_spc = /[~!@#$%^&*()_+|<>?:{}]/; // 특수문자
+	  var pattern_kor = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/; // 한글체크
+	
+	  if( (pattern_num.test(str)) && !(pattern_eng.test(str)) && !(pattern_spc.test(str)) && !(pattern_kor.test(str)) ){
+	  }else{
+	      alert("수신번호는 숫자만 입력 가능합니다.");
+		  return;
+	  }
+	  
 	  sendSMS();
   }
