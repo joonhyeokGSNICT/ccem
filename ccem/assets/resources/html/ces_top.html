@@ -145,7 +145,7 @@
 												성 명<span class="font-weight-bold" style="color: red;">*</span>
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" id="custInfo_NAME" autocomplete="off">
+												<input type="text" class="form-control form-control-sm modifyYN" id="custInfo_NAME" autocomplete="off">
 											</td>
 											<th>고객번호</th>
 											<td>
@@ -202,7 +202,7 @@
 										<tr>
 											<th>생년월일</th>
 											<td>
-												<input type="text" class="form-control form-control-sm imask-date" id="custInfo_BIRTH_YMD" style="float: left; width: 72%;">&nbsp;<span class="birthLunar" id="solar" style="background: skyblue; vertical-align: middle; color: white; border-radius: 3px;">양력</span><span class="birthLunar" id="lunar" style="background: skyblue; vertical-align: middle; color: white; border-radius: 3px; display: none;">음력</span>
+												<input type="text" class="form-control form-control-sm imask-date modifyYN" id="custInfo_BIRTH_YMD" style="float: left; width: 72%;">&nbsp;<span class="birthLunar" id="solar" style="background: skyblue; vertical-align: middle; color: white; border-radius: 3px;">양력</span><span class="birthLunar" id="lunar" style="background: skyblue; vertical-align: middle; color: white; border-radius: 3px; display: none;">음력</span>
 												<select id="lunarSolarInput" hidden>
 													<option value="1">양력</option>
 													<option value="2">음력</option>
@@ -222,7 +222,7 @@
 												</select>
 											</td>
 											<th>
-												학년<span class="font-weight-bold" style="color: red;">*</span>
+												학년<span class="font-weight-bold modifyYN_sel" style="color: red;">*</span>
 											</th>
 											<td>
 												<select class="form-control form-control-sm" id="custInfo_GRADE_CDE" name="GRADE_CDE">
@@ -237,9 +237,9 @@
 												</button>
 											</th>
 											<td>
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_DDD" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_TELPNO1" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_TELPNO2" onKeyUp="onAutoSearchByTELPNO('ONTELPNO');" autocomplete="off" maxlength="4">
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_DDD" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_TELPNO1" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_TELPNO2" onKeyUp="onAutoSearchByTELPNO('ONTELPNO');" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)">
 											</td>
 											<th>
 												<button id="memCall_btn" class="btn btn-sm callOn callBtn" style="padding: 0; display:flex; justify-content: space-between;">
@@ -248,9 +248,9 @@
 												</button>
 											</th>
 											<td>
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO1" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO2" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO3" autocomplete="off" maxlength="4">
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO1" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)">
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO2" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO3" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)">
 											</td>
 										</tr>
 										<tr>
@@ -307,9 +307,9 @@
 												</button>
 											</th>
 											<td colspan="2">
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO_LAW1" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO_LAW2" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO_LAW3" onKeyUp="onAutoSearchByTELPNO('ONTELPNO');" autocomplete="off" maxlength="4">
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO_LAW1" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO_LAW2" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO_LAW3" onKeyUp="onAutoSearchByTELPNO('ONTELPNO');" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)">
 											</td>
 											<th>
 												<button id="momCall_btn" class="btn btn-sm callOn callBtn" style="padding: 0; display:flex; justify-content: space-between;">
@@ -318,15 +318,15 @@
 												</button>
 											</th>
 											<td>
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO_MBR1" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO_MBR2" autocomplete="off" maxlength="4"> 
-												<input type="number" class="form-control form-control-sm numberInput" style="width: 33%; float: left;" id="custInfo_MOBILNO_MBR3" autocomplete="off" maxlength="4">
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO_MBR1" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO_MBR2" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)"> 
+												<input type="number" class="form-control form-control-sm numberInput modifyYN" style="width: 33%; float: left;" id="custInfo_MOBILNO_MBR3" autocomplete="off" maxlength="4" oninput="maxLengthCheck(this)">
 											</td>
 										</tr>
 										<tr>
 											<th>대리인명</th>
 											<td colspan="2">
-												<input type="text" class="form-control form-control-sm" style="width: 55%; float: left;" id="custInfo_FAT_NAME" autocomplete="off">
+												<input type="text" class="form-control form-control-sm modifyYN" style="width: 55%; float: left;" id="custInfo_FAT_NAME" autocomplete="off">
 												<select class="form-control form-control-sm" style="width: 45%;" id="custInfo_FAT_REL" name="FAT_REL">
 												</select>
 											</td>
@@ -334,7 +334,7 @@
 												관계번호<!-- <span class="font-weight-bold" style="color: red;">*</span> -->
 											</th>
 											<td>
-												<input type="text" class="form-control form-control-sm" id="custInfo_FAT_RSDNO" autocomplete="off">
+												<input type="text" class="form-control form-control-sm modifyYN" id="custInfo_FAT_RSDNO" autocomplete="off">
 											</td>
 										</tr>
 									</table>

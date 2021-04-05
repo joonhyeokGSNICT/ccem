@@ -199,6 +199,8 @@ var autoOpenCSEL = ['10','30','40','60']; 		// 통화연결시 자동으로 상�
 
 var currentOBMK = "";
 
+var modifyYN = false;
+
 //var openedCallPop = {};
 
 //WISE N TALK 관련 객체
@@ -371,22 +373,52 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 	sidebarClient.get('ticket').then(function(data){				// 티켓 정보 불러오기
 		currentTicketInfo = data;
 		if(currentCustInfo.CUST_ID != currentTicketInfo.ticket.requester.externalId){
-			initAll();															// 전체 초기화
+			if(modifyYN){
+				ModalUtil.confirmPop("확인 메세지", "현재 수정중인 항목이 있습니다. 초기화 하시겠습니까?", function(e){
+					
+					initAll();															// 전체 초기화
+					
+					sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+						
+						currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
+						
+						if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+							
+							teacherSearch();											// 선생님 검색
+							
+						}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
+							
+							userSearch();												// 고객 검색	
+							
+						}else {
+							
+							userSearch();												// 고객 검색
+							
+						}
+					});
+				});
+			}
 			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+				
 				currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
-				// console.log(currentOBMK);
+				
 				if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+					
 					teacherSearch();											// 선생님 검색
+					
 				}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
+					
 					//if(currentTicketInfo.ticket.requester.externalId != null){
-						userSearch();												// 고객 검색	
+					userSearch();												// 고객 검색	
 					//}else {																										// IVR 콜백건인데 고객이 조회가 되지 않으면 상담메인의 OB전화번호에 번호만 입력된다.
 						/*$("#customerInfo").click();
 						$("#customerTab").click();
 						$("#custInfo_REP_TELNO").val(FormatUtil.tel(currentTicketInfo.ticket.requester?.identities[0]?.value));*/
 					//}
 				}else {
+					
 					userSearch();												// 고객 검색
+					
 				}
 			});
 		}
@@ -545,6 +577,7 @@ client.on('api_notification.sendAgentStateToApp', function(state){
  * @returns
  */
 function userSearch() {
+	console.log(modifyYN);
 	$("#customerSearch").click(); 						// 고객찾기 탭 이동
 	sidebarClient.get('ticket').then(function(data){
 	var phone = "";
@@ -565,7 +598,13 @@ function userSearch() {
 							setTimeout(function(){
 								$("#customerMNum").val(reqUser.user.external_id);
 								$("#customerMNumCheck").prop('checked',true);
-								customerSearch("custSearchDiv","1");
+								
+								if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+									customerSearch("custSearchDiv");
+								}else {
+									customerSearch("custSearchDiv","1");
+								}
+								
 								$("#customerMNum").val("");
 								$("#customerMNumCheck").prop('checked',false);						// 자동조회된 정보는 사라짐
 								client.invoke("popover");					// 탑바 열기
@@ -596,7 +635,13 @@ function userSearch() {
 											$("#customerPhone").val(phone);
 											$("#customerPhoneCheck").prop('checked',true);
 										}
-										customerSearch("custSearchDiv","1");
+										
+										if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+											customerSearch("custSearchDiv");
+										}else {
+											customerSearch("custSearchDiv","1");
+										}
+										
 										$("#customerPhone").val("");
 										$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 									}, 50);
@@ -612,7 +657,13 @@ function userSearch() {
 								setTimeout(function(){
 									$("#customerOnline").val(daekyo_cipher.decrypt(d['ticket.requester.name']));					// 임시 )) 온라인 ID 개발 전까지 회원번호로 검색
 									$("#customerOnlineCheck").prop('checked',true);
-									customerSearch("custSearchDiv","1");
+
+									if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+										customerSearch("custSearchDiv");
+									}else {
+										customerSearch("custSearchDiv","1");
+									}
+									
 									$("#customerOnline").val("");
 									$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 								}, 50);
@@ -640,7 +691,13 @@ function userSearch() {
 						setTimeout(function(){
 							$("#customerMNum").val(reqUser.user.external_id);
 							$("#customerMNumCheck").prop('checked',true);
-							customerSearch("custSearchDiv","1");
+
+							if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+								customerSearch("custSearchDiv");
+							}else {
+								customerSearch("custSearchDiv","1");
+							}
+							
 							$("#customerMNum").val("");
 							$("#customerMNumCheck").prop('checked',false);						// 자동조회된 정보는 사라짐
 							topBarClient.invoke("popover");					// 탑바 열기
@@ -668,7 +725,13 @@ function userSearch() {
 									$("#customerPhone").val(phone);
 									$("#customerPhoneCheck").prop('checked',true);
 								}
-								customerSearch("custSearchDiv","1");
+
+								if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+									customerSearch("custSearchDiv");
+								}else {
+									customerSearch("custSearchDiv","1");
+								}
+								
 								$("#customerPhone").val("");
 								$("#customerPhoneCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
 							}, 50);
@@ -683,7 +746,13 @@ function userSearch() {
 						setTimeout(function(){
 							$("#customerMNum").val(reqUser.user.external_id);
 							$("#customerMNumCheck").prop('checked',true);
-							customerSearch("custSearchDiv","1");
+
+							if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+								customerSearch("custSearchDiv");
+							}else {
+								customerSearch("custSearchDiv","1");
+							}
+							
 							$("#customerMNum").val("");
 							$("#customerMNumCheck").prop('checked',false);
 						}, 50);
@@ -829,7 +898,7 @@ function initAll() {
 	currentDueInfo = null;
 	currentDirectChargeInfo = null;				// 현재 선택된 회비관리 정보 초기화
 	currentTchrInfo = null;						// 현재 선택된 선생님 정보 초기화
-	
+	modifyYN = false;							// 수정여부 false 초기화
 	
 	initSemi();	// 인풋 초기화
 	
@@ -1601,7 +1670,6 @@ $(function(){
 			}
 		}
 	});
-	
 	$("#custInfo_FAMILY_CMB").on("mousedown", function(){
 		$(this).children().attr('label','');
 	});
@@ -1609,6 +1677,10 @@ $(function(){
 		$(this).children().each(function(){$(this).attr('label', $(this).data("fml_name"))});	// 마우스 클릭 안했을경우 이름으로만 표시
 	});
 	
+	// 수정여부 확인 이벤트
+	$(".modifyYN").on('keyup', function(){
+		modifyYN = true;
+	});
 // ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === EVENT  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  ===  === 
 });
 
@@ -3815,6 +3887,7 @@ function onSave(){
 	    			}
 	    			client.request(option).then(function() {
 	    				client.invoke("notify", "저장 되었습니다.", "notice", 5000);
+	    				modifyYN = false;
 	    				onAutoSearch(response.recv1[0].CUST_ID);
 	    			});		// 사용자 생성
   		
@@ -4073,4 +4146,10 @@ function refreshLayoutForCustTab(){
 	counselMainTeacher_asignClassGrid.refreshLayout();
 	counselMainTeacher_classMemberGrid.refreshLayout();
 }
-  
+
+//number 타입 maxLength 설정
+function maxLengthCheck(object){
+    if (object.value.length > object.maxLength){
+        object.value = object.value.slice(0, object.maxLength);
+    }    
+}
