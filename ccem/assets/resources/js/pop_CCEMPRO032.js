@@ -669,8 +669,8 @@ const getCselCondition = async () => {
 		$("#textbox19").focus();
 		return false;
 	}
-	if (!checkByte(data.CSEL_CNTS, 2000)) {
-		alert("기타요구사항은 2000Byte를 초과할 수 없습니다.");
+	if (!checkByte(data.CSEL_CNTS, 4000)) {
+		alert("기타요구사항은 4000Byte를 초과할 수 없습니다.");
 		$("#textbox19").focus();
 		return false;
 	}
