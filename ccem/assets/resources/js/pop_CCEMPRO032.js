@@ -617,7 +617,7 @@ const getCselCondition = async () => {
 		CSEL_MTYPE_CDE		: $("#textbox22").val(), 								// 상담중분류코드				
 		CSEL_STYPE_CDE		: $("#textbox24").val(), 								// 상담소분류코드				
 		CSEL_TITLE			: $("#textbox18").val().trim(), 						// 상담제목			
-		CSEL_CNTS			: $("#textbox19").val().trim(),		// 상담내용			
+		CSEL_CNTS			: $("#textbox19").val().trim(),							// 상담내용			
 		PROC_MK				: $("#selectbox9").val(), 								// 처리구분	
 		// DEPT_ID			: "", // 지점(부서코드)		
 		// DIV_CDE			: "", // 지점(본부코드)		
@@ -669,8 +669,8 @@ const getCselCondition = async () => {
 		$("#textbox19").focus();
 		return false;
 	}
-	if (!checkByte(data.CSEL_CNTS, 4000)) {
-		alert("기타요구사항은 4000Byte를 초과할 수 없습니다.");
+	if (!checkByte(data.CSEL_CNTS, 2000)) {
+		alert("기타요구사항은 2000Byte를 초과할 수 없습니다.");
 		$("#textbox19").focus();
 		return false;
 	}

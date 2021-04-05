@@ -961,8 +961,8 @@ const getCselCondition = async () => {
 		alert("상담제목은 100Byte를 초과할 수 없습니다.");
 		return false;
 	}
-	if (!checkByte(data.CSEL_CNTS, 4000)) {
-		alert("상담내용은 4000Byte를 초과할 수 없습니다.");
+	if (!checkByte(data.CSEL_CNTS, 2000)) {
+		alert("상담내용은 2000Byte를 초과할 수 없습니다.");
 		$("#textbox13").focus();
 		return false;
 	}
