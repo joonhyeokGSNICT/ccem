@@ -371,7 +371,7 @@ $(function(){
 				{
 					header: '과정',
 					name: 'COUR',
-					width: 120,
+					width: 200,
 					align: "center",
 					sortable: true,
 					ellipsis: true,
@@ -395,7 +395,7 @@ $(function(){
 				{
 					header: '배송주소',
 					name: 'FULL_ADDR',
-					width: 400,
+					width: 600,
 					align: "center",
 					ellipsis: true,
 				}
