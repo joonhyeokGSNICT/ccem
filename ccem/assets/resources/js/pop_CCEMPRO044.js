@@ -1058,7 +1058,12 @@ const _btn = {
 				} else if ( _selectedNode.data.LV =="2" ) {
 					orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
 				} else if ( _selectedNode.data.LV =="3" ) {
-					orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
+					if ( _selectedNode.data.DEPT_ID.length != 4 ) {
+						alert("센터는 연계부서로 선택할 수 없습니다.\n: 상위 본부/사업국 혹은 부서를 선택해 주세요.");
+						return;
+					} else {
+						orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
+					}
 				} else if ( _selectedNode.data.LV =="4" ) {
 					orgList.PROC_DEPT_ID = _selectedNode.data.DEPT_ID;		
 				}

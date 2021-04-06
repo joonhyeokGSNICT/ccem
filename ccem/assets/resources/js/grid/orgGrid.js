@@ -325,8 +325,16 @@ function setGridTree() {
                                 param[0].SEARCH_DEPT_ID_TXT = data.node.data.DEPT_ID;
                                 _getList.employeeList(param);
                             }
-                            if (hash ==="#disPlayDn") $("#counselSend_btn").removeClass('invisible');
-                            else $("#counselSend_btn").removeClass('invisible');
+                            if (hash ==="#disPlayDn") {
+                                // 선택한 값이 센터인 경우
+                                if ( data.node.data.DEPT_ID.length != 4 ) {
+                                    alert("센터는 연계부서로 선택할 수 없습니다.\n: 상위 본부/사업국 혹은 부서를 선택해 주세요.");
+                                    $("#counselSend_btn").addClass('invisible');
+                                } else {
+                                    $("#counselSend_btn").removeClass('invisible');
+                                }
+                            } else $("#counselSend_btn").removeClass('invisible');
+                            break;
                         case "plainTreeNoEmp" : 
                             if( _mode == "search" || _mode == "plainTreeNoEmp" ) $('#counselSave_btn').removeClass("invisible");
                             break;
