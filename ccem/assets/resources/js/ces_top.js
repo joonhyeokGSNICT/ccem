@@ -2097,6 +2097,11 @@ function onAutoSearch(sCustId, type){
 			success: function (response) {
 				if(response.errcode == "0"){
 					currentCustInfo = response.recv1[0];				// 고객정보 상주
+					zendeskUserSearch(currentCustInfo.CUST_ID).then(function(d){
+						if(d.count > 0){
+							currentCustInfo.ZEN_USER_ID = d.users[0].id;
+						}
+					});
 					if(type != '1'){
 						loadCustInfoMain();									// 고객정보 로드 함수
 					}
@@ -3842,55 +3847,82 @@ function onSave(){
 	    dataType: 'json',
 	    contentType: "application/json",
 	    data: JSON.stringify(param),
-	    success: function (response) {
+	    success: async function (response) {
 	    	// console.log(response);
 	    	if(response.errcode == "0"){
 	    		
-	    		// 젠데스크에 사용자 정보 저장
-	    		var option = {
-	    				url: '/api/v2/users/create_or_update.json',
-	    				method: 'POST',
-	    				contentType: "application/json",
-	    				data: JSON.stringify({
-	    					  "user": {
-	    						  	"external_id": response.recv1[0].CUST_ID,
-	    						    "email": $("#custInfo_REP_EMAIL_ADDR").val(),
-	    						    "phone": $("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val(),
-	    						    "user_fields": 
-								    {
-								      "bonbu": $("#custInfo_UPDEPTNAME").val(),
-								      "dept" : $("#custInfo_DEPT_NAME").val(),
-								      "center" : $("#custInfo_LC_NAME").val(),
-								      "grade" : $("#custInfo_GRADE_CDE").find("option:selected").text(),
-								      "mobilno_mother" : $("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val(),
-								      "mobilno_father" : "",
-								      "mobile_legal" : $("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val(),
-								      "home_tel" : $("#custInfo_DDD").val()+$("#custInfo_TELPNO1").val()+$("#custInfo_TELPNO2").val(),
-								      "custom_no" : $("#custInfo_CUST_ID").val(),
-								      "fml_connt_cde" : $("#custInfo_FAT_REL").val(),
-								      "fml_seq" : $("#custInfo_FAT_RSDNO").val().replace(/-/gi,""),
-								      "cust_mk" : $("#custInfo_CUST_MK").find("option:selected").text(),
-								      "tchr_mk_cde" : "",
-								      "sts_cde" : "",
-								    },
-/*	    						    "identities": [
-	    						      {
-	    						    	  "type": "phone_number",
-	    						    	  "value": $("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val()
-	    						    		  
-	    						      }
-	    						    ],
-*/	    						    "name": $("#custInfo_NAME").val(),
-	    						    "role": "end-user"
-	    						  }
-	    						}),
-	    			}
-	    			client.request(option).then(function() {
-	    				client.invoke("notify", "저장 되었습니다.", "notice", 5000);
-	    				modifyYN = false;
-	    				onAutoSearch(response.recv1[0].CUST_ID);
-	    			});		// 사용자 생성
-  		
+	    		/*if(($("#custInfo_DDD").val() + $("#custInfo_TELPNO1").val() + $("#custInfo_TELPNO2").val()).substring(0,10) == "00000000000"){
+					client.invoke("notify", "젠데스크 유저 정보를 삭제 중 입니다.", "notice", 5000);
+					await client.request({
+						
+							url: '/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities.json',
+							method: 'POST',
+							contentType: "application/json",
+							data: JSON.stringify({
+								"type" : "facebook", 
+								"value" : Math.random()*100000000000000000,
+								"verified": true
+							}),
+						
+						}).then(function() {
+    					
+    				});	
+	    			await client.request(`/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities.json`).then(async function(d) {
+	    				console.log(d);
+	    				if(d.count > 0){
+	    					for(idf of d.identities){
+	    						if(idf.type != "facebook"){
+	    							await client.request({url:`/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities/${idf.id}.json`,type:'DELETE'});
+	    						}
+	    					}
+	    				}
+	    			});
+	    		}*/
+	    			
+    			// 젠데스크에 사용자 정보 저장
+    			var option = {
+    					
+					url: '/api/v2/users/create_or_update.json',
+					method: 'POST',
+					contentType: "application/json",
+					data: JSON.stringify({
+						"user": {
+							"external_id": response.recv1[0].CUST_ID,
+							"email": $("#custInfo_REP_EMAIL_ADDR").val(),
+							"phone": $("#custInfo_MOBILNO1").val() + $("#custInfo_MOBILNO2").val() + $("#custInfo_MOBILNO3").val(),
+							"user_fields": 
+							{
+								"bonbu": $("#custInfo_UPDEPTNAME").val(),
+								"dept" : $("#custInfo_DEPT_NAME").val(),
+								"center" : $("#custInfo_LC_NAME").val(),
+								"grade" : $("#custInfo_GRADE_CDE").find("option:selected").text(),
+								"mobilno_mother" : $("#custInfo_MOBILNO_MBR1").val()+$("#custInfo_MOBILNO_MBR2").val()+$("#custInfo_MOBILNO_MBR3").val(),
+								"mobilno_father" : "",
+								"mobile_legal" : $("#custInfo_MOBILNO_LAW1").val()+$("#custInfo_MOBILNO_LAW2").val()+$("#custInfo_MOBILNO_LAW3").val(),
+								"home_tel" : $("#custInfo_DDD").val()+$("#custInfo_TELPNO1").val()+$("#custInfo_TELPNO2").val(),
+								"custom_no" : $("#custInfo_CUST_ID").val(),
+								"fml_connt_cde" : $("#custInfo_FAT_REL").val(),
+								"fml_seq" : $("#custInfo_FAT_RSDNO").val().replace(/-/gi,""),
+								"cust_mk" : $("#custInfo_CUST_MK").find("option:selected").text(),
+								"tchr_mk_cde" : "",
+								"sts_cde" : "",
+							},
+							"name": $("#custInfo_NAME").val(),
+							"role": "end-user"
+						}
+					}),
+    					
+    			}
+    			
+    			client.request(option).then(async function() {
+    				
+    				client.invoke("notify", "저장 되었습니다.", "notice", 5000);
+    				modifyYN = false;
+    				onAutoSearch(response.recv1[0].CUST_ID);
+    				
+    			});		// 사용자 생성
+	    			
+	    		
 	    	}else {
 	    		client.invoke("notify", response.errmsg, "error", 60000);
 	    	}

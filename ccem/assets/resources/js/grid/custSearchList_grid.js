@@ -175,6 +175,11 @@ $(function(){
 						success: function (response) {
 							if(response.errcode == "0"){
 								currentCustInfo = response.recv1[0];				// 고객정보 상주
+								zendeskUserSearch(currentCustInfo.CUST_ID).then(function(d){
+									if(d.count > 0){
+										currentCustInfo.ZEN_USER_ID = d.users[0].id;
+									}
+								});
 								loadCustInfoMain();									// 고객정보 로드 함수
 								// 젠데스크 고객 검색 ( requester id 를 구하기 위함 )
 								client.request(`/api/v2/search.json?query=type:user ${currentCustInfo.CUST_ID}`).then(function(d){
@@ -267,6 +272,11 @@ $(function(){
 				success: function (response) {
 					if(response.errcode == "0"){
 						currentCustInfo = response.recv1[0];				// 고객정보 상주
+						zendeskUserSearch(currentCustInfo.CUST_ID).then(function(d){
+							if(d.count > 0){
+								currentCustInfo.ZEN_USER_ID = d.users[0].id;
+							}
+						});
 						loadCustInfoMain();									// 고객정보 로드 함수
 						updateUserforZen();
 						$("#customerInfo").click();	// 탭 이동

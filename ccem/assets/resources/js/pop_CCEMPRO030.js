@@ -1261,48 +1261,48 @@ const onSMS = (sType) => {
     var arrInData = new Array();
     // 회원 SMS 발송인 경우
     if (sType == "1") {
-        arrInData[0] = DS_COUNSEL.CUST_ID;          // 회원번호
-        arrInData[1] = $("#textbox1").val();        // 회원명
-        arrInData[2] = $("#textbox5").val().trim(); // 회원휴대폰
-        arrInData[3] = $("#textbox7").val().trim(); // 회원/모 휴대폰
-        arrInData[4] = DS_COUNSEL.FAT_TEL_NO;       // 회원/부 휴대폰
-        arrInData[5] = "2";                         // 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
-        arrInData[6] = DS_COUNSEL.MBR_ID;		    // 회원번호
-        arrInData[7] = DS_COUNSEL.CSEL_DATE;        // 상담일자
-        arrInData[8] = DS_COUNSEL.CSEL_NO;          // 상담번호
-        arrInData[9] = DS_COUNSEL.CSEL_SEQ;         // 상담순번
-        arrInData[10]= "cns2700";                   // url정보
-        arrInData[11]= "";                          // 이력구분
+        arrInData[0] = DS_COUNSEL.CUST_ID || "";            // 회원번호
+        arrInData[1] = $("#textbox1").val();                // 회원명
+        arrInData[2] = $("#textbox5").val().trim();         // 회원휴대폰
+        arrInData[3] = $("#textbox7").val().trim();         // 회원/모 휴대폰
+        arrInData[4] = DS_COUNSEL.FAT_TEL_NO;               // 회원/부 휴대폰
+        arrInData[5] = "2";                                 // 휴대폰 디폴트 선택값 [ 1:회원 || 2:회원모 || 3:회원부 ]
+        arrInData[6] = DS_COUNSEL.MBR_ID || "";		        // 회원번호
+        arrInData[7] = DS_COUNSEL.CSEL_DATE;                // 상담일자
+        arrInData[8] = DS_COUNSEL.CSEL_NO;                  // 상담번호
+        arrInData[9] = DS_COUNSEL.CSEL_SEQ;                 // 상담순번
+        arrInData[10]= "cns2700";                           // url정보
+        arrInData[11]= "";                                  // 이력구분
     }
     // 지점장 SMS 발송인 경우
     else if (sType == "2") {
-        arrInData[0] = DS_COUNSEL.DEPT_REP_EMPID;   // 지점장 사원번호
-        arrInData[1] = $("#textbox10").val();       // 지점장명
-        arrInData[2] = DS_COUNSEL.DEPT_REP_EMP_HP;  // 지점장 HP 
-        arrInData[3] = $("#textbox11").val().trim();// 지점장 PDA
+        arrInData[0] = DS_COUNSEL.DEPT_REP_EMPID || "";     // 지점장 사원번호
+        arrInData[1] = $("#textbox10").val();               // 지점장명
+        arrInData[2] = DS_COUNSEL.DEPT_REP_EMP_HP;          // 지점장 HP 
+        arrInData[3] = $("#textbox11").val().trim();        // 지점장 PDA
         arrInData[4] = "";
-        arrInData[5] = "2";                         // 휴대폰 디폴트 선택값 [ 1:HP || 2:PDA || 3: ]
-        arrInData[6] = DS_COUNSEL.DEPT_REP_EMPID;	// 지점장 사원번호
-        arrInData[7] = DS_COUNSEL.CSEL_DATE;        // 상담일자
-        arrInData[8] = DS_COUNSEL.CSEL_NO;          // 상담번호
-        arrInData[9] = DS_COUNSEL.CSEL_SEQ;         // 상담순번	    	
-        arrInData[10]= "cns2700";                   // url정보
-        arrInData[11]= "D";                         // 이력구분
+        arrInData[5] = "2";                                 // 휴대폰 디폴트 선택값 [ 1:HP || 2:PDA || 3: ]
+        arrInData[6] = DS_COUNSEL.DEPT_REP_EMPID || "";	    // 지점장 사원번호
+        arrInData[7] = DS_COUNSEL.CSEL_DATE;                // 상담일자
+        arrInData[8] = DS_COUNSEL.CSEL_NO;                  // 상담번호
+        arrInData[9] = DS_COUNSEL.CSEL_SEQ;                 // 상담순번	    	
+        arrInData[10]= "cns2700";                           // url정보
+        arrInData[11]= "D";                                 // 이력구분
     }
     // 센터장 SMS 발송인 경우
     else {
-        arrInData[0] = DS_COUNSEL.LC_REP_EMPID;     // 지점장 사원번호
-        arrInData[1] = $("#textbox12").val();       // 지점장명
-        arrInData[2] = DS_COUNSEL.LC_REP_EMP_HP;    // 지점장 HP 
-        arrInData[3] = $("#textbox13").val().trim();// 지점장 PDA
+        arrInData[0] = DS_COUNSEL.LC_REP_EMPID || "";       // 지점장 사원번호
+        arrInData[1] = $("#textbox12").val();               // 지점장명
+        arrInData[2] = DS_COUNSEL.LC_REP_EMP_HP;            // 지점장 HP 
+        arrInData[3] = $("#textbox13").val().trim()         // 지점장 PDA
         arrInData[4] = "";  
-        arrInData[5] = "2";                         // 휴대폰 디폴트 선택값 [ 1:HP || 2:PDA || 3: ]
-        arrInData[6] = DS_COUNSEL.LC_REP_EMPID;	    // 지점장 사원번호
-        arrInData[7] = DS_COUNSEL.CSEL_DATE;        // 상담일자
-        arrInData[8] = DS_COUNSEL.CSEL_NO;          // 상담번호
-        arrInData[9] = DS_COUNSEL.CSEL_SEQ;         // 상담순번	    	
-        arrInData[10]= "cns2700";                   // url정보	    	
-        arrInData[11]= "L";                         // 이력구분
+        arrInData[5] = "2";                                 // 휴대폰 디폴트 선택값 [ 1:HP || 2:PDA || 3: ]
+        arrInData[6] = DS_COUNSEL.LC_REP_EMPID || "";	    // 지점장 사원번호
+        arrInData[7] = DS_COUNSEL.CSEL_DATE;                // 상담일자
+        arrInData[8] = DS_COUNSEL.CSEL_NO;                  // 상담번호
+        arrInData[9] = DS_COUNSEL.CSEL_SEQ;                 // 상담순번	    	
+        arrInData[10]= "cns2700";                           // url정보	    	
+        arrInData[11]= "L";                                 // 이력구분
     }
 
     PopupUtil.open("CCEMPRO046", 980, 600, "", arrInData);
@@ -1453,23 +1453,23 @@ const getSmsCondition = async (sType, recevier) => {
 
         DS_SMSDATA.RECVNAME     = $("#textbox1").val();
         DS_SMSDATA.MSG          = `[${csel_man_nm}]의 소중한 의견이 해당 지점에 전달되어 신속하게 연락드릴 예정입니다.대교 상담실`;
-        DS_SMSDATA.CUST_ID      = DS_COUNSEL.CUST_ID;// 회원번호
-        DS_SMSDATA.MBR_ID       = DS_COUNSEL.MBR_ID;// 회원번호
+        DS_SMSDATA.CUST_ID      = DS_COUNSEL.CUST_ID || "";   // 회원번호
+        DS_SMSDATA.MBR_ID       = DS_COUNSEL.MBR_ID  || "";   // 회원번호
     }
     // 지점장 SMS 발송
     else if (sType == "2") {
         DS_SMSDATA.RECVNAME     = $("#textbox10").val();
         DS_SMSDATA.MSG          = "사업국장(사업국)의 고객의견이 접수되어 신속한 상담 부탁 드립니다.-대교 상담실-";
-        DS_SMSDATA.CUST_ID      = DS_COUNSEL.DEPT_REP_EMPID;// 지점장 사번
-        DS_SMSDATA.MBR_ID       = DS_COUNSEL.DEPT_REP_EMPID;// 지점장 사번
+        DS_SMSDATA.CUST_ID      = DS_COUNSEL.DEPT_REP_EMPID || "";// 지점장 사번
+        DS_SMSDATA.MBR_ID       = DS_COUNSEL.DEPT_REP_EMPID || "";// 지점장 사번
         DS_SMSDATA.TRANS_HIST   = "D";
     }
     // 센터장 SMS 발송
     else {
         DS_SMSDATA.RECVNAME     = $("#textbox12").val();
         DS_SMSDATA.MSG          = "센터장님(센터)의 고객의견이 접수되어 신속한 상담 부탁 드립니다.-대교 상담실-";;
-        DS_SMSDATA.CUST_ID      = DS_COUNSEL.LC_REP_EMPID;// 지점장 사번
-        DS_SMSDATA.MBR_ID       = DS_COUNSEL.LC_REP_EMPID;// 지점장 사번
+        DS_SMSDATA.CUST_ID      = DS_COUNSEL.LC_REP_EMPID || "";// 지점장 사번
+        DS_SMSDATA.MBR_ID       = DS_COUNSEL.LC_REP_EMPID || "";// 지점장 사번
         DS_SMSDATA.TRANS_HIST   = "L";
     }
 

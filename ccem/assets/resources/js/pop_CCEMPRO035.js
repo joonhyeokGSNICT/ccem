@@ -313,7 +313,7 @@ const filterProd = keyword => {
  * @param {array} selects 
  */
 const filterUser = selects => {
-	let selectbox = $("#selectbox2").empty();
+	let selectbox = $("#selectbox2").empty().append("<option hidden></option>");
 	if(selects.length === 0) return;
 	let data = users.filter(el => selects.includes(el.USER_GRP_CDE));
 	data.forEach(el => selectbox.append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
@@ -325,28 +325,28 @@ const filterUser = selects => {
  * @param {string} value 
  */
 const filterCselType = (flag, value) => {
-	let typeList, filterList, selectbox;
+	let typeList, selectbox;
 
 	switch (flag) {
 		case "L":
 			$("#checkbox13").prop("checked", false);
 			$("#checkbox14").prop("checked", false);
 			$("#checkbox15").prop("checked", false);
-			$("#selectbox5").empty().append(`<option hidden></option`);
-			$("#selectbox4").empty().append(`<option hidden></option`);
-			selectbox = $("#selectbox3").empty().append(`<option hidden></option`);
+			$("#selectbox5").empty().append(`<option hidden></option>`);
+			$("#selectbox4").empty().append(`<option hidden></option>`);
+			selectbox = $("#selectbox3").empty().append(`<option hidden></option>`);
 			typeList = cselType.CSEL_LTYPE_CDE;
 			break;
 		case "M":
 			$("#checkbox14").prop("checked", false);
 			$("#checkbox15").prop("checked", false);
-			$("#selectbox5").empty().append(`<option hidden></option`);
-			selectbox = $("#selectbox4").empty().append(`<option hidden></option`);
+			$("#selectbox5").empty().append(`<option hidden></option>`);
+			selectbox = $("#selectbox4").empty().append(`<option hidden></option>`);
 			typeList = cselType.CSEL_MTYPE_CDE;
 			break;
 		case "S":
 			$("#checkbox15").prop("checked", false);
-			selectbox = $("#selectbox5").empty().append(`<option hidden></option`);
+			selectbox = $("#selectbox5").empty().append(`<option hidden></option>`);
 			typeList = cselType.CSEL_STYPE_CDE;
 			break;
 		default:
@@ -354,9 +354,10 @@ const filterCselType = (flag, value) => {
 	}
 
 	if (typeList && value) {
-		filterList = typeList.filter(el => el.CODE_ID.startsWith(value));
-		filterList.forEach(el => selectbox.append(new Option(`[${el.CODE_ID}] ${el.CODE_NAME}`, el.CODE_ID)));
+		typeList.filter(el => el.CODE_ID.startsWith(value))
+				.forEach(el => selectbox.append(new Option(`[${el.CODE_ID}] ${el.CODE_NAME}`, el.CODE_ID)));
 	}
+
 }
 
 const checkDate = () => {
@@ -385,9 +386,6 @@ const setCodeData = () => {
 		"CSEL_MAN_GRP_CDE",	// 내담자
 		"STD_MON_CDE",		// 학습개월
 		"RENEW_POTN", 		// 복습가능성
-		"CSEL_LTYPE_CDE",	// 대분류
-		"CSEL_MTYPE_CDE",	// 중분류
-		"CSEL_STYPE_CDE",	// 소분류
 	];
 
 
@@ -396,6 +394,17 @@ const setCodeData = () => {
 	 * get code
 	 */
 	const codeList = codeData.filter(el => CODE_MK_LIST.includes(el.CODE_MK));
+	
+	// 상담분류 코드
+	cselType.CSEL_LTYPE_CDE = codeData.filter(el => el.CODE_MK == "CSEL_LTYPE_CDE");
+	cselType.CSEL_MTYPE_CDE = codeData.filter(el => el.CODE_MK == "CSEL_MTYPE_CDE");
+	cselType.CSEL_STYPE_CDE = codeData.filter(el => el.CODE_MK == "CSEL_STYPE_CDE");
+
+	// 상담분류 코드 정렬
+	const sortKey = "CODE_ID";
+	cselType.CSEL_LTYPE_CDE?.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+	cselType.CSEL_MTYPE_CDE?.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
+	cselType.CSEL_STYPE_CDE?.sort((a, b) => a[sortKey] < b[sortKey] ? -1 : a[sortKey] > b[sortKey] ? 1 : 0);
 
 
 
@@ -406,13 +415,6 @@ const setCodeData = () => {
 		let codeMk = code.CODE_MK;
 		let codeNm = code.CODE_NAME;
 		let codeId = code.CODE_ID;
-
-		// 상담분류 코드리스트 세팅
-		if (codeMk == "CSEL_LTYPE_CDE" || codeMk == "CSEL_MTYPE_CDE" || codeMk == "CSEL_STYPE_CDE") {
-			if (!cselType[codeMk]) cselType[codeMk] = new Array();
-			cselType[codeMk].push(code);
-			continue;
-		}
 
 		// filtering
 		if (codeMk == "PROC_STS_MK") {	// 처리상태

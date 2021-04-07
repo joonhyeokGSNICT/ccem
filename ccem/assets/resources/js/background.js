@@ -34,33 +34,24 @@ const getCommCode = () => new Promise((resolve, reject) => {
 });
 
 /**
- * 탑바를 미리로드함.
+ * Client instances preloadPane
+ * @param {array} instanceNames 
  */
-const tobbarPreloadPane = async () => {
+ const instancesPreloadPane = async (instanceNames) => {
 	const { instances } = await client.get('instances');
-	for (const instanceGuid in instances) {
-		if (instances[instanceGuid].location === 'top_bar') {
-			const topbarClient = client.instance(instanceGuid);
-			await topbarClient.invoke('preloadPane');
-			console.debug("topbar preloadPane success!");
-			break;
-		}
-	}
-}
 
-/**
- * nav-bar를 미리로드함.
- */
-const navbarPreloadPane = async () => {
-	const { instances } = await client.get('instances');
 	for (const instanceGuid in instances) {
-		if (instances[instanceGuid].location === 'nav_bar') {
-			const navClient = client.instance(instanceGuid);
-			await navClient.invoke('preloadPane');
-			console.debug("navbar preloadPane success!");
-			break;
+
+		const location = instances[instanceGuid].location;
+
+		if (instanceNames.includes(location)) {
+			const target = client.instance(instanceGuid);
+			await target.invoke('preloadPane');
+			console.debug(`${location} preloadPane success!`);
 		}
+
 	}
+
 }
 
 /**
@@ -68,6 +59,5 @@ const navbarPreloadPane = async () => {
  */
 (async function () {
 	codeData = await getCommCode();
-	tobbarPreloadPane();
-	navbarPreloadPane();
+	instancesPreloadPane(["top_bar", "nav_bar"]);
 })();
