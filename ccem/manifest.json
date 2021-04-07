@@ -20,7 +20,7 @@
 		},
 		"ticket_sidebar":{
 			"autoHide": true,
-			"url" : "assets/resources/html/ticket_sideBar.html"
+			"url" : "assets/resources/html/ticket_sidebar.html"
 		},
 		"background":{
 			"url" : "assets/resources/html/background.html"

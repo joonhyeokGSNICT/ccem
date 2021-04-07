@@ -313,7 +313,7 @@ const filterProd = keyword => {
  * @param {array} selects 
  */
 const filterUser = selects => {
-	let selectbox = $("#selectbox2").empty();
+	let selectbox = $("#selectbox2").empty().append("<option hidden></option>");
 	if(selects.length === 0) return;
 	let data = users.filter(el => selects.includes(el.USER_GRP_CDE));
 	data.forEach(el => selectbox.append(new Option(`[${el.USER_ID}] ${el.USER_NAME}`, el.USER_ID)));
