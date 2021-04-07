@@ -8,8 +8,16 @@ function setGridTree() {
         el: document.getElementById('employeeListGrid'),
         bodyHeight: 243,
         rowHeaders: _modeSelect[_mode].rowHeaders,
-        columnOptions: { minWidth: 50, resizable: true, frozenCount: 0, frozenBorderWidth: 1, },
+        columnOptions: { minWidth: 50, resizable: true, frozenCount: 1, frozenBorderWidth: 1, },
         columns: [
+            {
+                header: '성명',
+                name: 'NAME',
+                width: 80,
+                align: "center",
+                sortable: true,
+                ellipsis: true,
+            },
             {
                 header: '본부',
                 name: 'UP_DEPT_NAME',
@@ -35,14 +43,6 @@ function setGridTree() {
                 ellipsis: true,
             },
             {
-                header: '성명',
-                name: 'NAME',
-                width: 80,
-                align: "center",
-                sortable: true,
-                ellipsis: true,
-            },
-            {
                 header: '사번',
                 name: 'EMP_ID',
                 width: 80,
@@ -57,12 +57,12 @@ function setGridTree() {
                 align: "center",
                 sortable: true,
                 ellipsis: true,
-                formatter: function(data){
-                    // console.log(data);
-                    var text = ``;
-                    if( data.value != null ) text += `<a href="#">`+data.value+`</a>`;
-                    return text;
-                }
+                // formatter: function(data){
+                //     // console.log(data);
+                //     var text = ``;
+                //     if( data.value != null ) text += `<a href="#">`+data.value+`</a>`;
+                //     return text;
+                // }
             },
             {
                 header: '교사구분',
@@ -122,6 +122,14 @@ function setGridTree() {
                 sortable: true,
                 ellipsis: true,
                 hidden : true
+            },
+            {
+                header: '앱연계',
+                name: 'ZEN_USE_YN',
+                width: 80,
+                align: "center",
+                sortable: true,
+                ellipsis: true
             },
         ],
     });

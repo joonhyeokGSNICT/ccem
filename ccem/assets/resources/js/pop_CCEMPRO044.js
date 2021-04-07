@@ -466,6 +466,25 @@ const _sortList = {
 					TCHR_MK_NAME : el.TCHR_MK_NAME,
 					MOBILNO : el.MOBILNO,
 					STS_NAME : el.STS_NAME,
+					ZEN_USE_YN : el.ZEN_USE_YN,
+					// 앱연계대상 스타일 적용
+					_attributes: el.ZEN_USE_YN != 'Y' ? {} : {
+						className: {
+							column: { 
+								NAME:['col_row'],
+								EMP_ID:['col_row'], 
+								UP_DEPT_NAME:['col_row'], 
+								PARE_DEPT_NAME:['col_row'], 
+								DEPT_NAME:['col_row'], 
+								DUTY_NAME:['col_row'], 
+								RANK_NAME:['col_row'], 
+								TCHR_MK_NAME:['col_row'], 
+								MOBILNO:['col_row'], 
+								STS_NAME:['col_row'],  
+								ZEN_USE_YN:['col_row'],
+							} 
+						} 
+					}
 				};
 			});
 			employeeListGrid.resetData(tempGrid);
@@ -643,6 +662,25 @@ const _sortList = {
 					UP_DEPT_ID : el.UP_DEPT_ID,
 					PARE_DEPT_ID : el.PARE_DEPT_ID,
 					DEPT_ID : el.DEPT_ID,
+					ZEN_USE_YN : el.ZEN_USE_YN,
+					// 앱연계대상 스타일 적용
+					_attributes: el.ZEN_USE_YN != 'Y' ? {} : {
+						className: {
+							column: { 
+								NAME:['col_row'],
+								EMP_ID:['col_row'], 
+								UP_DEPT_NAME:['col_row'], 
+								PARE_DEPT_NAME:['col_row'], 
+								DEPT_NAME:['col_row'], 
+								DUTY_NAME:['col_row'], 
+								RANK_NAME:['col_row'], 
+								TCHR_MK_NAME:['col_row'], 
+								MOBILNO:['col_row'], 
+								STS_NAME:['col_row'],  
+								ZEN_USE_YN:['col_row'],
+							} 
+						} 
+					}
 				};
 			});
 			employeeListGrid.resetData(tempGrid);
@@ -897,6 +935,25 @@ const _btn = {
 					UP_DEPT_ID : el.UP_DEPT_ID,
 					PARE_DEPT_ID : el.PARE_DEPT_ID,
 					DEPT_ID : el.DEPT_ID,
+					ZEN_USE_YN : el.ZEN_USE_YN,
+					// 앱연계대상 스타일 적용
+					_attributes: el.ZEN_USE_YN != 'Y' ? {} : {
+						className: {
+							column: { 
+								NAME:['col_row'],
+								EMP_ID:['col_row'], 
+								UP_DEPT_NAME:['col_row'], 
+								PARE_DEPT_NAME:['col_row'], 
+								DEPT_NAME:['col_row'], 
+								DUTY_NAME:['col_row'], 
+								RANK_NAME:['col_row'], 
+								TCHR_MK_NAME:['col_row'], 
+								MOBILNO:['col_row'], 
+								STS_NAME:['col_row'],  
+								ZEN_USE_YN:['col_row'],
+							} 
+						} 
+					}
 				};
 			});
 

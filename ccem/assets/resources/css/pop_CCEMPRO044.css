@@ -14,3 +14,6 @@ a:hover { color: blue; text-decoration: none;}
 	color:white;
 	font-weight:bold;
 }
+
+/* zendesk 사용자 확인 라인 */
+.col_zen {background-color : #e4f5e6;}
