@@ -1,0 +1,192 @@
+<!-- 
+	화면ID : CCEM-PRO-030
+		[팝업] 고객의 소리
+	AS-IS : 
+
+	팝업사이즈
+		width: , height: 
+ -->
+ <!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>[팝업] 고객의 소리</title>
+	<link rel="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css" />
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-grid.css" />
+	<link rel="stylesheet" href="../lib/toast-grid/css/tui-pagination.css">
+	<link rel="stylesheet" href="../lib/daterangepicker-3.0.5/daterangepicker.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading-animate.css">
+	<link rel="stylesheet" href="../lib/customModal/css/modal-loading.css">
+	<link rel="stylesheet" href="../lib/multiple-select/css/multiple-select.min.css">
+	<link rel="stylesheet" href="../lib/multiple-select/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/pop_common.css">
+	<style>
+		.form-control[readonly]{
+			background-color:white;
+			opacity:1;
+		}
+	</style>
+</head>
+<body>
+	<div class="text-right" style="background: #123f8a; height: 35px;">
+		<button type="button" class="btn btn-sm btn-primary mr-1 baseLineMid ccemBtn" id="button1" onclick="onSearch()">조 회</button>
+		<button type="button" class="btn btn-sm btn-primary mr-1 baseLineMid ccemBtn" id="button2" onclick="window.close()">닫 기</button>
+	</div>
+	<div class="pl-2 pr-2">
+		<form id="form1" onsubmit="onSearch(); return false;" autocomplete="off">
+			<button type="submit" hidden></button>
+			<table class="table table-sm table-bordered mt-2">
+				<colgroup>
+					<col span="1" style="width:  6%;">
+					<col span="1" style="width:  9%;">
+					<col span="1" style="width:  8%;">
+					<col span="1" style="width:  8%;">
+					<col span="1" style="width:  8%;">
+					<col span="1" style="width: 17%;">
+					<col span="1" style="width:  9%;">
+					<col span="1" style="width: 12%;">
+					<col span="1" style="width:  8%;">
+					<col span="1" style="width: 15%;">
+				</colgroup>
+				<tr>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox1">
+							<label class="form-check-label" for="checkbox1">구분</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" id="selectbox1" name="WEB_QNA_DV" onchange="checkbox1.checked = this.value ? true : false;">
+							<option value="">전체</option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox2">
+							<label class="form-check-label" for="checkbox2">세부구분</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" id="selectbox2" name="WEB_QNA_TYPE" onchange="checkbox2.checked = this.value ? true : false;">
+							<option value="">전체</option>
+						</select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox3" checked disabled>
+							<label class="form-check-label" for="checkbox3">상담일자</label>
+						</div>
+					</th>
+					<td>
+						<div class="input-group">
+							<input type="text" class="form-control form-control-sm" id="calendar1">
+							<span class="ml-1 mr-1">~</span>
+							<input type="text" class="form-control form-control-sm" id="calendar2">
+						</div>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox4">
+							<label class="form-check-label" for="checkbox4">상담원그룹</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" id="selectbox3" name="USER_GRP_CDE" multiple="multiple"></select>
+					</td>
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox5">
+							<label class="form-check-label" for="checkbox5">상담원</label>
+						</div>
+					</th>
+					<td>
+						<select class="form-control form-control-sm" id="selectbox4" onchange="checkbox5.checked = this.value ? true : false;">
+							<option value="" hidden></option>
+						</select>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<div style="width: 49.6%; float: left;">
+			<div class="font-weight-bold mt-1"><i class="fas fa-caret-square-right subjectArrow"></i> 조회내역</div>
+			<div id="grid"></div>
+		</div>
+		<div style="width: 49.6%; float: right;">
+			<div class="font-weight-bold mt-1"><i class="fas fa-caret-square-right subjectArrow"></i> 질문</div>
+			<table class="table table-sm table-bordered">
+				<colgroup>
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 25%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 15%;">
+				</colgroup>
+				<tr>
+					<th>고객명</th>
+					<td><input type="text" class="form-control form-control-sm" id="textbox4" readonly></td>
+					<th>E-mail</th>
+					<td colspan="3"><input type="text" class="form-control form-control-sm" id="textbox10" readonly></td>
+				</tr>
+				<tr>
+					<th>일시</th>
+					<td><input type="text" class="form-control form-control-sm" id="textbox8" readonly></td>
+					<th>구분</th>
+					<td><input type="text" class="form-control form-control-sm" id="textbox1" readonly></td>
+					<th>세부구분</th>
+					<td><input type="text" class="form-control form-control-sm" id="textbox2" readonly></td>
+				</tr>
+				<tr>
+					<th>제목</th>
+					<td colspan="5"><input type="text" class="form-control form-control-sm" id="textbox3" readonly></td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td colspan="5" style="height: 210.5px;">
+						<textarea id="textbox5" class="form-control w-100 h-100" readonly></textarea>
+					</td>
+				</tr>
+			</table>
+			<div class="font-weight-bold mt-1"><i class="fas fa-caret-square-right subjectArrow"></i> 답변</div>
+			<table class="table table-sm table-bordered">
+				<colgroup>
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 35%;">
+					<col span="1" style="width: 15%;">
+					<col span="1" style="width: 35%;">
+				</colgroup>
+				<tr>
+					<th>답변일시</th>
+					<td><input type="text" class="form-control form-control-sm" id="textbox9" readonly></td>
+					<th>상담사</th>
+					<td><input type="text" class="form-control form-control-sm" id="textbox6" readonly></td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td colspan="3" style="height: 210.5px;">
+						<textarea id="textbox7" class="form-control w-100 h-100" readonly></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+	<script src="../lib/jquery/jquery-3.5.1.min.js"></script>
+	<script src="../lib/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../lib/toast-grid/js/tui-code-snippet.js"></script>
+	<script src="../lib/toast-grid/js/tui-pagination.js"></script>
+	<script src="../lib/toast-grid/js/tui-grid.js"></script>
+	<script src="../lib/imask.js"></script>
+    <script src="../lib/moment.min.js"></script>
+    <script src="../lib/daterangepicker-3.0.5/daterangepicker.js"></script>
+	<script src="../lib/jquery.inputmask.bundle.js"></script>
+	<script src="../lib/customModal/js/modal-loading.js"></script>
+	<script src="../lib/multiple-select/js/multiple-select.min.js"></script>
+	<script src="../js/config.js"></script>
+	<script src="../js/ces_common.js"></script>
+	<script src="../js/ces_util.js"></script>
+	<script src="../js/pop_CCEMPRO108.js"></script>
+
+</body>
+</html>

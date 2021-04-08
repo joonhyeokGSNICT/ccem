@@ -1134,33 +1134,7 @@ const getCselCondition = async () => {
         if (!data.CSEL_DATE) {
             data.CSEL_DATE = getDateFormat().replace(/[^0-9]/gi, '');
         }
-       
-        // TODO O/B통화결과에서 팝업되었을때,
-        // if (objOpener.document.URL.indexOf("cns0000.jsp") > 0) {
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "TASK_ID") = sTaskId; // [ 3] task_id        [ 13] 태스크ID
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "LIST_ID") = sListId; // [ 4] list_id        [ 17] 리스트ID
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "SEQ") = sSeq;    // [ 6] seq            [  3] 순번
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "OB_TYPE") = sObType; // [ 4] ob_type        [  1] OB/고객Care 구분 :[ 1.pv || 2.고객Care || 3.인바운드재통화 || 4.MOL학습관리 ]                
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "STD_DATE") = sStdDate; //[ 8] STD_DATE       [  8] 관리일자                                
-        // }
-
-        // TODO MOL학습관리에서 팝업되었을때,
-        // if (objOpener.document.URL.indexOf("mol1100.jsp") > 0) {
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "TASK_ID") = sTaskId; // [ 3] task_id        [ 20] 주문번호
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "LIST_ID") = sListId; // [ 4] list_id        [ 15] 상품코드
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "SEQ") = sSeq;    // [ 6] seq            [  3] 순번
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "OB_TYPE") = sObType; // [ 4] ob_type        [  1] OB/고객Care 구분 :[ 1.pv || 2.고객Care || 3.인바운드재통화 || 4.MOL학습관리 ]                
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "STD_DATE") = sStdDate; //[ 8] STD_DATE       [  8] 관리일자                                
-        // }
-
-        // TODO O/B PV에서 팝업되었을때,
-        // if (objOpener.document.URL.indexOf("clm2900.jsp") > 0 || objOpener.document.URL.indexOf("clm1100.jsp") > 0) {
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "TASK_ID") = sTaskId; // [ 3] task_id        [ 13] 태스크ID
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "LIST_ID") = sListId; // [ 4] list_id        [ 17] 리스트ID
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "SEQ") = sSeq;    // [ 6] seq            [  3] 순번
-        //     DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition, "OB_TYPE") = sObType; // [ 4] ob_type        [  1] OB/고객Care 구분 :[ 1.pv || 2.고객Care || 3.인바운드재통화 || 4.MOL학습관리 ]                
-        //     //DS_COUNSEL.nameValue(DS_COUNSEL.rowPosition,"STD_DATE")= sStdDate; //[ 8] STD_DATE       [  8] 관리일자                                
-        // }
+		
     } else {
         // 상담결과 변경여부 체크를 위하여, 조회되었던 상담결과코드를 설정한다.
         data.ORG_CSEL_RST_MK1 = $("#hiddenbox5").val();
@@ -1384,8 +1358,8 @@ const openCselRst = code => {
 				CSEL_SEQ: sCSEL_SEQ,
 			});
 			break;
-		case "고객의소리": // TODO 고객의소리
-			PopupUtil.open("CCEMPRO108", 1150, 700, "", {
+		case "23": // 고객의소리
+			PopupUtil.open("CCEMPRO108", 1145, 695, "", {
 				CSEL_DATE: sCSEL_DATE,
 				CSEL_NO: sCSEL_NO,
 				CSEL_SEQ: sCSEL_SEQ,
