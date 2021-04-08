@@ -523,11 +523,11 @@ $(function(){
 										}
 									}
 								});
-								updateTchrforZen();
 								$("#customerInfo").click();	// 탭 이동
 								$("#teacherTab").click();	// 탭 이동
 							});
 						}
+						updateTchrforZen();
 					}else {
 						loading.out();
 						client.invoke("notify", response.errmsg, "error", 60000);

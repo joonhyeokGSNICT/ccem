@@ -3851,17 +3851,29 @@ function onSave(){
 	    	// console.log(response);
 	    	if(response.errcode == "0"){
 	    		
-	    		/*if(($("#custInfo_DDD").val() + $("#custInfo_TELPNO1").val() + $("#custInfo_TELPNO2").val()).substring(0,10) == "00000000000"){
+	    		if(($("#custInfo_DDD").val() + $("#custInfo_TELPNO1").val() + $("#custInfo_TELPNO2").val()).substring(0,11) == "00000000000"){
+	    			
+	    			await zendeskUserSearch(currentCustInfo.CUST_ID).then(function(d){
+						if(d.count > 0){
+							currentCustInfo.ZEN_USER_ID = d.users[0].id;
+						}else {
+							ModalUtil.modalPop("알림","젠데스크에 고객정보가 생성중입니다. <br>데이터 안정성을 위해 3 ~ 5분 뒤 다시 시도 해 주세요.");
+							return;
+						}
+					});
+	    			
 					client.invoke("notify", "젠데스크 유저 정보를 삭제 중 입니다.", "notice", 5000);
 					await client.request({
 						
-							url: '/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities.json',
+							url: `/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities.json`,
 							method: 'POST',
 							contentType: "application/json",
 							data: JSON.stringify({
-								"type" : "facebook", 
-								"value" : Math.random()*100000000000000000,
-								"verified": true
+								"identity": {
+									"type" : "facebook", 
+									"value" : Math.floor(Math.random()*10000000000000).toString(),
+									"verified": true
+								}
 							}),
 						
 						}).then(function() {
@@ -3877,7 +3889,9 @@ function onSave(){
 	    					}
 	    				}
 	    			});
-	    		}*/
+	    			
+	    			
+	    		}
 	    			
     			// 젠데스크에 사용자 정보 저장
     			var option = {
