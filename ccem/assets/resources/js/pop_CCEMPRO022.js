@@ -1117,14 +1117,12 @@ const getCselCondition = async () => {
 	//지점정보 없을때, 값 설정
     if (!data.DEPT_ID) {
         data.DEPT_ID = "000Z";
-		$("#textbox5").val("000Z");
-		$("#textbox6").val("000Z");
+		data.DIV_CDE = "000Z";
 	}
 	
 	//지역정보 없을때, 값 설정
     if (!data.AREA_CDE) {
 		data.AREA_CDE = "000";
-		$("#textbox3").val("000");
 	}
 	
 	//INSERT시,
