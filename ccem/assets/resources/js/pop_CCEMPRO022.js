@@ -1313,7 +1313,7 @@ const openCselRst = code => {
 	const sCSEL_SEQ 	= $("#selectbox14").val();		  			// 상담순번
 
 	// 고객정보가 있는지 체크
-	if (!sCUST_ID) {
+	if (!sCUST_ID && code != "23") {
 		alert("상담대상이 없습니다.\n\n[고객조회]또는[선생님조회]를 먼저 하고, 처리 하시기 바랍니다.");
 		$("#selectbox8").val("");
 		return;
