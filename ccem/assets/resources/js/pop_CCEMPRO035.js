@@ -685,6 +685,7 @@ var onSearch = async (isRefresh) => {
 
 	const selectedRowKey = grid1.getSelectedRowKey();
 	const sREFRESHKEY = isRefresh ? grid1.getValue(selectedRowKey, "REFRESHKEY") : "";
+	const currentScrollLeft = grid1.getScrollLeft();
 
 	// 조회데이터 초기화
 	grid1.resetData([]);
@@ -693,39 +694,25 @@ var onSearch = async (isRefresh) => {
 	calendarUtil.setImaskValue("txtPROC_HOPE_DATE", "");
 	calendarUtil.setImaskValue("txtPROC_DATE", "");
 
-	// 조회조건 체크
+	// 상담조회
 	const condition = getCselCondition();
 	if (!condition) return;
-
-	// 상담조회
 	const cselData = await getCsel(condition);
 	grid1.resetData(cselData);
 
 	// 재조회키값이 존재하면 해당행 찾아서 focusing
 	let isFocus = false;
 	if (sREFRESHKEY) {
-
+		
 		const gridData = grid1.getData();
 		const findData = gridData.find(el => el.REFRESHKEY == sREFRESHKEY);
-		const rowKey = findData?.rowKey;
+		const rowKey = findData?.rowKey || 0;
+		const perPage = grid1.getPaginationPerPage();
+		const page = parseInt((rowKey / perPage) + 1);
 
-		if (rowKey) {
-
-			const totalCount = findData.TOTALCNT;
-			const perPage = grid1.getPaginationPerPage();
-			const page = parseInt((rowKey / perPage) + 1);
-	
-			grid1.resetData(cselData, {
-				pageState: {
-					page,
-					totalCount,
-					perPage,
-				}
-			});
-
-			isFocus = grid1FocusEvent(rowKey);
-
-		}
+		grid1.setPage(page);
+		grid1.setScrollLeft(currentScrollLeft);
+		isFocus = grid1FocusEvent(rowKey);
 		
 	}
 

@@ -420,6 +420,10 @@ const getProd = () => {
 
 // 입회 리스트 조회
 function onSearch(isRefresh){
+	const REFRESHKEY = currentMemberData ? `${currentMemberData.CSEL_DATE}${currentMemberData.CSEL_NO}${currentMemberData.CSEL_SEQ}` : "";
+	const currentScrollLeft = grid.getScrollLeft();
+	currentMemberData = null;
+
 	var param = {
 			userid: opener.currentUserInfo.user.external_id,
 		    menuname: '입회조회',
@@ -559,26 +563,23 @@ function onSearch(isRefresh){
 		        		d.TELNO = d.TELNO.replace(/ /gi,"");
 		        	}
 		        	
-		        	if(isRefresh == true){
-		        		
-		        		const perPage = grid.getPaginationPerPage();
-		    			const page = parseInt((currentMemberData.rowKey / perPage) + 1);
-		    			
-		        		grid.resetData(response.recv1, {
-		    				pageState: {
-		    					page,
-		    					perPage,
-		    				}
-		    			});
-		        		
-		        		grid.addSelection({rowKey:currentMemberData.rowKey});
-		        		grid.clickSort({rowKey:currentMemberData.rowKey});
-		        		currentMemberData = grid.getRow(currentMemberData.rowKey);
-		        		
-		        	}else {
-		        		grid.resetData(response.recv1);
-		        	}
+					grid.resetData(response.recv1);
+
+					if (isRefresh == true) {
+						const findData = grid.getData().find(el => `${el.CSEL_DATE}${el.CSEL_NO}${el.CSEL_SEQ}` == REFRESHKEY);
+						const targetRowKey = findData?.rowKey || 0;
+						const perPage = grid.getPaginationPerPage();
+						const page = parseInt((targetRowKey / perPage) + 1);
+
+						grid.setPage(page);
+						grid.setScrollLeft(currentScrollLeft);
+						grid.focus(targetRowKey);
+						grid.addSelection({ rowKey: targetRowKey });
+						currentMemberData = grid.getRow(targetRowKey);
+					}
+
 		        	currentWholeData = grid.getData();
+
 		        }else {
 		        	loading.out();
 		        	alert(response.errmsg);

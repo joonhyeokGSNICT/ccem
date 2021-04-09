@@ -317,6 +317,29 @@ class Grid extends tui.Grid {
             return null;
         }
     }
+    /**
+     * Returns the left position of the scrollbar.
+     * @returns {number} scrollLeft
+     */
+    getScrollLeft() {
+        return this.store.viewport.scrollLeft;
+    }
+    /**
+     * Set the left position of the scrollbar.
+     * @param {number} scrollLeft 
+     */
+    setScrollLeft(scrollLeft) {
+        this.store.viewport.scrollLeft = scrollLeft;
+    }
+    /**
+     * Set the current page
+     * @param {number} page 
+     */
+    setPage(page) {
+        this.resetData(this.getData(), { 
+            pageState: { page } 
+        });
+    }
 }
 
 /**
