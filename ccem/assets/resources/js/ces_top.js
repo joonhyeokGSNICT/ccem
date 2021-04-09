@@ -1695,10 +1695,12 @@ function onclickCselBtn(id) {
 	    PopupUtil.contains("CCEMPRO022") || 
 	    PopupUtil.contains("CCEMPRO031") || 
 	    PopupUtil.contains("CCEMPRO032") || 
-	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CSELTOP")    || 
 	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO022") || 
 	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO031") || 
-	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO032")) {
+	    PopupUtil.pops["CCEMPRO035"]?.PopupUtil.contains("CCEMPRO032") ||
+	    PopupUtil.pops["CCEMPRO037"]?.PopupUtil.contains("CCEMPRO022") || 
+	    PopupUtil.pops["CCEMPRO037"]?.PopupUtil.contains("CCEMPRO031") || 
+	    PopupUtil.pops["CCEMPRO037"]?.PopupUtil.contains("CCEMPRO032")) {
 		ModalUtil.modalPop("알림","상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
 		return;
 	}

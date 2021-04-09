@@ -1025,6 +1025,20 @@ function onDelProc(date, no, seq){
 *	수정 버튼 클릭
 *****************************************/	
 function onEdit(){
+
+	// 상당등록창을 오픈했는지 체크
+	if (opener.PopupUtil.contains("CSELTOP") 	||
+		opener.PopupUtil.contains("CCEMPRO022") ||
+		opener.PopupUtil.contains("CCEMPRO031") ||
+		opener.PopupUtil.contains("CCEMPRO032") || 
+		PopupUtil.contains("CSELTOP") 	 		||
+		PopupUtil.contains("CCEMPRO022") 		||
+		PopupUtil.contains("CCEMPRO031") 		||
+		PopupUtil.contains("CCEMPRO032")) {
+		alert("상담등록 또는 입회등록 창을 닫고 작업하셔야 합니다.");
+		return;
+	}
+	
 	if(grid.getData().length > 0){
 	
 		if(currentMemberData == null){
