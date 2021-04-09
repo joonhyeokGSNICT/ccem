@@ -447,6 +447,8 @@ function init(){
 	_styleChanger.resizeWidth();
 	_styleChanger.resizeHeight();
 
+	/* 자동으로 포커싱 */
+	$('#searchAddr_input').focus();
 };
 
 

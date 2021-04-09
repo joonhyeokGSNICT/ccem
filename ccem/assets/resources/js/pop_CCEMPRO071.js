@@ -153,8 +153,19 @@ async function save_call_rst(){
 	var temp = {};
 	
 	if (! isEmpty(_OB_CDE) ) {
-		if ( _OB_CDE != 60 ) temp.LIST_CUST_ID = await getTicketField("LIST_CUST_ID");
-		else temp.CALLBACK_ID = await getTicketField("CALLBACK_ID");
+		if ( _OB_CDE != 60 ) {
+			temp.LIST_CUST_ID = await getTicketField("LIST_CUST_ID");	
+			if ( _OB_CDE != 60 && isEmpty(temp.LIST_CUST_ID) ) {
+				client.invoke('notify',"[OB결과등록] 리스트번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
+				return;
+			}
+		} else {
+			temp.CALLBACK_ID = await getTicketField("CALLBACK_ID");
+			if ( _OB_CDE == 60 && isEmpty(temp.CALLBACK_ID) ) {
+				client.invoke('notify',"[OB결과등록] 콜백번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
+				return;
+			}
+		}
 	} else return false;
 	
 	temp.OBLIST_CDE = _OB_CDE;												// OB코드
@@ -324,11 +335,27 @@ function onClickRadio(){
 /******************************************************
  * OB결과등록 창 팝업 확인
  ******************************************************/
-function OBResultPopUp() {
+async function OBResultPopUp() {
 	var cnt = 0;
+	var temp = {};
+
 	for ( index in currentTicketInfo.ticket.tags ) {
 		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
 		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60') {
+			if ( currentTicketInfo.ticket.tags[index] != 'oblist_cde_60' ) {
+				temp.LIST_CUST_ID = await getTicketField("LIST_CUST_ID");	
+				if ( _OB_CDE != 60 && isEmpty(temp.LIST_CUST_ID) ) {
+					client.invoke('notify',"[OB결과등록 팝업호출] 리스트번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
+					return;
+				}
+			} else {
+				temp.CALLBACK_ID = await getTicketField("CALLBACK_ID");
+				if ( _OB_CDE == 60 && isEmpty(temp.CALLBACK_ID) ) {
+					client.invoke('notify',"[OB결과등록 팝업호출] 콜백번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
+					return;
+				}
+			}
+
 			var str = currentTicketInfo.ticket.tags[index];
 			_OB_CDE = str.substr( str.length-2, 2 );
 			_api.getOB();
