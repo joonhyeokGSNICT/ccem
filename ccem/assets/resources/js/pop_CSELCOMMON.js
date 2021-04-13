@@ -319,32 +319,12 @@ const zendeskUserSearch = (external_id) => topbarClient.request(`/api/v2/users/s
 const zendeskShowTicket = (ticket_id) => topbarClient.request(`/api/v2/tickets/${ticket_id}`);
 
 /**
- * 팔로워 정보 반환
- * @param {array} EMP_ID_LIST 연계대상자리스트
- * @param {string} type SET, UP
- */
-const getFollowers = async (EMP_ID_LIST = [], type) => {
-	const followerData = new Array();
-	for (const EMP_ID of EMP_ID_LIST) {
-		const { users } = await zendeskUserSearch(EMP_ID.trim());
-		if (users.length > 0) {
-			if (type == "UP") followerData.push({ user_id: users[0].id, action: "put" }); 
-			else followerData.push({ id: users[0].id});
-		}
-	}
-	return followerData;
-}
-
-/**
  * Zendesk 티켓 업데이트 for 상담등록/입회등록/선생님소개
  * @param {object} cselData    상담정보
  * @param {object} customData  티켓정보
  */
 const updateTicket = async (cselData, customData) => {
 
-	// 팔로워 세팅
-	const followerData 	= await getFollowers(customData.empList, "UP");
-	
 	// 상담번호 티켓필드 세팅
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`; 
 
@@ -453,7 +433,6 @@ const updateTicket = async (cselData, customData) => {
 					body		: cselData.CSEL_CNTS,	 // 상담내용
 				},
 				requester_id	: customData.requesterId,// 요청자ID
-				followers		: followerData,			 // 팔로워
 				custom_fields,							 // 커스텀 티켓필드
 			}
 		}),
@@ -468,9 +447,6 @@ const updateTicket = async (cselData, customData) => {
  * @param {obejct} customData   티켓정보
  */
 const setTicket = async (cselData, customData) => {
-
-	// 팔로워 세팅
-	const followerData = await getFollowers(customData.empList, "SET");
 
 	// 상담번호 티켓필드 세팅
 	const CSEL_DATE_NO_SEQ = `${FormatUtil.date(cselData.CSEL_DATE)}_${cselData.CSEL_NO}_${cselData.CSEL_SEQ}`;
@@ -572,9 +548,6 @@ const setTicket = async (cselData, customData) => {
 	await sidebarClient.set(req);										  // 티켓필드 입력
 	await sidebarClient.set("comment.type", "internalNote");			  // 내부메모로 변경
 	await sidebarClient.invoke('comment.appendText', cselData.CSEL_CNTS); // 코멘트입력
-	for (follower of followerData) {
-		await sidebarClient.invoke('ticket.collaborators.add', follower); // 팔로워세팅
-	}
 	
 }
 
