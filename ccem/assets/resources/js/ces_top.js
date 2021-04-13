@@ -43,7 +43,8 @@ var faxUrl = "";								// FAX URL
 var CTI_STATUS = "";
 var WiseNTalk_ID = "";
 
-var ticketCallFlag = false;
+var ticketCallFlag = false;						// 티켓 업데이트 영향 콜 플래그
+var obCallFlag = false;							// OB전화번호 버튼으로 콜한 플래그
 
 var currentUserInfo;							// 현재 사용중인 유저의 정보(ZENDESK)
 var currentCustInfo = {
@@ -1264,6 +1265,7 @@ $(function(){
 			break;
 		case 'obCall_btn':
 			phoneNum = $.trim($("#custInfo_REP_TELNO").val().replace(/-/gi,''));
+			obCallFlag = true;
 			break;
 		case 't_mobileCall_btn':
 			phoneNum = $.trim($("#tchrInfo_MOBILNO").val().replace(/-/gi,''));
