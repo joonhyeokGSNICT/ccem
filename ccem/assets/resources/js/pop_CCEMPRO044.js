@@ -975,15 +975,15 @@ const _btn = {
 				telArray[index] = tempGrid[index].MOBILNO;
 			}
 			// 선택한 부서의 기본 부서장 입력(없을 경우 입력 없음)
-			if (! isEmpty(_selectedNode.data.REP_EMP_ID) ){
-				if (! isEmpty(_selectedNode.data.REP_EMP_ID.trim()) ) {
-					if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length == 0 ) {
-						idArray.push(_selectedNode.data.REP_EMP_ID)
-						nameArray.push(_selectedNode.data.REP_EMP_NAME);
-						telArray.push(_selectedNode.data.REP_EMP_TELPNO);
-					}
-				}
-			}
+			// if (! isEmpty(_selectedNode.data.REP_EMP_ID) ){
+			// 	if (! isEmpty(_selectedNode.data.REP_EMP_ID.trim()) ) {
+			// 		if( idArray.filter(data => data == _selectedNode.data.REP_EMP_ID.trim()).length == 0 ) {
+			// 			idArray.push(_selectedNode.data.REP_EMP_ID)
+			// 			nameArray.push(_selectedNode.data.REP_EMP_NAME);
+			// 			telArray.push(_selectedNode.data.REP_EMP_TELPNO);
+			// 		}
+			// 	}
+			// }
 			// console.log(telArray);
 
 			/**
