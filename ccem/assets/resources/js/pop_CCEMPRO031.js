@@ -1078,7 +1078,6 @@ const getCustomData = async () => {
         lcName 		    : $("#textbox15").val(),			// 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
 		brandId			: $("#hiddenbox10").val(),			// 브랜드ID
-		empList    		: [], // 연계대상자
 		requesterId		: undefined, // requester_id
 		transMk			: "3",		 // 연계구분 - 입회연계
 	}

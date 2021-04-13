@@ -487,8 +487,6 @@ var getBaseData = (target, targetId, sJobType) => {
 		// baseData.AGE_CDE			// 연령코드		
 		// baseData.DIV_KIND_CDE	// 브랜드ID		
 		$("#hiddenbox6").val(targetId); 					// 고객번호
-		$("#hiddenbox11").val("");							// 연계담당자ID
-		$("#hiddenbox12").val("");							// 연계담당자이름
 
 		// 신규일경우 초기값 세팅
 		if (sJobType == "I") {		
@@ -765,8 +763,6 @@ const onNewCustInit = () => {
     $("#selectbox9").val("");   	// 상담경로
     $("#textbox11").val("");		// 연계부서코드
 	$("#textbox26").val("");		// 연계부서명  
-	$("#hiddenbox11").val("");		// 연계담당자ID
-	$("#hiddenbox12").val("");		// 연계담당자이름
 	$("#hiddenbox14").val("");		// 브랜드ID
 	$("#hiddenbox15").val(""),      // 연계일자
 	$("#hiddenbox16").val(""),      // 연계번호
@@ -1641,8 +1637,6 @@ var setDisPlayUp = (data) => {
 var setDisPlayDn = (data) => {
 	$("#textbox11").val(data.PROC_DEPT_ID);		// 연계부서코드
 	$("#textbox26").val(data.PROC_DEPT_NAME);	// 연계부서이름
-	$("#hiddenbox11").val(data.EMP_ID_LIST);	// 연계담당자ID
-	$("#hiddenbox12").val(data.EMP_NAME_LIST);	// 연계담당자이름
 }
 
 /**
@@ -1658,7 +1652,6 @@ const getCustomData = async () => {
         lcName 		    : $("#textbox9").val(),		// 러닝센터명(센터명)
 		reclCntct 	    : $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : "", // 상담결과 구분이 재통화예약일경우
 		brandId			: $("#hiddenbox14").val(),				// 브랜드ID
-		empList    		: $("#hiddenbox11").val().split(","),	// 연계대상자
 		requesterId		: undefined, // requester_id
 		transMk			: "",		 // 연계구분
 	}
