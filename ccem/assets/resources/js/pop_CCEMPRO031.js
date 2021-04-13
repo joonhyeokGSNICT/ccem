@@ -1080,6 +1080,7 @@ const getCustomData = async () => {
 		brandId			: $("#hiddenbox10").val(),			// 브랜드ID
 		requesterId		: undefined, // requester_id
 		transMk			: "3",		 // 연계구분 - 입회연계
+		comment			: "",		 // 내부메모
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -1094,6 +1095,15 @@ const getCustomData = async () => {
 
 		data.requesterId = users[0].id;
 	}
+
+	// 내부메모
+	data.comment = `이름 : ${$("#textbox2").val()}
+주소 : ${$("#textbox5").val()} ${$("#textbox6").val()}
+전화번호 : ${$("#textbox4").val()}
+연령 : ${$("#selectbox2 option:selected").text()}
+과목 : ${grid5.getData().map(el => el.PRDT_NAME).join(", ")}
+
+${$("#textbox25").val().trim()}`;
 
 	return data;
 	

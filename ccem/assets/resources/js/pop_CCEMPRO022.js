@@ -1654,6 +1654,7 @@ const getCustomData = async () => {
 		brandId			: $("#hiddenbox14").val(),				// 브랜드ID
 		requesterId		: undefined, // requester_id
 		transMk			: "",		 // 연계구분
+		comment			: "",		 // 내부메모
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -1675,6 +1676,22 @@ const getCustomData = async () => {
 		data.transMk = "1";
 	} else if (sPROC_MK == "4") {
 		data.transMk = "2";
+	}
+
+	// 개인정보가 공개일 경우 내부메모 세팅
+	if ($("#selectbox1").val() == "1") {
+
+		data.comment = `이름 : ${$("#textbox21").val()}
+주소 : ${$("#textbox24").val()} ${$("#textbox25").val()}
+전화번호 : ${$("#textbox23").val()}
+연령 : ${$("#selectbox13 option:selected").text()}
+과목 : ${grid2.getData().map(el => el.PRDT_NAME).join(", ")}
+
+${$("#textbox13").val().trim()}`;
+
+	// 개인정보가 비공개일 경우 내부메모 세팅
+	} else {
+		data.comment = $("#textbox13").val().trim();
 	}
 
 	return data;

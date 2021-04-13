@@ -430,7 +430,7 @@ const updateTicket = async (cselData, customData) => {
 				subject			: cselData.CSEL_TITLE,	 // 제목
 				comment: {
 					public		: false,				 // 내부메모
-					body		: cselData.CSEL_CNTS,	 // 상담내용
+					body		: customData.comment,	 // 상담내용
 				},
 				requester_id	: customData.requesterId,// 요청자ID
 				custom_fields,							 // 커스텀 티켓필드

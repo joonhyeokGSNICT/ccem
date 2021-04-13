@@ -790,6 +790,7 @@ const getCustomData = async () => {
 		brandId			: $("#hiddenbox3").val(), // 브랜드ID
 		requesterId		: undefined, // requester_id
 		transMk			: "4",		 // 연계구분 - 소개연계
+		comment			: "",		 // 내부메모
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -804,6 +805,15 @@ const getCustomData = async () => {
 
 		data.requesterId = users[0].id;
 	}
+	
+	// 내부메모
+	data.comment = `선생님명 : ${$("#textbox1").val()}
+주소 : ${$("#textbox4").val()} ${$("#textbox5").val()}
+전화번호 : ${$("#textbox3").val()}
+관심부분 : ${findCodeName("INTEREST_MK", $("input[name='INTEREST_MK']:checked")[0]?.value)}
+사업구분 : ${$("#selectbox6 option:selected").text()}
+
+${$("#textbox19").val().trim()}`;
 	
 	return data;
 
