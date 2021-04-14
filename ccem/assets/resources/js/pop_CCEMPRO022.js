@@ -1680,18 +1680,16 @@ const getCustomData = async () => {
 
 	// 개인정보가 공개일 경우 내부메모 세팅
 	if ($("#selectbox1").val() == "1") {
-
-		data.comment = `이름 : ${$("#textbox21").val()}
-주소 : ${$("#textbox24").val()} ${$("#textbox25").val()}
-전화번호 : ${$("#textbox23").val()}
-연령 : ${$("#selectbox13 option:selected").text()}
-과목 : ${grid2.getData().map(el => el.PRDT_NAME).join(", ")}
-
-${$("#textbox13").val().trim()}`;
+		data.comment += "이름 : " + $("#textbox21").val().trim();
+		data.comment += "\n주소 : " + ($("#textbox24").val() + " " + $("#textbox25").val()).trim();
+		data.comment += "\n전화번호 : " + $("#textbox23").val().trim();
+		data.comment += "\n연령 : " + $("#selectbox13 option:selected").text();
+		data.comment += "\n과목 : " + grid2.getData().map(el => el.PRDT_NAME).join(", ");
+		data.comment += "\n\n" + $("#textbox13").val().trim();
 
 	// 개인정보가 비공개일 경우 내부메모 세팅
 	} else {
-		data.comment = $("#textbox13").val().trim();
+		data.comment += $("#textbox13").val().trim();
 	}
 
 	return data;

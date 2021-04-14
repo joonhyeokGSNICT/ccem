@@ -807,13 +807,12 @@ const getCustomData = async () => {
 	}
 	
 	// 내부메모
-	data.comment = `선생님명 : ${$("#textbox1").val()}
-주소 : ${$("#textbox4").val()} ${$("#textbox5").val()}
-전화번호 : ${$("#textbox3").val()}
-관심부분 : ${findCodeName("INTEREST_MK", $("input[name='INTEREST_MK']:checked")[0]?.value)}
-사업구분 : ${$("#selectbox6 option:selected").text()}
-
-${$("#textbox19").val().trim()}`;
+	data.comment += "선생님명 : " + $("#textbox1").val().trim();
+	data.comment += "\n주소 : " + ($("#textbox4").val() + " " + $("#textbox5").val()).trim();
+	data.comment += "\n전화번호 : " + $("#textbox3").val().trim();
+	data.comment += "\n관심부분 : " + findCodeName("INTEREST_MK", $("input[name='INTEREST_MK']:checked")[0]?.value);
+	data.comment += "\n사업구분 : " + $("#selectbox6 option:selected").text();
+	data.comment += "\n\n" + $("#textbox19").val().trim();
 	
 	return data;
 

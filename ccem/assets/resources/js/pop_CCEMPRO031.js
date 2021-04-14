@@ -1097,13 +1097,12 @@ const getCustomData = async () => {
 	}
 
 	// 내부메모
-	data.comment = `이름 : ${$("#textbox2").val()}
-주소 : ${$("#textbox5").val()} ${$("#textbox6").val()}
-전화번호 : ${$("#textbox4").val()}
-연령 : ${$("#selectbox2 option:selected").text()}
-과목 : ${grid5.getData().map(el => el.PRDT_NAME).join(", ")}
-
-${$("#textbox25").val().trim()}`;
+	data.comment += "이름 : " + $("#textbox2").val().trim();
+	data.comment += "\n주소 : " + ($("#textbox5").val() + " " + $("#textbox6").val()).trim();
+	data.comment += "\n전화번호 : " + $("#textbox4").val().trim();
+	data.comment += "\n연령 : " + $("#selectbox2 option:selected").text();
+	data.comment += "\n과목 : " + grid5.getData().map(el => el.PRDT_NAME).join(", ");
+	data.comment += "\n\n" + $("#textbox25").val().trim();
 
 	return data;
 	
