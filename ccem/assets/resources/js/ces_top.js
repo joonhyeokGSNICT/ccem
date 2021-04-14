@@ -655,19 +655,40 @@ function userSearch() {
 					if(sidebarClient != null){
 						sidebarClient.get(`ticket.requester.name`).then(function (d){
 							if(d != null && d != ""){
-								setTimeout(function(){
-									$("#customerOnline").val(daekyo_cipher.decrypt(d['ticket.requester.name']));					// 임시 )) 온라인 ID 개발 전까지 회원번호로 검색
-									$("#customerOnlineCheck").prop('checked',true);
-
-									if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
-										customerSearch("custSearchDiv");
-									}else {
-										customerSearch("custSearchDiv","1");
+								if(d['ticket.requester.name'] == "Unknown"){
+									
+									if(currentTicketInfo.ticket.subject.includes('https://')){				// 요청자가 unknown 이고 제목이 url 이면 검색안함 
+										return;
 									}
 									
-									$("#customerOnline").val("");
-									$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
-								}, 50);
+									setTimeout(function(){
+										$("#customerOnline").val(daekyo_cipher.decrypt(currentTicketInfo.ticket.subject.replace('Chat with ','')));		// 제목으로 고객검색
+										$("#customerOnlineCheck").prop('checked',true);
+										
+										if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+											customerSearch("custSearchDiv");
+										}else {
+											customerSearch("custSearchDiv","1");
+										}
+										
+										$("#customerOnline").val("");
+										$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+									}, 50);
+								}else {
+									setTimeout(function(){
+										$("#customerOnline").val(daekyo_cipher.decrypt(d['ticket.requester.name']));				// 요청자 이름으로 고객검색
+										$("#customerOnlineCheck").prop('checked',true);
+										
+										if(modifyYN){								// 수정여부 true 일 경우 리스트조회만 하고 상세조회는 안함
+											customerSearch("custSearchDiv");
+										}else {
+											customerSearch("custSearchDiv","1");
+										}
+										
+										$("#customerOnline").val("");
+										$("#customerOnlineCheck").prop('checked',false);								// 자동조회된 정보는 사라짐
+									}, 50);
+								}
 							}
 						});
 					}
