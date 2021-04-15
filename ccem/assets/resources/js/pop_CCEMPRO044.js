@@ -994,66 +994,119 @@ const _btn = {
 			/* CCEMPRO028 : 상담연계/입회연계/소개연계 선택 값 전송 */
 			if ( opener.name == 'CCEMPRO028' ) {
 				if ( _selectedNode.data.LV =="4" ) {
-					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
-					orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
-					orgList.LV = _selectedNode.data.LV;
-					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;		
-					orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
-					orgList.DEPT_TELNO = _selectedNode.parent.data.TELPNO;
-					if (! isEmpty(_selectedNode.parent.data.FAXNO) ){
-						orgList.DEPT_FAX_DDD = _selectedNode.parent.data.FAXNO.split('-')[0];
-						orgList.DEPT_FAX_NO1 = _selectedNode.parent.data.FAXNO.split('-')[1];
-						orgList.DEPT_FAX_NO2 = _selectedNode.parent.data.FAXNO.split('-')[2];
+					if( _selectedNode.parent.parent.parent.data.DEPT_ID == "T000" ) {
+						orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
+						orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
+						orgList.LV = _selectedNode.data.LV;
+						orgList.DEPT_ID = _selectedNode.data.DEPT_ID;		
+						orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+						orgList.DEPT_TELNO = _selectedNode.data.TELPNO;
+						if (! isEmpty(_selectedNode.data.FAXNO) ){
+							orgList.DEPT_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
+							orgList.DEPT_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
+							orgList.DEPT_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
+						}
+						orgList.LC_ID = "";		
+						orgList.LC_NAME = "";
+						orgList.LC_TELNO = "";
+						orgList.LC_FAX_DDD = "";
+						orgList.LC_FAX_NO1 = "";
+						orgList.LC_FAX_NO2 = "";
+						orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
+						orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+						orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+						orgList.LC_EMP_ID = "";
+						orgList.EMP_NAME_LIST  = nameArray.join(', ');
+						orgList.EMP_ID_LIST = idArray.join(', ');
+						orgList.EMP_PHONE_LIST = telArray.join(', ');
+					} else {
+						orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
+						orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
+						orgList.LV = _selectedNode.data.LV;
+						orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;		
+						orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
+						orgList.DEPT_TELNO = _selectedNode.parent.data.TELPNO;
+						if (! isEmpty(_selectedNode.parent.data.FAXNO) ){
+							orgList.DEPT_FAX_DDD = _selectedNode.parent.data.FAXNO.split('-')[0];
+							orgList.DEPT_FAX_NO1 = _selectedNode.parent.data.FAXNO.split('-')[1];
+							orgList.DEPT_FAX_NO2 = _selectedNode.parent.data.FAXNO.split('-')[2];
+						}
+	
+						orgList.LC_ID = _selectedNode.data.DEPT_ID;		
+						orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
+						orgList.LC_TELNO = _selectedNode.data.TELPNO;
+						if (! isEmpty(_selectedNode.data.FAXNO) ){
+							orgList.LC_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
+							orgList.LC_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
+							orgList.LC_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
+						}
+						orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
+						orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
+						orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+						orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
+						orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
+						orgList.EMP_NAME_LIST  = nameArray.join(', ');
+						orgList.EMP_ID_LIST = idArray.join(', ');
+						orgList.EMP_PHONE_LIST = telArray.join(', ');
 					}
-
-					orgList.LC_ID = _selectedNode.data.DEPT_ID;		
-					orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
-					orgList.LC_TELNO = _selectedNode.data.TELPNO;
-					if (! isEmpty(_selectedNode.data.FAXNO) ){
-						orgList.LC_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
-						orgList.LC_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
-						orgList.LC_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
-					}
-					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
-					orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
-					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
-					orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
-					orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
-					orgList.EMP_NAME_LIST  = nameArray.join(', ');
-					orgList.EMP_ID_LIST = idArray.join(', ');
-					orgList.EMP_PHONE_LIST = telArray.join(', ');
 
 
 				} else if ( _selectedNode.data.LV =="3" ) {
-					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
-					orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
-					orgList.LV = _selectedNode.data.LV;
-					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;		
-					orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
-					orgList.DEPT_TELNO = _selectedNode.parent.data.TELPNO;
-					if (! isEmpty(_selectedNode.parent.data.FAXNO) ){
-						orgList.DEPT_FAX_DDD = _selectedNode.parent.data.FAXNO.split('-')[0];
-						orgList.DEPT_FAX_NO1 = _selectedNode.parent.data.FAXNO.split('-')[1];
-						orgList.DEPT_FAX_NO2 = _selectedNode.parent.data.FAXNO.split('-')[2];
+					if( _selectedNode.parent.parent.data.DEPT_ID == "T000" ) {
+						orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
+						orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
+						orgList.LV = _selectedNode.data.LV;
+						orgList.DEPT_ID = _selectedNode.data.DEPT_ID;		
+						orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+						orgList.DEPT_TELNO = _selectedNode.data.TELPNO;
+						if (! isEmpty(_selectedNode.data.FAXNO) ){
+							orgList.DEPT_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
+							orgList.DEPT_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
+							orgList.DEPT_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
+						}
+						orgList.LC_ID = "";		
+						orgList.LC_NAME = "";
+						orgList.LC_TELNO = "";
+						orgList.LC_FAX_DDD = "";
+						orgList.LC_FAX_NO1 = "";
+						orgList.LC_FAX_NO2 = "";
+						orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
+						orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+						orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+						orgList.LC_EMP_ID = "";
+						orgList.EMP_NAME_LIST  = nameArray.join(', ');
+						orgList.EMP_ID_LIST = idArray.join(', ');
+						orgList.EMP_PHONE_LIST = telArray.join(', ');
+					} else {
+						orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
+						orgList.BRAND_NAME = _selectedNode.data.BRAND_NAME;
+						orgList.LV = _selectedNode.data.LV;
+						orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;		
+						orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
+						orgList.DEPT_TELNO = _selectedNode.parent.data.TELPNO;
+						if (! isEmpty(_selectedNode.parent.data.FAXNO) ){
+							orgList.DEPT_FAX_DDD = _selectedNode.parent.data.FAXNO.split('-')[0];
+							orgList.DEPT_FAX_NO1 = _selectedNode.parent.data.FAXNO.split('-')[1];
+							orgList.DEPT_FAX_NO2 = _selectedNode.parent.data.FAXNO.split('-')[2];
+						}
+	
+						orgList.LC_ID = _selectedNode.data.DEPT_ID;		
+						orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
+						orgList.LC_TELNO = _selectedNode.data.TELPNO;
+						if (! isEmpty(_selectedNode.data.FAXNO) ){
+							orgList.LC_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
+							orgList.LC_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
+							orgList.LC_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
+						}
+						orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
+						orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
+						orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+						orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
+						orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
+						orgList.EMP_NAME_LIST  = nameArray.join(', ');
+						orgList.EMP_ID_LIST = idArray.join(', ');
+						orgList.EMP_PHONE_LIST = telArray.join(', ');
 					}
-
-					orgList.LC_ID = _selectedNode.data.DEPT_ID;		
-					orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
-					orgList.LC_TELNO = _selectedNode.data.TELPNO;
-					if (! isEmpty(_selectedNode.data.FAXNO) ){
-						orgList.LC_FAX_DDD = _selectedNode.data.FAXNO.split('-')[0];
-						orgList.LC_FAX_NO1 = _selectedNode.data.FAXNO.split('-')[1];
-						orgList.LC_FAX_NO2 = _selectedNode.data.FAXNO.split('-')[2];
-					}
-					orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
-					orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
-					orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
-					orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
-					orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
-					orgList.EMP_NAME_LIST  = nameArray.join(', ');
-					orgList.EMP_ID_LIST = idArray.join(', ');
-					orgList.EMP_PHONE_LIST = telArray.join(', ');
-
 
 				} else if ( _selectedNode.data.LV =="2" ) {
 					orgList.BRAND_ID = _selectedNode.data.BRAND_ID;
@@ -1106,6 +1159,7 @@ const _btn = {
 					orgList.EMP_ID_LIST = idArray.join(', ');
 					orgList.EMP_PHONE_LIST = telArray.join(', ');
 				}
+				// console.log(orgList);
 				opener.setTransDisPlay(orgList);
 			} 
 			/* CCEMPRO022 : 상담등록 _ 연계부서 선택 값 전송 */
@@ -1419,19 +1473,38 @@ function getSelOrg() {
 	var orgList = {}
 	if ( opener.name == 'CCEMPRO022' || opener.name == 'CCEMPRO031' || opener.name.indexOf('app_CCEM_top_bar') > -1) {
 		if ( _selectedNode.data.LV =="4" ) {
-			orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
-			orgList.LC_ID = _selectedNode.data.DEPT_ID;
-			orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
-			orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
-			orgList.UPDEPTNAME = _selectedNode.parent.parent.data.DEPT_NAME;
-			orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
-			orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
-			orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
-			orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
-			orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
-			orgList.TELPNO_DEPT = _selectedNode.parent.data.TELPNO;
-			orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
-			orgList.TELPNO_LC = _selectedNode.data.TELPNO;
+			// 본사
+			if( _selectedNode.parent.parent.parent.data.DEPT_ID == "T000" ) {
+				orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
+				orgList.LC_ID = "";
+				orgList.LC_EMP_ID = "";
+				orgList.DIV_CDE = _selectedNode.parent.data.DEPT_ID;
+				orgList.UPDEPTNAME = _selectedNode.parent.data.DEPT_NAME;
+				orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+				orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+				orgList.DEPT_ID = _selectedNode.data.DEPT_ID;
+				orgList.DEPT_NAME = _selectedNode.data.DEPT_NAME;
+				orgList.DEPT_EMP_ID = _selectedNode.data.REP_EMP_ID;
+				orgList.TELPNO_DEPT = _selectedNode.data.TELPNO;
+				orgList.LC_NAME = "";
+				orgList.TELPNO_LC = "";
+			}
+			// 기타 사업국
+			else {
+				orgList.DIV_KIND_CDE = _selectedNode.parent.parent.data.BRAND_ID;
+				orgList.LC_ID = _selectedNode.data.DEPT_ID;
+				orgList.LC_EMP_ID = _selectedNode.data.REP_EMP_ID;
+				orgList.DIV_CDE = _selectedNode.parent.parent.data.DEPT_ID;
+				orgList.UPDEPTNAME = _selectedNode.parent.parent.data.DEPT_NAME;
+				orgList.AREA_CDE = _selectedNode.data.AREA_CDE;
+				orgList.AREA_NAME = _selectedNode.data.AREA_NAME;
+				orgList.DEPT_ID = _selectedNode.parent.data.DEPT_ID;
+				orgList.DEPT_NAME = _selectedNode.parent.data.DEPT_NAME;
+				orgList.DEPT_EMP_ID = _selectedNode.parent.data.REP_EMP_ID;
+				orgList.TELPNO_DEPT = _selectedNode.parent.data.TELPNO;
+				orgList.LC_NAME = _selectedNode.data.DEPT_NAME;
+				orgList.TELPNO_LC = _selectedNode.data.TELPNO;
+			}
 		} else if ( _selectedNode.data.LV =="3" ) {
 			// 본사
 			if( _selectedNode.parent.parent.data.DEPT_ID == "T000" ) {
