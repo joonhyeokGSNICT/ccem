@@ -795,9 +795,11 @@ const createTicket = async (user_id, parent_id) => {
 		const { ticket } = await zendeskShowTicket(parent_id);
 
 		if (ticket?.custom_fields?.length > 0) {
+			const fOB_PRESET 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]);
 			const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
 			const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
 			const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
+			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"], 		value: fOB_PRESET?.value});			// OB구분(고정)   	
 			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["OB_MK"], 			value: fOB_MK?.value});				// OB구분   		
 			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"], 	value: fLIST_CUST_ID?.value});		// 리스트ID_고객번호
 			new_fields.push({id: ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"], 	value: fCALLBACK_ID?.value});		// 콜백번호   
@@ -816,7 +818,7 @@ const createTicket = async (user_id, parent_id) => {
 				requester_id	: user_id,  				// 젠데스크 고객번호
 				assignee_id		: currentUser.id,			// 젠데스크 상담원번호
 				status			: "open",					// 젠데스크 티켓 상태
-				tags            : ["AUTO_FROM_CCEM"],		// TODO 프로젝트 오픈전 해당 티켓건 삭제를 위해
+				tags            : ["AUTO_FROM_CCEM"],		
 				comment: {
 					public		: false,					// 내부메모
 					body		: "CCEM 앱에서 티켓생성 버튼으로 생성된 티켓입니다.",
@@ -1005,4 +1007,38 @@ const getInitChanel = () => {
 
 	return { sCSEL_CHNL_MK, sSTD_CRS_CDE };
 	
+}
+
+/**
+ * OB관련 데이터 반환
+ * @param {string|number} ticket_id
+ */
+const getObCondition = async (ticket_id) => {
+
+	const data = {
+		OBLIST_CDE		: "", // OB리스트구분	
+		LIST_CUST_ID	: "", // 리스트_고객_ID(OBLIST_CDE = '60' 외 나머지 경우 셋팅)
+		CSEL_DATE		: "", // 상담일자	
+		CSEL_NO			: "", // 상담번호
+		CALLBACK_ID		: "", // CALLBACK_ID(OBLIST_CDE = '60'일 경우 셋팅)
+	}
+
+	// 티켓필드에서 필요한정보를 가져온다.
+	if (!ticket_id) return data;
+	const { ticket } = await zendeskShowTicket(ticket_id);
+	if (!ticket || !ticket.custom_fields || ticket.custom_fields.length == 0) return data;
+
+	const fOB_PRESET	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]);
+	const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
+	const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
+	const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
+
+	// OB리스트구분에 따라 값세팅
+	data.OBLIST_CDE = fOB_PRESET?.value?.split("_")[2]
+						|| fOB_MK?.value?.split("_")[2] 
+						|| ""; // oblist_cde_{{OBLIST_CDE}}
+	if (data.OBLIST_CDE == "60") data.CALLBACK_ID = fCALLBACK_ID?.value || ""; 
+	else data.LIST_CUST_ID = fLIST_CUST_ID?.value || "";
+
+	return data;
 }

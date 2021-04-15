@@ -573,6 +573,7 @@ const getIntervalTime = (fromTime, toTime) => {
  */
 const onSave = async () => {
 
+	// 저장정보 value check
 	const cselData = await getCselCondition();
 	if (!cselData) return false;
 	const customData = await getCustomData();
