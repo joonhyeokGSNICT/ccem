@@ -23,7 +23,7 @@ var excelHandler = {
             return document.getElementById('tableExcel'); 
         },
         getWorksheet : function(){
-            return XLSX.utils.table_to_sheet(this.getExcelData());
+            return XLSX.utils.table_to_sheet(this.getExcelData(), {raw :true});
         }
 }
 
@@ -468,7 +468,15 @@ function exportExcel(gridId, excelfile, tableId){
 	}
 	//내용
 	$("#"+tableId).append("<tbody>");
+	
 	for(gridRow of gridAllData){
+		gridRow.CSEL_DATE = FormatUtil.date(gridRow.CSEL_DATE);
+		gridRow.TRANS_DATE = FormatUtil.date(gridRow.TRANS_DATE);
+		if(gridRow.CSEL_STTIME != null){
+			gridRow.CSEL_STTIME = gridRow?.CSEL_STTIME?.substring(0,2) + ":" + gridRow?.CSEL_STTIME?.substring(2,4)
+		}else {
+			gridRow.CSEL_STTIME = "";
+		}
 		var appendStr ="";
 		appendStr += "<tr>";
 		for(dataObj of gridData){
@@ -491,7 +499,7 @@ function exportExcel(gridId, excelfile, tableId){
     
     // step 3. workbook에 새로만든 워크시트에 이름을 주고 붙인다.  
     XLSX.utils.book_append_sheet(wb, newWorksheet, excelfile);
-
+    
     // step 4. 엑셀 파일 만들기 
     var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
 
