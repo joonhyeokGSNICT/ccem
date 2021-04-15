@@ -7,7 +7,8 @@ client.on("api_notification.openOBResult", function (data) {
 	console.log('[CCEM TOPBAR] api_notification.openOBResult 진입 >>> ', data.body);
 	for ( index in currentTicketInfo?.ticket?.tags ) {
 		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
-		if ( obCallFlag == true && currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'    ) {
+		if ( obCallFlag == true && currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'    
+			 || currentTicketInfo.ticket.tags[index] == 'ob_cde_10' || currentTicketInfo.ticket.tags[index] == 'ob_cde_20' || currentTicketInfo.ticket.tags[index] == 'ob_cde_30' || currentTicketInfo.ticket.tags[index] == 'ob_cde_40' || currentTicketInfo.ticket.tags[index] == 'ob_cde_60' ) {
 			var str = currentTicketInfo.ticket.tags[index];
 			_OB_CDE = str.substr( str.length-2, 2 );
 			_api.getOB();
@@ -342,7 +343,9 @@ async function OBResultPopUp() {
 
 	for ( index in currentTicketInfo.ticket.tags ) {
 		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
-		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60') {
+		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'
+		  || obCallFlag == true && currentTicketInfo.ticket.tags[index] == 'ob_cde_10' || currentTicketInfo.ticket.tags[index] == 'ob_cde_20' || currentTicketInfo.ticket.tags[index] == 'ob_cde_30' || currentTicketInfo.ticket.tags[index] == 'ob_cde_40' || currentTicketInfo.ticket.tags[index] == 'ob_cde_60' 
+		) {
 			if ( currentTicketInfo.ticket.tags[index] != 'oblist_cde_60' ) {
 				temp.LIST_CUST_ID = await getTicketField("LIST_CUST_ID");	
 				if ( _OB_CDE != 60 && isEmpty(temp.LIST_CUST_ID) ) {
