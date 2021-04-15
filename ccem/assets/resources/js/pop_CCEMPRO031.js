@@ -671,16 +671,20 @@ const onSave = async () => {
 	// 과목군을 전체로 변경하여 filter 초기화
 	$("#selectbox1").val("").trigger("change");
 
-	// 저장 validation check
+	// 저장정보 value check
 	const cselData = await getCselCondition();
 	if (!cselData) return false;
 	const transData = getTransCondition();
 	if (!transData) return false;
-	const customData  = await getCustomData();
+
+	// 티켓관련 데이터 세팅
+	const customData  = await getCustomData(cselData.ZEN_TICKET_ID);
 	if (!customData) return false;
 
 	// OB관련 데이터 세팅
 	const obData = await getObCondition(cselData.ZEN_TICKET_ID);
+	obData.CSEL_DATE		= cselData.CSEL_DATE;
+	obData.CSEL_NO			= cselData.CSEL_NO;
 	cselData.OBLIST_CDE		= obData.OBLIST_CDE;
 	cselData.LIST_CUST_ID	= obData.LIST_CUST_ID;
 	cselData.CALLBACK_ID	= obData.CALLBACK_ID;
@@ -753,7 +757,6 @@ const getCselCondition = async () => {
 		// PLURAL_PRDT_NAME	: "", // 병행과목코드명		
 		PROC_MK				: "5", 											// 처리구분(5로 고정)	
 		RECORD_ID			: "",											// 녹취키
-		ASSIGNEE_ID			: "", 											// 티켓 담당자 : 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 
 	}
 	
@@ -884,13 +887,6 @@ const getCselCondition = async () => {
 		return false;
 	}
 
-	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
-	if (data.ZEN_TICKET_ID) {
-		const { ticket } = await zendeskShowTicket(data.ZEN_TICKET_ID);
-		if (ticket.assignee_id) data.ASSIGNEE_ID = ticket.assignee_id;
-		else data.ASSIGNEE_ID = currentUser.id;
-	}
-
 	return data;
 
 }
@@ -921,40 +917,6 @@ const getTransCondition = () => {
 	
 	return data;
 
-}
-
-/**
- * OB관련 데이터 value check
- * @param {string|number} ticket_id
- */
-const getObCondition = async (ticket_id) => {
-
-	const data = {
-		OBLIST_CDE		: "", // OB리스트구분	
-		LIST_CUST_ID	: "", // 리스트_고객_ID(OBLIST_CDE = '60' 외 나머지 경우 셋팅)
-		CSEL_DATE		: calendarUtil.getImaskValue("calendar3"),  // 상담일자	
-		CSEL_NO			: $("#textbox7").val(), 					// 상담번호
-		CALLBACK_ID		: "", // CALLBACK_ID(OBLIST_CDE = '60'일 경우 셋팅)
-	}
-	
-	// 티켓필드에서 필요한정보를 가져온다.
-	if (!ticket_id) return new Object();
-	const { ticket } = await zendeskShowTicket(ticket_id);
-	if (!ticket || !ticket.custom_fields || ticket.custom_fields.length == 0) return new Object();
-
-	const fOB_MK 		= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]);
-	const fLIST_CUST_ID = ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["LIST_CUST_ID"]);
-	const fCALLBACK_ID 	= ticket.custom_fields.find(el => el.id == ZDK_INFO[_SPACE]["ticketField"]["CALLBACK_ID"]);
-
-	// OB리스트구분에 따라 값세팅
-	data.OBLIST_CDE = fOB_MK?.value?.split("_")[2] || ""; // oblist_cde_${OBLIST_CDE}
-	if (data.OBLIST_CDE == "60") {
-		data.CALLBACK_ID = fCALLBACK_ID?.value || "";
-	} else {
-		data.LIST_CUST_ID = fLIST_CUST_ID?.value || "";
-	}
-
-	return data;
 }
 
 /**
@@ -1068,7 +1030,7 @@ const onNewTicket = async (parent_id) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async () => {
+const getCustomData = async (ticket_id) => {
 
     const data = {
 	    prdtList 	    : grid5.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -1078,9 +1040,10 @@ const getCustomData = async () => {
         lcName 		    : $("#textbox15").val(),			// 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
 		brandId			: $("#hiddenbox10").val(),			// 브랜드ID
-		requesterId		: undefined, // requester_id
+		requesterId		: undefined, // 요청자ID
 		transMk			: "3",		 // 연계구분 - 입회연계
 		comment			: "",		 // 내부메모
+		assigneeId		: "",		 // 담당자ID
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -1103,6 +1066,10 @@ const getCustomData = async () => {
 	data.comment += "\n연령 : " + $("#selectbox2 option:selected").text();
 	data.comment += "\n과목 : " + grid5.getData().map(el => el.PRDT_NAME).join(", ");
 	data.comment += "\n\n" + $("#textbox25").val().trim();
+
+	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+	const { ticket } = await zendeskShowTicket(ticket_id);
+	data.assigneeId = ticket.assignee_id || currentUser.id;
 
 	return data;
 	

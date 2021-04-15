@@ -573,10 +573,15 @@ const getIntervalTime = (fromTime, toTime) => {
  */
 const onSave = async () => {
 
+	// 저장정보 value check
 	const cselData = await getCselCondition();
 	if (!cselData) return false;
-	const customData = await getCustomData();
+
+	// 티켓관련 데이터 세팅
+	const customData = await getCustomData(cselData.ZEN_TICKET_ID);
 	if (!customData) return false;
+
+	// 한번더 체크
 	if (!confirm("저장 하시겠습니까?")) return false;
 	
 	// CCEM DB 저장
@@ -634,7 +639,6 @@ const getCselCondition = async () => {
 		ZEN_TICKET_ID		: $("#hiddenbox1").val(), 								// 티켓ID				
 		// WORK_STYL_MK		: "", // 근무형태구분(신규입력시 '')			
 		RECORD_ID			: "",													// 녹취키
-		ASSIGNEE_ID			: "", 													// 티켓 담당자 : 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -735,13 +739,6 @@ const getCselCondition = async () => {
 		return false;
 	}
 
-	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
-	if (data.ZEN_TICKET_ID) {
-		const { ticket } = await zendeskShowTicket(data.ZEN_TICKET_ID);
-		if (ticket.assignee_id) data.ASSIGNEE_ID = ticket.assignee_id;
-		else data.ASSIGNEE_ID = currentUser.id;
-	}
-
 	return data;
 }
 
@@ -778,7 +775,7 @@ const saveTchrCounsel = (cselData)  => new Promise((resolve, reject) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async () => {
+const getCustomData = async (ticket_id) => {
 
     const data = {
 	    prdtList 	    : "", // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -788,9 +785,10 @@ const getCustomData = async () => {
         lcName 		    : "", // 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
 		brandId			: $("#hiddenbox3").val(), // 브랜드ID
-		requesterId		: undefined, // requester_id
+		requesterId		: undefined, // 요청자ID
 		transMk			: "4",		 // 연계구분 - 소개연계
 		comment			: "",		 // 내부메모
+		assigneeId		: "",		 // 담당자ID
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -814,6 +812,10 @@ const getCustomData = async () => {
 	data.comment += "\n사업구분 : " + $("#selectbox6 option:selected").text();
 	data.comment += "\n\n" + $("#textbox19").val().trim();
 	
+	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+	const { ticket } = await zendeskShowTicket(ticket_id);
+	data.assigneeId = ticket.assignee_id || currentUser.id;
+
 	return data;
 
 }
