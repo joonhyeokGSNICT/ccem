@@ -810,7 +810,9 @@ const onSave = async () => {
 	if (!cselData) return false;
 	const addData = getAddInfoCondition();
 	if (!addData) return false;
-	const customData  = await getCustomData();
+	
+	// 티켓관련 데이터 세팅
+	const customData  = await getCustomData(cselData.ZEN_TICKET_ID);
 	if (!customData) return false;
 
 	// OB관련 데이터 세팅
@@ -909,7 +911,6 @@ const getCselCondition = async () => {
 		// ORG_CSEL_RST_MK1 : "",              // ORG상담결과구분    
 		RE_CALL_CMPLT    : $("#checkbox6").is(":checked") ? "Y" : "N",           // 재통화완료여부 
 		RECORD_ID		 : "",													 // 녹취키    
-		ASSIGNEE_ID		 : "",												     // 티켓 담당자 : 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -1162,13 +1163,6 @@ const getCselCondition = async () => {
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
-	}
-
-	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
-	if (data.ZEN_TICKET_ID) {
-		const { ticket } = await zendeskShowTicket(data.ZEN_TICKET_ID);
-		if (ticket.assignee_id) data.ASSIGNEE_ID = ticket.assignee_id;
-		else data.ASSIGNEE_ID = currentUser.id;
 	}
 
 	return data;
@@ -1610,7 +1604,7 @@ var setDisPlayDn = (data) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async () => {
+const getCustomData = async (ticket_id) => {
 
     const data = {
 		prdtList 	    : grid2.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -1619,10 +1613,11 @@ const getCustomData = async () => {
 	    procDeptIdNm    : $("#textbox26").val(),	// 연계부서명
         lcName 		    : $("#textbox9").val(),		// 러닝센터명(센터명)
 		reclCntct 	    : $("#selectbox8").val() == "01" ? DS_SCHEDULE.TELNO : "", // 상담결과 구분이 재통화예약일경우
-		brandId			: $("#hiddenbox14").val(),				// 브랜드ID
-		requesterId		: undefined, // requester_id
-		transMk			: "",		 // 연계구분
-		comment			: "",		 // 내부메모
+		brandId			: $("#hiddenbox14").val(),	// 브랜드ID
+		requesterId		: undefined, 				// 요청자ID
+		transMk			: "",		 				// 연계구분
+		comment			: "",		 				// 내부메모
+		assigneeId		: "",		 				// 담당자ID
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -1659,6 +1654,10 @@ const getCustomData = async () => {
 	} else {
 		data.comment += $("#textbox13").val().trim();
 	}
+
+	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+	const { ticket } = await zendeskShowTicket(ticket_id);
+	data.assigneeId = ticket.assignee_id || currentUser.id;
 
 	return data;
 

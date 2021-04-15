@@ -676,7 +676,9 @@ const onSave = async () => {
 	if (!cselData) return false;
 	const transData = getTransCondition();
 	if (!transData) return false;
-	const customData  = await getCustomData();
+
+	// 티켓관련 데이터 세팅
+	const customData  = await getCustomData(cselData.ZEN_TICKET_ID);
 	if (!customData) return false;
 
 	// OB관련 데이터 세팅
@@ -755,7 +757,6 @@ const getCselCondition = async () => {
 		// PLURAL_PRDT_NAME	: "", // 병행과목코드명		
 		PROC_MK				: "5", 											// 처리구분(5로 고정)	
 		RECORD_ID			: "",											// 녹취키
-		ASSIGNEE_ID			: "", 											// 티켓 담당자 : 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 
 	}
 	
@@ -884,13 +885,6 @@ const getCselCondition = async () => {
 	} else {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
-	}
-
-	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
-	if (data.ZEN_TICKET_ID) {
-		const { ticket } = await zendeskShowTicket(data.ZEN_TICKET_ID);
-		if (ticket.assignee_id) data.ASSIGNEE_ID = ticket.assignee_id;
-		else data.ASSIGNEE_ID = currentUser.id;
 	}
 
 	return data;
@@ -1036,7 +1030,7 @@ const onNewTicket = async (parent_id) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async () => {
+const getCustomData = async (ticket_id) => {
 
     const data = {
 	    prdtList 	    : grid5.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -1046,9 +1040,10 @@ const getCustomData = async () => {
         lcName 		    : $("#textbox15").val(),			// 러닝센터명(센터명)
 		reclCntct 	    : "", // 재통화예약연락처
 		brandId			: $("#hiddenbox10").val(),			// 브랜드ID
-		requesterId		: undefined, // requester_id
+		requesterId		: undefined, // 요청자ID
 		transMk			: "3",		 // 연계구분 - 입회연계
 		comment			: "",		 // 내부메모
+		assigneeId		: "",		 // 담당자ID
 	}
 
 	// 고객번호가 있을경우에만 requesterId 세팅
@@ -1071,6 +1066,10 @@ const getCustomData = async () => {
 	data.comment += "\n연령 : " + $("#selectbox2 option:selected").text();
 	data.comment += "\n과목 : " + grid5.getData().map(el => el.PRDT_NAME).join(", ");
 	data.comment += "\n\n" + $("#textbox25").val().trim();
+
+	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
+	const { ticket } = await zendeskShowTicket(ticket_id);
+	data.assigneeId = ticket.assignee_id || currentUser.id;
 
 	return data;
 	
