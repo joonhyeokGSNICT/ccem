@@ -19,6 +19,16 @@ body *{font-size:13px!important;}
 	background: #7fb6df;
 	font-weight: bold;
 }
+.zenBtn {
+	color: white;
+	background-color: #ff5f00;
+	font-weight: bold;
+}
+.zenBtn:hover {
+	color: white;
+	background-color: #e7a985;
+	font-weight: bold;
+}
 .popBtn {
     line-height: 0.5;
     padding: 0;

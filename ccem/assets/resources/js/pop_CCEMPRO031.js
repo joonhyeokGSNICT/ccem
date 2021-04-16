@@ -117,6 +117,18 @@ const setEvent = () => {
 			})
 			.finally(() => loading.out());
 	});
+	
+	// Zen저장 버튼
+	$("#button14").on("click", ev => {
+		const loading = new Loading(getLoadingSet('입회등록중 입니다.'));
+		onSave("ZEN")
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`입회등록중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
 
 	// 저장 버튼
 	$("#button1").on("click", ev => {
@@ -666,7 +678,7 @@ var onSearch = async (CSEL_SEQ) => {
  * 저장
  * - as-is : cns4700.onSave()
  */
-const onSave = async () => {
+const onSave = async (type) => {
 
 	// 과목군을 전체로 변경하여 filter 초기화
 	$("#selectbox1").val("").trigger("change");
@@ -678,7 +690,7 @@ const onSave = async () => {
 	if (!transData) return false;
 
 	// 티켓관련 데이터 세팅
-	const customData  = await getCustomData(cselData.ZEN_TICKET_ID);
+	const customData  = await getCustomData(cselData.ZEN_TICKET_ID, type);
 	if (!customData) return false;
 
 	// OB관련 데이터 세팅
@@ -1030,7 +1042,7 @@ const onNewTicket = async (parent_id) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async (ticket_id) => {
+const getCustomData = async (ticket_id, type) => {
 
     const data = {
 	    prdtList 	    : grid5.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -1058,14 +1070,16 @@ const getCustomData = async (ticket_id) => {
 
 		data.requesterId = users[0].id;
 	}
-
-	// 내부메모
-	data.comment += "이름 : " + $("#textbox2").val().trim();
-	data.comment += "\n주소 : " + ($("#textbox5").val() + " " + $("#textbox6").val()).trim();
-	data.comment += "\n전화번호 : " + $("#textbox4").val().trim();
-	data.comment += "\n연령 : " + $("#selectbox2 option:selected").text();
-	data.comment += "\n과목 : " + grid5.getData().map(el => el.PRDT_NAME).join(", ");
-	data.comment += "\n\n" + $("#textbox25").val().trim();
+	
+	// Zen저장인 경우 내부메모 세팅
+	if (type == "ZEN") {
+		data.comment += "이름 : " + $("#textbox2").val().trim();
+		data.comment += "\n주소 : " + ($("#textbox5").val() + " " + $("#textbox6").val()).trim();
+		data.comment += "\n전화번호 : " + $("#textbox4").val().trim();
+		data.comment += "\n연령 : " + $("#selectbox2 option:selected").text();
+		data.comment += "\n과목 : " + grid5.getData().map(el => el.PRDT_NAME).join(", ");
+		data.comment += "\n\n" + $("#textbox25").val().trim();
+	}
 
 	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 	const { ticket } = await zendeskShowTicket(ticket_id);

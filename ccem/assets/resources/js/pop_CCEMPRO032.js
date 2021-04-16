@@ -39,6 +39,18 @@ const setEvent = () => {
 			})
 			.finally(() => loading.out());
 	});
+	
+	// Zen저장 버튼
+	$("#button6").on("click", ev => {
+		const loading = new Loading(getLoadingSet('상담등록중 입니다.'));
+		onSave("ZEN")
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`상담등록중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
 
 	// 저장 버튼
 	$("#button1").on("click", ev => {
@@ -571,14 +583,14 @@ const getIntervalTime = (fromTime, toTime) => {
  * 저장
  * - as-is : clm3110.onSave()
  */
-const onSave = async () => {
+const onSave = async (type) => {
 
 	// 저장정보 value check
 	const cselData = await getCselCondition();
 	if (!cselData) return false;
 
 	// 티켓관련 데이터 세팅
-	const customData = await getCustomData(cselData.ZEN_TICKET_ID);
+	const customData = await getCustomData(cselData.ZEN_TICKET_ID, type);
 	if (!customData) return false;
 
 	// 한번더 체크
@@ -775,7 +787,7 @@ const saveTchrCounsel = (cselData)  => new Promise((resolve, reject) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async (ticket_id) => {
+const getCustomData = async (ticket_id, type) => {
 
     const data = {
 	    prdtList 	    : "", // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -803,14 +815,16 @@ const getCustomData = async (ticket_id) => {
 
 		data.requesterId = users[0].id;
 	}
-	
-	// 내부메모
-	data.comment += "선생님명 : " + $("#textbox1").val().trim();
-	data.comment += "\n주소 : " + ($("#textbox4").val() + " " + $("#textbox5").val()).trim();
-	data.comment += "\n전화번호 : " + $("#textbox3").val().trim();
-	data.comment += "\n관심부분 : " + findCodeName("INTEREST_MK", $("input[name='INTEREST_MK']:checked")[0]?.value);
-	data.comment += "\n사업구분 : " + $("#selectbox6 option:selected").text();
-	data.comment += "\n\n" + $("#textbox19").val().trim();
+
+	// Zen저장인 경우 내부메모 세팅
+	if (type == "ZEN") {
+		data.comment += "선생님명 : " + $("#textbox1").val().trim();
+		data.comment += "\n주소 : " + ($("#textbox4").val() + " " + $("#textbox5").val()).trim();
+		data.comment += "\n전화번호 : " + $("#textbox3").val().trim();
+		data.comment += "\n관심부분 : " + findCodeName("INTEREST_MK", $("input[name='INTEREST_MK']:checked")[0]?.value);
+		data.comment += "\n사업구분 : " + $("#selectbox6 option:selected").text();
+		data.comment += "\n\n" + $("#textbox19").val().trim();
+	}
 	
 	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
 	const { ticket } = await zendeskShowTicket(ticket_id);

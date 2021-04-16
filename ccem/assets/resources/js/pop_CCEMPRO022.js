@@ -188,6 +188,18 @@ const setEvent = () => {
 			.finally(() => loading.out());
 	});
 
+	// Zen저장 버튼
+	$("#button13").on("click", ev => {
+		const loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
+		onSave("ZEN")
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`상담정보 저장중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 	// 저장 버튼
 	$("#button8").on("click", ev => {
 		const loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
@@ -800,7 +812,7 @@ var addCsel = (key) => {
  * 저장
  * - as-is : cns5810.onSave()
  */
-const onSave = async () => {
+const onSave = async (type) => {
 
 	// 과목군을 전체로 변경하여 filter 초기화
 	$("#selectbox12").val("").trigger("change");
@@ -812,7 +824,7 @@ const onSave = async () => {
 	if (!addData) return false;
 	
 	// 티켓관련 데이터 세팅
-	const customData  = await getCustomData(cselData.ZEN_TICKET_ID);
+	const customData  = await getCustomData(cselData.ZEN_TICKET_ID, type);
 	if (!customData) return false;
 
 	// OB관련 데이터 세팅
@@ -1604,7 +1616,7 @@ var setDisPlayDn = (data) => {
 /**
  * 티켓정보 value check
  */
-const getCustomData = async (ticket_id) => {
+const getCustomData = async (ticket_id, type) => {
 
     const data = {
 		prdtList 	    : grid2.getData().map(el => `${Number(el.PRDT_GRP)}::${el.PRDT_ID}`.toLowerCase()), // 과목리스트(ex. ["11::2k", "11::k","10::m"])
@@ -1641,18 +1653,21 @@ const getCustomData = async (ticket_id) => {
 		data.transMk = "2";
 	}
 
-	// 개인정보가 공개일 경우 내부메모 세팅
-	if ($("#selectbox1").val() == "1") {
-		data.comment += "이름 : " + $("#textbox21").val().trim();
-		data.comment += "\n주소 : " + ($("#textbox24").val() + " " + $("#textbox25").val()).trim();
-		data.comment += "\n전화번호 : " + $("#textbox23").val().trim();
-		data.comment += "\n연령 : " + $("#selectbox13 option:selected").text();
-		data.comment += "\n과목 : " + grid2.getData().map(el => el.PRDT_NAME).join(", ");
-		data.comment += "\n\n" + $("#textbox13").val().trim();
+	// Zen저장인 경우 내부메모 세팅
+	if (type == "ZEN") {
+		// 개인정보가 공개일 경우
+		if ($("#selectbox1").val() == "1") {
+			data.comment += "이름 : " + $("#textbox21").val().trim();
+			data.comment += "\n주소 : " + ($("#textbox24").val() + " " + $("#textbox25").val()).trim();
+			data.comment += "\n전화번호 : " + $("#textbox23").val().trim();
+			data.comment += "\n연령 : " + $("#selectbox13 option:selected").text();
+			data.comment += "\n과목 : " + grid2.getData().map(el => el.PRDT_NAME).join(", ");
+			data.comment += "\n\n" + $("#textbox13").val().trim();
 
-	// 개인정보가 비공개일 경우 내부메모 세팅
-	} else {
-		data.comment += $("#textbox13").val().trim();
+		// 개인정보가 비공개일 경우
+		} else {
+			data.comment += $("#textbox13").val().trim();
+		}
 	}
 
 	// 티켓 담당자가 없으면 현재 로그인 상담사ID로 세팅
