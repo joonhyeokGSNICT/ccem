@@ -538,7 +538,7 @@ const onAppSMSSend = async () => {
 	}
 	
 	// 앱알림 대상자 세팅
-	const AppUserData = await getAppUserCondition();
+	const AppUserData = await getAppUserCondition(checkedRows);
 	if (!AppUserData) return false;
 	// SMS 수신자 리스트 세팅
 	const SmsUserData = getSmsUserCondition();
@@ -594,13 +594,13 @@ const onAppSend = async () => {
 	}
 
 	// 앱알림 대상자 세팅
-	const userData = await getAppUserCondition();
+	const userData = await getAppUserCondition(checkedRows);
 	if (!userData) return false;
 
 	// 저장정보 세팅
 	const transData = new Array();
 	for (const row of checkedRows) {
-		
+
 		// 연계정보 value check
 		const transCondition = getTransCondition(row);
 		if (!transCondition) return false;
@@ -619,9 +619,18 @@ const onAppSend = async () => {
 
 /**
  * 앱알림 대상자리스트 반환.
- * @return {array}
+ * @param {array} checkedRows
+ * @return {array | boolean}
  */
-const getAppUserCondition = async () => {
+const getAppUserCondition = async (checkedRows) => {
+	
+	// 개인정보 공개여부 check
+	for (const row of checkedRows) {
+		if (row.OPEN_GBN != "1") {
+			alert("개인정보 공개여부가 비공개일 경우 앱알림을 사용할 수 없습니다.\n\nSMS 또는 FAX를 이용해 주세요.");
+			return false;
+		}
+	}
 
 	if (!$("#hiddenbox8").val()) {
 		alert("연계 대상자를 선택하여 주십시요.");
@@ -629,39 +638,45 @@ const getAppUserCondition = async () => {
 		return false;
 	}
 
+	const endUserData = new Array();
 	const noUserData = new Array();
-	const userData = new Array();
+	const followerData = new Array();
 	const EMP_ID_LIST = $("#hiddenbox8").val().split(",");
 	const EMP_NM_LIST = $("#textbox17").val().split(",");
 
 	for (let i = 0; i < EMP_ID_LIST.length; i++) {
 
-		const EMP_ID = EMP_ID_LIST[i];
-		const EMP_NM = EMP_NM_LIST[i];
+		const EMP_ID = EMP_ID_LIST[i].trim();
+		const EMP_NM = EMP_NM_LIST[i].trim();
 
-		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID.trim()}`);
+		const { users } = await topbarClient.request(`/api/v2/users/search.json?external_id=${EMP_ID}`);
+		const user = users[0];
 
-		if (users?.length > 0) {
-			userData.push({ user_id: users[0].id, action: "put" });
-		} else {
-			noUserData.push(EMP_NM.trim());
-		}
+		if (!user) noUserData.push(EMP_NM);
+		if (user?.role == "end-user") endUserData.push(EMP_NM);
+		if (user) followerData.push({ user_id: user.id, action: "put" });
 
 	}
 
 	if (noUserData.length > 0) {
-		alert(`[${noUserData.join(", ")}]는 젠데스크 사용자로 등록되지 않은 대상자입니다. 다시 선택해 주세요.`);
+		alert(`[${noUserData.join(", ")}]는 젠데스크 사용자로 등록되지 않은 대상자입니다.\n\n다시 선택해 주세요.`);
+		$("#textbox17").focus();
+		return false;
+	}
+
+	if (endUserData.length > 0) {
+		alert(`[${endUserData.join(", ")}]는 사용자 유형이 최종사용자입니다.\n\n최종사용자는 앱알림을 등록할 수 없습니다. 다시 선택해 주세요.`);
 		$("#textbox17").focus();
 		return false;
 	}
 	
-	if (userData.length == 0) {
+	if (followerData.length == 0) {
 		alert("연계 대상자를 선택하여 주십시요.");
 		$("#textbox17").focus();
 		return false;
 	}
 
-	return userData;
+	return followerData;
 }
 
 /**
