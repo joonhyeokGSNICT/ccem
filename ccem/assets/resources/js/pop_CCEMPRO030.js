@@ -769,17 +769,15 @@ const setText = (CUST_MK) => {
  * @param {string} PROC_STS_MK 처리상태구분
  */
 const setButton = (PROC_STS_MK) => {
-
-    // 상담연계, 시정처리에 대한 버튼 셋팅 
     switch (sPROC_MK) {
-        
-        case "3": // 상담연계인 경우
-            // 접수상태
+        // 상담연계인 경우
+        case "3": 
+            // 접수
             if (PROC_STS_MK == "01") {
                 $("#button2").prop("disabled", false);
                 $("#button3").prop("disabled", false);
             }
-            // 지점처리중
+            // 지점으로전달완료
             else if (PROC_STS_MK == "03") {
                 $("#button2").prop("disabled", false);
                 $("#button3").prop("disabled", false);
@@ -789,7 +787,7 @@ const setButton = (PROC_STS_MK) => {
                 $("#button2").prop("disabled", false);
                 $("#button3").prop("disabled", false);
             }
-            // 해피콜완료
+            // 1차 해피콜완료
             else if (PROC_STS_MK == "15") {
                 $("#button2").prop("disabled", false);
                 $("#button3").prop("disabled", false);
@@ -805,18 +803,21 @@ const setButton = (PROC_STS_MK) => {
                 $("#button3").prop("disabled", false);
             }
             break;
-
-        case "4": // 시정처리인 경우
+        
+        // 시정처리인 경우
+        case "4": 
 
             const USER_LVL = currentUser.user_fields.user_lvl_mk;
-            if (USER_LVL == "user_lvl_mk_1" || USER_LVL == "user_lvl_mk_2" || USER_LVL == "user_lvl_mk_3") { // 관리자와 상담원에 대한 버튼 권한
+            const isAdmin = (USER_LVL == "user_lvl_mk_1" || USER_LVL == "user_lvl_mk_2" || USER_LVL == "user_lvl_mk_3");
+            
+            if (isAdmin) { // 관리자와 상담원에 대한 버튼 권한
 
-                /* 접수상태 */
+                /* 접수 */
                 if (PROC_STS_MK == "01") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
                 }
-                /* 지점처리중 */
+                /* 지점으로전달완료 */
                 else if (PROC_STS_MK == "03") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
@@ -826,12 +827,12 @@ const setButton = (PROC_STS_MK) => {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
                 }
-                /* 2차결재완료 */
+                /* 2차결재 */
                 else if (PROC_STS_MK == "12") {
                     $("#button2").prop("disabled", false);
                     $("#button3").prop("disabled", false);
                 }
-                /* 해피콜완료 */
+                /* 1차 해피콜완료 */
                 else if (PROC_STS_MK == "15") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
@@ -849,12 +850,12 @@ const setButton = (PROC_STS_MK) => {
             }
             else {
 
-                /* 접수상태 */
+                /* 접수 */
                 if (PROC_STS_MK == "01") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", true);
                 }
-                /* 지점처리중 */
+                /* 지점으로전달완료 */
                 else if (PROC_STS_MK == "03") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
@@ -864,12 +865,12 @@ const setButton = (PROC_STS_MK) => {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
                 }
-                /* 2차결재완료 */
+                /* 2차결재 */
                 else if (PROC_STS_MK == "12") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
                 }
-                /* 해피콜완료 */
+                /* 1차 해피콜완료 */
                 else if (PROC_STS_MK == "15") {
                     $("#button2").prop("disabled", true);
                     $("#button3").prop("disabled", false);
@@ -900,129 +901,129 @@ const setButton = (PROC_STS_MK) => {
  */
 const setDisplay = (PROC_STS_MK, CSEL_RST_MK) => {
     
+    // 상담연계
     if (sPROC_MK == "3") {
-        /* 처리상태에 따른 각 화면의 활성 비활서 셋팅 */
         switch (PROC_STS_MK) {
-            case "01": // 처리상태구분이 접수인 경우
-                setDeptEorD(true);                              // 지점처리내역 화면(비활성)
-                setHpCall1EorD(false);                          // 1차해피콜 화면(비활성)
-                setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
-                setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", false);         // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", false);        // 지점처리중 체크박스(비활성)
-                break;
-            case "03": // 처리상태구분이 지점처리중인 경우
+            case "01": // 접수인 경우 
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(false);                          // 1차해피콜 화면(비활성)
                 setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
                 setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", false);         // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", false);        // 지점처리중 체크박스(활성)
+                $("#checkbox4").prop("checked", false);         // 해피콜여부(체크해제)
+                $("#checkbox4").prop("disabled", false);        // 해피콜여부(활성)
                 break;
-            case "04": // 처리상태구분이 지점처리완료인 경우
+            case "03": // 지점으로전달완료인 경우
+                setDeptEorD(true);                              // 지점처리내역 화면(활성)
+                setHpCall1EorD(false);                          // 1차해피콜 화면(비활성)
+                setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
+                setGiftEorD(false);                             // 사은품 화면(비활성)
+                $("#checkbox4").prop("checked", false);         // 해피콜여부(체크해제)
+                $("#checkbox4").prop("disabled", false);        // 해피콜여부(활성)
+                break;
+            case "04": // 지점처리완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
                 setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "15": // 처리상태구분이 해피콜완료인 경우
+            case "15": // 1차 해피콜완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
-                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 상담결과구분이 사은품지금인경우 활성
-                else setGiftEorD(false);                        // 아닌경우 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 사은품지급인 경우 사은품 화면(활성)
+                else setGiftEorD(false);                            // 아니면 사은품 화면(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "12": // 처리상태구분이 2차결재인 경우 -- 상담연계인 경우는 2차결재인 경우는 없음.
+            case "12": // 2차결재인 경우 -- 상담연계인 경우는 2차결재인 경우는 없음.
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
-                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 상담결과구분이 사은품지금인경우 활성
-                else setGiftEorD(false);                        // 아닌경우 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 사은품지급인 경우 사은품화면(활성)
+                else setGiftEorD(false);                            // 아니면 사은품화면(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "16": // 처리상태구분이 2차해피콜완료인 경우
+            case "16": // 2차 해피콜완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
-                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 상담결과구분이 사은품지금인경우 활성
+                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 사은품지급인 경우 사은품 화면(활성)
                 else setGiftEorD(false);                        // 아닌경우 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "99": // 처리상태구분이 완료인 경우
+            case "99": // 완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
-                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 상담결과구분이 사은품지금인경우 활성
-                else setGiftEorD(false);                        // 아닌경우 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                if (CSEL_RST_MK == "12") setGiftEorD(true);     // 사은품지급인 경우 사은품 화면(활성)
+                else setGiftEorD(false);                            // 아니면 사은품 화면(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
         }
-    }
-    else if (sPROC_MK == "4") {
-        /* 처리상태에 따른 각 화면의 활성 비활서 셋팅 */
+
+    // 시정처리
+    } else if (sPROC_MK == "4") {
         switch (PROC_STS_MK) {
-            case "01": // 처리상태구분이 접수인 경우
-                setDeptEorD(true);                              // 지점처리내역 화면(비활성)
-                setHpCall1EorD(false);                          // 1차해피콜 화면(비활성)
-                setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
-                setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", false);         // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", false);        // 지점처리중 체크박스(비활성)
-                break;
-            case "03": // 처리상태구분이 지점처리중인 경우
+            case "01": // 접수인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(false);                          // 1차해피콜 화면(비활성)
                 setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
                 setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", false);         // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", false);        // 지점처리중 체크박스(활성)
+                $("#checkbox4").prop("checked", false);         // 해피콜여부(체크해제)
+                $("#checkbox4").prop("disabled", false);        // 해피콜여부(활성)
                 break;
-            case "04": // 처리상태구분이 지점처리완료인 경우
+            case "03": // 지점으로전달완료인 경우
+                setDeptEorD(true);                              // 지점처리내역 화면(활성)
+                setHpCall1EorD(false);                          // 1차해피콜 화면(비활성)
+                setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
+                setGiftEorD(false);                             // 사은품 화면(비활성)
+                $("#checkbox4").prop("checked", false);         // 해피콜여부(체크해제)
+                $("#checkbox4").prop("disabled", false);        // 해피콜여부(활성)
+                break;
+            case "04": // 지점처리완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
                 setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "15": // 처리상태구분이 해피콜완료인 경우
+            case "15": // 1차 해피콜완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(false);                          // 2차해피콜 화면(비활성)
                 setGiftEorD(false);                             // 사은품 화면(비활성)
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "12": // 처리상태구분이 2차결재인 경우
+            case "12": // 2차결재인 경우
+                setDeptEorD(true);                              // 지점처리내역 화면(활성)
+                setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
+                setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
+                setGiftEorD(true);                              // 사은품 화면(활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
+                break;
+            case "16": // 2차 해피콜완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
                 setGiftEorD(true);                              // 사은품 활성
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
-            case "16": // 처리상태구분이 2차해피콜완료인 경우
+            case "99": // 완료인 경우
                 setDeptEorD(true);                              // 지점처리내역 화면(활성)
                 setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
                 setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
-                setGiftEorD(true);                              // 사은품 활성
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
-                break;
-            case "99": // 처리상태구분이 완료인 경우
-                setDeptEorD(true);                              // 지점처리내역 화면(활성)
-                setHpCall1EorD(true);                           // 1차해피콜 화면(활성)
-                setHpCall2EorD(true);                           // 2차해피콜 화면(활성)
-                setGiftEorD(true);                              // 사은품 활성
-                $("#checkbox4").prop("checked", true);          // 해피콜 여부 체크박스가 지점처리중이면 '체크해제', 지점처리완료 이후 프로세스인 경우는 '체크'
-                $("#checkbox4").prop("disabled", true);         // 지점처리중 체크박스(비활성)
+                setGiftEorD(true);                              // 사은품 화면(활성)
+                $("#checkbox4").prop("checked", true);          // 해피콜여부(체크)
+                $("#checkbox4").prop("disabled", true);         // 해피콜여부(비활성)
                 break;
         }
     }
@@ -1963,62 +1964,62 @@ const getSaveCondition = (sBtnMk) => {
 
     // 완료 버튼을 클릭한 경우
     } else if (sBtnMk == "CO") {
-        if (DS_COUNSEL.PROC_STS_MK == "99") { // 이미 완료인 경우
-            data.DS_TRANS.PROC_STS_MK = "99"; // 완료
-        } else if (DS_COUNSEL.PROC_STS_MK == "16") {  // 2차해피콜완료인 경우
-            data.DS_TRANS.PROC_STS_MK = "99"; // 완료
-        } else if (DS_COUNSEL.PROC_STS_MK == "12") {  // 2차결재
-            data.DS_TRANS.PROC_STS_MK = "99"; // 완료
-        } else if (DS_COUNSEL.PROC_STS_MK == "15") {  // 해피콜완료
-            if (DS_COUNSEL.PROC_MK == "3") {  // 처리구분이 시정처리인 경우
-                data.DS_TRANS.PROC_STS_MK = "99"; // 완료
-            } else {
-                data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
+        if (DS_COUNSEL.PROC_STS_MK == "99") {                       // 완료인 경우
+            data.DS_TRANS.PROC_STS_MK = "99";                           // 완료
+        } else if (DS_COUNSEL.PROC_STS_MK == "16") {                // 2차해피콜완료인 경우
+            data.DS_TRANS.PROC_STS_MK = "99";                           // 완료
+        } else if (DS_COUNSEL.PROC_STS_MK == "12") {                // 2차결재인 경우
+            data.DS_TRANS.PROC_STS_MK = "99";                           // 완료
+        } else if (DS_COUNSEL.PROC_STS_MK == "15") {                // 1차해피콜완료이면서
+            if (DS_COUNSEL.PROC_MK == "3") {                            // 시정처리인 경우
+                data.DS_TRANS.PROC_STS_MK = "99";                           // 완료
+            } else {                                                    // 시정처리가 아니면
+                data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK;         // 바뀌지 않음
             }
-        } else if (DS_COUNSEL.PROC_STS_MK == "04") {  // 지점처리완료
-            if (DS_COUNSEL.PROC_MK == "3") {  // 처리구분이 시정처리인 경우
-                data.DS_TRANS.PROC_STS_MK = "99";  // 완료
-            } else {
-                data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
+        } else if (DS_COUNSEL.PROC_STS_MK == "04") {                // 지점처리완료이면서
+            if (DS_COUNSEL.PROC_MK == "3") {                            // 시정처리인 경우
+                data.DS_TRANS.PROC_STS_MK = "99";                           // 완료
+            } else {                                                    // 시정처리가 아니면
+                data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK;         // 바뀌지 않음
             }
-        } else {  // 접수, 지점처리중은는 완료할 수 없다... 버튼에서 컨트롤함.
-            data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
+        } else {                                                    // 접수, 지점처리중은는 완료할 수 없다... 버튼에서 컨트롤함.
+            data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK;         // 바뀌지 않음
         }
 
     // 저장 버튼을 클릭한 경우
     } else if (sBtnMk == "SA") {
-        if (DS_COUNSEL.PROC_STS_MK == "03" || DS_COUNSEL.PROC_STS_MK == "01") { // 지점처리중인 경우                
-            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                    
-                data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
-            } else if (data.DS_HPCALL1.ROW_TYPE != "N") { // 1차해피콜인 경우                                                   
-                data.DS_TRANS.PROC_STS_MK = "15"; // 해피콜완료
-            } else if (data.DS_TRANS.ROW_TYPE != "N") { // 지점처리인 경우                                               
-                data.DS_TRANS.PROC_STS_MK = "04"; // 지점처리중
-            } else {
-                data.DS_TRANS.PROC_STS_MK = "03"; // 지점처리완료
+        if (DS_COUNSEL.PROC_STS_MK == "03" || DS_COUNSEL.PROC_STS_MK == "01") { // 지점으로전달완료 또는 접수중 이면서                
+            if (data.DS_HPCALL2.ROW_TYPE != "N") {                                  // 2차해피콜인 경우                                                    
+                data.DS_TRANS.PROC_STS_MK = "16";                                       // 2차해피콜완료
+            } else if (data.DS_HPCALL1.ROW_TYPE != "N") {                           // 1차해피콜인 경우                                                   
+                data.DS_TRANS.PROC_STS_MK = "15";                                       // 1차해피콜완료
+            } else if (data.DS_TRANS.ROW_TYPE != "N") {                             // 지점처리인 경우                                               
+                data.DS_TRANS.PROC_STS_MK = "04";                                       // 지점처리완료
+            } else {                                                                // 지점처리중이 아니면
+                data.DS_TRANS.PROC_STS_MK = "03";                                       // 지점으로전달완료
             }
-        } else if (DS_COUNSEL.PROC_STS_MK == "04") { // 지점처리완료인 경우
-            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                            
-                data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
-            } else if (data.DS_HPCALL1.ROW_TYPE != "N") { // 1차해피콜인 경우                                          
-                data.DS_TRANS.PROC_STS_MK = "15"; // 해피콜완료
-            } else {
-                data.DS_TRANS.PROC_STS_MK = "04"; // 지점처리완료
+        } else if (DS_COUNSEL.PROC_STS_MK == "04") {                            // 지점처리완료 이면서
+            if (data.DS_HPCALL2.ROW_TYPE != "N") {                                  // 2차해피콜인 경우                                            
+                data.DS_TRANS.PROC_STS_MK = "16";                                       // 2차해피콜완료
+            } else if (data.DS_HPCALL1.ROW_TYPE != "N") {                           // 1차해피콜인 경우                                          
+                data.DS_TRANS.PROC_STS_MK = "15";                                       // 1차해피콜완료
+            } else {                                                                // 1차해피콜이 아니면
+                data.DS_TRANS.PROC_STS_MK = "04";                                       // 지점처리완료
             }
-        } else if (DS_COUNSEL.PROC_STS_MK == "12") { // 2차결재인 경우
-            data.DS_TRANS.PROC_STS_MK = "12"; // 2차결재
-        } else if (DS_COUNSEL.PROC_STS_MK == "15") { // 해피콜완료인 경우
-            if (data.DS_HPCALL2.ROW_TYPE != "N") { // 2차해피콜인 경우                                                
-                data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
-            } else {
-                data.DS_TRANS.PROC_STS_MK = "15"; // 해피콜완료
+        } else if (DS_COUNSEL.PROC_STS_MK == "12") {                            // 2차결재인 경우
+            data.DS_TRANS.PROC_STS_MK = "12";                                       // 2차결재
+        } else if (DS_COUNSEL.PROC_STS_MK == "15") {                            // 1차해피콜완료 이면서
+            if (data.DS_HPCALL2.ROW_TYPE != "N") {                                  // 2차해피콜인 경우                                                
+                data.DS_TRANS.PROC_STS_MK = "16";                                       // 2차해피콜완료
+            } else {                                                                // 2차해피콜이 아니면
+                data.DS_TRANS.PROC_STS_MK = "15";                                       // 1차해피콜완료
             }
-        } else if (DS_COUNSEL.PROC_STS_MK == "16") { // 2차해피콜완료인 경우
-            data.DS_TRANS.PROC_STS_MK = "16"; // 2차해피콜완료
-        } else if (DS_COUNSEL.PROC_STS_MK == "99") { // 완료인 경우
-            data.DS_TRANS.PROC_STS_MK = "99"; // 완료
-        } else { // 접수인 경우
-            data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK; // 바뀌지 않음
+        } else if (DS_COUNSEL.PROC_STS_MK == "16") {                            // 2차해피콜완료인 경우
+            data.DS_TRANS.PROC_STS_MK = "16";                                       // 2차해피콜완료
+        } else if (DS_COUNSEL.PROC_STS_MK == "99") {                            // 완료인 경우
+            data.DS_TRANS.PROC_STS_MK = "99";                                       // 완료
+        } else {                                                                // 접수인 경우
+            data.DS_TRANS.PROC_STS_MK = DS_COUNSEL.PROC_STS_MK;                     // 바뀌지 않음
         }
     }
 
