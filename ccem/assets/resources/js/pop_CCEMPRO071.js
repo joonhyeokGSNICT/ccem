@@ -12,7 +12,7 @@ client.on("api_notification.openOBResult", function (data) {
 			var str = currentTicketInfo.ticket.tags[index];
 			_OB_CDE = str.substr( str.length-2, 2 );
 			_api.getOB();
-			$('#obResultModalClose').addClass('d-none');
+			$('#obResultModalClose').removeClass('d-none');
 			client.invoke('popover', 'show').then(function () {
 				$('#obResultModal').modal('show');
 			})
