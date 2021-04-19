@@ -349,7 +349,7 @@
 							<label class="form-check-label" for="checkbox27">문자발송</label>
 						</div>
 					</th>
-					<td colspan="">
+					<td>
 						<select class="form-control form-control-sm" id="selectbox21" onchange="document.querySelector('#checkbox27').checked = true;">
 							<option value="" hidden></option>
 							<option value="1">회원모 지점장 문자발송</option>
@@ -359,9 +359,17 @@
 							<option value="5">문자 미발송</option>
 						</select>
 					</td>
-					<th colspan="2">
-						
+					<th>
+						<div class="form-check ml-1">
+							<input class="form-check-input" type="checkbox" id="checkbox34">
+							<label class="form-check-label" for="checkbox34">연계방법</label>
+						</div>
 					</th>
+					<td>
+						<select class="form-control form-control-sm" name="TRANS_CHNL_MK" id="selectbox23" onchange="document.querySelector('#checkbox34').checked = true;">
+							<option value="" hidden></option>
+						</select>
+					</td>
 					<th>
 						<div class="form-check ml-1">
 							<input class="form-check-input" type="checkbox" id="checkbox24">
@@ -489,7 +497,7 @@
 					<th>입회사유</th>
 					<td><input type="text" class="form-control form-control-sm" id="txtMOTIVE_CDE_NM" readonly></td>
 					<th>처리희망일</th>
-					<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_HOPE_DATE"></td>
+					<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_HOPE_DATE" readonly></td>
 					<th>O/B결과</th>
 					<td><input type="text" class="form-control form-control-sm" id="txtCALL_RST_MK_NM" readonly></td>
 					<th>사업국</th>
@@ -506,7 +514,7 @@
 					<th>내담자</th>
 					<td><input type="text" class="form-control form-control-sm" id="txtCSEL_MAN_MK_NM" readonly></td>
 					<th>처리완료일</th>
-					<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_DATE"></td>
+					<td><input type="text" class="form-control form-control-sm imask-date" id="txtPROC_DATE" readonly></td>
 					<th>상담채널</th>
 					<td><input type="text" class="form-control form-control-sm" id="txtCSEL_CHNL_MK_NM" readonly></td>
 					<th>센터</th>

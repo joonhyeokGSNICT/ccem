@@ -164,6 +164,7 @@ const createGrids = () => {
 			{ header: '지점처리시간 dept_proc_time',    name: "DEPT_PROC_TIME",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '시간약속',                       name: "TIME_APPO",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '문자발송건수(SMS)',              name: "SMS_CNT",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
+			{ header: '연계방법',              			name: "TRANS_CHNL_MK",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,  																	 },
 		],
 	});
 
@@ -386,6 +387,7 @@ const setCodeData = () => {
 		"CSEL_MAN_GRP_CDE",	// 내담자
 		"STD_MON_CDE",		// 학습개월
 		"RENEW_POTN", 		// 복습가능성
+		"TRANS_CHNL_MK",	// 연계방법
 	];
 
 
@@ -619,6 +621,7 @@ const getCselCondition = (page, perPage) => {
 		CHK_LC_NM			:	$("#checkbox9").is(":checked") 	 ? checkVal : uncheckVal,	// 센터명 - 체크여부(센터)
 		CHK_RE_CALL			:	$("#checkbox33").is(":checked")	 ? checkVal : uncheckVal,	// 재통화 - 체크여부(센터)
 		CHK_CSEL_MAN_MK		: 	$("#checkbox20").is(":checked")	 ? checkVal : uncheckVal,	// 내담자 - 체크여부
+		CHK_TRANS_CHNL		: 	$("#checkbox34").is(":checked")	 ? checkVal : uncheckVal,	// 연계방법 - 체크여부
 		VAL_STDATE			:	calendarUtil.getImaskValue("calendar1"),		// 상담일자FROM - 조회조건				
 		VAL_EDDATE			:	calendarUtil.getImaskValue("calendar2"),		// 상담일자TO - 조회조건				
 		VAL_TRANS_MK		:	$("#selectbox6").val(),		// 연계여부 - 조회조건					
@@ -645,7 +648,8 @@ const getCselCondition = (page, perPage) => {
 		VAL_SMS				:	$("#selectbox21").val(),	// 문자발송(SMS) - 조회조건			
 		VAL_PRDT_GRP		:	$("#selectbox7").val(),		// 과목군 - 조회조건					
 		VAL_LC_NM			:	$("#textbox1").val(),		// 센터명 - 조회조건		
-		VAL_RE_CALL			:	$("#selectbox22").val(),	// 재통화 - 조회조건								
+		VAL_RE_CALL			:	$("#selectbox22").val(),	// 재통화 - 조회조건	
+		VAR_TRANS_CHNL		: 	$("#selectbox23").val(),	// 연계방법 - 조회조건	
 	}
 
 	// 조회조건 데이타가 공백이면, 체크해제한다.
