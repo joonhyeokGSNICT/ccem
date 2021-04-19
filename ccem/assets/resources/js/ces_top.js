@@ -468,6 +468,7 @@ client.on("pane.activated", (ev) => {
 	setTimeout(function(){
 		counselMain_studyProgressList_grid.refreshLayout();		// 상담메인 > 학습진행정보 grid
 		counselMain_counselHist_grid.refreshLayout();   		// 상담메인 > 상담이력 grid
+		counselMain_studyList_grid.refreshLayout();				// 상담이력 - > 상담과목 grid
 		customerSearchList_grid.refreshLayout();				// 고객찾기
 		teacherSearchList_grid.refreshLayout();					// 선생님찾기
 		if(window.outerHeight < 1030){
@@ -491,6 +492,7 @@ client.on('api_notification.setCTIStatus', function(status){
 	
 	if(CTI_STATUS.callType == 'CONFERENCE'){
 		wiseNTalkUtil.whileTransfer = true;			// 3자 통화 boolean
+		ticketCallFlag = false;
 	}
 	
 	if((wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'OUT') || (wiseNTalkUtil.whileTransfer && CTI_STATUS.state == 'ACTIVE' && CTI_STATUS.callType == 'PREROUTE_ACD_IN' || CTI_STATUS.callType == 'ACD_IN')){		// 3자 통화 중에 ivr과의 연결을 끊었을경우
@@ -1071,7 +1073,11 @@ function refreshGrid() {
 		}
 		break;
 	}
-	
+	counselMain_studyProgressList_grid.refreshLayout();		// 상담메인 > 학습진행정보 grid
+	counselMain_counselHist_grid.refreshLayout();   		// 상담메인 > 상담이력 grid
+	counselMain_studyList_grid.refreshLayout();				// 상담이력 - > 상담과목 grid
+	customerSearchList_grid.refreshLayout();				// 고객찾기
+	teacherSearchList_grid.refreshLayout();					// 선생님찾기
 }
 
 /**
