@@ -164,7 +164,7 @@ const createGrids = () => {
 			{ header: '지점처리시간 dept_proc_time',    name: "DEPT_PROC_TIME",        width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '시간약속',                       name: "TIME_APPO",             width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
 			{ header: '문자발송건수(SMS)',              name: "SMS_CNT",               width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: true,  																	 },
-			{ header: '연계방법',              			name: "TRANS_CHNL_MK",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,  																	 },
+			{ header: '연계방법',              			name: "TRANS_CHNL_NM",         width: 100,    align: "center",    sortable: true,    ellipsis: true,    hidden: false,  																	 },
 		],
 	});
 
