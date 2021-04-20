@@ -529,7 +529,9 @@ client.on('custAutoSearch', function(obj){
 	// $("#customerPhoneCheck").prop('checked',true);
 	$("#customerMNum").val(obj.custID);
 	$("#customerMNumCheck").prop('checked',true);
-	customerSearch("custSearchDiv","1");
+	setTimeout(function (){
+		customerSearch("custSearchDiv","1");
+	},500)
 });
 
 // 상담원 상태 표시 trigger
