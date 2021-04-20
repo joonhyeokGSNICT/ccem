@@ -3,6 +3,9 @@ var _CSEL_RST_MK_OB ;   // cselRstMkOb
 var _OB_CDE;
 var _ticketUpdator_ID
 
+/******************************************************
+ * 전화종료 후 OB결과등록 창 팝업
+ ******************************************************/
 client.on("api_notification.openOBResult", function (data) {
 	console.log('[CCEM TOPBAR] api_notification.openOBResult 진입 >>> ', data.body);
 	for ( index in currentTicketInfo?.ticket?.tags ) {
@@ -10,16 +13,69 @@ client.on("api_notification.openOBResult", function (data) {
 		if ( obCallFlag == true && currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'    
 			 || currentTicketInfo.ticket.tags[index] == 'oblist_zen_10' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_20' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_30' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_40' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_60' ) {
 			var str = currentTicketInfo.ticket.tags[index];
+			//console.log(currentTicketInfo.ticket.tags[index]);
 			_OB_CDE = str.substr( str.length-2, 2 );
+			//console.log(_OB_CDE);
 			_api.getOB();
 			$('#obResultModalClose').removeClass('d-none');
 			client.invoke('popover', 'show').then(function () {
 				$('#obResultModal').modal('show');
 			})
 			obCallFlag = false;
+			return;
 		}
 	}	
 });
+
+
+/******************************************************
+ * OB결과등록 창 팝업 확인
+ ******************************************************/
+ async function OBResultPopUp() {
+	var cnt = 0;
+	var temp = {};
+
+	for ( index in currentTicketInfo.ticket.tags ) {
+		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
+		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'
+		     || currentTicketInfo.ticket.tags[index] == 'oblist_zen_10' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_20' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_30' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_40' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_60' 
+		) {
+			if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_60' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_60' ) {
+				temp.CALLBACK_ID = await getTicketField("CALLBACK_ID");
+				if ( _OB_CDE == 60 && isEmpty(temp.CALLBACK_ID) ) {
+					client.invoke('notify',"[OB결과등록 팝업호출] 콜백번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
+					return;
+				}
+			} else if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' 
+						|| currentTicketInfo.ticket.tags[index] == 'oblist_zen_10' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_20' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_30' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_40' ) {
+				temp.LIST_CUST_ID = await getTicketField("LIST_CUST_ID");	
+				if ( _OB_CDE != 60 && isEmpty(temp.LIST_CUST_ID) ) {
+					client.invoke('notify',"[OB결과등록 팝업호출] 리스트번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
+					return;
+				}
+			} else {
+				client.invoke('notify',"[OB결과등록 팝업호출] 올바른 OB코드가 아닙니다. 다시 시도해주세요.", 'alert', 5000);
+				return;
+			}
+
+			//console.log(currentTicketInfo.ticket.tags[index]);
+			var str = currentTicketInfo.ticket.tags[index];
+			_OB_CDE = str.substr( str.length-2, 2 );
+			//console.log(_OB_CDE);
+			_api.getOB();
+			$('#obResultModalClose').removeClass('d-none');
+			client.invoke('popover', 'show').then(function () {
+				$('#obResultModal').modal('show');
+			})
+			cnt++;
+			return;
+		}
+		if ( Number(index)+1 == currentTicketInfo.ticket.tags.length && cnt == 0 ) {
+			client.invoke('notify',"해당 티켓은 OB상담건이 아닙니다.", 'alert', 5000);
+		}
+	}	
+
+}
 
 var _api = {
 	async getOB() { // 코드북 요청
@@ -175,7 +231,7 @@ async function save_call_rst(){
 	temp.CUST_RESP_MK = $("input[name=cust_rst]:checked").attr("codeId");	// 고객반응
 	temp.CSEL_RST_MK = $("input[name=csel_rst]:checked").attr("codeId");	// 상담결과
 	temp.USER_ID = currentUserInfo.user.external_id;						// 상담사 사번
-	temp.TELPNO = await getTicketField("CSEL_TELNO");						// 통화한 전화번호
+	temp.TELPNO = await getTicketField("OB_TEL");							// 통화한 전화번호
 	temp.CALL_TIME = "";													// 통화시간
 	
 	var param = {};
@@ -334,48 +390,6 @@ function onClickRadio(){
 	_init.cselRstMkOb(_CSEL_RST_MK_OB);
 };
 
-/******************************************************
- * OB결과등록 창 팝업 확인
- ******************************************************/
-async function OBResultPopUp() {
-	var cnt = 0;
-	var temp = {};
-
-	for ( index in currentTicketInfo.ticket.tags ) {
-		// 정보이용동의, 전화설문, 고객직접퇴회, 전화상담신청, IVR콜백 시 팝업 호출
-		if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_60'
-		     || currentTicketInfo.ticket.tags[index] == 'oblist_zen_10' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_20' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_30' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_40' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_60' 
-		) {
-			if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_60' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_60' ) {
-				temp.CALLBACK_ID = await getTicketField("CALLBACK_ID");
-				if ( _OB_CDE == 60 && isEmpty(temp.CALLBACK_ID) ) {
-					client.invoke('notify',"[OB결과등록 팝업호출] 콜백번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
-					return;
-				}
-			} else if ( currentTicketInfo.ticket.tags[index] == 'oblist_cde_10' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_20' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_30' || currentTicketInfo.ticket.tags[index] == 'oblist_cde_40' 
-						|| currentTicketInfo.ticket.tags[index] == 'oblist_zen_10' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_20' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_30' || currentTicketInfo.ticket.tags[index] == 'oblist_zen_40' ) {
-				temp.LIST_CUST_ID = await getTicketField("LIST_CUST_ID");	
-				if ( _OB_CDE != 60 && isEmpty(temp.LIST_CUST_ID) ) {
-					client.invoke('notify',"[OB결과등록 팝업호출] 리스트번호가 없습니다. 새로고침 후 OB결과를 저장하세요.", 'alert', 5000);
-					return;
-				}
-			}
-
-			var str = currentTicketInfo.ticket.tags[index];
-			_OB_CDE = str.substr( str.length-2, 2 );
-			_api.getOB();
-			$('#obResultModalClose').removeClass('d-none');
-			client.invoke('popover', 'show').then(function () {
-				$('#obResultModal').modal('show');
-			})
-			cnt++;
-		}
-		if ( Number(index)+1 == currentTicketInfo.ticket.tags.length && cnt == 0 ) {
-			client.invoke('notify',"해당 티켓은 OB상담건이 아닙니다.", 'alert', 5000);
-		}
-	}	
-
-}
 
 /******************************************************
  * OB결과등록 창 팝업 닫기
