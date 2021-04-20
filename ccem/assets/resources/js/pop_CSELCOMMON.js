@@ -188,12 +188,23 @@ const setPlProd = (grid, data) => {
 	}
 
 	gridData.forEach(el => {
-		if (checkeds.includes(el.PRDT_ID)) {
+		
+		const idx = checkeds.indexOf(el.PRDT_ID);
+
+		if (idx > -1) {
 			grid.check(el.rowKey);
+			checkeds.splice(idx, 1);
 		} else {
 			grid.uncheck(el.rowKey);
 		}
+
 	});
+
+	// 존재하지 않는 과목 알림.
+	if (checkeds.length > 0) {
+		alert(`과목정보가 확인되지 않습니다.[${checkeds.join(", ")}]`);
+	}
+
 }
 
 /**
