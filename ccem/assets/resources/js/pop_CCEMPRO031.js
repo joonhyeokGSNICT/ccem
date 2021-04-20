@@ -102,7 +102,10 @@ const setEvent = () => {
 	
 	// 티켓생성 버튼 
 	$("#button7").on("click", ev => {
+		
+		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+
 		onNewTicket()
 			.then( async (ticket_id) => { 
 				if (ticket_id)  {
@@ -115,31 +118,49 @@ const setEvent = () => {
 				const errMsg = error.responseText || error;
 				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
 			})
-			.finally(() => loading.out());
+			.finally(() => {
+				loading.out();
+				ev.target.disabled = false;
+			});
+
 	});
 	
 	// Zen저장 버튼
 	$("#button14").on("click", ev => {
+		
+		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('입회등록중 입니다.'));
+		
 		onSave("ZEN")
 			.catch((error) => {
 				console.error(error);
 				const errMsg = error.responseText || error;
 				alert(`입회등록중 오류가 발생하였습니다.\n\n${errMsg}`);
 			})
-			.finally(() => loading.out());
+			.finally(() => {
+				loading.out();
+				ev.target.disabled = false;
+			});
+
 	});
 
 	// 저장 버튼
 	$("#button1").on("click", ev => {
+		
+		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('입회등록중 입니다.'));
+		
 		onSave()
 			.catch((error) => {
 				console.error(error);
 				const errMsg = error.responseText || error;
 				alert(`입회등록중 오류가 발생하였습니다.\n\n${errMsg}`);
 			})
-			.finally(() => loading.out());
+			.finally(() => {
+				loading.out();
+				ev.target.disabled = false;
+			});
+
 	});
 
 }

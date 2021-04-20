@@ -172,7 +172,10 @@ const setEvent = () => {
 
 	// 티켓생성 버튼 
 	$("#button10").on("click", ev => {
+		
+		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('티켓을 생성 중 입니다.'));
+		
 		onNewTicket()
 			.then( async (ticket_id) => { 
 				if (ticket_id)  {
@@ -185,31 +188,48 @@ const setEvent = () => {
 				const errMsg = error.responseText || error;
 				alert(`티켓생성 중 오류가 발생하였습니다.\n\n${errMsg}`);
 			})
-			.finally(() => loading.out());
+			.finally(() => {
+				loading.out();
+				ev.target.disabled = false;
+			});
+
 	});
 
 	// Zen저장 버튼
 	$("#button13").on("click", ev => {
+
+		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
+
 		onSave("ZEN")
 			.catch((error) => {
 				console.error(error);
 				const errMsg = error.responseText || error;
 				alert(`상담정보 저장중 오류가 발생하였습니다.\n\n${errMsg}`);
 			})
-			.finally(() => loading.out());
+			.finally(() => {
+				loading.out();
+				ev.target.disabled = false;
+			});
+
 	});
 
 	// 저장 버튼
 	$("#button8").on("click", ev => {
+		
+		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('상담정보 저장 중 입니다.'));
+
 		onSave()
 			.catch((error) => {
 				console.error(error);
 				const errMsg = error.responseText || error;
 				alert(`상담정보 저장중 오류가 발생하였습니다.\n\n${errMsg}`);
 			})
-			.finally(() => loading.out());
+			.finally(() => {
+				loading.out();
+				ev.target.disabled = false;
+			});
 	});
 
 	// 상담결과 콤보박스 - 이미 선택한 옵션을 다시 선택했을때 이벤트 발생
