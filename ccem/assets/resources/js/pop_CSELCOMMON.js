@@ -179,8 +179,8 @@ const createSeq = ($target, DS_COUNSEL) => {
  * @param {string} data PLURAL_PRDT_LIST
  */
 const setPlProd = (grid, data) => {
-	const sCheckeds = data ? data.split("_") : "";
-	const checkeds = sCheckeds.filter(el => el?.length > 0);
+	const sCheckeds = data ? data.split("_") : new Array();
+	const checkeds = sCheckeds?.filter(el => el?.length > 0);
 	const gridData = grid.getData();
 
 	if(checkeds.length == 0) {
