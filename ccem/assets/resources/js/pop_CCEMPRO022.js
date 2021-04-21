@@ -645,7 +645,7 @@ const getCounsel = (sCSEL_DATE, sCSEL_NO, sCSEL_SEQ) => new Promise((resolve, re
 		// 티켓ID가 존재하고 추가등록/관계회원이 아닌경우에만 티켓오픈.
 		if(cselData.ZEN_TICKET_ID && sCSEL_SEQ == 1) topbarClient.invoke('routeTo', 'ticket', cselData.ZEN_TICKET_ID);
 
-		// 상담과목 선택
+		// 상담과목 세팅
 		setPlProd(grid1, cselData.PLURAL_PRDT_LIST);	
 		
 		// 상담정보 세팅
@@ -938,11 +938,11 @@ const getCselCondition = async () => {
 		YC_MK            : $("#checkbox2").is(":checked") ? "Y" : "N",          // YC                 
 		ZEN_TICKET_ID    : $("#hiddenbox10").val(),             				// 티켓ID             
 		HL_MK            : $("#checkbox3").is(":checked") ? "Y" : "N",          // HL                 
-		// PLURAL_PRDT_LIST : "",  			   // 병행과목코드리스트 
-		// PLURAL_PRDT_NAME : "",			   // 병행과목코드명     
+		PLURAL_PRDT_LIST : "",  			    								// 병행과목코드리스트 
+		PLURAL_PRDT_NAME : "",			   										// 병행과목코드명     
 		// ORG_CSEL_RST_MK1 : "",              // ORG상담결과구분    
 		RE_CALL_CMPLT    : $("#checkbox6").is(":checked") ? "Y" : "N",           // 재통화완료여부 
-		RECORD_ID		 : "",													 // 녹취키    
+		RECORD_ID		 : "",													 // 녹취키 for saveRecData
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -1106,9 +1106,13 @@ const getCselCondition = async () => {
 
 	}
 
-	//교구재(30),전집류(40),전집(50)등과 같은 박사와 관련된 제품을 선택한 경우
-    //prdt_grp:30,40,50군에 포함되지 않으면 상담과목을 잘못 선택했다는 메세지를 뿌리도록
-    //20151005 과목군의 소빅스군(22)으로 교구재, 전집류, 전집이 편집됨(이혜진실장)
+	
+    
+    /**
+	 * 교구재(30),전집류(40),전집(50)등과 같은 박사와 관련된 제품을 선택한 경우
+	 * prdt_grp:30,40,50군에 포함되지 않으면 상담과목을 잘못 선택했다는 메세지를 뿌리도록
+	 * 20151005 과목군의 소빅스군(22)으로 교구재, 전집류, 전집이 편집됨(이혜진실장)
+	 */
     if (data.PLURAL_PRDT_LIST.length > 0) {
 
         //종합교재/전집류(09)
@@ -1126,17 +1130,37 @@ const getCselCondition = async () => {
 			
         }
 	}
+
 	
-	// 수정일때,
-    if (sJobType == "U") {
+	
+	/**
+	 * 저장구분에 따른 분기처리
+	 */
+	// 신규저장시
+    if (sJobType == "I") {
+
+        //"I"이고, 상담일자가 없을경우, (추가등록,관계회원등록 일때)
+        if (!data.CSEL_DATE) {
+            data.CSEL_DATE = getDateFormat().replace(/[^0-9]/gi, '');
+        }
+		
+	// 수정저장시
+	} else if (sJobType == "U") {
+
         //상담연계(3)이고,
         if (data.CSEL_MK == "3" && $("#hiddenbox9").val() != "01") {
 			alert("결과등록 한 상담이력은 수정할 수 없습니다.");
 			return false;
         }
+
+		// 상담결과 변경여부 체크를 위하여, 조회되었던 상담결과코드를 설정한다.
+		data.ORG_CSEL_RST_MK1 = $("#hiddenbox5").val();
+
 	}
+
+
+
 	
-	// 당월에 시정처리 등록건이 있는지 조회
     // 당월에 시정처리건이 등록되어 있으면, 또 등록할 것인지를 물어본다.
 	if (data.PROC_MK == "4") {
 		const saveChkRes = await getSaveChk(data.CUST_ID);
@@ -1155,21 +1179,13 @@ const getCselCondition = async () => {
     if (!data.AREA_CDE) {
 		data.AREA_CDE = "000";
 	}
-	
-	//INSERT시,
-    if (sJobType == "I") {
 
-        //"I"이고, 상담일자가 없을경우, (추가등록,관계회원등록 일때)
-        if (!data.CSEL_DATE) {
-            data.CSEL_DATE = getDateFormat().replace(/[^0-9]/gi, '');
-        }
-		
-    } else {
-        // 상담결과 변경여부 체크를 위하여, 조회되었던 상담결과코드를 설정한다.
-        data.ORG_CSEL_RST_MK1 = $("#hiddenbox5").val();
-	}
 
-	// 저장구분에 따라 티켓체크
+
+
+	/**
+	 * 티켓체크
+	 */
 	// 상담순번이 1이고, 신규저장일떄.
 	if (sJobType == "I" && selectedSeq == 1) {
 
@@ -1196,6 +1212,8 @@ const getCselCondition = async () => {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
 	}
+
+
 
 	return data;
 }

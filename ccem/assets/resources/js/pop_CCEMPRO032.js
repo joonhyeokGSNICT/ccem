@@ -671,7 +671,7 @@ const getCselCondition = async () => {
 		ACTIVITY_MK			: $("#selectbox6").val(), 								// 사업구분			
 		ZEN_TICKET_ID		: $("#hiddenbox1").val(), 								// 티켓ID				
 		// WORK_STYL_MK		: "", // 근무형태구분(신규입력시 '')			
-		RECORD_ID			: "",													// 녹취키
+		RECORD_ID			: "",													// 녹취키 for saveRecData
 	}
 	
 	// 저장구분 세팅(I: 신규, U: 수정)
@@ -744,7 +744,11 @@ const getCselCondition = async () => {
 		return false;
 	}
 
-	// 저장구분에 따라 티켓체크
+
+
+	/**
+	 * 티켓체크
+	 */
 	// 상담순번이 1이고, 신규저장일떄.
 	if (sJobType == "I" && selectedSeq == 1) {
 
@@ -771,6 +775,8 @@ const getCselCondition = async () => {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
 	}
+
+	
 
 	return data;
 }

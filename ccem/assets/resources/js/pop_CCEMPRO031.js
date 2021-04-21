@@ -786,10 +786,10 @@ const getCselCondition = async () => {
 		LC_EMP_ID			: $("#hiddenbox4").val(), 						// 센터장사번		
 		ZEN_TICKET_ID		: $("#hiddenbox5").val(), 						// 티켓ID			
 		// PLURAL_PRDT_ID	: "", // 병행과목코드			
-		// PLURAL_PRDT_LIST	: "", // 병행과목코드리스트				
-		// PLURAL_PRDT_NAME	: "", // 병행과목코드명		
+		PLURAL_PRDT_LIST	: "", // 병행과목코드리스트				
+		PLURAL_PRDT_NAME	: "", // 병행과목코드명		
 		PROC_MK				: "5", 											// 처리구분(5로 고정)	
-		RECORD_ID			: "",											// 녹취키
+		RECORD_ID			: "",											// 녹취키 for saveRecData
 
 	}
 	
@@ -880,7 +880,27 @@ const getCselCondition = async () => {
 			return false;
 		}
 	}
+
+
 	
+	/**
+	 * 저장구분에 따른 분기처리
+	 */
+	// 신규저장시
+	if (sJobType == "I") {
+
+
+	// 수정저장시
+	} else if (sJobType == "U") {
+
+
+	}
+	
+
+
+	/**
+	 * 회원번호 체크
+	 */
 	if (!data.MBR_ID) {
 		// 회원번호가 없으면 회원번호 생성 및 세팅
 		data.MBR_ID = await getNewMbrId(data.CUST_ID);
@@ -892,7 +912,11 @@ const getCselCondition = async () => {
 		}
 	}
 
-	// 저장구분에 따라 티켓체크
+
+
+	/**
+	 * 티켓체크
+	 */
 	// 상담순번이 1이고, 신규저장일떄.
 	if (sJobType == "I" && selectedSeq == 1) {
 
@@ -919,6 +943,8 @@ const getCselCondition = async () => {
 		alert(`저장구분이 올바르지 않습니다.[${sJobType}]\n\n관리자에게 문의하기시 바랍니다.`);
 		return false;
 	}
+
+
 
 	return data;
 
