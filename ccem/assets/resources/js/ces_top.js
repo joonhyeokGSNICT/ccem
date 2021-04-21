@@ -379,15 +379,15 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 					
 					initAll();															// 전체 초기화
 					
-					sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+					sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`).then(function (d){
 						
-						currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
+						currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`]?.split('_')[2];
 						
-						if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+						if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`])){
 							
 							teacherSearch();											// 선생님 검색
 							
-						}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
+						}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
 							
 							userSearch();												// 고객 검색	
 							
@@ -399,15 +399,15 @@ client.on("getSidebarClient", function(sidebarClient_d) {
 					});
 				});
 			}
-			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`).then(function (d){
+			sidebarClient.get(`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`).then(function (d){
 				
-				currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`]?.split('_')[2];
+				currentOBMK = d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`]?.split('_')[2];
 				
-				if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`])){
+				if(teacherPopMKList.includes(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`])){
 					
 					teacherSearch();											// 선생님 검색
 					
-				}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_MK"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
+				}else if(d[`ticket.customField:custom_field_${ZDK_INFO[_SPACE]["ticketField"]["OB_PRESET"]}`] == 'oblist_cde_60'){	// Ivr 콜백 코드
 					
 					//if(currentTicketInfo.ticket.requester.externalId != null){
 					userSearch();												// 고객 검색	
