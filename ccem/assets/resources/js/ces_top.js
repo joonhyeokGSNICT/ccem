@@ -4224,6 +4224,7 @@ function refreshLayoutForCustTab(){
 	counselMain_researchCust_rsrchCust_grid.refreshLayout();
 	counselMainTeacher_asignClassGrid.refreshLayout();
 	counselMainTeacher_classMemberGrid.refreshLayout();
+	counselMain_studyList_grid.refreshLayout();
 }
 
 //number 타입 maxLength 설정
