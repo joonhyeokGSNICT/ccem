@@ -673,6 +673,17 @@ function excelExport(gridId, excelfile, tableId){
 	//내용
 	$("#"+tableId).append("<tbody>");
 	for(gridRow of gridAllData){
+		
+		gridRow.CSEL_DATE = gridRow.CSEL_DATE != null ? FormatUtil.date(gridRow.CSEL_DATE):"";
+		gridRow.CSEL_TIME = gridRow.CSEL_TIME != null ? gridRow.CSEL_TIME?.substring(0,2) + ":" + gridRow.CSEL_TIME?.substring(2,4):"";
+		gridRow.TRANS_DATE = gridRow.TRANS_DATE != null ? FormatUtil.date(gridRow.TRANS_DATE):"";
+		
+		if(gridRow.ENTER_RST_FLAG == "1"){
+			gridRow.ENTER_RST_FLAG = '입회';
+		}else {
+			gridRow.ENTER_RST_FLAG = '미입회';
+		}
+		
 		var appendStr ="";
 		appendStr += "<tr>";
 		for(dataObj of gridData){
