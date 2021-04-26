@@ -1294,6 +1294,7 @@ $(function(){
 			break;
 		case 'obCall_btn':
 			phoneNum = $.trim($("#custInfo_REP_TELNO").val().replace(/-/gi,''));
+			_result_OB_call_num = phoneNum
 			obCallFlag = true;
 			break;
 		case 't_mobileCall_btn':

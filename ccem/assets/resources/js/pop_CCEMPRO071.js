@@ -1,3 +1,4 @@
+var _result_OB_call_num ;  // _result_OB_call_num
 var _CUST_RESP_MK_OB ;  // custRespMkOb
 var _CSEL_RST_MK_OB ;   // cselRstMkOb
 var _OB_CDE;
@@ -232,6 +233,7 @@ async function save_call_rst(){
 	temp.CSEL_RST_MK = $("input[name=csel_rst]:checked").attr("codeId");	// 상담결과
 	temp.USER_ID = currentUserInfo.user.external_id;						// 상담사 사번
 	temp.TELPNO = await getTicketField("OB_TEL");							// 통화한 전화번호
+	if ( temp.TELPNO == '' ) temp.TELPNO = _result_OB_call_num
 	temp.CALL_TIME = "";													// 통화시간
 	
 	var param = {};

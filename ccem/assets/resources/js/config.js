@@ -131,7 +131,8 @@ const ZDK_INFO = {
             RECORD_ID                  :    "1500001725761",    // 녹취키
             RECORD_ID_HIS              :    "360057792133",     // 녹취키 History    
             CALL_RST_MK_OB             :    "360054868214",     // OB결과
-            OB_PRESET                  :    "1500003677161",     // OB구분(고정)
+            OB_PRESET                  :    "1500003677161",    // OB구분(고정)
+            OB_TEL                     :    "1500003042642",    // OB전화번호
         },
         defaultUser : '',                             // 운영서버 이민형대리님 ID
     },
@@ -236,6 +237,7 @@ const ZDK_INFO = {
             RECORD_ID_HIS              :    "1500001725721",    // 녹취키 History
             CALL_RST_MK_OB             :    "1500000133222",    // OB결과 
             OB_PRESET                  :    "1500003757682",    // OB구분(고정)
+            OB_TEL                     :    "1500003043022",    // OB전화번호
         },
         defaultUser : 426505541054,                             // 개발서버 이민형대리님 ID
     },
