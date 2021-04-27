@@ -72,8 +72,7 @@ const setEvent = () => {
 		ev.target.disabled = true;
 		const loading = new Loading(getLoadingSet('상담등록중 입니다.'));
 		
-		// onSave()
-		onSave("ZEN")
+		onSave()
 			.catch((error) => {
 				console.error(error);
 				const errMsg = error.responseText || error;
