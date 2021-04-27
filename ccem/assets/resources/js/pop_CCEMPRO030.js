@@ -2168,9 +2168,11 @@ const updateTicket = async (DS_TICKET) => {
     const PROC_STS_MK_VAL = `proc_sts_mk_${Number(DS_TICKET.PROC_STS_MK)}`;    
     const TRANS_CHNL_MK_VAL = `trans_chnl_mk_${Number(DS_TICKET.TRANS_CHNL_MK)}`;
     const PROC_CTI_CHGDATE_TIME_VAL = moment_diff(DS_TICKET.DEPT_ACP_DATE, DS_TICKET.DEPT_ACP_TIME, DS_TICKET.VOC_PROC_DATE, DS_TICKET.VOC_PROC_TIME);
+    const PROC_CTI_CHGDATE_MS_VAL = moment_diff_ms(DS_TICKET.DEPT_ACP_DATE, DS_TICKET.DEPT_ACP_TIME, DS_TICKET.VOC_PROC_DATE, DS_TICKET.VOC_PROC_TIME);
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],            value: PROC_STS_MK_VAL });                           // 처리상태
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["TRANS_CHNL_MK"],          value: TRANS_CHNL_MK_VAL });                         // 연계방법
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_TIME"],  value: PROC_CTI_CHGDATE_TIME_VAL });                 // 사업국처리시간
+    custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_MS"],    value: PROC_CTI_CHGDATE_MS_VAL });                   // 사업국처리시간(ms)
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_EMP_IDNM"],          value: DS_TICKET.VOC_PROC_EMP_NM });                 // 처리자명
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE"],       value: DS_TICKET.VOC_PROC_DATE_TIME });              // 처리일시  
     custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_DATE_TIME"],     value: DS_TICKET.DEPT_ACP_DATE_TIME });              // 접수일시
@@ -2192,6 +2194,7 @@ const updateTicket = async (DS_TICKET) => {
         const child_custom_fields = new Array();
         child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_STS_MK"],            value: PROC_STS_MK_VAL });                           // 처리상태
         child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_TIME"],  value: PROC_CTI_CHGDATE_TIME_VAL });                 // 사업국처리시간
+        child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["PROC_CTI_CHGDATE_MS"],    value: PROC_CTI_CHGDATE_MS_VAL });                   // 사업국처리시간(ms)
         child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_DATE_TIME"],     value: DS_TICKET.DEPT_ACP_DATE_TIME });              // 접수일시
         child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["DEPT_ACP_NAME"],          value: DS_TICKET.DEPT_ACP_NAME });                   // 접수자명
         child_custom_fields.push({ id: ZDK_INFO[_SPACE]["ticketField"]["IS_HPCALL"],              value: DS_TICKET.IS_HAPY });                         // 해피콜 여부
@@ -2242,6 +2245,21 @@ const moment_diff = (fromDay, fromTime, toDay, toTime) => {
         return "0일0시간0분0초";
     }
 
+}
+
+/**
+ * 시간차이 계산(ms)
+ * @param {string} fromDay  시작일시
+ * @param {string} fromTime 시작일시
+ * @param {string} toDay    종료일시
+ * @param {string} toTime   종료일시
+ */
+ const moment_diff_ms = (fromDay, fromTime, toDay, toTime) => {
+    const t1 = moment(`${fromDay} ${fromTime}`, 'YYYYMMDD hhmmss');
+    const t2 = moment(`${toDay} ${toTime}`, 'YYYYMMDD hhmmss');
+    const diff = moment.duration(t2.diff(t1));
+    const ms = diff.asMilliseconds();
+    return ms >= 0 ? ms : 0;
 }
 
 /**
