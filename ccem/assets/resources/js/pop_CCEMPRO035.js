@@ -886,6 +886,7 @@ const createCselTable = data => {
 			<th>연계부서</th>
 			<th>VOC</th>
 			<th>선생님명</th>
+			<th>연계방법</th>
 		</tr>
 	`);
 	tableEl.append(theadEl);
@@ -940,6 +941,7 @@ const createCselTable = data => {
 				<td style="mso-number-format:'\@'">${el.PROC_DEPT_NAME_NM || ""}</td>
 				<td style="mso-number-format:'\@'">${el.VOC_MK || ""}</td>
 				<td style="mso-number-format:'\@'">${el.PRDT_EMP_NM || ""}</td>
+				<td style="mso-number-format:'\@'">${el.TRANS_CHNL_NM || ""}</td>
 			</tr>`;
 		tbody.append(tbodyStr);
 	});
