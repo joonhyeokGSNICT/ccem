@@ -425,6 +425,7 @@ const updateTicket = async (cselData, customData) => {
 		// { id: ZDK_INFO[_SPACE]["ticketField"]["OFCL_RSPN"],				value: "" },												// 직책   
 		// { id: ZDK_INFO[_SPACE]["ticketField"]["JOB"],					value: "" },												// 직무   
 		{ id: ZDK_INFO[_SPACE]["ticketField"]["DIV_KIND_CDE"],			value: `div_kind_cde_${Number(customData.brandId)}` },		// 브랜드   
+		{ id: ZDK_INFO[_SPACE]["ticketField"]["CSEL_MAN_MK"],			value: `csel_man_mk_${Number(cselData.CSEL_MAN_MK)}` },		// 내담자
 	];
 
 	if (cselData.RE_CALL_CMPLT) {

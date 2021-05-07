@@ -133,6 +133,7 @@ const ZDK_INFO = {
             CALL_RST_MK_OB             :    "360054868214",     // OB결과
             OB_PRESET                  :    "1500003677161",    // OB구분(고정)
             OB_TEL                     :    "1500003042642",    // OB전화번호
+            CSEL_MAN_MK                :    "1500004210762",    // 내담자
         },
         defaultUser : '',                             // 운영서버 이민형대리님 ID
     },
@@ -238,6 +239,7 @@ const ZDK_INFO = {
             CALL_RST_MK_OB             :    "1500000133222",    // OB결과 
             OB_PRESET                  :    "1500003757682",    // OB구분(고정)
             OB_TEL                     :    "1500003043022",    // OB전화번호
+            CSEL_MAN_MK                :    "1500004136281",    // 내담자
         },
         defaultUser : 426505541054,                             // 개발서버 이민형대리님 ID
     },

@@ -471,6 +471,9 @@ client.on("pane.activated", (ev) => {
 		counselMain_studyList_grid.refreshLayout();				// 상담이력 - > 상담과목 grid
 		customerSearchList_grid.refreshLayout();				// 고객찾기
 		teacherSearchList_grid.refreshLayout();					// 선생님찾기
+		counselMainTeacher_counselHist_grid.refreshLayout();	// 선생님탭 > 상담이력
+		counselMainTeacher_asignClassGrid.refreshLayout();		// 선생님탭 > 수업목록
+		counselMainTeacher_classMemberGrid.refreshLayout();		// 선생님탭 > 교실별 회원정보
 		if(window.outerHeight < 1030){
 			console.log("사이즈조정");
 			client.invoke('resize', {
@@ -3918,7 +3921,11 @@ function onSave(){
 	    				if(d.count > 0){
 	    					for(idf of d.identities){
 	    						if(idf.type != "facebook"){
-	    							await client.request({url:`/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities/${idf.id}.json`,type:'DELETE'});
+	    							await client.request({
+															url:`/api/v2/users/${currentCustInfo.ZEN_USER_ID}/identities/${idf.id}.json`
+															, method: 'DELETE'
+															, contentType: "application/json"
+														});
 	    						}
 	    					}
 	    				}
