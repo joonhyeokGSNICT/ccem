@@ -202,6 +202,19 @@ const createGrids = () => {
 
 const setEvent = () => {
 
+	// FAX+앱알림 버튼 event
+	$("#button7").on("click", ev => {
+		const loading = new Loading(getLoadingSet('FAX+앱알림 전송 중 입니다.'));
+		onFAXAppSend()
+			.then(succ => { if(succ) alert("FAX+앱알림 전송되었습니다."); })
+			.catch((error) => {
+				console.error(error);
+				const errMsg = error.responseText || error;
+				alert(`FAX+앱알림 전송중 오류가 발생하였습니다.\n\n${errMsg}`);
+			})
+			.finally(() => loading.out());
+	});
+
 	// 앱알림+SMS 버튼 event
 	$("#button6").on("click", ev => {
 		const loading = new Loading(getLoadingSet('앱+SMS 전송 중 입니다.'));
@@ -524,6 +537,51 @@ const getEnterData = (TRANS_DATE, TRANS_NO) => new Promise((resolve, reject) => 
 		.fail((jqXHR) => reject(new Error(getErrMsg(jqXHR.statusText))));
 	
 });
+
+
+/**
+ * FAX+앱알림 전송
+ */
+ const onFAXAppSend = async () => {
+
+	// get checked rows
+	const checkedRows = grid1.getCheckedRows();
+	if(checkedRows.length === 0) {
+		alert("상담연계를 선택해 주세요.");
+		return false;
+	}
+	
+	// 앱알림 대상자 세팅
+	const AppUserData = await getAppUserCondition(checkedRows);
+	if (!AppUserData) return false;
+
+	// 저장정보 세팅
+	const transData = new Array();
+	const faxData 	= new Array();
+	for (const row of checkedRows) {
+		
+		// 연계정보 value check
+		const transCondition = getTransCondition(row);
+		if (!transCondition) return false;
+		transCondition.TRANS_CHNL_MK = "4"; 	// 연계방법 - 앱연계
+		transCondition.followers = AppUserData;	// 팔로워 세팅
+		transData.push(transCondition);
+
+		// FAX발송정보 value check
+		const faxCondition = getFaxCondition(row);
+		if (!faxCondition) return false;
+		faxData.push(faxCondition);
+	}
+	
+	await saveTrans(transData);		// 연계정보저장API 호출
+	await updateTicket(transData);	// 티켓업데이트
+	await addTransSendFax(faxData);	// 팩스발송API 호출
+	refreshDisplay();				// 오픈된 화면 재조회
+
+	return true;
+}
+
+
 
 /**
  * 앱알림+SMS 전송
