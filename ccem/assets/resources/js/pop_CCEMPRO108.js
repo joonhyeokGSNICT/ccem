@@ -231,13 +231,14 @@ const setCodeData = async () => {
      * 비활성화
      * @TODO 세부구분(WEB_QNA_TYPE) 코드 추가되면 삭제
      */
+    /*
     $("#checkbox2").prop("disabled", true);
     $("#selectbox2").prop("disabled", true);
     $("#checkbox1").prop("checked", true);
     $("#checkbox1").prop("disabled", true);
     $("#selectbox1").prop("disabled", true);
     $("#selectbox1").val("MOS");
-
+    */
 }
 
 /**
